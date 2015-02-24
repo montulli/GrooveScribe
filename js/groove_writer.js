@@ -13,6 +13,7 @@
 	global_aNoteHasChangedSinceLastReset = false;  // global var
 	global_isMIDIPaused = false;
 	global_shouldMIDIRepeat = true;
+	global_visible_context_menu = false;   // a single context menu can be visible at a time.
 	
 	// constants
 	constant_default_tempo = 80;
@@ -450,6 +451,30 @@
 		}
 	}
 	
+	// every click passes through here.
+	// close a popup if one is up and we click off of it.
+	function documentOnClickHanderCloseContextMenu(event) {
+		if(global_visible_context_menu ) {
+			hideContextMenu( global_visible_context_menu );
+		}
+	}
+	
+	function showContextMenu(contextMenu) {
+		contextMenu.style.display = "block";
+		global_visible_context_menu = contextMenu;
+		document.onclick = documentOnClickHanderCloseContextMenu;
+		
+	}
+	
+	function hideContextMenu(contextMenu) {
+		document.onclick = false;
+		
+		if(contextMenu) {
+			contextMenu.style.display = "none";
+		}
+		global_visible_context_menu = false;
+		
+	}
 	
 	// returns false if the click should be processed without a popup, (non advance edit)
 	function handleNotePopup(event, type, id) {
@@ -476,15 +501,16 @@
 		}
 		
 		if(contextMenu) {
-			contextMenu.style.display = "block";
+			// position it
 			if (!event) var event = window.event;
 			if (event.pageX || event.pageY)
 			{
 				contextMenu.style.top = event.pageY-30 + "px";
 				contextMenu.style.left = event.pageX-75 + "px";
 			}
+			showContextMenu(contextMenu);  // display it
 		}
-		
+			
 		return true;
 	}
 	
@@ -519,13 +545,13 @@
 		}
 		
 		if(contextMenu) {
-			contextMenu.style.display = "block";
 			if (!event) var event = window.event;
 			if (event.pageX || event.pageY)
 			{
 				contextMenu.style.top = event.pageY-30 + "px";
 				contextMenu.style.left = event.pageX-35 + "px";
 			}
+			showContextMenu(contextMenu);
 		}
 		
 		return false;
@@ -563,7 +589,7 @@
 		}
 		
 		if(contextMenu) {
-			contextMenu.style.display = "none";
+			hideContextMenu(contextMenu);
 		}
 		
 		create_ABC();
@@ -592,13 +618,13 @@
 		}
 		
 		if(contextMenu) {
-			contextMenu.style.display = "block";
 			if (!event) var event = window.event;
 			if (event.pageX || event.pageY)
 			{
 				contextMenu.style.top = event.pageY-30 + "px";
 				contextMenu.style.left = event.pageX-75 + "px";
 			}
+			showContextMenu(contextMenu);
 		}
 		else {
 			return true;  //error
@@ -653,11 +679,41 @@
 		}
 		
 		if(contextMenu) {
-			contextMenu.style.display = "none";
+			hideContextMenu(contextMenu);
 		}
 		
 		create_ABC();
 	};
+	
+	// called when we initially mouseOver a note.   
+	// We can use it to sense left or right mouse or ctrl events
+	function noteOnMouseEnter(event, instrument, id) {
+	
+		var action = false;
+		
+		if(event.ctrlKey)
+			action = "on";
+		if(event.altKey)
+			action = "off";
+			
+		if(action) {
+			switch(instrument) {
+				case "hh":
+					set_hh_on(id, action == "off" ? "off" : "normal");
+					break;
+				case "snare":
+					set_snare_on(id, action == "off" ? "off" : "accent");
+					break;
+				case "kick":
+					set_kick_on(id, action == "off" ? "off" : "normal");
+					break;
+				default:
+					alert("Bad case in noteOnMouseEnter");
+			}
+		}
+		
+		return false;
+	}
 				
 	function is_hh_or_snare_on(id) {
 		if( is_hh_on(id) ) return true;
@@ -2622,7 +2678,7 @@
 									<div id="hi-hat' + i + '" class="hi-hat">\
 										<div class="hh_crash"  id="hh_crash' + i + '"  onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')">*</div>\
 										<div class="hh_ride"   id="hh_ride' + i + '"  onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')">R</div>\
-										<div class="hh_cross"  id="hh_cross' + i + '"  onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')">X</div>\
+										<div class="hh_cross"  id="hh_cross' + i + '"  onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'hh\', ' + i + ')">X</div>\
 										<div class="hh_open"   id="hh_open' + i + '"   onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')">o</div>\
 										<div class="hh_close"  id="hh_close' + i + '"  onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')">+</div>\
 										<div class="hh_accent" id="hh_accent' + i + '" onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')">&gt;</div>\
@@ -2644,7 +2700,7 @@
 									<div id="snare' + i + '" class="snare">\
 									<div class="snare_ghost"  id="snare_ghost' + i + '"  onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')">(&bull;)</div>\
 									<div class="circle"       id="snare_circle' + i + '" onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')"></div>\
-									<div class="snare_xstick"  id="snare_xstick' + i + '"  onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')">X</div>\
+									<div class="snare_xstick"  id="snare_xstick' + i + '"  onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'snare\', ' + i + ')">X</div>\
 									<div class="snare_accent" id="snare_accent' + i + '" onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')">&gt;</div>\
 									<div class="stick"        id="snare_stick' + i + '"  onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')"></div>\
 									</div> \
@@ -2663,7 +2719,7 @@
 								newHTML += ('\
 									<div id="kick' + i + '" class="kick">\
 									<div class="kick_splash" id="kick_splash' + i + '" onClick="noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'kick\', ' + i + ')">X</div></a>\
-									<div class="circle"      id="kick_circle' + i + '" onClick="noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'kick\', ' + i + ')"></div></a>\
+									<div class="circle"      id="kick_circle' + i + '" onClick="noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'kick\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'kick\', ' + i + ')"></div></a>\
 									<div class="kick_stick"  id="kick_stick' + i + '"  onClick="noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'kick\', ' + i + ')"></div>\
 									</div> \
 								');
