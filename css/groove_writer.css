@@ -1,0 +1,440 @@
+
+	// this is for debugging layout issues - puts a read border around everything
+	//body * { border: 1px solid red; }		
+	body {
+		.width: 750px;
+		margin: 10px;
+		background: #B2B28F;
+	}
+	.warnings {
+		font-family: monospace;
+		display: none;
+	}
+	@media print {
+		body {margin:0; padding:0; border:0}
+		div.newpage {page-break-before: always}
+		div.nobrk {page-break-inside: avoid}
+	}
+	.Printable {
+		display: block;
+	}
+	.nonPrintable {
+		display: block;
+	}
+	#musicalInput {
+	}
+	#hiddenDescription {
+		display: none;
+	}
+	.staff-container {
+		width:575px;
+		margin: 0px;
+		margin-bottom: 3px;
+		position:relative;
+		background: #FFFFCC;
+		border: 3px solid #000;
+		border-radius: 25px;
+		box-shadow: 7px 7px 5px #888888;
+		padding-top: 30px;
+		padding-right: 15px;
+		padding-left: 90px;
+		padding-bottom: 127px;
+		display: inline-block;
+	}
+	#staff-container2 {
+		display: none;
+	}
+	.heading1 {
+		font-size: 30px;
+		font-weight: bold;
+	}
+	#upperRight {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+	}
+	.music-line-container {
+		position:relative; 
+		top: 30px; 
+		z-index: 3;
+	}
+	#hi-hat-container {
+		position: absolute; top: -29px;
+		width: 100%
+	}
+	#snare-container {
+		position: absolute; top: 31px; left: 0px;
+		width: 100%;
+	}
+	#kick-container {
+		position: absolute; top: 91px; left: 0px;
+		width: 100%;
+	}
+	.staff-line-1{
+		position: absolute; top: 0px;
+		width:575px; 
+		height:0px; 
+		border-top:3px solid #000; 
+	}
+	.staff-line-2{
+		position: absolute; top: 30px;
+		width:575px; 
+		height:0px; 
+		border-top:3px solid #000; 
+	}
+	.staff-line-3{
+		position: absolute; top: 60px;
+		width:575px; 
+		height:0px; 
+		border-top:3px solid #000; 
+	}
+	.staff-line-4{
+		position: absolute; top: 90px;
+		width:575px; 
+		height:0px; 
+		border-top:3px solid #000; 
+	}
+	.staff-line-5{
+		position: absolute; top: 120px;
+		width:575px; 
+		height:0px; 
+		border-top:3px solid #000; 
+	}
+	.notes-container {
+		position: relative; 
+		z-index: 4
+	}
+	.hh_crash {
+		width:30px;
+		height:30px;
+		margin-left: 0px;
+		margin-top: -5px;
+		font-size: 52px;
+		color: transparent;
+		float:left;
+	}
+	.hh_ride {
+		width:27px;
+		height:30px;
+		margin-left: -27px;
+		font-size: 30px;
+		color: transparent;
+		float:left;
+	}
+	.hh_cross {
+		width:27px;
+		height:30px;
+		margin-left: -27px;
+		font-size: 30px;
+		color: #CCCCCC;
+		float:left;
+	}
+	.hh_open {
+		width:27px;
+		height:30px;
+		margin-left: -24px;
+		margin-top: -30px;
+		font-size: 30px;
+		color: transparent;
+		float:left;
+	}
+	.hh_close {
+		width:27px;
+		height:30px;
+		margin-left: -24px;
+		margin-top: -30px;
+		font-size: 30px;
+		color: transparent;
+		float:left;
+	}
+	.hh_accent {
+		width:27px;
+		height:30px;
+		margin-left: -24px;
+		margin-top: -30px;
+		font-size: 30px;
+		color: transparent;
+		float:left;
+	}
+	.hh_stick {
+		width:1px;
+		height:37px;
+		border-left:3px solid;
+		//border-color: #CCCCCC;
+		border-color: transparent;
+		float:left;
+		margin-top:-29px;
+		margin-left:-9px;
+		margin-right: 27px;
+	}
+	.circle {
+		width:30px;
+		height:30px;
+		background: #CCCCCC;
+		margin-left: -31px;
+		border-radius: 75px 45px 67px 45px;
+		float:left;
+	}
+	.snare_xstick {
+		width:27px;
+		height:30px;
+		margin-left: -27px;
+		font-size: 30px;
+		color: transparent;
+		float:left;
+	}
+	.snare_ghost {
+		display: block;
+		width:30px;
+		height:30px;
+		margin-left: 0px;
+		margin-top: -5px;
+		font-size: 30px;
+		color: transparent;
+		float:left;
+	}
+	.snare_accent {
+		width:27px;
+		height:30px;
+		margin-left: -24px;
+		margin-top: -30px;
+		font-size: 30px;
+		color: transparent;
+		float:left;
+	}
+	.stick {
+		width:1px;
+		height:36px;
+		border-left:3px solid;
+		//border-color: #CCCCCC;
+		border-color: transparent;
+		float:left;
+		margin-top:-27px;
+		margin-left:-4px;
+		margin-right: 22px;
+	}
+	.kick_splash {
+		width:27px;
+		height:30px;
+		padding-left: 3px;
+		margin-left: 0px;
+		margin-top: 27px;
+		font-size: 30px;
+		color: transparent;
+		float:left;
+	}
+	.kick_stick {
+		width:1px;
+		height:43px;
+		border-left:3px solid;
+		//border-color: #CCCCCC;
+		border-color: transparent;
+		float:left;
+		margin-top: 16px;
+		margin-left:-31px;
+		margin-right: 49px;
+	}
+	.line-labels {
+		position: absolute; top: 25px; left: 6px;
+		width: 100%;
+	}
+	#hh-label {
+		position: absolute; top: 9px; left: 0px; 
+		font-family: monospace;
+		font-size: 180%
+	}
+	#snare-label {
+		position: absolute; top: 70px; left: 4px; 
+		font-family: monospace;
+		font-size: 180%
+	}
+	#kick-label {
+		position: absolute; top: 126px; left: 8px; 
+		font-family: monospace;
+		font-size: 180%
+	}
+	.hi-hat {      
+	}
+	.snare {
+	}
+	.kick {
+	}
+	.opening_note_space {
+		width:10px;
+		height:1px;
+		background: transparent;
+		float:left;
+	}
+	.space_between_note_groups {
+		width:20px;
+		height:1px;
+		background: transparent;
+		float:left;
+	}
+	.subdivision {
+		background: #FFFFCC;
+		font-size: 130%;
+		text-decoration: none;
+		border:1px solid #CCCCCC;
+		border-radius: 5px;
+		box-shadow: 7px 7px 5px #888888;
+		padding: 4px;
+	}
+	#permutationType {
+		margin-top: 10px;
+	}
+	#noteInstructions {
+		font-size: 120%;
+		font-weight: bold;
+		margin-top: 14px;
+		margin-left: 25px;
+	}
+	#exportMidi {
+		margin-left: 25px;
+	}
+	#ABC_Results {
+		display: none;
+	}
+	#svgTarget {
+		width: 795px;
+		background: #FFF;
+		border: 1px solid #000;
+		box-shadow: 7px 7px 5px #888888;
+	}
+	
+	// Context Menu
+	.noteContextMenu { 
+		
+	}
+	.noteContextMenu>ul.list { 
+		display: none;
+		position:absolute; left:30px; top:-30px; z-index:999;
+		width:150px;
+		margin:0; padding:10px; list-style:none;
+		background:#fff; color:#333;
+		border-radius:5px;
+		box-shadow:0 0 5px #999
+	}
+	.noteContextMenu>ul.list li {
+		padding:10px;
+		border-bottom: solid 1px #CCCCCC;
+	}
+	.noteContextMenu>ul.list li:hover {
+		background:#EC6603; color:#fff;
+	}
+	.noteContextMenu>ul.list li:last-child { 
+		border:none;
+	}
+	hr {
+		width: 795px;
+		margin-left: 0px;
+	}
+	#playerControl {
+		display: inline-block;
+		border: solid 1px #CCCCCC;
+		border-radius: 25px;
+		box-shadow: 7px 7px 5px #888888;
+		background-color: #000;
+		padding-top: 2px;
+		padding-bottom: 0px;
+		margin-bottom: 3px;
+	}
+	#tempoAndProgress {
+		display: inline-block;
+	}
+	#tempoInput  {
+		background-color: 3f91e5;
+		border: solid 1px #000;
+		position: relative; top: -10px;
+		width: 250px;
+		height:20px;
+	}
+	#tempoSettings {
+		color: #FFF;
+	}
+	#tempoOutput {
+		position: relative; top: -16px;
+		background-color: #000;
+		font-size: 20px;
+		color: #FFF;
+		padding-right: 10px;
+	}
+	#swingInput  {
+		background-color: 3f91e5;
+		border: solid 1px #000;
+		position: relative; top: -10px;
+		width: 250px;
+		height:20px;
+	}
+	#swingSettings {
+		color: #FFF;
+	}
+	#swingOutput {
+		position: relative; top: -16px;
+		background-color: #000;
+		font-size: 20px;
+		color: #FFF;
+		padding-right: 10px;
+	}
+	#MIDIProgress {
+		width: 90%;
+		position: relative; top: -5px; left: 5%;
+	}
+	#playImage,  #repeatImage {
+		position: relative; top: -15px;
+	}
+	#ABCSource {
+		font-family: monospace; 
+		font-size: 14px;
+	}
+	#fullURLPopup {
+		visibility: hidden;
+		position:absolute; left:250px; top:250px; z-index:999;
+		background-color: #CCCC52;
+		width: 500px;
+		padding: 10px;
+		border: solid 5px #000;
+	}
+	#fullURLCloseButton {
+		font-size: 120%;
+		float: right;
+	}
+	#fullURLTextField {
+		width: 495px;
+	}
+	#fullURLLink {
+		float: right;
+	}
+	#showHideSecondMeasureButton {
+		// left
+		float: left;
+		/text-align:left;
+		/width:33.33333%;
+		margin-right: 25px;
+		margin-left: 25px;
+	}
+	#shareSaveButton {
+		// center
+		/float: left;
+		/text-align:center;
+		/width:33.33333%;
+		margin-right: 25px;
+	}
+	#printButton {
+		// right
+		/float: right;
+		/text-align:right;
+		/width:33.33333%;
+	}
+	.centeringSpace {
+		width:33.33333%;
+		// center
+		float: left;
+		text-align:center;
+		width:33.33333%;
+	}
+	input[type=checkbox] {  
+		vertical-align: bottom;
+		width: 18px;
+		height: 18px;
+	}  

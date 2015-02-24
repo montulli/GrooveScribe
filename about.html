@@ -1,0 +1,59 @@
+<style>
+body {
+	margin: 30px 30px 30px 30px;
+}
+
+</style>
+
+<h1>About the Groove Writer</h2>
+
+The Groove Writer was built to help drummers work out their grooves and turn them into printable sheet music.   
+It is also a good tool to share a groove via email or message board because it can generate a web link that is easy to share.
+<p>
+<b>How it works:</b> 
+<p>
+The groove writer is written in HTML and Javascript and runs entirely in the browser.   
+<a href="http://abcnotation.com/">ABC Notation</a> is used to create the printable sheet music.
+When notes are changed on the screen, new ABC Notation is generated which creates the sheet music.
+To play the music the groove writer generates a <a href="http://en.wikipedia.org/wiki/MIDI">MIDI</a> file from the notes and plays them using the 
+browser audio interface.
+<p>
+<b>How it swings:</b>
+<p>
+The swing slider, that is part of the player, controls the amount of "swing" that is added to the playback.   
+It does not effect the printable sheet music.   To generate swing a delay is added to the upbeat notes in the measure.  
+The upbeat notes are the "a" and the "e" in a 16th note groove. (1e&a), and are the "&" notes in a 8th note groove.  (1&2&3&4&).    
+During MIDI generation, the program extends the duration of the downbeat notes and shortens the duration of the upbeat notes.
+The percentage of the swing controls the percentage of the note duration that the upbeat is delayed. 
+(NewDelay = NormalDelay + (NormalDelay * SwingPercentage)
+<p>
+
+<b>Author:</b> <A Href="http://www.montulli.org/lou/">Lou Montulli</a>
+<p>
+<b>Inspiration:</b> I was inspired to write this app after spending lots of time trying to use ABC notation to create good looking printable sheet music.    
+ABC is an awesome invention, but it can be very challenging to create percussion music using it.
+
+<h3>Thanks and attribution:</h3>
+
+<b>People: </b>
+<ul>
+<li><A Href="http://mikeslessons.com/">Mike Johnston</a>  -- Who taught me about permutations which led me to try to use ABC Notation to create new ones.  
+Mike also was the first to see the app and gave me great suggestions and improvements.   
+
+<li><A href="http://www.bkdrummer.com/">Brad Kaiser</a> -- My first drum instructer, who taught me how to read percussion sheet music.
+<li>My Family -- I made them do beta testing.  :)
+</ul>
+<p>
+
+<b>Technologies:</b>
+<p>
+The following packages or technologies were used in the building of this project:
+<ul>
+	<li>abc2svg.js: <a href="http://moinejf.free.fr/js/">http://moinejf.free.fr/js/</a>
+	<li>Midi.js: <a href="http://mudcu.be/midi-js/">http://mudcu.be/midi-js/</a>
+	<li>Share this: <a href="https://github.com/carrot/share-button">https://github.com/carrot/share-button</a>
+	<li>Abc Notation: <a href="http://abcnotation.com/">http://abcnotation.com/</a>
+	<li>jsmidgen: <a href="https://github.com/dingram/jsmidgen">https://github.com/dingram/jsmidgen</a>
+	<li>Google URL Shortener: <a href="https://goo.gl/">https://goo.gl/</a>
+	<li>HTML5: Mozilla.org, W3C.org, Google.com, et al.  <a href="http://en.wikipedia.org/wiki/HTML5">http://en.wikipedia.org/wiki/HTML5</a>
+</ul>
