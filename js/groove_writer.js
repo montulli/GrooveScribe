@@ -1088,9 +1088,9 @@
 	
 	function setMusicStaffWidth() {
 		// dynamically set the width of the music staff lines
-		var newWidth = 52 * global_notes_per_measure;  // note size
+		var newWidth = 44 * global_notes_per_measure;  // note size
 		newWidth += 25 * (Math.floor(global_notes_per_measure/note_grouping_size())-1);  // size between groups
-		newWidth += 5;   // size of opening space
+		newWidth += 0;   // size of opening space
 		
 		for(var i=1; i < 6; i++) {
 			var myElements = document.querySelectorAll(".staff-line-" + i);

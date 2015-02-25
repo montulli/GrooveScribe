@@ -124,7 +124,7 @@
 		width:30px;
 		height:30px;
 		margin-left: -30px;
-		margin-right: 15px;
+		margin-right: 7px;
 		font-size: 24px;
 		color: #CCCCCC;
 		float:left;
@@ -188,7 +188,7 @@
 		float:left;
 		margin-top:-29px;
 		margin-left:-9px;
-		margin-right: 27px;
+		margin-right: 19px;
 	}
 	.circle {
 		width:30px;
@@ -237,7 +237,7 @@
 		float:left;
 		margin-top:-27px;
 		margin-left:-4px;
-		margin-right: 22px;
+		margin-right: 14px;
 	}
 	.kick_splash {
 		width:27px;
@@ -259,7 +259,7 @@
 		float:left;
 		margin-top: 16px;
 		margin-left:-31px;
-		margin-right: 49px;
+		margin-right: 41px;
 	}
 	.line-labels {
 		position: absolute; top: 25px; left: 6px;
@@ -394,6 +394,7 @@
 		font-size: 20px;
 		color: #FFF;
 		padding-right: 10px;
+		padding-left: 5px;
 	}
 	#swingInput  {
 		background-color: 3f91e5;
@@ -413,10 +414,13 @@
 		font-size: 20px;
 		color: #FFF;
 		padding-right: 10px;
+		padding-left: 5px;
 	}
 	#MIDIProgress {
 		width: 90%;
 		position: relative; top: -3px; left: 5%;
+		margin-bottom: 2px;
+		height: 10px;
 	}
 	#playImage,  #repeatImage {
 		position: relative; top: 0px;
@@ -444,21 +448,36 @@
 	#fullURLLink {
 		float: right;
 	}
+	#buttonsAboveSheetMusic {
+		margin-top: 10px;
+		width: 800px;
+		text-align: justify;
+	}
+	#buttonsAboveSheetMusic:after {
+		/* fake second line, so that justification will happen
+		 * normally, justify ignores the last line
+		 */
+		content: "";
+		width: 100%;
+		display: inline-block;
+    }
+	.justifiedDiv {
+		width: 180px;
+		display: inline-block;
+		text-align: center;
+		vertical-align: top;
+	}
 	#showHideSecondMeasureButton {
-
 	}
 	#showHideStickings {
-	
-	}
-	#shareSaveButton {
-
 	}
 	#printButton {
-
+	}
+	#shareSaveButton {
 	}
 	.centeringSpace {
-		margin-right: 26px;
-		margin-left: 26px;
+		/margin-right: 5%;
+		/margin-left: 5%;
 	}
 	button {
 		cursor: pointer;

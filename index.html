@@ -64,16 +64,20 @@
 					document.write(genHTML);
 				</script>
 			</div>
-			<br>
-				<button id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); showHideSecondMeasure(false, false);">Show/Hide Second Measure</button>
-				<span class="centeringSpace">&nbsp;</span>
+			<div id="buttonsAboveSheetMusic">
+				<div class="justifiedDiv">
+				<button id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); showHideSecondMeasure(false, false);">Show/Hide 2nd Measure</button>
+				</div>
+				<div class="justifiedDiv">
 				<button id="showHideStickings" href="" onClick="event.preventDefault(); showHideStickings(false, false);">Show/Hide Stickings</button>
-				<span class="centeringSpace">&nbsp;</span>
+				</div>
+				<div class="justifiedDiv">
 				<button id="printButton" type="button" onclick="printMusic()">Print/Save Sheet Music</button>
-				<span class="centeringSpace">&nbsp;</span>
+				</div>
+				<div class="justifiedDiv">
 				<button id="shareSaveButton" href="#" onClick="event.preventDefault(); show_FullURLPopup()">Share/Save Groove</button>
-				<br>
-			<br>
+				</div>
+			</div>
 		</div>  
 		<div class="Printable">
 			<!-- rendering area -->
