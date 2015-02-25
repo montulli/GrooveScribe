@@ -5,6 +5,7 @@
 		.width: 750px;
 		margin: 10px;
 		background: #B2B28F;
+		font-family: Calibri;
 	}
 	.warnings {
 		font-family: monospace;
@@ -27,6 +28,7 @@
 		display: none;
 	}
 	.staff-container {
+		font-family:  Times New Roman;
 		width:575px;
 		margin: 0px;
 		margin-bottom: 3px;
@@ -60,7 +62,7 @@
 	}
 	.stickings-container {
 		display: none;
-		position: absolute; top: -65px;
+		position: absolute; top: -62px;
 		width: 100%
 	}
 	.hi-hat-container {
@@ -112,19 +114,21 @@
 	.sticking_right {
 		width:30px;
 		height:30px;
-		margin-left: 3px;
-		font-size: 30px;
+		margin-left: 7px;
+		font-size: 24px;
 		color: #CCCCCC;
 		float:left;
+		cursor: pointer;
 	}
 	.sticking_left {
 		width:30px;
 		height:30px;
 		margin-left: -30px;
-		margin-right: 19px;
-		font-size: 30px;
+		margin-right: 15px;
+		font-size: 24px;
 		color: #CCCCCC;
 		float:left;
+		cursor: pointer;
 	}
 	.hh_crash {
 		width:30px;
@@ -134,6 +138,7 @@
 		font-size: 52px;
 		color: transparent;
 		float:left;
+		cursor: pointer;
 	}
 	.hh_ride {
 		width:27px;
@@ -142,6 +147,7 @@
 		font-size: 30px;
 		color: transparent;
 		float:left;
+		cursor: pointer;
 	}
 	.hh_cross {
 		width:27px;
@@ -150,6 +156,7 @@
 		font-size: 30px;
 		color: #CCCCCC;
 		float:left;
+		cursor: pointer;
 	}
 	.hh_open {
 		margin-left: -21px;
@@ -190,6 +197,7 @@
 		margin-left: -31px;
 		border-radius: 75px 45px 67px 45px;
 		float:left;
+		cursor: pointer;
 	}
 	.snare_xstick {
 		width:27px;
@@ -198,6 +206,7 @@
 		font-size: 30px;
 		color: transparent;
 		float:left;
+		cursor: pointer;
 	}
 	.snare_ghost {
 		display: block;
@@ -208,6 +217,7 @@
 		font-size: 30px;
 		color: transparent;
 		float:left;
+		cursor: pointer;
 	}
 	.snare_accent {
 		width:27px;
@@ -238,6 +248,7 @@
 		font-size: 30px;
 		color: transparent;
 		float:left;
+		cursor: pointer;
 	}
 	.kick_stick {
 		width:1px;
@@ -253,27 +264,28 @@
 	.line-labels {
 		position: absolute; top: 25px; left: 6px;
 		width: 100%;
+		font-family: Calibri;
 	}
 	.stickings-label {
 		display: none;
-		position: absolute; top: -20px; left: 0px; 
-		font-family: monospace;
-		font-size: 120%
+		position: absolute; top: -22px; left: 0px; 
+		font-size: 16px;
+		cursor: pointer;
 	}
 	.hh-label {
 		position: absolute; top: 9px; left: 0px; 
-		font-family: monospace;
-		font-size: 180%
+		font-size: 22px;
+		cursor: pointer;
 	}
 	.snare-label {
 		position: absolute; top: 70px; left: 4px; 
-		font-family: monospace;
-		font-size: 180%
+		font-size: 22px;
+		cursor: pointer;
 	}
 	.kick-label {
 		position: absolute; top: 126px; left: 8px; 
-		font-family: monospace;
-		font-size: 180%
+		font-size: 22px;
+		cursor: pointer;
 	}
 	.hi-hat {      
 	}
@@ -404,6 +416,7 @@
 	}
 	#playImage,  #repeatImage {
 		position: relative; top: -15px;
+		cursor: pointer;
 	}
 	#ABCSource {
 		font-family: monospace; 
@@ -443,8 +456,12 @@
 		margin-right: 26px;
 		margin-left: 26px;
 	}
+	button {
+		cursor: pointer;
+	}
 	input[type=checkbox] {  
 		vertical-align: bottom;
 		width: 18px;
 		height: 18px;
+		cursor: pointer;
 	}  

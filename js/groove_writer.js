@@ -24,8 +24,8 @@
 	constant_note_off_color_hex = "#CCCCCC";  // gray
 	constant_note_off_color_rgb = 'rgb(204, 204, 204)';  // gray
 	constant_note_hidden_color_rgb = "transparent";
-	constant_ABC_STICK_R=  '"^R"x';
-	constant_ABC_STICK_L=  '"^L"x';
+	constant_ABC_STICK_R=  '"R"x';
+	constant_ABC_STICK_L=  '"L"x';
 	constant_ABC_STICK_OFF=  '""x';
 	constant_ABC_HH_Ride=  "^f";       
 	constant_ABC_HH_Crash=  "^A'";       
@@ -505,14 +505,14 @@
 			if(returnType == "ABC")
 				return constant_ABC_STICK_R;  
 			else if(returnType == "URL")
-				return "-";  
+				return "R";  
 			
 		} else {  // assume left is on, because it's a logic error if it isn't
 			
 			if(returnType == "ABC")
 				return constant_ABC_STICK_L;  
 			else if(returnType == "URL")
-				return "-";  
+				return "L";  
 		} 
 		
 		return false;  // should never get here
@@ -548,7 +548,14 @@
 	function showContextMenu(contextMenu) {
 		contextMenu.style.display = "block";
 		global_visible_context_menu = contextMenu;
-		document.onclick = documentOnClickHanderCloseContextMenu;
+		
+		// use a timeout to setup the onClick handler.
+		// otherwise the click that opened the menu will close it
+		// right away.  :(  
+		setTimeout(function(){
+			document.onclick = documentOnClickHanderCloseContextMenu;
+			},100);
+		
 		
 	}
 	
@@ -617,6 +624,9 @@
 		var contextMenu = false;
 		
 		switch(instrument) {
+		case "stickings":
+			contextMenu = document.getElementById("stickingsLabelContextMenu")
+			break;
 		case "hh":
 			contextMenu = document.getElementById("hhLabelContextMenu")
 			break;
@@ -627,7 +637,7 @@
 			contextMenu = document.getElementById("kickLabelContextMenu")
 			break;
 		default:
-			alert("bad case in noteLabelPopupClick");
+			alert("bad case in noteLabelClick");
 		}
 		
 		if(contextMenu) {
@@ -648,6 +658,10 @@
 		var contextMenu = false;
 		
 		switch(instrument) {
+		case "stickings":
+			contextMenu = document.getElementById("stickingsLabelContextMenu")
+			setFunction = set_sticking_state;
+			break;
 		case "hh":
 			contextMenu = document.getElementById("hhLabelContextMenu")
 			setFunction = set_hh_state;
@@ -668,10 +682,20 @@
 		for(var i=0; i < global_notes_per_measure*global_number_of_measures; i++) {
 			if(action == "all_off")
 				setFunction(i, "off")
+			else if(instrument == "stickings" && action == "all_right")
+				setFunction(i, "right");
+			else if(instrument == "stickings" && action == "all_left")
+				setFunction(i, "left");
+			else if(instrument == "stickings" && action == "alternate")
+				setFunction(i, (i % 2 == 0 ? "right" :"left") );
 			else if(instrument == "snare" && action == "all_on")
 				setFunction(i, "accent");
 			else if(action == "all_on")
 				setFunction(i, "normal");
+			else if(action == "cancel")
+				continue;  // do nothing.
+			else 
+				alert("Bad IF case in noteLabelPopupClick");
 		}
 		
 		if(contextMenu) {
@@ -799,6 +823,7 @@
 				default:
 					alert("Bad case in noteOnMouseEnter");
 			}
+			create_ABC();  // update music
 		}
 		
 		return false;
@@ -1638,7 +1663,9 @@
 		for(var i=0; i < global_notes_per_measure+0; i++) {
 			var array_index = (i)*scaler;
 			
-			Sticking_Array[array_index] = get_sticking_state(i+startIndexForClickableUI, "ABC");
+			// only grab the stickings if they are visible
+			if(isStickingsVisible())
+				Sticking_Array[array_index] = get_sticking_state(i+startIndexForClickableUI, "ABC");
 			
 			HH_Array[array_index] = get_hh_state(i+startIndexForClickableUI, "ABC");
 		
@@ -1849,7 +1876,7 @@
 			swingAmount = parseInt(document.getElementById("swingInput").value);
 		}
 		
-		if(usingTriplets())
+		if(usingTriplets() || global_notes_per_measure == 4)
 			document.getElementById('swingOutput').value = "swing N/A";
 		else	
 			document.getElementById('swingOutput').value = swingAmount + "% swing";
@@ -2203,10 +2230,22 @@
 		}
 	}
 	
+	function isStickingsVisible() {
+		var myElements = document.querySelectorAll(".stickings-container");
+		for (var i = 0; i < myElements.length; i++) {
+			if(myElements[i].style.display == "inline-block")
+				return true;
+		}
+		
+		return false;
+	}
+	
 	function showHideStickings(force, showElseHide) {
 	
 		showHideCSS_Class(".stickings-container", force, showElseHide, "inline-block");
 		showHideCSS_Class(".stickings-label", force, showElseHide, "inline-block");
+		
+		create_ABC();
 		
 		return false;  // don't follow the link
 	}
@@ -2349,7 +2388,9 @@
 	//
 	function setNotesFromURLData(drumType, noteString, numberOfMeasures)  {
 		
-		if(drumType == "H") {
+		if(drumType == "Stickings") {
+			setFunction = set_sticking_state;
+		} else if(drumType == "H") {
 			setFunction = set_hh_state;
 		} else if(drumType == "S") {
 			setFunction = set_snare_state;
@@ -2389,6 +2430,11 @@
 			case "g":
 				setFunction(displayIndex, "ghost");
 				break;
+			case "l":
+			case "L":
+				if(drumType == "Stickings")
+					setFunction(displayIndex, "left")
+			break;
 			case "O":
 				setFunction(displayIndex, "accent");
 				break;
@@ -2399,7 +2445,11 @@
 					setFunction(displayIndex, "normal");
 				break;
 			case "r":
-				setFunction(displayIndex, "ride");
+			case "R":
+				if(drumType == "H")
+					setFunction(displayIndex, "ride");
+				else if(drumType == "Stickings")
+					setFunction(displayIndex, "right")
 				break;
 			case "x":
 				if(drumType == "S")
@@ -2468,14 +2518,18 @@
 		var HH = "&H=|"
 		var Snare = "&S=|";
 		var Kick = "&K=|";
+		var Stickings = "&Stickings=|";
+		
 		// run through both measures.
 		topIndex = global_notes_per_measure*global_number_of_measures;
 		for(var i=0; i < topIndex; i++) {
+			Stickings += get_sticking_state(i, "URL"); 
 			HH += get_hh_state(i, "URL"); 
 			Snare += get_snare_state(i, "URL");
 			Kick += get_kick_state(i, "URL");
 		
 			if(((i+1) % global_notes_per_measure) == 0) {
+				Stickings += "|";
 				HH += "|";
 				Snare += "|";
 				Kick += "|";
@@ -2483,6 +2537,10 @@
 		}
 		
 		fullURL += HH + Snare + Kick;
+		
+		// only add if we need them.  // they are long and ugly. :)
+		if(isStickingsVisible())
+			fullURL += Stickings;
 		
 		return fullURL;
 	}
@@ -2580,6 +2638,14 @@
 			show_FullURLPopup();
 	}
 	
+	function GetDefaultStickingsGroove(division) {
+		if(isTripletDivision(division)) {
+			return "|------------------------|------------------------|";
+		} else { 
+			return "|--------------------------------|--------------------------------|";
+		}
+	}
+	
 	function GetDefaultHHGroove(division) {
 		if(isTripletDivision(division)) {
 			return "|xxxxxxxxxxxxxxxxxxxxxxxx|xxxxxxxxxxxxxxxxxxxxxxxx|";
@@ -2611,10 +2677,22 @@
 	}
 	
 	function set_Default_notes() {
+		var Stickings;
 		var HH;
 		var Snare;
 		var Kick;
 		var numberOfMeasures = 2;
+		var stickings_set_from_URL = false;
+		
+		Stickings = getQueryVariable("Stickings", false);
+		if(!Stickings) {
+			getQueryVariable("Stickings", false)
+			if(!Stickings) {
+				Stickings = GetDefaultStickingsGroove(global_notes_per_measure);
+			}
+		} else {
+			stickings_set_from_URL = true;
+		}
 		
 		HH = getQueryVariable("H", false);
 		if(!HH) {
@@ -2642,6 +2720,7 @@
 		if(numberOfMeasures > 2)
 			numberOfMeasures = 2;
 
+		setNotesFromURLData("Stickings", Stickings, numberOfMeasures);
 		setNotesFromURLData("H", HH, numberOfMeasures);
 		setNotesFromURLData("S", Snare, numberOfMeasures);
 		setNotesFromURLData("K", Kick, numberOfMeasures);
@@ -2651,6 +2730,9 @@
 			showHideSecondMeasure(true, true);
 		else
 			showHideSecondMeasure(true, false);
+		
+		if(stickings_set_from_URL) 
+				showHideStickings(true, true);
 		
 		var title = getQueryVariable("title", "");
 		title = decodeURI(title);
@@ -2700,9 +2782,10 @@
 	// change the base division to something else.
 	// eg  16th to 8ths or   32nds to 8th note triplets
 	// need to re-layout the html notes, change any globals and then reinitialize
-	function changeDivisionWithNotes (newDivision, HH, Snare, Kick) {
+	function changeDivisionWithNotes (newDivision, Stickings, HH, Snare, Kick) {
 		var oldDivision = global_notes_per_measure;
 		var wasSecondMeasureVisabile = isSecondMeasureVisable();
+		var wasStickingsVisable = isStickingsVisible();
 		global_notes_per_measure = newDivision;
 		
 		var newHTML = HTMLforStaffContainer(1,0);
@@ -2717,7 +2800,11 @@
 		if(wasSecondMeasureVisabile)
 			showHideSecondMeasure(true, true);
 		
+		if(wasStickingsVisable)
+			showHideStickings(true, true);
+		
 		// now set the right notes on and off
+		setNotesFromURLData("Stickings", Stickings, 2);
 		setNotesFromURLData("H", HH, 2);
 		setNotesFromURLData("S", Snare, 2);
 		setNotesFromURLData("K", Kick, 2);
@@ -2740,6 +2827,7 @@
 	// eg  16th to 8ths or   32nds to 8th note triplets
 	// need to re-layout the html notes, change any globals and then reinitialize
 	function changeDivision (newDivision) {
+		var uiStickings="|";
 		var uiHH="|";
 		var uiSnare="|";
 		var uiKick="|";
@@ -2749,11 +2837,13 @@
 			// run through both measures.
 			topIndex = global_notes_per_measure*global_number_of_measures;
 			for(var i=0; i < topIndex; i++) {
+					uiStickings += get_sticking_state(i, "URL"); 
 					uiHH += get_hh_state(i, "URL"); 
 					uiSnare += get_snare_state(i, "URL");
 					uiKick += get_kick_state(i, "URL");
 				
 				if(i == global_notes_per_measure-1) {
+					uiStickings += "|"
 					uiHH += "|"
 					uiSnare += "|";
 					uiKick += "|";
@@ -2766,12 +2856,13 @@
 				uiHH = GetDefaultHHGroove(newDivision);
 		} else {
 			// triplets don't scale well, so use defaults when we change
+			uiStickings = GetDefaultStickingsGroove(newDivision);
 			uiHH = GetDefaultHHGroove(newDivision);
 			uiSnare = GetDefaultSnareGroove(newDivision);
 			uiKick = GetDefaultKickGroove(newDivision);
 		}
 		
-		changeDivisionWithNotes(newDivision, uiHH, uiSnare, uiKick);
+		changeDivisionWithNotes(newDivision, uiStickings, uiHH, uiSnare, uiKick);
 		
 		create_ABC();
 	}
@@ -2784,7 +2875,7 @@
 		var newHTML = ('\
 			<div class="staff-container" id="staff-container' + baseindex + '">\
 				<div class="line-labels">\
-					<div class="stickings-label" onClick="noteLabelClick(event, \'sticking\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'sticking\')">stickings</div>\
+					<div class="stickings-label" onClick="noteLabelClick(event, \'stickings\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'stickings\')">stickings</div>\
 					<div class="hh-label" onClick="noteLabelClick(event, \'hh\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'hh\')">hi-hat</div>\
 					<div class="snare-label" onClick="noteLabelClick(event, \'snare\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'snare\')">snare</div>\
 					<div class="kick-label" onClick="noteLabelClick(event, \'kick\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'kick\')">kick</div>\
