@@ -4,10 +4,9 @@
 		<title>Groove Writer</title>
 		
 		<meta name="viewport" content="width=985, initial-scale=1.25">
-		<!--base href="https://b125c4f8bf7d89726feec9ab8202d31e0c8d14d8.googledrive.com/host/0B2wxVWzVoWGYfnB5b3VTekxyYUowVjZ5YVE3UllLaVk5dVd4TzF4Q2ZaUXVsazhNSTdRM1E/" target="_blank">
-
-		<!-- Other peoples JS libraries -------------------------------------------------------->
-		<!-- midi.js package for sound-->
+		
+		<!--   Other peoples JS libraries    -->
+		<!--   midi.js package for sound   -->
 		<script src="./js/MIDI/AudioDetect.js" type="text/javascript"></script>
 		<script src="./js/MIDI/LoadPlugin.js" type="text/javascript"></script>
 		<script src="./js/MIDI/Plugin.js" type="text/javascript"></script>
@@ -29,7 +28,7 @@
 		<!-- script for sharing to social sites -->
 		<script src="js/share.min.js"></script>
 		
-		<!-- our custom JS ------------------------------------------------------------------------>
+		<!--   our custom JS  -->
 		<script src="js/groove_writer.js"></script>
 		
 	    <link rel="stylesheet" type="text/css" href="css/groove_writer.css">
@@ -42,7 +41,7 @@
 			<a class="subdivision" id="16ths" href="?Div=16" onClick="event.preventDefault(); changeDivision(16)"><sup>1</sup>/<sub>16</sub> &#9835;</a>
 			<a class="subdivision" id="32ths" href="?Div=32" onClick="event.preventDefault(); changeDivision(32)"><sup>1</sup>/<sub>32</sub> &#9835;&#9835;</a>
 			<a class="subdivision" id="12ths"  href="?Div=12" onClick="event.preventDefault(); changeDivision(12)"><sup>1</sup>/<sub>8 triplets</sub> &#9834;&#9834;</a>
-			<a class="subdivision" id="24ths" href="?Div=24"onClick="event.preventDefault(); changeDivision(24)"><sup>1</sup>/<sub>16 triplets</sub> &#9835;</a>
+			<a class="subdivision" id="24ths" href="?Div=24" onClick="event.preventDefault(); changeDivision(24)"><sup>1</sup>/<sub>16 triplets</sub> &#9835;</a>
 			<br>
 			<select onChange="permutation_menu_change()" id="permutationType" name="permutationType">
 				<option value="none" >No Permutation</option>
@@ -100,35 +99,13 @@
 			<div id="playerControl">
 				<img alt="Play" title="Play" id="playImage" src="images/grey_play.png">
 				<span id="tempoAndProgress">
-					this is a test
 					<div id="tempo">
 						<input type=range min=40 max=240 value=90 id="tempoInput" list="tempoSettings" step=5 onChange="noteHasChanged()" oninput="tempoUpdate(value)">
-						<datalist id="tempoSettings">
-							<option>40</option>
-							<option>60</option>
-							<option>80</option>
-							<option>100</option>
-							<option>120</option>
-							<option>140</option>
-							<option>160</option>
-							<option>180</option>
-							<option>200</option>
-							<option>220</option>
-							<option>240</option>
-						</datalist>
-						<output for=tempo id=tempoOutput>80 bpm</output>
+						<div for=tempo id=tempoOutput>80 bpm</div>
 					</div>
 					<div id="swingAmount">
 						<input type=range min=0 max=50 value=0 id="swingInput" list="swingSettings" step=5 onChange="noteHasChanged()" oninput="swingUpdate(value)">
-						<datalist id="swingSettings">
-							<option>0</option>
-							<option>10</option>
-							<option>20</option>
-							<option>30</option>
-							<option>40</option>
-							<option>50</option>
-						</datalist>
-						<output for=swingAmount id=swingOutput>0% swing</output>
+						<div for=swingAmount id=swingOutput>0% swing</div>
 					</div>
 				</span>
 				<img onClick="repeatMIDI_playback();" alt="Repeat" title="Repeat" id="repeatImage" src="images/repeat.png">

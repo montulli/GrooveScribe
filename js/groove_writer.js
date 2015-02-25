@@ -1865,7 +1865,7 @@
 	// used to update the on screen tempo display
 	// also the onClick handler for the tempo slider
 	function tempoUpdate(tempo) {
-		document.getElementById('tempoOutput').value = tempo + " bpm";
+		document.getElementById('tempoOutput').innerHTML = "" + tempo + " bpm";
 	}
 
 	// used to update the on screen swing display
@@ -1879,7 +1879,7 @@
 		if(usingTriplets() || global_notes_per_measure == 4)
 			document.getElementById('swingOutput').value = "swing N/A";
 		else	
-			document.getElementById('swingOutput').value = swingAmount + "% swing";
+			document.getElementById('swingOutput').innerHTML = "" + swingAmount + "% swing";
 	}
 
 	function getSwing() {
