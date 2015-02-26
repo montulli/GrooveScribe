@@ -1156,7 +1156,7 @@
 		// dynamically set the width of the music staff lines
 		var newWidth = 42 * global_notes_per_measure;  // note size
 		newWidth += 22 * (Math.floor(global_notes_per_measure/note_grouping_size())-1);  // size between groups
-		newWidth += 10;   // size of opening space
+		newWidth += 15;   // size of opening space
 		
 		for(var i=1; i < 6; i++) {
 			var myElements = document.querySelectorAll(".staff-line-" + i);
@@ -2068,14 +2068,15 @@
 	function startMIDI_playback() {
 		if(MIDI.Player.playing) {
 			return;
+		} else if(global_isMIDIPaused) {
+			MIDI.Player.resume();
 		} else {
 			loadMIDI_for_playback();
 			noteHasChangedReset();  // reset so we know if there is a change
-			document.getElementById("playImage").src="images/pause.png";
-			//document.getElementById("stopImage").src="images/stop.png";
-			global_isMIDIPaused = false;
 			MIDI.Player.start();
 		}
+		document.getElementById("playImage").src="images/pause.png";
+		global_isMIDIPaused = false;
 	}
 	
 	// stop button or keypress
@@ -3014,7 +3015,7 @@
 							for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
 							
 								newHTML += ('\
-									<div id="sticking' + i + '" class="stickings">\
+									<div id="sticking' + i + '" class="sticking">\
 										<div class="sticking_right"  id="sticking_right' + i + '"  onClick="noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'sticking\', ' + i + ') onmouseenter="noteOnMouseEnter(event, \'sticking\'">R</div>\
 										<div class="sticking_left"  id="sticking_left' + i + '"  onClick="noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'sticking\', ' + i + ')", ' + i + ')">L</div>\
 									</div>\

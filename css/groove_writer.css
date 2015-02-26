@@ -112,6 +112,11 @@
 		position: relative; 
 		z-index: 4
 	}
+	.sticking {
+		display: inline-block;
+		border: 1px solid;
+		border-color: transparent;
+	}
 	.hi-hat {
 		display: inline-block;
 		border: 1px solid;
@@ -128,7 +133,7 @@
 		border-color: transparent;
 	}
 	.sticking_right {
-		width:30px;
+		width: 29px;
 		height:30px;
 		margin-left: 7px;
 		font-size: 24px;
@@ -137,10 +142,10 @@
 		cursor: pointer;
 	}
 	.sticking_left {
-		width:30px;
+		width:29px;
 		height:30px;
-		margin-left: -30px;
-		margin-right: 7px;
+		margin-left: -29px;
+		margin-right: 0px;
 		font-size: 24px;
 		color: #CCCCCC;
 		float:left;
