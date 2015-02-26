@@ -3011,13 +3011,13 @@
 							for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
 							
 								newHTML += ('\
-									<div id="hi-hat' + i + '" class="hi-hat">\
-										<div class="hh_crash"  id="hh_crash' + i + '"  onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')">*</div>\
-										<div class="hh_ride"   id="hh_ride' + i + '"  onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')">R</div>\
-										<div class="hh_cross"  id="hh_cross' + i + '"  onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'hh\', ' + i + ')">X</div>\
-										<div class="hh_open"   id="hh_open' + i + '"   >o</div>\
-										<div class="hh_close"  id="hh_close' + i + '"  >+</div>\
-										<div class="hh_accent" id="hh_accent' + i + '" >&gt;</div>\
+									<div id="hi-hat' + i + '" class="hi-hat" onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'hh\', ' + i + ')">\
+										<div class="hh_crash"  id="hh_crash'  + i + '">*</div>\
+										<div class="hh_ride"   id="hh_ride'   + i + '">R</div>\
+										<div class="hh_cross"  id="hh_cross'  + i + '">X</div>\
+										<div class="hh_open"   id="hh_open'   + i + '">o</div>\
+										<div class="hh_close"  id="hh_close'  + i + '">+</div>\
+										<div class="hh_accent" id="hh_accent' + i + '">&gt;</div>\
 									</div>\
 								');
 								
@@ -3032,11 +3032,11 @@
 							<div class="opening_note_space"> </div> ');
 							for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
 								newHTML += ('\
-									<div id="snare' + i + '" class="snare">\
-									<div class="snare_ghost"  id="snare_ghost' + i + '"  onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')">(&bull;)</div>\
-									<div class="snare_circle"       id="snare_circle' + i + '" onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')"></div>\
-									<div class="snare_xstick"  id="snare_xstick' + i + '" onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'snare\', ' + i + ')">X</div>\
-									<div class="snare_accent" id="snare_accent' + i + '" >&gt;</div>\
+									<div id="snare' + i + '" class="snare" onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')">\
+									<div class="snare_ghost"  id="snare_ghost'  + i + '">(&bull;)</div>\
+									<div class="snare_circle" id="snare_circle' + i + '"></div>\
+									<div class="snare_xstick" id="snare_xstick' + i + '">X</div>\
+									<div class="snare_accent" id="snare_accent' + i + '">&gt;</div>\
 									</div> \
 									');
 									
@@ -3051,9 +3051,9 @@
 							<div class="opening_note_space"> </div> ');
 							for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
 								newHTML += ('\
-									<div id="kick' + i + '" class="kick">\
-									<div class="kick_splash" id="kick_splash' + i + '" onClick="noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'kick\', ' + i + ')">X</div></a>\
-									<div class="kick_circle"      id="kick_circle' + i + '" onClick="noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'kick\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'kick\', ' + i + ')"></div></a>\
+									<div id="kick' + i + '" class="kick" onClick="noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'kick\', ' + i + ')">\
+									<div class="kick_splash" id="kick_splash' + i + '">X</div></a>\
+									<div class="kick_circle" id="kick_circle' + i + '"></div></a>\
 									</div> \
 								');
 								

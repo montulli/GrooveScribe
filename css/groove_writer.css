@@ -64,19 +64,31 @@
 	.stickings-container {
 		display: none;
 		position: absolute; top: -64px;
-		width: 100%
+		width: 100%;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
 	}
 	.hi-hat-container {
 		position: absolute; top: -36px;
 		width: 100%;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
 	}
 	.snare-container {
 		position: absolute; top: 11px; left: 0px;
 		width: 100%;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
 	}
 	.kick-container {
 		position: absolute; top: 91px; left: 0px;
 		width: 100%;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
 	}
 	.staff-line-1{
 		position: absolute; top: 0px;
@@ -143,9 +155,9 @@
 		display: inline-block;
 		position: relative;
 		border: 1px solid;
-		border-color: transparent;
+		/border-color: transparent;
 		width: 30px;
-		height: 60px;
+		height: 54px;
 		margin-right: 5px;
 	}
 	.sticking_right {
@@ -223,7 +235,7 @@
 	.kick_circle {
 		position: absolute; top: 0px; left: 0px;
 		width:100%;
-		height:50%;
+		height:56%;
 		background: #CCCCCC;
 		border-radius: 75px 45px 67px 45px;
 		cursor: pointer;
