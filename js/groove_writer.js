@@ -18,7 +18,6 @@
 	// constants
 	constant_default_tempo = 80;
 	constant_note_stem_off_color = "transparent";
-	constant_note_stick_on_color_rgb = "transparent";
 	constant_note_on_color_hex  = "#000000";  // black
 	constant_note_on_color_rgb  = 'rgb(0, 0, 0)';  // black
 	constant_note_off_color_hex = "#CCCCCC";  // gray
@@ -275,31 +274,21 @@
 		document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_hidden_color_rgb;
 		document.getElementById("kick_splash" + id).style.color = constant_note_hidden_color_rgb;
 		
-		var kickStick = document.getElementById("kick_stick" + id);
-		kickStick.style.height = "43px";
-		kickStick.style.marginTop = "16px";
-
-						
+								
 		// turn stuff on conditionally
 		switch(mode) {
 		case "off":
 			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_off_color_hex;
-			kickStick.style.borderLeftColor = constant_note_stem_off_color;
 			break;
 		case "normal":
 			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_on_color_hex;
-			kickStick.style.borderLeftColor = constant_note_stick_on_color_rgb;
 			break;
 		case "splash":
 			document.getElementById("kick_splash" + id).style.color = constant_note_on_color_hex;
-			kickStick.style.borderLeftColor = constant_note_stick_on_color_rgb;
-			kickStick.style.height = "29px";
-			kickStick.style.marginTop = "30px";
 			break;
 		case "kick_and_splash":
 			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_on_color_hex;
 			document.getElementById("kick_splash" + id).style.color = constant_note_on_color_hex;
-			kickStick.style.borderLeftColor = constant_note_stick_on_color_rgb;
 			break;
 		default:
 			alert("bad switch in set_kick_state");
@@ -319,24 +308,19 @@
 		switch(mode) {
 		case "off":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_off_color_hex;
-			document.getElementById("snare_stick" + id).style.borderLeftColor = constant_note_stem_off_color;
 			break;
 		case "normal":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
-			document.getElementById("snare_stick" + id).style.borderLeftColor = constant_note_stick_on_color_rgb;
 			break;
 		case "ghost":
 			document.getElementById("snare_ghost" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("snare_stick" + id).style.borderLeftColor = constant_note_stick_on_color_rgb;
 			break;
 		case "accent":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
 			document.getElementById("snare_accent" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("snare_stick" + id).style.borderLeftColor = constant_note_stick_on_color_rgb;
 			break;
 		case "xstick":
 			document.getElementById("snare_xstick" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("snare_stick" + id).style.borderLeftColor = constant_note_stick_on_color_rgb;
 			break;
 		default:
 			alert("bad switch in set_snare_state");
@@ -421,34 +405,27 @@
 		switch(mode) {
 		case "off":
 			document.getElementById("hh_cross" + id).style.color = constant_note_off_color_hex;
-			document.getElementById("hh_stick" + id).style.borderLeftColor = constant_note_stem_off_color;
 			break;
 		case "normal":
 			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("hh_stick" + id).style.borderLeftColor = constant_note_stick_on_color_rgb;
 			break;
 		case "ride":
 			document.getElementById("hh_ride" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("hh_stick" + id).style.borderLeftColor = constant_note_stick_on_color_rgb;
 			break;
 		case "crash":
 			document.getElementById("hh_crash" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("hh_stick" + id).style.borderLeftColor = constant_note_stick_on_color_rgb;
 			break;
 		case "open":
 			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
 			document.getElementById("hh_open" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("hh_stick" + id).style.borderLeftColor = constant_note_stick_on_color_rgb;
 			break;
 		case "close":
 			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
 			document.getElementById("hh_close" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("hh_stick" + id).style.borderLeftColor = constant_note_stick_on_color_rgb;
 			break;
 		case "accent":
 			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
 			document.getElementById("hh_accent" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("hh_stick" + id).style.borderLeftColor = constant_note_stick_on_color_rgb;
 			break;
 		default:
 			alert("bad switch in set_hh_state");
@@ -1154,7 +1131,7 @@
 	
 	function setMusicStaffWidth() {
 		// dynamically set the width of the music staff lines
-		var newWidth = 42 * global_notes_per_measure;  // note size
+		var newWidth = 41 * global_notes_per_measure;  // note size
 		newWidth += 22 * (Math.floor(global_notes_per_measure/note_grouping_size())-1);  // size between groups
 		newWidth += 15;   // size of opening space
 		
@@ -3041,7 +3018,6 @@
 										<div class="hh_open"   id="hh_open' + i + '"   >o</div>\
 										<div class="hh_close"  id="hh_close' + i + '"  >+</div>\
 										<div class="hh_accent" id="hh_accent' + i + '" >&gt;</div>\
-										<div class="hh_stick"  id="hh_stick' + i + '"  ></div>\
 									</div>\
 								');
 								
@@ -3058,10 +3034,9 @@
 								newHTML += ('\
 									<div id="snare' + i + '" class="snare">\
 									<div class="snare_ghost"  id="snare_ghost' + i + '"  onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')">(&bull;)</div>\
-									<div class="circle"       id="snare_circle' + i + '" onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')"></div>\
+									<div class="snare_circle"       id="snare_circle' + i + '" onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')"></div>\
 									<div class="snare_xstick"  id="snare_xstick' + i + '" onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'snare\', ' + i + ')">X</div>\
 									<div class="snare_accent" id="snare_accent' + i + '" >&gt;</div>\
-									<div class="stick"        id="snare_stick' + i + '"  ></div>\
 									</div> \
 									');
 									
@@ -3078,8 +3053,7 @@
 								newHTML += ('\
 									<div id="kick' + i + '" class="kick">\
 									<div class="kick_splash" id="kick_splash' + i + '" onClick="noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'kick\', ' + i + ')">X</div></a>\
-									<div class="circle"      id="kick_circle' + i + '" onClick="noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'kick\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'kick\', ' + i + ')"></div></a>\
-									<div class="kick_stick"  id="kick_stick' + i + '" ></div>\
+									<div class="kick_circle"      id="kick_circle' + i + '" onClick="noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'kick\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'kick\', ' + i + ')"></div></a>\
 									</div> \
 								');
 								

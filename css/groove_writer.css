@@ -63,15 +63,15 @@
 	}
 	.stickings-container {
 		display: none;
-		position: absolute; top: -62px;
+		position: absolute; top: -64px;
 		width: 100%
 	}
 	.hi-hat-container {
-		position: absolute; top: -29px;
+		position: absolute; top: -36px;
 		width: 100%;
 	}
 	.snare-container {
-		position: absolute; top: 31px; left: 0px;
+		position: absolute; top: 11px; left: 0px;
 		width: 100%;
 	}
 	.kick-container {
@@ -114,170 +114,126 @@
 	}
 	.sticking {
 		display: inline-block;
+		position: relative;
 		border: 1px solid;
 		border-color: transparent;
+		width: 30px;
+		height: 24px;
+		margin-right: 5px;
 	}
 	.hi-hat {
 		display: inline-block;
+		position: relative;
 		border: 1px solid;
 		border-color: transparent;
+		width: 30px;
+		height: 36px;
+		margin-right: 5px;
 	}
 	.snare {
 		display: inline-block;
+		position: relative;
 		border: 1px solid;
 		border-color: transparent;
+		width: 30px;
+		height: 50px;
+		margin-right: 5px;
 	}
 	.kick {
 		display: inline-block;
+		position: relative;
 		border: 1px solid;
 		border-color: transparent;
+		width: 30px;
+		height: 60px;
+		margin-right: 5px;
 	}
 	.sticking_right {
-		width: 29px;
-		height:30px;
-		margin-left: 7px;
+		position: absolute; top: 0px; left: 6px;
 		font-size: 24px;
 		color: #CCCCCC;
-		float:left;
 		cursor: pointer;
 	}
 	.sticking_left {
-		width:29px;
-		height:30px;
-		margin-left: -29px;
-		margin-right: 0px;
+		position: absolute; top: 0px; left: 6px;
 		font-size: 24px;
 		color: #CCCCCC;
-		float:left;
 		cursor: pointer;
 	}
 	.hh_crash {
-		width:30px;
-		height:30px;
-		margin-left: 0px;
-		margin-top: -5px;
+		position: absolute; top: 0px; left: 2px;
 		font-size: 52px;
 		color: transparent;
-		float:left;
 		cursor: pointer;
 	}
 	.hh_ride {
-		width:27px;
-		height:30px;
-		margin-left: -27px;
+		position: absolute; top: 6px; left: 3px;
 		font-size: 30px;
 		color: transparent;
-		float:left;
 		cursor: pointer;
 	}
 	.hh_cross {
-		width:27px;
-		height:30px;
-		margin-left: -27px;
+		position: absolute; top: 6px; left: 3px;
 		font-size: 30px;
 		color: #CCCCCC;
-		float:left;
 		cursor: pointer;
 	}
 	.hh_open {
-		margin-left: -21px;
-		margin-top: -15px;
+		position: absolute; top: -9px; left: 9px;
 		font-size: 20px;
 		color: transparent;
-		float:left;
 	}
 	.hh_close {
-		margin-left: -21px;
-		margin-top: -15px;
+		position: absolute; top: -8px; left: 9px;
 		font-size: 20px;
 		color: transparent;
 		float:left;
 	}
 	.hh_accent {
-		margin-left: -21px;
-		margin-top: -15px;
+		position: absolute; top: -8px; left: 9px;
 		font-size: 20px;
 		color: transparent;
 		float:left;
 	}
-	.hh_stick {
-		width:1px;
-		height:37px;
-		border-left:3px solid;
-		border-color: transparent;
-		float:left;
-		margin-top:-29px;
-		margin-left:-9px;
-		margin-right: 11px;
+	.snare_ghost {
+		position: absolute; top: 16px; left: 0px;
+		font-size: 28px;
+		color: transparent;
+		cursor: pointer;
 	}
-	.circle {
-		width:30px;
-		height:30px;
+	.snare_circle {
+		position: absolute; bottom: 0px; left: 0px;
+		width:100%;
+		height:60%;
 		background: #CCCCCC;
-		margin-left: -31px;
 		border-radius: 75px 45px 67px 45px;
-		float:left;
 		cursor: pointer;
 	}
 	.snare_xstick {
-		width:27px;
-		height:30px;
-		margin-left: -27px;
-		font-size: 30px;
+		position: absolute; top: 16px; left: 3px;
+		font-size: 32px;
 		color: transparent;
-		float:left;
-		cursor: pointer;
-	}
-	.snare_ghost {
-		display: block;
-		width:30px;
-		height:30px;
-		margin-left: 0px;
-		margin-top: -5px;
-		font-size: 30px;
-		color: transparent;
-		float:left;
 		cursor: pointer;
 	}
 	.snare_accent {
-		width:27px;
-		height:30px;
-		margin-left: -24px;
-		margin-top: -30px;
+		position: absolute; top: -10px; left: 8px;
 		font-size: 30px;
 		color: transparent;
-		float:left;
 	}
-	.stick {
-		width:1px;
-		height:36px;
-		border-left:3px solid;
-		border-color: transparent;
-		float:left;
-		margin-top:-27px;
-		margin-left:-4px;
-		margin-right: 3px;
-	}
-	.kick_splash {
-		width:27px;
-		height:30px;
-		padding-left: 3px;
-		margin-left: 0px;
-		margin-top: 27px;
-		font-size: 30px;
-		color: transparent;
-		float:left;
+	.kick_circle {
+		position: absolute; top: 0px; left: 0px;
+		width:100%;
+		height:50%;
+		background: #CCCCCC;
+		border-radius: 75px 45px 67px 45px;
 		cursor: pointer;
 	}
-	.kick_stick {
-		width:1px;
-		height:43px;
-		border-left:3px solid;
-		border-color: transparent;
-		float:left;
-		margin-top: 16px;
-		margin-left:-31px;
-		margin-right: 33px;
+	
+	.kick_splash {
+		position: absolute; top: 26px; left: 3px;
+		font-size: 30px;
+		color: transparent;
+		cursor: pointer;
 	}
 	.line-labels {
 		position: absolute; top: 25px; left: 6px;
