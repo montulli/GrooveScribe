@@ -155,7 +155,7 @@
 		display: inline-block;
 		position: relative;
 		border: 1px solid;
-		/border-color: transparent;
+		border-color: transparent;
 		width: 30px;
 		height: 54px;
 		margin-right: 5px;
