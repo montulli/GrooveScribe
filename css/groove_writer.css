@@ -462,23 +462,11 @@
 	}
 	#buttonsAboveSheetMusic {
 		margin-top: 10px;
-		width: 800px;
-		text-align: justify;
+		width: 797px;
+		display: flex;
+		justify-content: space-between;
 	}
-	#buttonsAboveSheetMusic:after {
-		/* fake second line, so that justification will happen
-		 * normally, justify ignores the last line
-		 */
-		content: "";
-		width: 100%;
-		display: inline-block;
-    }
-	.justifiedDiv {
-		width: 180px;
-		display: inline-block;
-		text-align: center;
-		vertical-align: top;
-	}
+	
 	#showHideSecondMeasureButton {
 	}
 	#showHideStickings {
