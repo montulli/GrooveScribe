@@ -1129,36 +1129,6 @@
 	}
 	
 	
-	function setMusicStaffWidth() {
-		// dynamically set the width of the music staff lines
-		var newWidth = 41 * global_notes_per_measure;  // note size
-		newWidth += 22 * (Math.floor(global_notes_per_measure/note_grouping_size())-1);  // size between groups
-		newWidth += 15;   // size of opening space
-		
-		for(var i=1; i < 6; i++) {
-			var myElements = document.querySelectorAll(".staff-line-" + i);
-	 
-			for (var ii = 0; ii < myElements.length; ii++) {
-				divBlock = myElements[ii];
-				divBlock.style.width = newWidth + "px";
-			}
-		}
-		
-		myElements = document.querySelectorAll(".line-border");
- 
-		for (var i = 0; i < myElements.length; i++) {
-			divBlock = myElements[i];
-			divBlock.style.width = newWidth + "px";
-		}
-		
-		var myElements = document.querySelectorAll(".staff-container");
-		for (var i = 0; i < myElements.length; i++) {
-			divBlock = myElements[i];
-			divBlock.style.width = newWidth + "px";
-		}
-			
-	}
-	
 	// the top stuff in the ABC that doesn't depend on the notes
 	function get_top_ABC_BoilerPlate() {
 		// boiler plate
@@ -1674,21 +1644,21 @@
 		
 		switch (perm_type) {
 		case "kick_16ths":
-			showHideCSS_Class(".kick-container", true, false, "block");  // hide it
-			showHideCSS_Class(".snare-container", true, true, "block");  // show it
+			showHideCSS_ClassDisplay(".kick-container", true, false, "block");  // hide it
+			showHideCSS_ClassDisplay(".snare-container", true, true, "block");  // show it
 			document.getElementById("staff-container2").style.display = "none";
 			break;
 			
 		case "snare_any":
-			showHideCSS_Class(".kick-container", true, true, "block");  // show it
-			showHideCSS_Class(".snare-container", true, false, "block");  // hide it
+			showHideCSS_ClassDisplay(".kick-container", true, true, "block");  // show it
+			showHideCSS_ClassDisplay(".snare-container", true, false, "block");  // hide it
 			document.getElementById("staff-container2").style.display = "none";
 			break;
 
 		case "none":
 		default:
-			showHideCSS_Class(".kick-container", true, true, "block");  // show it
-			showHideCSS_Class(".snare-container", true, true, "block");  // show it
+			showHideCSS_ClassDisplay(".kick-container", true, true, "block");  // show it
+			showHideCSS_ClassDisplay(".snare-container", true, true, "block");  // show it
 			// document.getElementById("staff-container2").style.display = "block";
 			break;
 		}
@@ -2307,7 +2277,7 @@
 		return false;  // don't follow the link
 	}
 	
-	function showHideCSS_Class(className, force, showElseHide, showState) {
+	function showHideCSS_ClassDisplay(className, force, showElseHide, showState) {
 		var myElements = document.querySelectorAll(className);
 		for (var i = 0; i < myElements.length; i++) {
 			stickings = myElements[i];
@@ -2327,10 +2297,31 @@
 		}
 	}
 	
+	function showHideCSS_ClassVisibility(className, force, showElseHide) {
+		var myElements = document.querySelectorAll(className);
+		for (var i = 0; i < myElements.length; i++) {
+			stickings = myElements[i];
+	
+			if(force) {
+				if(showElseHide)
+					stickings.style.visibility = "visible";
+				else
+					stickings.style.visibility = "hidden";
+			} else {
+				// no-force means to swap on each call
+				if(stickings.style.visibility == "visible")
+					stickings.style.visibility = "hidden";
+				else 
+					stickings.style.visibility = "visible";
+				
+			}
+		}
+	}
+	
 	function isStickingsVisible() {
 		var myElements = document.querySelectorAll(".stickings-container");
 		for (var i = 0; i < myElements.length; i++) {
-			if(myElements[i].style.display == "inline-block")
+			if(myElements[i].style.visibility == "visible")
 				return true;
 		}
 		
@@ -2339,8 +2330,8 @@
 	
 	function showHideStickings(force, showElseHide) {
 	
-		showHideCSS_Class(".stickings-container", force, showElseHide, "inline-block");
-		showHideCSS_Class(".stickings-label", force, showElseHide, "inline-block");
+		showHideCSS_ClassVisibility(".stickings-container", force, showElseHide);
+		showHideCSS_ClassVisibility(".stickings-label", force, showElseHide);
 		
 		create_ABC();
 		
@@ -2891,9 +2882,6 @@
 		// rewrite the HTML for the HTML note grid
 		document.getElementById("musicalInput").innerHTML = newHTML;
 		
-		// resize the staff
-		setMusicStaffWidth()
-		
 		if(wasSecondMeasureVisabile)
 			showHideSecondMeasure(true, true);
 		
@@ -2978,14 +2966,14 @@
 					<div class="kick-label" onClick="noteLabelClick(event, \'kick\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'kick\')">kick</div>\
 				</div>\
 				<div class="music-line-container">\
+					\
+					<div class="notes-container">\
 					<div class="staff-line-1"></div>\
 					<div class="staff-line-2"></div>\
 					<div class="staff-line-3"></div>\
 					<div class="staff-line-4"></div>\
-					<div class="staff-line-5"></div>\
-					\
-					<div class="notes-container">');
-					
+					<div class="staff-line-5"></div>');
+
 					newHTML += ('\
 						<div class="stickings-container">\
 							<div class="opening_note_space"> </div>');
@@ -3003,7 +2991,7 @@
 									newHTML += ('<div class="space_between_note_groups"> </div> ');
 								}
 							}
-						newHTML += ('</div>');
+						newHTML += ('<div class="end_note_space"></div>\n</div>');
 					
 					newHTML += ('\
 						<div class="hi-hat-container">\
@@ -3025,9 +3013,9 @@
 									newHTML += ('<div class="space_between_note_groups"> </div> ');
 								}
 							}
-						newHTML += ('</div>');
+						newHTML += ('<div class="end_note_space"></div>\n</div>');
 						
-						newHTML += ('&nbsp;<br>&nbsp;\
+						newHTML += ('\
 						<div class="snare-container">\
 							<div class="opening_note_space"> </div> ');
 							for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
@@ -3044,9 +3032,9 @@
 									newHTML += ('<div class="space_between_note_groups"> </div> ');
 								}
 							}
-						newHTML += ('</div>');
+						newHTML += ('<div class="end_note_space"></div>\n</div>');
 						
-						newHTML += ('&nbsp;<br>&nbsp;\
+						newHTML += ('\
 						<div class="kick-container">\
 							<div class="opening_note_space"> </div> ');
 							for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
@@ -3061,7 +3049,7 @@
 									newHTML += ('<div class="space_between_note_groups"> </div> ');
 								}
 							}
-						newHTML += ('</div>');
+						newHTML += ('<div class="end_note_space"></div>\n</div>');
 						
 		newHTML += ('\
 				</div>\

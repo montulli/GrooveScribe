@@ -29,20 +29,12 @@
 	}
 	.staff-container {
 		font-family:  Times New Roman;
-		width:575px;
-		margin: 0px;
-		margin-bottom: 3px;
 		position:relative;
 		background: #FFFFCC;
 		border: 3px solid #000;
 		border-radius: 25px;
 		box-shadow: 7px 7px 5px #888888;
-		padding-top: 30px;
-		padding-right: 15px;
-		padding-left: 90px;
-		padding-bottom: 127px;
-		display: inline-block;
-	
+		display: table;
 	}
 	#staff-container2 {
 		display: none;
@@ -56,67 +48,102 @@
 		top: 10px;
 		right: 10px;
 	}
+	.line-labels {
+		display: inline-block;
+		width: 80px;
+		font-family: Calibri;
+		display: table-cell;
+	}
+	.stickings-label {
+		margin-top:  0px;
+		margin-left: 8px;
+		visibility: hidden;
+		font-size: 16px;
+		cursor: pointer;
+	}
+	.hh-label {
+		display: block;
+		margin-top: 8px;
+		margin-left: 8px;
+		font-size: 22px;
+		cursor: pointer;
+	}
+	.snare-label {
+		margin-top: 32px;
+		margin-left: 8px;
+		font-size: 22px;
+		cursor: pointer;
+	}
+	.kick-label {
+		margin-top: 32px;
+		margin-left: 8px;
+		font-size: 22px;
+		cursor: pointer;
+	}
+	
 	.music-line-container {
-		position:relative; 
-		top: 30px; 
+		display: inline-block; 
+		/top: 30px; 
 		z-index: 3;
+		display: table-cell;
 	}
 	.stickings-container {
-		display: none;
-		position: absolute; top: -64px;
-		width: 100%;
+		margin-top: -4px;
+		white-space:nowrap;
+		visibility: hidden;
 		-moz-user-select: none;
 		-webkit-user-select: none;
 		-ms-user-select: none;
 	}
 	.hi-hat-container {
-		position: absolute; top: -36px;
-		width: 100%;
+		margin-top: 0px;
+		/border: 1px solid red;
+		white-space:nowrap;
 		-moz-user-select: none;
 		-webkit-user-select: none;
 		-ms-user-select: none;
 	}
 	.snare-container {
-		position: absolute; top: 11px; left: 0px;
-		width: 100%;
+		margin-top: 5px;
+		white-space:nowrap;
 		-moz-user-select: none;
 		-webkit-user-select: none;
 		-ms-user-select: none;
 	}
 	.kick-container {
-		position: absolute; top: 91px; left: 0px;
-		width: 100%;
+		margin-top: 25px;
+		white-space:nowrap;
 		-moz-user-select: none;
 		-webkit-user-select: none;
 		-ms-user-select: none;
 	}
 	.staff-line-1{
-		position: absolute; top: 0px;
-		width:575px; 
+		position: absolute; top: 66px;
+		width:100%; 
 		height:0px; 
 		border-top:3px solid #000; 
 	}
 	.staff-line-2{
-		position: absolute; top: 30px;
-		width:575px; 
+		position: absolute; top: 96px;
+		width:100%; 
 		height:0px; 
 		border-top:3px solid #000; 
 	}
 	.staff-line-3{
-		position: absolute; top: 60px;
-		width:575px; 
+		position: absolute; top: 126px;
+		width:100%; 
 		height:0px; 
 		border-top:3px solid #000; 
 	}
 	.staff-line-4{
-		position: absolute; top: 90px;
-		width:575px; 
+		position: absolute; top: 156px;
+		width:100%; 
 		height:0px; 
 		border-top:3px solid #000; 
 	}
 	.staff-line-5{
-		position: absolute; top: 120px;
-		width:575px; 
+		position: absolute; top: 186px;
+		width:100%; 
 		height:0px; 
 		border-top:3px solid #000; 
 	}
@@ -247,33 +274,13 @@
 		color: transparent;
 		cursor: pointer;
 	}
-	.line-labels {
-		position: absolute; top: 25px; left: 6px;
-		width: 100%;
-		font-family: Calibri;
-	}
-	.stickings-label {
-		display: none;
-		position: absolute; top: -22px; left: 0px; 
-		font-size: 16px;
-		cursor: pointer;
-	}
-	.hh-label {
-		position: absolute; top: 9px; left: 0px; 
-		font-size: 22px;
-		cursor: pointer;
-	}
-	.snare-label {
-		position: absolute; top: 70px; left: 4px; 
-		font-size: 22px;
-		cursor: pointer;
-	}
-	.kick-label {
-		position: absolute; top: 126px; left: 8px; 
-		font-size: 22px;
-		cursor: pointer;
-	}
 	.opening_note_space {
+		display: inline-block;
+		width:4px;
+		height:1px;
+		background: transparent;
+	}
+	.end_note_space {
 		display: inline-block;
 		width:4px;
 		height:1px;
