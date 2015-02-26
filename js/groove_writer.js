@@ -537,6 +537,32 @@
 		set_sticking_state(id, new_state);
 	}
 	
+	// highlight the note, this is used to play along with the midi track
+	function hilight_note(instrument, id) {
+		
+		return;  // doesn't work yet
+		
+		id = parseInt(id);
+		if(id >= global_notes_per_measure)
+			return;
+		
+		switch(instrument) {
+		case "hh":
+			document.getElementById("hi-hat" + id).style.borderColor = "orange"
+			break;
+		case "snare":
+			document.getElementById("snare" + id).style.borderColor = "orange"
+			break;
+		case "kick":
+			document.getElementById("kick" + id).style.borderColor = "orange"
+			break;
+		default:
+			alert("Bad case in handleNotePopup")
+		}
+		
+	}
+	
+	
 	// every click passes through here.
 	// close a popup if one is up and we click off of it.
 	function documentOnClickHanderCloseContextMenu(event) {
@@ -1088,9 +1114,9 @@
 	
 	function setMusicStaffWidth() {
 		// dynamically set the width of the music staff lines
-		var newWidth = 44 * global_notes_per_measure;  // note size
-		newWidth += 25 * (Math.floor(global_notes_per_measure/note_grouping_size())-1);  // size between groups
-		newWidth += 0;   // size of opening space
+		var newWidth = 42 * global_notes_per_measure;  // note size
+		newWidth += 22 * (Math.floor(global_notes_per_measure/note_grouping_size())-1);  // size between groups
+		newWidth += 10;   // size of opening space
 		
 		for(var i=1; i < 6; i++) {
 			var myElements = document.querySelectorAll(".staff-line-" + i);
@@ -2034,9 +2060,18 @@
 		}
 	}
 	
+	var hihats = 0;
+	var kicks = 0;
+	var snares = 0;
+	var note_num = 0;
 	function ourMIDICallback(data) {
 		document.getElementById("MIDIProgress").value = (data.now/data.end)*100;
-		if(data.now == data.end) {
+		
+		if(data.now < 1) {
+			midi_scaler = getNoteScaler();
+			note_num = 0;
+			
+		} else if(data.now == data.end) {
 			MIDI.Player.stop();
 			document.getElementById("MIDIProgress").value = 100;
 		
@@ -2046,9 +2081,28 @@
 					noteHasChangedReset();  // reset so we know if there is a change
 				}
 				MIDI.Player.start();
+				
 			} else {
 				document.getElementById("playImage").src="images/play.png";
 			}	
+		}
+		else {
+			if(data.note == 32)
+				hilight_note("hh", note_num/getNoteScaler());
+			else if(data.note == 24)
+				hilight_note("snare", note_num/getNoteScaler());
+			else if(data.note == 25)
+				hilight_note("kick", note_num/getNoteScaler());
+			else if(data.note == 45)
+				note_num++;
+		
+			if(note != 45)
+				document.getElementById("midiTextOutput").innerHTML = "now: " + data.now + 
+											" <br>note: " + data.note + 
+											" <br>message: " + data.message + 
+											" <br>note #: " + note_num + 
+											" <br>channel: " + data.channel + 
+											" <br>velocity: " + data.velocity;
 		}
 	}
 	
@@ -2901,7 +2955,8 @@
 									</div>\
 								');
 								
-								if((i-(indexStartForNotes-1)) % note_grouping_size() == 0) {
+								// add space between notes, exept on the last note
+								if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
 									newHTML += ('<div class="space_between_note_groups"> </div> ');
 								}
 							}
@@ -2924,7 +2979,7 @@
 									</div>\
 								');
 								
-								if((i-(indexStartForNotes-1)) % note_grouping_size() == 0) {
+								if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
 									newHTML += ('<div class="space_between_note_groups"> </div> ');
 								}
 							}
@@ -2944,7 +2999,7 @@
 									</div> \
 									');
 									
-								if((i-(indexStartForNotes-1)) % note_grouping_size() == 0) {
+								if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
 									newHTML += ('<div class="space_between_note_groups"> </div> ');
 								}
 							}
@@ -2962,7 +3017,7 @@
 									</div> \
 								');
 								
-								if((i-(indexStartForNotes-1)) % note_grouping_size() == 0) {
+								if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
 									newHTML += ('<div class="space_between_note_groups"> </div> ');
 								}
 							}

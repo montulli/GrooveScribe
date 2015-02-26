@@ -1,6 +1,6 @@
 
-	// this is for debugging layout issues - puts a read border around everything
-	//body * { border: 1px solid red; }		
+	/* this is for debugging layout issues - puts a read border around everything */
+	/* body * { border: 1px solid red; }		 */
 	body {
 		.width: 750px;
 		margin: 10px;
@@ -42,6 +42,7 @@
 		padding-left: 90px;
 		padding-bottom: 127px;
 		display: inline-block;
+	
 	}
 	#staff-container2 {
 		display: none;
@@ -67,7 +68,7 @@
 	}
 	.hi-hat-container {
 		position: absolute; top: -29px;
-		width: 100%
+		width: 100%;
 	}
 	.snare-container {
 		position: absolute; top: 31px; left: 0px;
@@ -110,6 +111,21 @@
 	.notes-container {
 		position: relative; 
 		z-index: 4
+	}
+	.hi-hat {
+		display: inline-block;
+		border: 1px solid;
+		border-color: transparent;
+	}
+	.snare {
+		display: inline-block;
+		border: 1px solid;
+		border-color: transparent;
+	}
+	.kick {
+		display: inline-block;
+		border: 1px solid;
+		border-color: transparent;
 	}
 	.sticking_right {
 		width:30px;
@@ -183,12 +199,11 @@
 		width:1px;
 		height:37px;
 		border-left:3px solid;
-		//border-color: #CCCCCC;
 		border-color: transparent;
 		float:left;
 		margin-top:-29px;
 		margin-left:-9px;
-		margin-right: 19px;
+		margin-right: 11px;
 	}
 	.circle {
 		width:30px;
@@ -232,12 +247,11 @@
 		width:1px;
 		height:36px;
 		border-left:3px solid;
-		//border-color: #CCCCCC;
 		border-color: transparent;
 		float:left;
 		margin-top:-27px;
 		margin-left:-4px;
-		margin-right: 14px;
+		margin-right: 3px;
 	}
 	.kick_splash {
 		width:27px;
@@ -254,12 +268,11 @@
 		width:1px;
 		height:43px;
 		border-left:3px solid;
-		//border-color: #CCCCCC;
 		border-color: transparent;
 		float:left;
 		margin-top: 16px;
 		margin-left:-31px;
-		margin-right: 41px;
+		margin-right: 33px;
 	}
 	.line-labels {
 		position: absolute; top: 25px; left: 6px;
@@ -287,23 +300,17 @@
 		font-size: 22px;
 		cursor: pointer;
 	}
-	.hi-hat {      
-	}
-	.snare {
-	}
-	.kick {
-	}
 	.opening_note_space {
-		width:10px;
+		display: inline-block;
+		width:4px;
 		height:1px;
 		background: transparent;
-		float:left;
 	}
 	.space_between_note_groups {
+		display: inline-block;
 		width:20px;
 		height:1px;
 		background: transparent;
-		float:left;
 	}
 	.subdivision {
 		background: #FFFFCC;
