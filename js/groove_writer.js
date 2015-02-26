@@ -538,26 +538,66 @@
 	}
 	
 	// highlight the note, this is used to play along with the midi track
+	// only one note for each instrument can be highlighted at a time
+	// this function will unhighlight any previous notes
+	// will also unhighlight other instruments if there index is less than
+	// the new index passed in.
+	global_cur_hh_highlight_id = false;
+	global_cur_snare_highlight_id = false;
+	global_cur_kick_highlight_id = false;
 	function hilight_note(instrument, id) {
 		
-		return;  // doesn't work yet
-		
-		id = parseInt(id);
-		if(id >= global_notes_per_measure)
+		id = Math.floor(id);
+		if(id < 0 || id >= global_notes_per_measure*global_number_of_measures)
 			return;
 		
+		// turn this one on;
+		document.getElementById(instrument + id).style.borderColor = "orange";
+		
+		// now turn off other notes if necessary;
+		if(global_cur_hh_highlight_id !== false && global_cur_hh_highlight_id < id) {
+				document.getElementById("hi-hat" + global_cur_hh_highlight_id).style.borderColor = "transparent";
+				global_cur_hh_highlight_id = false;
+		}
+		if(global_cur_snare_highlight_id !== false && global_cur_snare_highlight_id < id) {
+				document.getElementById("snare" + global_cur_snare_highlight_id).style.borderColor = "transparent";
+				global_cur_snare_highlight_id = false;
+		}
+		if(global_cur_kick_highlight_id !== false && global_cur_kick_highlight_id < id) {
+				document.getElementById("kick" + global_cur_kick_highlight_id).style.borderColor = "transparent";
+				global_cur_kick_highlight_id = false;
+		}
+			
 		switch(instrument) {
-		case "hh":
-			document.getElementById("hi-hat" + id).style.borderColor = "orange"
-			break;
-		case "snare":
-			document.getElementById("snare" + id).style.borderColor = "orange"
-			break;
-		case "kick":
-			document.getElementById("kick" + id).style.borderColor = "orange"
-			break;
-		default:
-			alert("Bad case in handleNotePopup")
+			case "hi-hat":
+				global_cur_hh_highlight_id = id;
+				break;
+			case "snare":
+				global_cur_snare_highlight_id = id;
+				break;
+			case "kick":
+				global_cur_kick_highlight_id = id;
+				break;
+			default: 
+				alert("bad case in hilight_note");
+				break;
+		}
+	}
+	
+	function clear_all_highlights(instrument) {
+		
+		// now turn off  notes if necessary;
+		if(global_cur_hh_highlight_id !== false) {
+				document.getElementById("hi-hat" + global_cur_hh_highlight_id).style.borderColor = "transparent";
+				global_cur_hh_highlight_id = false;
+		}
+		if(global_cur_snare_highlight_id !== false) {
+				document.getElementById("snare" + global_cur_snare_highlight_id).style.borderColor = "transparent";
+				global_cur_snare_highlight_id = false;
+		}
+		if(global_cur_kick_highlight_id !== false) {
+				document.getElementById("kick" + global_cur_kick_highlight_id).style.borderColor = "transparent";
+				global_cur_kick_highlight_id = false;
 		}
 		
 	}
@@ -1700,61 +1740,27 @@
 			Kick_Array[array_index] = get_kick_state(i+startIndexForClickableUI, "ABC");
 		}
 	}
-	
-	function MIDI_note_mapper(type, note, MIDI_output_type) {
 		
-		var default_velocity = 85; // how hard the note hits
-				
-		
-		switch(type) {
-		case "hh":
-			switch(note) {
-				case constant_ABC_HH_Normal:  // normal
-				case constant_ABC_HH_Close:  // normal
-					if(MIDI_output_type == "general_MIDI")
-						return 'Ab1', default_velocity
-					break;
-				case constant_ABC_HH_Accent:  // accent
-					midiTrack.addNoteOn(0, 'B0', 0, velocity);
-					break;
-				case constant_ABC_HH_Open:  // open
-					midiTrack.addNoteOn(0, 'Bb0', 0, velocity);
-					break;
-				case constant_ABC_HH_Ride:  // ride
-					midiTrack.addNoteOn(0, 'D1', 0, velocity);
-					break;
-				case constant_ABC_HH_Crash:  // crash
-					midiTrack.addNoteOn(0, 'Eb1', 0, velocity);
-					break;
-				
-			}
-			break;
-		case "snare":
-			switch(note) {
-				
-				
-			}
-			break;
-		case "kick":
-			switch(note) {
-				
-				
-			}
-			break;
-		default:
-			alert("Bad case in MIDI_note_mapper type")
-		}
-	}
-	
 	function MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, midi_output_type) {
 			var array_length = getMaxArrayLengthForABCConverstion();  
-		
+			var prev_hh_note = false;
+			var prev_snare_note = false;
+			var prev_kick_note = false;
+			var prev_kick_splash_note = false;
+			var midi_channel = 0;   
+			
+			if(midi_output_type == "general_MIDI")
+				midi_channel = 9; // for external midi player
+			else
+				midi_channel = 0; // for our internal midi player
+			
 			for(var i=0; i < array_length; i++)  {
 	
 				var duration = 16; // "ticks"  1/32th notes
 				var velocity_normal = 85; // how hard the note hits
 				var velocity_accent = 120;
 				var velocity_ghost = 50;
+				
 				
 				swing_percentage = getSwing()/100;
 				if(swing_percentage != 0 && !usingTriplets()) {
@@ -1780,92 +1786,134 @@
 					}
 				}
 				
+				var hh_velocity = velocity_normal;
+				var hh_note = false;
 				switch(HH_Array[i]) {
-				case constant_ABC_HH_Normal:  // normal
-				case constant_ABC_HH_Close:  // normal
-					if(midi_output_type == "general_MIDI")
-						midiTrack.addNoteOn(9, 42, 0, velocity_normal);
-					else
-						midiTrack.addNoteOn(0, 'Ab1', 0, velocity_normal);
-					break;
-				case constant_ABC_HH_Accent:  // accent
-					if(midi_output_type == "general_MIDI")
-						midiTrack.addNoteOn(9, 42, 0, velocity_accent);
-					else
-						midiTrack.addNoteOn(0, 'B0', 0, velocity_normal);
-					break;
-				case constant_ABC_HH_Open:  // open
-					if(midi_output_type == "general_MIDI")
-						midiTrack.addNoteOn(9, 46, 0, velocity_normal);
-					else
-						midiTrack.addNoteOn(0, 'Bb0', 0, velocity_normal);
-					break;
-				case constant_ABC_HH_Ride:  // ride
-					if(midi_output_type == "general_MIDI")
-						midiTrack.addNoteOn(9, 51, 0, velocity_normal);
-					else
-						midiTrack.addNoteOn(0, 'D1', 0, velocity_normal);
-					break;
-				case constant_ABC_HH_Crash:  // crash
-					if(midi_output_type == "general_MIDI")
-						midiTrack.addNoteOn(9, 49, 0, velocity_normal);
-					else
-						midiTrack.addNoteOn(0, 'Eb1', 0, velocity_normal);
-					break;
+					case constant_ABC_HH_Normal:  // normal
+					case constant_ABC_HH_Close:  // normal
+						if(midi_output_type == "general_MIDI")
+							hh_note = 42;
+						else
+							hh_note = 'Ab1';
+						break;
+					case constant_ABC_HH_Accent:  // accent
+						if(midi_output_type == "general_MIDI") {
+							hh_note = 42;
+							hh_velocity = velocity_accent;
+						} else {
+							hh_note = 'B0';
+						}
+						break;
+					case constant_ABC_HH_Open:  // open
+						if(midi_output_type == "general_MIDI")
+							hh_note = 46;
+						else
+							hh_note = 'Bb0';
+						break;
+					case constant_ABC_HH_Ride:  // ride
+						if(midi_output_type == "general_MIDI")
+							hh_note = 51;
+						else
+							hh_note = 'D1';
+						break;
+					case constant_ABC_HH_Crash:  // crash
+						if(midi_output_type == "general_MIDI")
+							hh_note = 49;
+						else
+							hh_note = 'Eb1';
+						break;
 				}
 				
+				if(hh_note != false) {
+					if(prev_hh_note != false)
+						midiTrack.addNoteOff(midi_channel, prev_hh_note, 0);
+					midiTrack.addNoteOn(midi_channel, hh_note, 0, hh_velocity);
+					prev_hh_note = hh_note;
+				}
+				
+				var snare_velocity = velocity_normal;
+				var snare_note = false;
 				switch(Snare_Array[i]) {
-				case constant_ABC_SN_Normal:  // normal
-					if(midi_output_type == "general_MIDI")
-						midiTrack.addNoteOn(9, 38, 0, velocity_normal);
-					else
-						midiTrack.addNoteOn(0, 'A1', 0, velocity_normal);
-					break;
-				case constant_ABC_SN_Accent:  // accent
-					if(midi_output_type == "general_MIDI")
-						midiTrack.addNoteOn(9, 38, 0, velocity_accent);
-					else
-						midiTrack.addNoteOn(0, 'C1', 0, velocity_normal);
-					break;	
-				case constant_ABC_SN_Ghost:  // ghost
-					if(midi_output_type == "general_MIDI")
-						midiTrack.addNoteOn(9, 38, 0, velocity_ghost);
-					else
-						midiTrack.addNoteOn(0, 'Bb1', 0, velocity_ghost);
-					break;	
-				case constant_ABC_SN_XStick:  // xstick
-					if(midi_output_type == "general_MIDI")
-						midiTrack.addNoteOn(9, 37, 0, velocity_normal);
-					else
-						midiTrack.addNoteOn(0, 'B1', 0, velocity_normal);
-					break;	
+					case constant_ABC_SN_Normal:  // normal
+						if(midi_output_type == "general_MIDI") {
+							snare_note = 8;
+						} else {
+							snare_note = 'A1';
+						}
+						break;
+					case constant_ABC_SN_Accent:  // accent
+						if(midi_output_type == "general_MIDI") {
+							snare_note = 38;
+							snare_velocity = velocity_accent;
+						} else {
+							snare_note = 'C1';
+						}
+						break;	
+					case constant_ABC_SN_Ghost:  // ghost
+						if(midi_output_type == "general_MIDI") {
+							snare_note = 38;
+							snare_velocity = velocity_ghost;
+						} else {
+							snare_note = 'Bb1';
+							snare_velocity = velocity_ghost;
+						}
+						break;	
+					case constant_ABC_SN_XStick:  // xstick
+						if(midi_output_type == "general_MIDI") {
+							snare_note = 37;
+						} else {
+							snare_note = 'B1';
+						}
+						break;	
+				}
+				
+				if(snare_note != false) {
+					if(prev_snare_note != false)
+						midiTrack.addNoteOff(midi_channel, prev_snare_note, 0);
+					midiTrack.addNoteOn(midi_channel, snare_note, 0, snare_velocity);
+					prev_snare_note = snare_note;
 				}
 			
+				var kick_velocity = velocity_normal;
+				var kick_note = false;
+				var kick_splash_note = false;
 				switch(Kick_Array[i]) {
 				case constant_ABC_KI_Splash:  // normal
 					if(midi_output_type == "general_MIDI")
-						midiTrack.addNoteOn(9, 44, 0, velocity_normal);
+						kick_splash_note = 44;
 					else
-						midiTrack.addNoteOn(0, 'B0', 0, velocity_normal);
+						kick_splash_note = 'B0';
 					break;	
 				case constant_ABC_KI_SandK:  // normal
 					if(midi_output_type == "general_MIDI") {
-						midiTrack.addNoteOn(9, 44, 0, velocity_normal);
-						midiTrack.addNoteOn(9, 35, 0, velocity_normal);
+						kick_splash_note = 44;
+						kick_note = 35;
 					} else {
-						midiTrack.addNoteOn(0, 'B0', 0, velocity_normal);
-						midiTrack.addNoteOn(0, 'Db1', 0, velocity_normal);
+						kick_splash_note = 'B0';
+						kick_note = 'Db1';
 					}
 					break;	
 				case constant_ABC_KI_Normal:  // normal
 					if(midi_output_type == "general_MIDI")
-						midiTrack.addNoteOn(9, 35, 0, velocity_normal);
+						kick_note = 35;
 					else
-						midiTrack.addNoteOn(0, 'Db1', 0, velocity_normal);
+						kick_note = 'Db1';
 					break;	
 				}
+				if(kick_note != false) {
+					if(prev_kick_note != false)
+						midiTrack.addNoteOff(midi_channel, prev_kick_note, 0);
+					midiTrack.addNoteOn(midi_channel, kick_note, 0, kick_velocity);
+					prev_kick_note = kick_note;
+				}
+				if(kick_splash_note != false) {
+					if(prev_kick_splash_note != false)
+						midiTrack.addNoteOff(midi_channel, prev_kick_splash_note, 0);
+					midiTrack.addNoteOn(midi_channel, kick_splash_note, 0, kick_velocity);
+					prev_kick_splash_note = kick_splash_note;
+				}
 				
-				midiTrack.addNoteOff(0, 'a2', duration, 1);  // add a blank note for spacing
+				midiTrack.addNoteOff(0, 60, duration);  // add a blank note for spacing
 			}
 	}
 	
@@ -2012,6 +2060,7 @@
 			global_isMIDIPaused = true;
 			document.getElementById("playImage").src="images/play.png";
 			MIDI.Player.pause();
+			clear_all_highlights()
 		}
 	}
 	
@@ -2037,6 +2086,7 @@
 			//document.getElementById("stopImage").src="images/grey_stop.png";
 			document.getElementById("playImage").src="images/play.png";
 			document.getElementById("MIDIProgress").value = 0;
+			clear_all_highlights();
 		} 
 	}
 	
@@ -2060,20 +2110,18 @@
 		}
 	}
 	
-	var hihats = 0;
-	var kicks = 0;
-	var snares = 0;
-	var note_num = 0;
+	var global_midi_note_num = 0;  // global, but only used in this function
 	function ourMIDICallback(data) {
 		document.getElementById("MIDIProgress").value = (data.now/data.end)*100;
 		
 		if(data.now < 1) {
-			midi_scaler = getNoteScaler();
-			note_num = 0;
-			
-		} else if(data.now == data.end) {
+			// this is considered the start.   It usually comes in at .5 for some reason?
+			global_midi_note_num = 0;
+		}
+		if(data.now == data.end) {
 			MIDI.Player.stop();
 			document.getElementById("MIDIProgress").value = 100;
+			clear_all_highlights();
 		
 			if(global_shouldMIDIRepeat) {
 				if(noteHasChangedSinceLastReset()) {
@@ -2086,24 +2134,41 @@
 				document.getElementById("playImage").src="images/play.png";
 			}	
 		}
-		else {
-			if(data.note == 32)
-				hilight_note("hh", note_num/getNoteScaler());
-			else if(data.note == 24)
-				hilight_note("snare", note_num/getNoteScaler());
-			else if(data.note == 25)
-				hilight_note("kick", note_num/getNoteScaler());
-			else if(data.note == 45)
-				note_num++;
 		
-			if(note != 45)
-				document.getElementById("midiTextOutput").innerHTML = "now: " + data.now + 
-											" <br>note: " + data.note + 
-											" <br>message: " + data.message + 
-											" <br>note #: " + note_num + 
-											" <br>channel: " + data.channel + 
-											" <br>velocity: " + data.velocity;
+		// note on
+		if(data.message = 144) {
+			if(data.note == 32 || data.note == 22 || data.note == 23 || data.note == 27 || data.note == 26)  {
+				hilight_note("hi-hat", (global_midi_note_num/getNoteScaler()), data.message == 144 ? true : false);
+			} else if(data.note == 24 || data.note == 33 || data.note == 34 || data.note == 35) {
+				hilight_note("snare", (global_midi_note_num/getNoteScaler()), data.message == 144 ? true : false);
+			} else if(data.note == 25) {
+				hilight_note("kick", (global_midi_note_num/getNoteScaler()), data.message == 144 ? true : false);
+			}
 		}
+		
+		if(data.note == 60)
+			global_midi_note_num++;
+	
+		if(0) {
+			// my debugging code for midi
+			var newHTML = "";
+			if(data.note != 60)
+				newHTML += "<b>";
+				
+			newHTML += " note #: " + global_midi_note_num + 
+											" now: " + data.now + 
+											" note: " + data.note + 
+											" message: " + data.message + 
+											" channel: " + data.channel + 
+											" velocity: " + data.velocity +
+											"<br>";
+											
+			if(data.note != 60)
+				newHTML += "</b>";
+			
+			document.getElementById("midiTextOutput").innerHTML += newHTML;
+		}
+		
 	}
 	
 	function MIDILoaderCallback() {
