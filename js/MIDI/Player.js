@@ -20,6 +20,7 @@ root.endTime = 0;
 root.restart = 0; 
 root.playing = false;
 root.timeWarp = 1;
+root.shouldLoop = 0;
 
 //
 root.start =
@@ -33,6 +34,10 @@ root.pause = function () {
 	stopAudio();
 	root.restart = tmp;
 };
+
+root.loop = function (doOrDont) {
+	root.shouldLoop = doOrDont;
+}
 
 root.stop = function () {
 	stopAudio();
@@ -160,9 +165,20 @@ var scheduleTracking = function (channel, note, currentTime, offset, message, ve
 			onMidiEvent(data);
 		}
 		root.currentTime = currentTime;
-		if (root.currentTime === queuedTime && queuedTime < root.endTime) { // grab next sequence
+		
+		// remove this event from the queue
+		eventQueue.shift();
+		
+		if(root.shouldLoop && (root.currentTime == root.endTime)  && eventQueue.length == 0 ) {
+			// at the end of the current tune.   If we are repeating we need to requeue
+			// we check to make sure the eventQueue is empty since we may have reloaded the tune
+			// in the callback and have essentially already caused the loop
+			startAudio(0, true);
+		} else if (root.currentTime === queuedTime && queuedTime < root.endTime && eventQueue.length == 0) {
+			// grab next sequence of a long midi
 			startAudio(queuedTime, true);
-		}
+		} 
+		
 	}, currentTime - offset);
 	return interval;
 };

@@ -2022,6 +2022,7 @@
 		} else {
 			loadMIDI_for_playback();
 			noteHasChangedReset();  // reset so we know if there is a change
+			MIDI.Player.loop(global_shouldMIDIRepeat);   // set the loop parameter
 			MIDI.Player.start();
 		}
 		document.getElementById("playImage").src="images/pause.png";
@@ -2054,9 +2055,11 @@
 		if(global_shouldMIDIRepeat == false) {
 			document.getElementById("repeatImage").src="images/repeat.png";
 			global_shouldMIDIRepeat = true;
+			MIDI.Player.loop(true);
 		} else {
 			document.getElementById("repeatImage").src="images/grey_repeat.png";
 			global_shouldMIDIRepeat = false;
+			MIDI.Player.loop(false);
 		}
 	}
 	
@@ -2069,20 +2072,22 @@
 			global_midi_note_num = 0;
 		}
 		if(data.now == data.end) {
-			MIDI.Player.stop();
-			document.getElementById("MIDIProgress").value = 100;
-			clear_all_highlights();
-		
+			
 			if(global_shouldMIDIRepeat) {
+		
 				if(noteHasChangedSinceLastReset()) {
 					loadMIDI_for_playback();  // regen before repeat
 					noteHasChangedReset();  // reset so we know if there is a change
+					MIDI.Player.stop();
+					MIDI.Player.start();
 				}
-				MIDI.Player.start();
-				
 			} else {
+				// not repeating, so stopping
+				MIDI.Player.stop();
+				document.getElementById("MIDIProgress").value = 100;
 				document.getElementById("playImage").src="images/play.png";
-			}	
+				clear_all_highlights();
+			}
 		}
 		
 		// note on
