@@ -1987,8 +1987,7 @@
 		midiTrack.setTempo(getTempo());
 		midiTrack.setInstrument(0, 0x13);
 		
-		var perm_type = document.getElementById("permutationType").value;
-		switch (perm_type) {
+		switch (global_permutationType) {
 		case "kick_16ths":
 		
 			// compute sections with different kick patterns
