@@ -14,6 +14,8 @@
 	global_isMIDIPaused = false;
 	global_shouldMIDIRepeat = true;
 	global_visible_context_menu = false;   // a single context menu can be visible at a time.
+	global_permutationType = "none";
+	global_advancedEditIsOn = false;
 	
 	// constants
 	constant_default_tempo = 80;
@@ -621,7 +623,7 @@
 		var contextMenu;
 	
 		// don't use the pop up if advanced edit isn't on.
-		if(!document.getElementById("advancedEdit") || document.getElementById("advancedEdit").checked != true)
+		if(global_advancedEditIsOn != true)
 			return false;
 			
 		switch(type) {
@@ -663,6 +665,76 @@
 	function noteHasChangedSinceLastReset() {
 		return global_aNoteHasChangedSinceLastReset;
 	}
+	
+	// the user has clicked on the permutation menu
+	function permutationAnchorClick(event) {
+		var contextMenu;
+		
+		contextMenu = document.getElementById("permutationContextMenu");
+		if(contextMenu) {
+			if (!event) var event = window.event;
+			if (event.pageX || event.pageY)
+			{
+				contextMenu.style.top = event.pageY-30 + "px";
+				contextMenu.style.left = event.pageX-75 + "px";
+			}
+			showContextMenu(contextMenu);
+		}
+	}
+	
+	function setupPermutationMenu() {
+		// disable for triplets
+		if(usingTriplets) {
+			document.getElementById("permutationAnchor").style.fontColor = "gray";
+		} else {
+			document.getElementById("permutationAnchor").style.fontColor = "blue";
+		}
+		
+	}
+	
+	function permutationPopupClick(perm_type) {
+		global_permutationType = perm_type;
+		
+		switch (perm_type) {
+		case "kick_16ths":
+			showHideCSS_ClassDisplay(".kick-container", true, false, "block");  // hide it
+			showHideCSS_ClassDisplay(".snare-container", true, true, "block");  // show it
+			document.getElementById("staff-container2").style.display = "none";
+			document.getElementById("permutationAnchor").style.backgroundColor = "orange";
+			break;
+			
+		case "snare_16ths":
+			showHideCSS_ClassDisplay(".kick-container", true, true, "block");  // show it
+			showHideCSS_ClassDisplay(".snare-container", true, false, "block");  // hide it
+			document.getElementById("staff-container2").style.display = "none";
+			document.getElementById("permutationAnchor").style.backgroundColor = "orange";
+			break;
+
+		case "none":
+		default:
+			showHideCSS_ClassDisplay(".kick-container", true, true, "block");  // show it
+			showHideCSS_ClassDisplay(".snare-container", true, true, "block");  // show it
+			// document.getElementById("staff-container2").style.display = "block";
+			global_permutationType = "none";
+			document.getElementById("permutationAnchor").style.backgroundColor = "#FFFFCC";;
+			break;
+		}
+		
+		create_ABC();
+	}
+	
+	// user has clicked on the advanced edit button
+	function toggleAdvancedEdit() {
+		if(global_advancedEditIsOn) {
+			// turn it off
+			global_advancedEditIsOn = false;
+			document.getElementById("advancedEditAnchor").style.backgroundColor = "#FFFFCC";;
+		} else {
+			global_advancedEditIsOn = true;
+			document.getElementById("advancedEditAnchor").style.backgroundColor = "orange";;
+		}
+	}
+	
 	
 	// context menu for labels
 	function noteLabelClick(event, instrument) {
@@ -1640,34 +1712,6 @@
 		return kick_array;
 	}
 	
-	function permutation_menu_change() {
-	
-		var perm_type = document.getElementById("permutationType").value;
-		
-		switch (perm_type) {
-		case "kick_16ths":
-			showHideCSS_ClassDisplay(".kick-container", true, false, "block");  // hide it
-			showHideCSS_ClassDisplay(".snare-container", true, true, "block");  // show it
-			document.getElementById("staff-container2").style.display = "none";
-			break;
-			
-		case "snare_any":
-			showHideCSS_ClassDisplay(".kick-container", true, true, "block");  // show it
-			showHideCSS_ClassDisplay(".snare-container", true, false, "block");  // hide it
-			document.getElementById("staff-container2").style.display = "none";
-			break;
-
-		case "none":
-		default:
-			showHideCSS_ClassDisplay(".kick-container", true, true, "block");  // show it
-			showHideCSS_ClassDisplay(".snare-container", true, true, "block");  // show it
-			// document.getElementById("staff-container2").style.display = "block";
-			break;
-		}
-		
-		create_ABC();
-	}
-	
 	// query the clickable UI and generate a 32 element array representing the notes
 	// note: the ui may have fewer notes, but we scale them to fit into the 32 elements proportionally
 	function getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, startIndexForClickableUI) {
@@ -1958,7 +2002,7 @@
 			break;
 			
 		
-		case "snare_any":  // use the hh & snare from the user
+		case "snare_16ths":  // use the hh & snare from the user
 		
 			//compute sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
@@ -2148,9 +2192,8 @@
 		// abc header boilerplate
 		var fullABC = get_top_ABC_BoilerPlate();
 		
-		var perm_type = document.getElementById("permutationType").value;
-		switch (perm_type) {
-		case "kick_16ths":
+		switch (global_permutationType) {
+		case "kick_16ths":  // use the hh & snare from the user
 		
 			// compute sections with different kick patterns
 			for(var i=0; i < numSections; i++) {
@@ -2163,7 +2206,7 @@
 			}
 			break;
 			
-		case "snare_any":  // use the hh & snare from the user
+		case "snare_16ths":  // use the hh & kick from the user
 		
 			//compute 16 sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
@@ -2368,22 +2411,7 @@
 		}
 		
 	}
-	
-	function populatePermutationMenu() {
-		var	permMenu = document.getElementById("permutationType");
-		
-		var option;
-		option = document.createElement("option");
-		option.text  = "Kick Permutation";
-		option.value = "kick_16ths";
-		permMenu.add(option);
-			
-		option = document.createElement("option");
-		option.text  = "Snare Permutation";
-		option.value = "snare_any";
-		permMenu.add(option);
-	}
-	
+
 	function setupHotKeys() {
 		
 		var isCtrl = false;
@@ -2427,7 +2455,7 @@
 		
 		//setupHotKeys();  Runs on midi load now
 		
-		populatePermutationMenu();
+		setupPermutationMenu();
 						
 		// set the background color of the current subdivision
 		document.getElementById(global_notes_per_measure + "ths").style.background = "orange";
@@ -2911,7 +2939,7 @@
 		
 		// if the permutation menu is not "none" this will change the layout
 		// otherwise it should do nothing
-		permutation_menu_change();
+		setupPermutationMenu();
 		
 		// update the swing output display
 		swingUpdate();

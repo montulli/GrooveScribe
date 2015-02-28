@@ -303,13 +303,40 @@
 		background: transparent;
 	}
 	.subdivision {
+		display: inline-block;
 		background: #FFFFCC;
 		font-size: 130%;
+		color: #0000EE;
 		text-decoration: none;
 		border:1px solid #CCCCCC;
 		border-radius: 5px;
 		box-shadow: 7px 7px 5px #888888;
 		padding: 4px;
+		cursor: pointer;
+	}
+	#advancedEditAnchor {
+		display: inline-block;
+		background: #FFFFCC;
+		color: #0000EE;
+		font-size: 80%;
+		text-decoration: none;
+		border:1px solid #CCCCCC;
+		border-radius: 5px;
+		box-shadow: 7px 7px 5px #888888;
+		padding: 4px;
+		cursor: pointer;
+	}
+	.rightButtons {
+		display: inline-block;
+		background: #FFFFCC;
+		color: #0000EE;
+		font-size: 80%;
+		text-decoration: none;
+		border:1px solid #CCCCCC;
+		border-radius: 5px;
+		box-shadow: 7px 7px 5px #888888;
+		padding: 4px;
+		cursor: pointer;
 	}
 	#permutationType {
 		margin-top: 10px;

@@ -3,7 +3,7 @@
     <head>
 		<title>Groove Writer</title>
 		
-		<meta name="viewport" content="width=985, initial-scale=1.25">
+		<meta name="viewport" content="width=800, initial-scale=1.25">
 		
 		<!--   Other peoples JS libraries    -->
 		<!--   midi.js package for sound   -->
@@ -36,19 +36,17 @@
     <body>
 	    <div class="nonPrintable">
 			<div id="divisionButtonContainer">
-			<a class="subdivision" id="4ths"  href="?Div=4"  onClick="event.preventDefault(); changeDivision(4)"><sup>1</sup>/<sub>4</sub> &#9834;</a>
-			<a class="subdivision" id="8ths"  href="?Div=8"  onClick="event.preventDefault(); changeDivision(8)"><sup>1</sup>/<sub>8</sub> &#9834;&#9834;</a>
-			<a class="subdivision" id="16ths" href="?Div=16" onClick="event.preventDefault(); changeDivision(16)"><sup>1</sup>/<sub>16</sub> &#9835;</a>
-			<a class="subdivision" id="32ths" href="?Div=32" onClick="event.preventDefault(); changeDivision(32)"><sup>1</sup>/<sub>32</sub> &#9835;&#9835;</a>
-			<a class="subdivision" id="12ths"  href="?Div=12" onClick="event.preventDefault(); changeDivision(12)"><sup>1</sup>/<sub>8 triplets</sub> &#9834;&#9834;</a>
-			<a class="subdivision" id="24ths" href="?Div=24" onClick="event.preventDefault(); changeDivision(24)"><sup>1</sup>/<sub>16 triplets</sub> &#9835;</a>
+			<a class="subdivision" id="4ths"  onClick="changeDivision(4)"><sup>1</sup>/<sub>4</sub> &#9834;</a>
+			<a class="subdivision" id="8ths"  onClick="changeDivision(8)"><sup>1</sup>/<sub>8</sub> &#9834;&#9834;</a>
+			<a class="subdivision" id="16ths" onClick="changeDivision(16)"><sup>1</sup>/<sub>16</sub> &#9835;</a>
+			<a class="subdivision" id="32ths" onClick="changeDivision(32)"><sup>1</sup>/<sub>32</sub> &#9835;&#9835;</a>
+			<a class="subdivision" id="12ths" onClick="changeDivision(12)"><sup>1</sup>/<sub>8 triplets</sub> &#9834;&#9834;</a>
+			<a class="subdivision" id="24ths" onClick="changeDivision(24)"><sup>1</sup>/<sub>16 triplets</sub> &#9835;</a>
 			</div>
 			
-			
-			
 			<script>
-				if(is_touch_device()) {
-					document.write('&nbsp;&nbsp;&nbsp;&nbsp;<label><b>Advanced Edit:</b><input type="checkbox" id="advancedEdit" value="advancedEdit"></label>');
+				if(1 || is_touch_device()) {
+					document.write('<div id="advancedEditAnchor" onClick="event.preventDefault(); toggleAdvancedEdit()">Advanced Edit</div>');
 				}
 			</script>
 			
@@ -190,6 +188,13 @@
 				<li onClick='noteLabelPopupClick("stickings", "cancel")'>cancel</li>
 			</ul>
 		</div>
+		<div class="noteContextMenu">
+			<ul id="permutationContextMenu" class="list">
+				<li onClick='permutationPopupClick("none")'><b>None</b></li>
+				<li onClick='permutationPopupClick("kick_16ths")'><b>Kick</b> Permutation</li>
+				<li onClick='permutationPopupClick("snare_16ths")'><b>Snare</b> Permutation</li>
+			</ul>
+		</div>
 		
 		
 		<!-- this is used by the share/save button, and is hidden by default -->
@@ -209,11 +214,15 @@
 			
 		<!-- use css to position this to the upper right -->
 		<span id="upperRight">
-		<select onChange="permutation_menu_change()" id="permutationType" name="permutationType">
-				<option value="none" >Permutation</option>
-		</select>&nbsp;&nbsp;-&nbsp;&nbsp;
-		<a id="interestingGrooves" href="interestingGrooves.html">Interesting Grooves</a>&nbsp;&nbsp;-&nbsp;&nbsp;
-		<a id="about" href="about.html">About</a>
+		<div class="rightButtons" id="permutationAnchor" onClick="permutationAnchorClick(event)">
+			Permutations
+		</div>
+		<div class="rightButtons">
+			<a id="interestingGrooves" href="interestingGrooves.html">Grooves</a>
+		</div>
+		<div class="rightButtons">
+			<a id="about" href="about.html">About</a>
+		</div>
 		</span>
 		<script>
 			// set up the page after it has fully loaded
