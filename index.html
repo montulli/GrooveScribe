@@ -35,17 +35,15 @@
     </head>
     <body>
 	    <div class="nonPrintable">
-			<div class="heading1">Groove Writer</div>
+			<div id="divisionButtonContainer">
 			<a class="subdivision" id="4ths"  href="?Div=4"  onClick="event.preventDefault(); changeDivision(4)"><sup>1</sup>/<sub>4</sub> &#9834;</a>
 			<a class="subdivision" id="8ths"  href="?Div=8"  onClick="event.preventDefault(); changeDivision(8)"><sup>1</sup>/<sub>8</sub> &#9834;&#9834;</a>
 			<a class="subdivision" id="16ths" href="?Div=16" onClick="event.preventDefault(); changeDivision(16)"><sup>1</sup>/<sub>16</sub> &#9835;</a>
 			<a class="subdivision" id="32ths" href="?Div=32" onClick="event.preventDefault(); changeDivision(32)"><sup>1</sup>/<sub>32</sub> &#9835;&#9835;</a>
 			<a class="subdivision" id="12ths"  href="?Div=12" onClick="event.preventDefault(); changeDivision(12)"><sup>1</sup>/<sub>8 triplets</sub> &#9834;&#9834;</a>
 			<a class="subdivision" id="24ths" href="?Div=24" onClick="event.preventDefault(); changeDivision(24)"><sup>1</sup>/<sub>16 triplets</sub> &#9835;</a>
-			<br>
-			<select onChange="permutation_menu_change()" id="permutationType" name="permutationType">
-				<option value="none" >No Permutation</option>
-			</select>
+			</div>
+			
 			
 			
 			<script>
@@ -53,9 +51,6 @@
 					document.write('&nbsp;&nbsp;&nbsp;&nbsp;<label><b>Advanced Edit:</b><input type="checkbox" id="advancedEdit" value="advancedEdit"></label>');
 				}
 			</script>
-			<div id="noteInstructions">
-			Click on the note bodies to toggle them on and off
-			</div>
 			
 			<div id="musicalInput">
 				<script>
@@ -66,7 +61,8 @@
 			</div>
 			<div id="buttonsAboveSheetMusic">
 				<button id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); showHideSecondMeasure(false, false);">Show/Hide 2nd Measure</button>
-				<button id="showHideStickings" href="" onClick="event.preventDefault(); showHideStickings(false, false);">Show/Hide Stickings</button>
+				<button id="showHideStickingsButton" href="" onClick="event.preventDefault(); showHideStickings(false, false);">Show/Hide Stickings</button>
+				<button type="button" id="exportMidiButton" onclick="MIDI_save_as()">Export Midi File</button>
 				<button id="printButton" type="button" onclick="printMusic()">Print/Save Sheet Music</button>
 				<button id="shareSaveButton" href="#" onClick="event.preventDefault(); show_FullURLPopup()">Share/Save Groove</button>
 			</div>
@@ -78,18 +74,10 @@
 			</div>
 		</div>
 		<div class="nonPrintable">
-		<hr>
-			
-			<b>Title:</b> <input id="tuneTitle" onChange="create_ABC()" type="text"> &nbsp;
-			<b>Author:</b> <input id="tuneAuthor" onChange="create_ABC()"  type="text"> &nbsp;
-			<b>Comment:</b> <input id="tuneComments" onChange="create_ABC()"  type="text"> &nbsp;
-			<label><b>Legend:</b><input type="checkbox" id="showLegend" onChange="create_ABC()"></label>
-			  
+				  
 			<!-- errors -->
-			<br>
-			<br>
-			<br>
-			<p class="warnings">Warnings:
+			
+			<p class="warnings">Warnings:</p>
 			<div class="warnings" id="diverr"></div>
 			
 			<div id="playerControl">
@@ -110,19 +98,23 @@
 					<progress id="MIDIProgress" value="0" max="100"></progress>
 				</div>
 			</div>	
-			<br>
+			<div id="sheetMusicTextFields">
+				<b>Title:</b> <input id="tuneTitle" onChange="create_ABC()" type="text"> &nbsp;
+				<b>Author:</b> <input id="tuneAuthor" onChange="create_ABC()"  type="text"> &nbsp;
+				<b>Comment:</b> <input id="tuneComments" onChange="create_ABC()"  type="text"> &nbsp;
+				<label><b>Legend:</b><input type="checkbox" id="showLegend" onChange="create_ABC()"></label>
+			</div>
+			
 			<div id="midiTextOutput">
 			</div>
-			<button type="button" id="exportMidi" onclick="MIDI_save_as()">Export Midi File</button>
 			
-			<br>
 			<span id="hiddenDescription">
 				Groove Writer allows drummers to create and share interesting grooves with  
 				WYSIWYG authoring, sheet music creation, and audio playback all in one place.
 				Use the Groove Writer to write out new grooves, figure out the groove to your favorite songs,
 				or write down the groove to your latest tune.
 			</span>
-			<p>
+			<br>
 			<!-- ABC notation -->
 			<A href="" onClick="event.preventDefault(); ShowHideABCResults();">Show/Hide ABC Notation</a>
 			<div id="ABC_Results">
@@ -217,6 +209,9 @@
 			
 		<!-- use css to position this to the upper right -->
 		<span id="upperRight">
+		<select onChange="permutation_menu_change()" id="permutationType" name="permutationType">
+				<option value="none" >Permutation</option>
+		</select>&nbsp;&nbsp;-&nbsp;&nbsp;
 		<a id="interestingGrooves" href="interestingGrooves.html">Interesting Grooves</a>&nbsp;&nbsp;-&nbsp;&nbsp;
 		<a id="about" href="about.html">About</a>
 		</span>

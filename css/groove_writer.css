@@ -22,7 +22,12 @@
 	.nonPrintable {
 		display: block;
 	}
+	#divisionButtonContainer {
+		display: inline-block;
+		margin-right: 10px;
+	}
 	#musicalInput {
+		margin-top: 10px;
 	}
 	#hiddenDescription {
 		display: none;
@@ -311,7 +316,6 @@
 		margin-left: 25px;
 	}
 	#exportMidi {
-		margin-left: 25px;
 	}
 	#ABC_Results {
 		display: none;
@@ -358,7 +362,8 @@
 		background-color: #000;
 		padding-top: 2px;
 		padding-bottom: 0px;
-		margin-bottom: 3px;
+		margin-top: 10px;
+		margin-bottom: 10px;
 	}
 	#tempoAndProgress {
 		display: inline-block;
@@ -441,12 +446,13 @@
 		display: flex;
 		justify-content: space-between;
 	}
-	
 	#showHideSecondMeasureButton {
 	}
-	#showHideStickings {
+	#showHideStickingsButton {
 	}
 	#printButton {
+	}
+	#exportMidiButton {
 	}
 	#shareSaveButton {
 	}
