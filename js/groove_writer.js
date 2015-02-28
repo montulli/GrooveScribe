@@ -516,9 +516,8 @@
 	
 	// highlight the note, this is used to play along with the midi track
 	// only one note for each instrument can be highlighted at a time
-	// this function will unhighlight any previous notes
-	// will also unhighlight other instruments if there index is less than
-	// the new index passed in.
+	// Also unhighlight other instruments if their index is not equal to the passed in index
+	// this means that only notes falling on the current beat will be highlighted.
 	global_cur_hh_highlight_id = false;
 	global_cur_snare_highlight_id = false;
 	global_cur_kick_highlight_id = false;
@@ -531,17 +530,20 @@
 		// turn this one on;
 		document.getElementById(instrument + id).style.borderColor = "orange";
 		
-		// now turn off other notes if necessary;
-		if(global_cur_hh_highlight_id !== false && global_cur_hh_highlight_id < id) {
-				document.getElementById("hi-hat" + global_cur_hh_highlight_id).style.borderColor = "transparent";
+		// turn off all the previously highlighted notes that are not on the same beat
+		if(global_cur_hh_highlight_id !== false && global_cur_hh_highlight_id != id) {
+				if(global_cur_hh_highlight_id < global_notes_per_measure*global_number_of_measures)
+					document.getElementById("hi-hat" + global_cur_hh_highlight_id).style.borderColor = "transparent";
 				global_cur_hh_highlight_id = false;
 		}
-		if(global_cur_snare_highlight_id !== false && global_cur_snare_highlight_id < id) {
-				document.getElementById("snare" + global_cur_snare_highlight_id).style.borderColor = "transparent";
+		if(global_cur_snare_highlight_id !== false && global_cur_snare_highlight_id != id) {
+				if(global_cur_snare_highlight_id < global_notes_per_measure*global_number_of_measures)
+					document.getElementById("snare" + global_cur_snare_highlight_id).style.borderColor = "transparent";
 				global_cur_snare_highlight_id = false;
 		}
-		if(global_cur_kick_highlight_id !== false && global_cur_kick_highlight_id < id) {
-				document.getElementById("kick" + global_cur_kick_highlight_id).style.borderColor = "transparent";
+		if(global_cur_kick_highlight_id !== false && global_cur_kick_highlight_id != id) {
+				if(global_cur_kick_highlight_id < global_notes_per_measure*global_number_of_measures)
+					document.getElementById("kick" + global_cur_kick_highlight_id).style.borderColor = "transparent";
 				global_cur_kick_highlight_id = false;
 		}
 			
@@ -2091,13 +2093,13 @@
 		}
 		
 		// note on
-		if(data.message = 144) {
+		if(data.message == 144) {
 			if(data.note == 32 || data.note == 22 || data.note == 23 || data.note == 27 || data.note == 26)  {
-				hilight_note("hi-hat", (global_midi_note_num/getNoteScaler()), data.message == 144 ? true : false);
+				hilight_note("hi-hat", (global_midi_note_num/getNoteScaler()));
 			} else if(data.note == 24 || data.note == 33 || data.note == 34 || data.note == 35) {
-				hilight_note("snare", (global_midi_note_num/getNoteScaler()), data.message == 144 ? true : false);
+				hilight_note("snare", (global_midi_note_num/getNoteScaler()));
 			} else if(data.note == 25) {
-				hilight_note("kick", (global_midi_note_num/getNoteScaler()), data.message == 144 ? true : false);
+				hilight_note("kick", (global_midi_note_num/getNoteScaler()));
 			}
 		}
 		

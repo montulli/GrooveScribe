@@ -154,7 +154,8 @@
 	}
 	.notes-container {
 		position: relative; 
-		z-index: 4
+		z-index: 4;
+		margin-right: 5px;
 	}
 	.sticking {
 		display: inline-block;
@@ -163,7 +164,8 @@
 		border-color: transparent;
 		width: 30px;
 		height: 24px;
-		margin-right: 5px;
+		margin-right: 2px;
+		margin-left: 2px;
 	}
 	.hi-hat {
 		display: inline-block;
@@ -172,7 +174,8 @@
 		border-color: transparent;
 		width: 30px;
 		height: 36px;
-		margin-right: 5px;
+		margin-right: 2px;
+		margin-left: 2px;
 	}
 	.snare {
 		display: inline-block;
@@ -181,7 +184,8 @@
 		border-color: transparent;
 		width: 30px;
 		height: 50px;
-		margin-right: 5px;
+		margin-right: 2px;
+		margin-left: 2px;
 	}
 	.kick {
 		display: inline-block;
@@ -190,7 +194,8 @@
 		border-color: transparent;
 		width: 30px;
 		height: 54px;
-		margin-right: 5px;
+		margin-right: 2px;
+		margin-left: 2px;
 	}
 	.sticking_right {
 		position: absolute; top: 0px; left: 6px;
@@ -281,13 +286,13 @@
 	}
 	.opening_note_space {
 		display: inline-block;
-		width:4px;
+		width:1px;
 		height:1px;
 		background: transparent;
 	}
 	.end_note_space {
 		display: inline-block;
-		width:4px;
+		width:1px;
 		height:1px;
 		background: transparent;
 	}
