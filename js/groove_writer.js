@@ -1708,6 +1708,8 @@
 				var velocity_accent = 120;
 				var velocity_ghost = 50;
 				
+				if(usingTriplets)
+					duration = 21.33;
 				
 				swing_percentage = getSwing()/100;
 				if(swing_percentage != 0 && !usingTriplets()) {
