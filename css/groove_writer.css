@@ -33,13 +33,13 @@
 		display: none;
 	}
 	.staff-container {
+		display: inline-block;
 		font-family:  Times New Roman;
 		position:relative;
 		background: #FFFFCC;
 		border: 3px solid #000;
 		border-radius: 25px;
 		box-shadow: 7px 7px 5px #888888;
-		display: table;
 	}
 	#staff-container2 {
 		display: none;
@@ -69,19 +69,20 @@
 	}
 	.hh-label {
 		display: block;
+		white-space:nowrap;
 		margin-top: 20px;
 		margin-left: 8px;
 		font-size: 22px;
 		cursor: pointer;
 	}
 	.snare-label {
-		margin-top: 32px;
+		margin-top: 35px;
 		margin-left: 8px;
 		font-size: 22px;
 		cursor: pointer;
 	}
 	.kick-label {
-		margin-top: 32px;
+		margin-top: 35px;
 		margin-left: 8px;
 		font-size: 22px;
 		cursor: pointer;
