@@ -3,7 +3,7 @@
     <head>
 		<title>Groove Writer</title>
 		
-		<meta name="viewport" content="width=800, initial-scale=1.25">
+		<meta name="viewport" content="width=810, initial-scale=1.25">
 		
 		<!--   Other peoples JS libraries    -->
 		<!--   midi.js package for sound   -->
@@ -35,6 +35,19 @@
     </head>
     <body>
 	    <div class="nonPrintable">
+			<!-- use css to position this to the upper right -->
+			<span id="upperRight">
+				<div class="rightButtons" id="permutationAnchor" onClick="permutationAnchorClick(event)">
+					Permutations
+				</div>
+				<div class="rightButtons">
+					<a id="interestingGrooves" href="interestingGrooves.html">Grooves</a>
+				</div>
+				<div class="rightButtons">
+					<a id="about" href="about.html">About</a>
+				</div>
+			</span>
+		
 			<div id="divisionButtonContainer">
 			<a class="subdivision" id="4ths"  onClick="changeDivision(4)"><sup>1</sup>/<sub>4</sub> &#9834;</a>
 			<a class="subdivision" id="8ths"  onClick="changeDivision(8)"><sup>1</sup>/<sub>8</sub> &#9834;&#9834;</a>
@@ -212,18 +225,7 @@
 			</div>
 		</div>
 			
-		<!-- use css to position this to the upper right -->
-		<span id="upperRight">
-		<div class="rightButtons" id="permutationAnchor" onClick="permutationAnchorClick(event)">
-			Permutations
-		</div>
-		<div class="rightButtons">
-			<a id="interestingGrooves" href="interestingGrooves.html">Grooves</a>
-		</div>
-		<div class="rightButtons">
-			<a id="about" href="about.html">About</a>
-		</div>
-		</span>
+		
 		<script>
 			// set up the page after it has fully loaded
 			window.onload = function () {
