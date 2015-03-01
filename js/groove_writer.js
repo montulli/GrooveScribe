@@ -697,23 +697,23 @@
 		
 		switch (perm_type) {
 		case "kick_16ths":
-			showHideCSS_ClassDisplay(".kick-container", true, false, "block");  // hide it
-			showHideCSS_ClassDisplay(".snare-container", true, true, "block");  // show it
+			showHideCSS_ClassVisibility(".kick-container", true, false);  // hide it
+			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
 			document.getElementById("staff-container2").style.display = "none";
 			document.getElementById("permutationAnchor").style.backgroundColor = "orange";
 			break;
 			
 		case "snare_16ths":
-			showHideCSS_ClassDisplay(".kick-container", true, true, "block");  // show it
-			showHideCSS_ClassDisplay(".snare-container", true, false, "block");  // hide it
+			showHideCSS_ClassVisibility(".kick-container", true, true);  // show it
+			showHideCSS_ClassVisibility(".snare-container", true, false);  // hide it
 			document.getElementById("staff-container2").style.display = "none";
 			document.getElementById("permutationAnchor").style.backgroundColor = "orange";
 			break;
 
 		case "none":
 		default:
-			showHideCSS_ClassDisplay(".kick-container", true, true, "block");  // show it
-			showHideCSS_ClassDisplay(".snare-container", true, true, "block");  // show it
+			showHideCSS_ClassVisibility(".kick-container", true, true);  // show it
+			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
 			// document.getElementById("staff-container2").style.display = "block";
 			global_permutationType = "none";
 			document.getElementById("permutationAnchor").style.backgroundColor = "#FFFFCC";;
@@ -2062,9 +2062,10 @@
 	function startMIDI_playback() {
 		if(MIDI.Player.playing) {
 			return;
-		} else if(global_isMIDIPaused) {
+		} else if(global_isMIDIPaused && false == noteHasChangedSinceLastReset() ) {
 			MIDI.Player.resume();
 		} else {
+			MIDI.Player.stop();
 			loadMIDI_for_playback();
 			noteHasChangedReset();  // reset so we know if there is a change
 			MIDI.Player.loop(global_shouldMIDIRepeat);   // set the loop parameter
@@ -2108,6 +2109,7 @@
 		}
 	}
 	
+	var note_count = 0;
 	var global_midi_note_num = 0;  // global, but only used in this function
 	function ourMIDICallback(data) {
 		document.getElementById("MIDIProgress").value = (data.now/data.end)*100;
@@ -2136,26 +2138,29 @@
 		}
 		
 		// note on
+		var note_type;
 		if(data.message == 144) {
 			if(data.note == 32 || data.note == 22 || data.note == 23 || data.note == 27 || data.note == 26)  {
-				hilight_note("hi-hat", (global_midi_note_num/getNoteScaler()));
+				note_type = "hi-hat";
 			} else if(data.note == 24 || data.note == 33 || data.note == 34 || data.note == 35) {
-				hilight_note("snare", (global_midi_note_num/getNoteScaler()));
+				note_type = "snare";
 			} else if(data.note == 25) {
-				hilight_note("kick", (global_midi_note_num/getNoteScaler()));
+				note_type = "kick";
 			}
+			hilight_note(note_type, (global_midi_note_num/getNoteScaler()));
 		}
 		
 		if(data.note == 60)
 			global_midi_note_num++;
 	
-		if(0) {
+		if(0 && data.message == 144) {
+			note_count++;
 			// my debugging code for midi
 			var newHTML = "";
 			if(data.note != 60)
 				newHTML += "<b>";
 				
-			newHTML += " note #: " + global_midi_note_num + 
+			newHTML += note_type + " total notes: " + note_count + " - count#: " + global_midi_note_num + 
 											" now: " + data.now + 
 											" note: " + data.note + 
 											" message: " + data.message + 
@@ -2466,10 +2471,8 @@
 			instruments: ["gunshot" ],
 			callback: function() {
 				MIDI.programChange(0, 127);   // use "Gunshot" instrument because I don't know how to create new ones
-				//MIDI.noteOn(0, MIDI.pianoKeyOffset + 5, 127, 0);
 				document.getElementById("playImage").src="images/play.png";
 				document.getElementById("playImage").onclick = function (event){event.preventDefault(); startOrPauseMIDI_playback();};  // enable play button
-				//document.getElementById("stopImage").src="images/stop.png";
 				
 				setupHotKeys();  // spacebar to play
 			}

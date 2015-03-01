@@ -176,7 +176,7 @@ var scheduleTracking = function (channel, note, currentTime, offset, message, ve
 			startAudio(0, true);
 		} else if (root.currentTime === queuedTime && queuedTime < root.endTime && eventQueue.length == 0) {
 			// grab next sequence of a long midi
-			startAudio(queuedTime, true);
+			startAudio(queuedTime + .001, true);
 		} 
 		
 	}, currentTime - offset);
@@ -221,12 +221,21 @@ var startAudio = function (currentTime, fromCache) {
 	queuedTime = 0.5;
 	startTime = ctx.currentTime;
 	//
-	for (var n = 0; n < length && messages < 100; n++) {
+	for (var n = 0; n < length; n++) {
+		
+		// stop at a maximum number of queued messages
+		// if there are multiple notes at 0 delay
+		// queue them all together, regardless of queue size
+		if(data[n][1] != 0 && messages >= 100) {
+			break;
+		}
+		
 		queuedTime += data[n][1];
 		if (queuedTime < currentTime) {
 			offset = queuedTime;
 			continue;
-		}
+		}	    
+		
 		currentTime = queuedTime - offset;
 		var event = data[n][0].event;
 		if (event.type !== "channel") continue;
