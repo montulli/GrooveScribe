@@ -2,7 +2,6 @@
 	/* this is for debugging layout issues - puts a read border around everything */
 	/* body * { border: 1px solid red; }		 */
 	body {
-		.width: 750px;
 		margin: 10px;
 		background: #B2B28F;
 		font-family: Calibri;
@@ -28,6 +27,9 @@
 	}
 	#musicalInput {
 		margin-top: 10px;
+		width: 100%;
+		overflow-x: auto;
+		overflow-y: hidden;
 	}
 	#hiddenDescription {
 		display: none;
