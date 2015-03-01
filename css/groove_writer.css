@@ -475,8 +475,10 @@
 		float: right;
 	}
 	#buttonsAboveSheetMusic {
-		margin-top: 10px;
+		margin-top: 2px;
 		width: 797px;
+		-webkit-justify-content: space-between;
+		display: -webkit-flex;
 		display: flex;
 		justify-content: space-between;
 	}
