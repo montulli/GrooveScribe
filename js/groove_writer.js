@@ -2377,7 +2377,7 @@
 	function isStickingsVisible() {
 		var myElements = document.querySelectorAll(".stickings-container");
 		for (var i = 0; i < myElements.length; i++) {
-			if(myElements[i].style.visibility == "visible")
+			if(myElements[i].style.display == "block")
 				return true;
 		}
 		
@@ -2386,8 +2386,8 @@
 	
 	function showHideStickings(force, showElseHide) {
 	
-		showHideCSS_ClassVisibility(".stickings-container", force, showElseHide);
-		showHideCSS_ClassVisibility(".stickings-label", force, showElseHide);
+		showHideCSS_ClassDisplay(".stickings-container", force, showElseHide, "block");
+		showHideCSS_ClassDisplay(".stickings-label", force, showElseHide, "block");
 		
 		create_ABC();
 		
@@ -2998,99 +2998,115 @@
 	function HTMLforStaffContainer(baseindex, indexStartForNotes) {
 		var newHTML = ('\
 			<div class="staff-container" id="staff-container' + baseindex + '">\
-				<div class="line-labels">\
-					<div class="stickings-label" onClick="noteLabelClick(event, \'stickings\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'stickings\')">stickings</div>\
-					<div class="hh-label" onClick="noteLabelClick(event, \'hh\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'hh\')">hi-hat</div>\
-					<div class="snare-label" onClick="noteLabelClick(event, \'snare\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'snare\')">snare</div>\
-					<div class="kick-label" onClick="noteLabelClick(event, \'kick\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'kick\')">kick</div>\
-				</div>\
-				<div class="music-line-container">\
-					\
-					<div class="notes-container">\
-					<div class="staff-line-1"></div>\
-					<div class="staff-line-2"></div>\
-					<div class="staff-line-3"></div>\
-					<div class="staff-line-4"></div>\
-					<div class="staff-line-5"></div>');
-
-					newHTML += ('\
-						<div class="stickings-container">\
-							<div class="opening_note_space"> </div>');
-							for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
-							
-								newHTML += ('\
-									<div id="sticking' + i + '" class="sticking">\
-										<div class="sticking_right"  id="sticking_right' + i + '"  onClick="noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'sticking\', ' + i + ') onmouseenter="noteOnMouseEnter(event, \'sticking\'">R</div>\
-										<div class="sticking_left"  id="sticking_left' + i + '"  onClick="noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'sticking\', ' + i + ')", ' + i + ')">L</div>\
-									</div>\
-								');
-								
-								// add space between notes, exept on the last note
-								if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
-									newHTML += ('<div class="space_between_note_groups"> </div> ');
-								}
-							}
-						newHTML += ('<div class="end_note_space"></div>\n</div>');
-					
-					newHTML += ('\
-						<div class="hi-hat-container">\
-							<div class="opening_note_space"> </div>');
-							for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
-							
-								newHTML += ('\
-									<div id="hi-hat' + i + '" class="hi-hat" onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'hh\', ' + i + ')">\
-										<div class="hh_crash"  id="hh_crash'  + i + '">*</div>\
-										<div class="hh_ride"   id="hh_ride'   + i + '">R</div>\
-										<div class="hh_cross"  id="hh_cross'  + i + '">X</div>\
-										<div class="hh_open"   id="hh_open'   + i + '">o</div>\
-										<div class="hh_close"  id="hh_close'  + i + '">+</div>\
-										<div class="hh_accent" id="hh_accent' + i + '">&gt;</div>\
-									</div>\
-								');
-								
-								if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
-									newHTML += ('<div class="space_between_note_groups"> </div> ');
-								}
-							}
-						newHTML += ('<div class="end_note_space"></div>\n</div>');
+				<div class="row-container">\
+					<div class="line-labels">\
+						<div class="stickings-label" onClick="noteLabelClick(event, \'stickings\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'stickings\')">stickings</div>\
+					</div>\
+					<div class="music-line-container">\
+						\
+						<div class="notes-container">');
 						
 						newHTML += ('\
-						<div class="snare-container">\
-							<div class="opening_note_space"> </div> ');
-							for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
-								newHTML += ('\
-									<div id="snare' + i + '" class="snare" onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'snare\', ' + i + ')">\
-									<div class="snare_ghost"  id="snare_ghost'  + i + '">(&bull;)</div>\
-									<div class="snare_circle" id="snare_circle' + i + '"></div>\
-									<div class="snare_xstick" id="snare_xstick' + i + '">X</div>\
-									<div class="snare_accent" id="snare_accent' + i + '">&gt;</div>\
-									</div> \
+							<div class="stickings-container">\
+								<div class="opening_note_space"> </div>');
+								for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
+								
+									newHTML += ('\
+										<div id="sticking' + i + '" class="sticking">\
+											<div class="sticking_right"  id="sticking_right' + i + '"  onClick="noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'sticking\', ' + i + ') onmouseenter="noteOnMouseEnter(event, \'sticking\'">R</div>\
+											<div class="sticking_left"  id="sticking_left' + i + '"  onClick="noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'sticking\', ' + i + ')", ' + i + ')">L</div>\
+										</div>\
 									');
 									
-								if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
-									newHTML += ('<div class="space_between_note_groups"> </div> ');
+									// add space between notes, exept on the last note
+									if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
+										newHTML += ('<div class="space_between_note_groups"> </div> ');
+									}
 								}
-							}
-						newHTML += ('<div class="end_note_space"></div>\n</div>');
+							newHTML += ('<div class="end_note_space"></div>\n</div>');
 						
 						newHTML += ('\
-						<div class="kick-container">\
-							<div class="opening_note_space"> </div> ');
-							for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
-								newHTML += ('\
-									<div id="kick' + i + '" class="kick" onClick="noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'kick\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'kick\', ' + i + ')">\
-									<div class="kick_splash" id="kick_splash' + i + '">X</div></a>\
-									<div class="kick_circle" id="kick_circle' + i + '"></div></a>\
-									</div> \
-								');
-								
-								if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
-									newHTML += ('<div class="space_between_note_groups"> </div> ');
-								}
-							}
-						newHTML += ('<div class="end_note_space"></div>\n</div>');
-						
+						</div>\
+					</div>\
+				</div>');
+				
 		newHTML += ('\
+				<div class="row-container">\
+					<div class="line-labels">\
+						<div class="hh-label" onClick="noteLabelClick(event, \'hh\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'hh\')">hi-hat</div>\
+						<div class="snare-label" onClick="noteLabelClick(event, \'snare\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'snare\')">snare</div>\
+						<div class="kick-label" onClick="noteLabelClick(event, \'kick\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'kick\')">kick</div>\
+					</div>\
+					<div class="music-line-container">\
+						\
+						<div class="notes-container">\
+						<div class="staff-line-1"></div>\
+						<div class="staff-line-2"></div>\
+						<div class="staff-line-3"></div>\
+						<div class="staff-line-4"></div>\
+						<div class="staff-line-5"></div>');
+
+						
+						newHTML += ('\
+							<div class="hi-hat-container">\
+								<div class="opening_note_space"> </div>');
+								for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
+								
+									newHTML += ('\
+										<div id="hi-hat' + i + '" class="hi-hat" onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'hh\', ' + i + ')">\
+											<div class="hh_crash"  id="hh_crash'  + i + '">*</div>\
+											<div class="hh_ride"   id="hh_ride'   + i + '">R</div>\
+											<div class="hh_cross"  id="hh_cross'  + i + '">X</div>\
+											<div class="hh_open"   id="hh_open'   + i + '">o</div>\
+											<div class="hh_close"  id="hh_close'  + i + '">+</div>\
+											<div class="hh_accent" id="hh_accent' + i + '">&gt;</div>\
+										</div>\
+									');
+									
+									if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
+										newHTML += ('<div class="space_between_note_groups"> </div> ');
+									}
+								}
+							newHTML += ('<div class="end_note_space"></div>\n</div>');
+							
+							newHTML += ('\
+							<div class="snare-container">\
+								<div class="opening_note_space"> </div> ');
+								for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
+									newHTML += ('\
+										<div id="snare' + i + '" class="snare" onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'snare\', ' + i + ')">\
+										<div class="snare_ghost"  id="snare_ghost'  + i + '">(&bull;)</div>\
+										<div class="snare_circle" id="snare_circle' + i + '"></div>\
+										<div class="snare_xstick" id="snare_xstick' + i + '">X</div>\
+										<div class="snare_accent" id="snare_accent' + i + '">&gt;</div>\
+										</div> \
+										');
+										
+									if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
+										newHTML += ('<div class="space_between_note_groups"> </div> ');
+									}
+								}
+							newHTML += ('<div class="end_note_space"></div>\n</div>');
+							
+							newHTML += ('\
+							<div class="kick-container">\
+								<div class="opening_note_space"> </div> ');
+								for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
+									newHTML += ('\
+										<div id="kick' + i + '" class="kick" onClick="noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'kick\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'kick\', ' + i + ')">\
+										<div class="kick_splash" id="kick_splash' + i + '">X</div></a>\
+										<div class="kick_circle" id="kick_circle' + i + '"></div></a>\
+										</div> \
+									');
+									
+									if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
+										newHTML += ('<div class="space_between_note_groups"> </div> ');
+									}
+								}
+							newHTML += ('<div class="end_note_space"></div>\n</div>');
+							
+			newHTML += ('\
+					</div>\
 				</div>\
 			</div>\
 		</div>')
