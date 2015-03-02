@@ -52,6 +52,7 @@
 	}
 	#upperRight {
 		float: right;
+		margin-bottom: 6px;
 	}
 	.line-labels {
 		display: inline-block;
@@ -164,7 +165,7 @@
 		position: relative;
 		border: 1px solid;
 		border-color: transparent;
-		width: 30px;
+		width: 29px;
 		height: 24px;
 		margin-right: 2px;
 		margin-left: 2px;
@@ -174,7 +175,7 @@
 		position: relative;
 		border: 1px solid;
 		border-color: transparent;
-		width: 30px;
+		width: 29px;
 		height: 36px;
 		margin-right: 2px;
 		margin-left: 2px;
@@ -184,7 +185,7 @@
 		position: relative;
 		border: 1px solid;
 		border-color: transparent;
-		width: 30px;
+		width: 29px;
 		height: 50px;
 		margin-right: 2px;
 		margin-left: 2px;
@@ -194,7 +195,7 @@
 		position: relative;
 		border: 1px solid;
 		border-color: transparent;
-		width: 30px;
+		width: 29px;
 		height: 54px;
 		margin-right: 2px;
 		margin-left: 2px;
@@ -477,6 +478,7 @@
 	#buttonsAboveSheetMusic {
 		margin-top: 2px;
 		width: 797px;
+		padding-right: 10px;
 		-webkit-justify-content: space-between;
 		display: -webkit-flex;
 		display: flex;
