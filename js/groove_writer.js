@@ -44,10 +44,9 @@
 				
 	// functions
 	
-	// Get the "?query" values from the page URL
-	function getQueryVariable(variable, def_value)
+	function getQueryVariableFromString(variable, def_value, my_string)
 	{
-		   var query = window.location.search.substring(1);
+		   var query = my_string.substring(1);
 		   var vars = query.split("&");
 		   for (var i=0;i<vars.length;i++) {
 				   var pair = vars[i].split("=");
@@ -55,8 +54,14 @@
 		   }
 		   return(def_value);
 	}	
+	
+	// Get the "?query" values from the page URL
+	function getQueryVariableFromURL(variable, def_value)
+	{
+		   return(getQueryVariableFromString(variable, def_value, window.location.search));
+	}	
 	// here because we need the function defined first.
-	global_notes_per_measure = parseInt(getQueryVariable("Div", "8"));	// default to 8ths
+	global_notes_per_measure = parseInt(getQueryVariableFromURL("Div", "8"));	// default to 8ths
 
 	// check for firefox browser
 	function isFirefox() {
@@ -593,6 +598,12 @@
 	}
 	
 	function showContextMenu(contextMenu) {
+		
+		// if there is another context menu open, close it
+		if(global_visible_context_menu ) {
+			hideContextMenu( global_visible_context_menu );
+		}
+		
 		contextMenu.style.display = "block";
 		global_visible_context_menu = contextMenu;
 		
@@ -602,8 +613,6 @@
 		setTimeout(function(){
 			document.onclick = documentOnClickHanderCloseContextMenu;
 			},100);
-		
-		
 	}
 	
 	function hideContextMenu(contextMenu) {
@@ -668,15 +677,29 @@
 	
 	// the user has clicked on the permutation menu
 	function permutationAnchorClick(event) {
-		var contextMenu;
 		
-		contextMenu = document.getElementById("permutationContextMenu");
+		var contextMenu = document.getElementById("permutationContextMenu");
 		if(contextMenu) {
 			if (!event) var event = window.event;
 			if (event.pageX || event.pageY)
 			{
-				contextMenu.style.top = event.pageY-30 + "px";
+				contextMenu.style.top = event.pageY + "px";
 				contextMenu.style.left = event.pageX-75 + "px";
+			}
+			showContextMenu(contextMenu);
+		}
+	}
+	
+	// the user has clicked on the grooves menu
+	function groovesAnchorClick(event) {
+		
+		var contextMenu = document.getElementById("grooveListWrapper");
+		if(contextMenu) {
+			if (!event) var event = window.event;
+			if (event.pageX || event.pageY)
+			{
+				contextMenu.style.top = event.pageY + "px";
+				contextMenu.style.left = event.pageX-240 + "px";
 			}
 			showContextMenu(contextMenu);
 		}
@@ -815,10 +838,6 @@
 				alert("Bad IF case in noteLabelPopupClick");
 		}
 		
-		if(contextMenu) {
-			hideContextMenu(contextMenu);
-		}
-		
 		create_ABC();
 		
 		return false;
@@ -893,23 +912,16 @@
 		
 		switch(type) {
 			case "hh":
-				contextMenu = document.getElementById("hhContextMenu")
 				set_hh_state(id, new_setting);
 				break;
 			case "snare":
-				contextMenu = document.getElementById("snareContextMenu")
 				set_snare_state(id, new_setting);
 				break;
 			case "kick":
-				contextMenu = document.getElementById("kickContextMenu")
 				set_kick_state(id, new_setting);
 				break;
 			default:
 				alert("Bad case in contextMenuClick")
-		}
-		
-		if(contextMenu) {
-			hideContextMenu(contextMenu);
 		}
 		
 		create_ABC();
@@ -1754,11 +1766,11 @@
 				var velocity_accent = 120;
 				var velocity_ghost = 50;
 				
-				if(usingTriplets)
+				if(usingTriplets())
 					duration = 21.33;
 				
 				swing_percentage = getSwing()/100;
-				if(swing_percentage != 0 && !usingTriplets()) {
+				if(swing_percentage != 0) {
 					// swing effects the note placement of the e and the a.  (1e&a)
 					// swing increases the distance between the 1 and the e ad shortens the distance between the e and the &
 					// likewise the distance between the & and the a is increased and the a and the 1 is shortened
@@ -1946,7 +1958,7 @@
 		}
 		
 		if(usingTriplets() || global_notes_per_measure == 4)
-			document.getElementById('swingOutput').value = "swing N/A";
+			document.getElementById('swingOutput').innerHTML = "swing N/A";
 		else	
 			document.getElementById('swingOutput').innerHTML = "" + swingAmount + "% swing";
 	}
@@ -1954,6 +1966,9 @@
 	function getSwing() {
 		var swing = parseInt(document.getElementById("swingInput").value);
 		if(swing < 0 || swing > 60)
+			swing = 0;
+		
+		if(usingTriplets() || global_notes_per_measure == 4)
 			swing = 0;
 		
 		// our real swing value only goes to 60%. 
@@ -2464,7 +2479,7 @@
 		// set the background color of the current subdivision
 		document.getElementById(global_notes_per_measure + "ths").style.background = "orange";
 		
-		set_Default_notes();
+		set_Default_notes(window.location.search);
 		
 		MIDI.loadPlugin({
 			soundfontUrl: "./soundfont/",
@@ -2803,7 +2818,8 @@
 		}
 	}
 	
-	function set_Default_notes() {
+	function set_Default_notes(encodedURLData) {
+		var Division;
 		var Stickings;
 		var HH;
 		var Snare;
@@ -2811,9 +2827,16 @@
 		var numberOfMeasures = 2;
 		var stickings_set_from_URL = false;
 		
-		Stickings = getQueryVariable("Stickings", false);
+		Division = parseInt(getQueryVariableFromString("Div", 0, encodedURLData));
+		if(Division) {
+			if(Division != global_notes_per_measure) {
+				changeDivisionWithNotes(Division);
+			}
+		}
+		
+		Stickings = getQueryVariableFromString("Stickings", false, encodedURLData);
 		if(!Stickings) {
-			getQueryVariable("Stickings", false)
+			getQueryVariableFromString("Stickings", false, encodedURLData)
 			if(!Stickings) {
 				Stickings = GetDefaultStickingsGroove(global_notes_per_measure);
 			}
@@ -2821,29 +2844,29 @@
 			stickings_set_from_URL = true;
 		}
 		
-		HH = getQueryVariable("H", false);
+		HH = getQueryVariableFromString("H", false, encodedURLData);
 		if(!HH) {
-			getQueryVariable("HH", false)
+			getQueryVariableFromString("HH", false, encodedURLData)
 			if(!HH) {
 				HH = GetDefaultHHGroove(global_notes_per_measure);
 			}
 		}
 		
-		Snare = getQueryVariable("S", false);
+		Snare = getQueryVariableFromString("S", false, encodedURLData);
 		if(!Snare) {
 			Snare = GetDefaultSnareGroove(global_notes_per_measure);
 		}
 		
-		Kick = getQueryVariable("K", false);
+		Kick = getQueryVariableFromString("K", false, encodedURLData);
 		if(!Kick) {
-			getQueryVariable("B", false)
+			getQueryVariableFromString("B", false, encodedURLData)
 			if(!Kick) {
 				Kick = GetDefaultKickGroove(global_notes_per_measure);
 			}
 		}
 			
 		// for now we only support up to 2 measures
-		numberOfMeasures = getQueryVariable("measures", 2);
+		numberOfMeasures = getQueryVariableFromString("measures", 2, encodedURLData);
 		if(numberOfMeasures > 2)
 			numberOfMeasures = 2;
 
@@ -2852,7 +2875,7 @@
 		setNotesFromURLData("S", Snare, numberOfMeasures);
 		setNotesFromURLData("K", Kick, numberOfMeasures);
 		
-		numberOfMeasuresToShow = getQueryVariable("showMeasures", 1);
+		numberOfMeasuresToShow = getQueryVariableFromString("showMeasures", 1, encodedURLData);
 		if(numberOfMeasuresToShow == 2)
 			showHideSecondMeasure(true, true);
 		else
@@ -2861,30 +2884,34 @@
 		if(stickings_set_from_URL) 
 				showHideStickings(true, true);
 		
-		var title = getQueryVariable("title", "");
+		var title = getQueryVariableFromString("title", "", encodedURLData);
 		title = decodeURI(title);
 		title = title.replace(/\+/g, " ");
 		document.getElementById("tuneTitle").value = title;
 						
-		var author = getQueryVariable("author", "");
+		var author = getQueryVariableFromString("author", "", encodedURLData);
 		author = decodeURI(author);
 		author = author.replace(/\+/g, " ");
 		document.getElementById("tuneAuthor").value = author;
 		
-		var comments = getQueryVariable("comments", "");
+		var comments = getQueryVariableFromString("comments", "", encodedURLData);
 		comments = decodeURI(comments);
 		comments = comments.replace(/\+/g, " ");
 		document.getElementById("tuneComments").value = comments;
 		
-		var tempo = getQueryVariable("tempo", "");
+		var tempo = getQueryVariableFromString("tempo", "", encodedURLData);
 		if(tempo != "")
 			setTempo(tempo);
 		
-		var swing = getQueryVariable("swing", "");
+		var swing = getQueryVariableFromString("swing", "", encodedURLData);
 		if(swing != "")
 			setSwing(swing);
 		
 		create_ABC();
+	}
+	
+	function loadNewGroove(encodedURLData)  {
+		set_Default_notes(encodedURLData)
 	}
 	
 	function getABCDataWithLineEndings() {
@@ -2928,10 +2955,12 @@
 			showHideStickings(true, true);
 		
 		// now set the right notes on and off
-		setNotesFromURLData("Stickings", Stickings, 2);
-		setNotesFromURLData("H", HH, 2);
-		setNotesFromURLData("S", Snare, 2);
-		setNotesFromURLData("K", Kick, 2);
+		if(Stickings && HH && Snare && Kick) {
+			setNotesFromURLData("Stickings", Stickings, 2);
+			setNotesFromURLData("H", HH, 2);
+			setNotesFromURLData("S", Snare, 2);
+			setNotesFromURLData("K", Kick, 2);
+		}
 		
 		// un-highlight the old div 
 		document.getElementById(oldDivision + "ths").style.background = "#FFFFCC";

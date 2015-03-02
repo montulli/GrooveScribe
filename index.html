@@ -30,6 +30,7 @@
 		
 		<!--   our custom JS  -->
 		<script src="js/groove_writer.js"></script>
+		<script src="js/grooves.js"></script>
 		
 	    <link rel="stylesheet" type="text/css" href="css/groove_writer.css">
     </head>
@@ -40,8 +41,8 @@
 				<div class="rightButtons" id="permutationAnchor" onClick="permutationAnchorClick(event)">
 					Permutations
 				</div>
-				<div class="rightButtons">
-					<a id="interestingGrooves" href="interestingGrooves.html">Grooves</a>
+				<div class="rightButtons" id="groovesAnchor" onClick="groovesAnchorClick(event)">
+					Grooves
 				</div>
 				<div class="rightButtons">
 					<a id="about" href="about.html">About</a>
@@ -58,7 +59,7 @@
 			</div>
 			
 			<script>
-				if(1 || is_touch_device()) {
+				if(is_touch_device()) {
 					document.write('<div id="advancedEditAnchor" onClick="event.preventDefault(); toggleAdvancedEdit()">Advanced Edit</div>');
 				}
 			</script>
@@ -208,6 +209,11 @@
 				<li onClick='permutationPopupClick("snare_16ths")'><b>Snare</b> Permutation</li>
 			</ul>
 		</div>
+		<div id="grooveListWrapper">
+			<script>
+				document.write(grooves.getGroovesAsHTML());
+			</script>
+		</div>	
 		
 		
 		<!-- this is used by the share/save button, and is hidden by default -->
