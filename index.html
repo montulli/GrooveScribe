@@ -145,8 +145,15 @@
 		
 		<!-- context menu that will pop up over notes in advaced edit more -->
 		<div class="noteContextMenu">
+			<ul id="stickingContextMenu" class="list">
+				<li onClick='notePopupClick("sticking", "off")'>Off</li>
+				<li onClick='notePopupClick("sticking","right")'><b>R</b>ight</li>
+				<li onClick='notePopupClick("sticking","left")'><b>L</b>eft</li>
+			</ul>
+		</div>
+		<div class="noteContextMenu">
 			<ul id="hhContextMenu" class="list">
-				<li onClick='notePopupClick("hh", "off")'>OFF</li>
+				<li onClick='notePopupClick("hh", "off")'>Off</li>
 				<li onClick='notePopupClick("hh","normal")'>Hi-hat normal</li>
 				<li onClick='notePopupClick("hh","open")'>Hi-hat open</li>
 				<li onClick='notePopupClick("hh","close")'>Hi-hat closed</li>
@@ -157,7 +164,7 @@
 		</div>
 		<div class="noteContextMenu">
 			<ul id="snareContextMenu" class="list">
-				<li onClick='notePopupClick("snare", "off")'>OFF</li>
+				<li onClick='notePopupClick("snare", "off")'>Off</li>
 				<!-- li onClick='notePopupClick("snare", "normal")'>Snare Normal</li -->
 				<li onClick='notePopupClick("snare", "accent")'>Snare Accent</li>
 				<li onClick='notePopupClick("snare", "ghost")'>Ghost Note</li>
@@ -166,7 +173,7 @@
 		</div>
 		<div class="noteContextMenu">
 			<ul id="kickContextMenu" class="list">
-				<li onClick='notePopupClick("kick", "off")'>OFF</li>
+				<li onClick='notePopupClick("kick", "off")'>Off</li>
 				<li onClick='notePopupClick("kick", "normal")'>Kick Normal</li>
 				<li onClick='notePopupClick("kick", "splash")'>Hi-hat foot</li>
 				<li onClick='notePopupClick("kick", "kick_and_splash")'>Kick & Hi-hat splash</li>
@@ -174,28 +181,28 @@
 		</div>
 		<div class="noteContextMenu">
 			<ul id="hhLabelContextMenu" class="list">
-				<li onClick='noteLabelPopupClick("hh", "all_off")'>all Hi-hats <b>OFF</b></li>
-				<li onClick='noteLabelPopupClick("hh", "all_on")'>all Hi-hats <b>ON</b></li>				
+				<li onClick='noteLabelPopupClick("hh", "all_off")'>all Hi-hats <b>Off</b></li>
+				<li onClick='noteLabelPopupClick("hh", "all_on")'>all Hi-hats <b>On</b></li>				
 				<li onClick='noteLabelPopupClick("hh", "cancel")'>cancel</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
 			<ul id="snareLabelContextMenu" class="list">
-				<li onClick='noteLabelPopupClick("snare", "all_off")'>all Snares <b>OFF</b></li>
-				<li onClick='noteLabelPopupClick("snare", "all_on")'>all Snares <b>ON</b></li>
+				<li onClick='noteLabelPopupClick("snare", "all_off")'>all Snares <b>Off</b></li>
+				<li onClick='noteLabelPopupClick("snare", "all_on")'>all Snares <b>On</b></li>
 				<li onClick='noteLabelPopupClick("snare", "cancel")'>cancel</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
 			<ul id="kickLabelContextMenu" class="list">
-				<li onClick='noteLabelPopupClick("kick", "all_off")'>all Kicks <b>OFF</b></li>
-				<li onClick='noteLabelPopupClick("kick", "all_on")'>all Kicks <b>ON</b></li>
+				<li onClick='noteLabelPopupClick("kick", "all_off")'>all Kicks <b>Off</b></li>
+				<li onClick='noteLabelPopupClick("kick", "all_on")'>all Kicks <b>On</b></li>
 				<li onClick='noteLabelPopupClick("kick", "cancel")'>cancel</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
 			<ul id="stickingsLabelContextMenu" class="list">
-				<li onClick='noteLabelPopupClick("stickings", "all_off")'>all <b>OFF</b></li>
+				<li onClick='noteLabelPopupClick("stickings", "all_off")'>all <b>Off</b></li>
 				<li onClick='noteLabelPopupClick("stickings", "alternate")'>alternate</li>
 				<li onClick='noteLabelPopupClick("stickings", "all_right")'>all <b>R</b>s</li>
 				<li onClick='noteLabelPopupClick("stickings", "all_left")'>all <b>L</b>s</li>

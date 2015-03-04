@@ -625,44 +625,6 @@
 		
 	}
 	
-	// returns false if the click should be processed without a popup, (non advance edit)
-	function handleNotePopup(event, type, id) {
-	
-		global_which_index_last_clicked = id;
-		var contextMenu;
-	
-		// don't use the pop up if advanced edit isn't on.
-		if(global_advancedEditIsOn != true)
-			return false;
-			
-		switch(type) {
-		case "hh":
-			contextMenu = document.getElementById("hhContextMenu")
-			break;
-		case "snare":
-			contextMenu = document.getElementById("snareContextMenu")
-			break;
-		case "kick":
-			contextMenu = document.getElementById("kickContextMenu")
-			break;
-		default:
-			alert("Bad case in handleNotePopup")
-		}
-		
-		if(contextMenu) {
-			// position it
-			if (!event) var event = window.event;
-			if (event.pageX || event.pageY)
-			{
-				contextMenu.style.top = event.pageY-30 + "px";
-				contextMenu.style.left = event.pageX-75 + "px";
-			}
-			showContextMenu(contextMenu);  // display it
-		}
-			
-		return true;
-	}
-	
 	function noteHasChanged() {
 		global_aNoteHasChangedSinceLastReset = true;
 	}
@@ -850,6 +812,9 @@
 		var contextMenu;
 		
 		switch(type) {
+		case "sticking":
+			contextMenu = document.getElementById("stickingContextMenu")
+			break;
 		case "hh":
 			contextMenu = document.getElementById("hhContextMenu")
 			break;
@@ -881,10 +846,13 @@
 	
 	function noteLeftClick(event, type, id) {
 		
-		// handleNotePopup will return true if it handled the event
-		if(!handleNotePopup(event, type, id)) {
+		// use a popup if advanced edit is on
+		if(global_advancedEditIsOn == true) {
+			noteRightClick(event, type, id);
 		
-			// this is a non advanced edit click
+		} else {	
+		
+			// this is a non advanced edit left click
 			switch(type) {
 			case "hh":
 				set_hh_state(id, is_hh_on(id) ? "off" : "normal");
@@ -911,6 +879,9 @@
 		var id = global_which_index_last_clicked
 		
 		switch(type) {
+			case "sticking":
+				set_sticking_state(id, new_setting);
+				break;
 			case "hh":
 				set_hh_state(id, new_setting);
 				break;
