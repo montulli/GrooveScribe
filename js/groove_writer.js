@@ -16,6 +16,7 @@
 	global_visible_context_menu = false;   // a single context menu can be visible at a time.
 	global_permutationType = "none";
 	global_advancedEditIsOn = false;
+	global_measure_for_note_label_click = 0;
 	
 	// constants
 	constant_default_tempo = 80;
@@ -722,8 +723,12 @@
 	
 	
 	// context menu for labels
-	function noteLabelClick(event, instrument) {
+	function noteLabelClick(event, instrument, measure) {
 		var contextMenu = false;
+		
+		// store this in a global, there can only ever be one context menu open at a time.
+		// Yes, I agree this sucks
+		global_measure_for_note_label_click = measure;
 		
 		switch(instrument) {
 		case "stickings":
@@ -755,6 +760,7 @@
 		return false;
 	}
 	
+	
 	function noteLabelPopupClick(instrument, action) {
 		var setFunction = false;
 		var contextMenu = false;
@@ -781,7 +787,10 @@
 			return false;
 		}
 		
-		for(var i=0; i < global_notes_per_measure*global_number_of_measures; i++) {
+		// start at the first note of the measure we want to effect.   Only fill in the 
+		// notes for that measure
+		var startIndex = global_notes_per_measure * (global_measure_for_note_label_click-1);
+		for(var i=startIndex; i-startIndex < global_notes_per_measure; i++) {
 			if(action == "all_off")
 				setFunction(i, "off")
 			else if(instrument == "stickings" && action == "all_right")
@@ -799,6 +808,8 @@
 			else 
 				alert("Bad IF case in noteLabelPopupClick");
 		}
+		
+		global_measure_for_note_label_click = 0;  // reset
 		
 		create_ABC();
 		
@@ -3000,7 +3011,7 @@
 			<div class="staff-container" id="staff-container' + baseindex + '">\
 				<div class="row-container">\
 					<div class="line-labels">\
-						<div class="stickings-label" onClick="noteLabelClick(event, \'stickings\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'stickings\')">stickings</div>\
+						<div class="stickings-label" onClick="noteLabelClick(event, \'stickings\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'stickings\', ' + baseindex + ')">stickings</div>\
 					</div>\
 					<div class="music-line-container">\
 						\
@@ -3033,9 +3044,9 @@
 		newHTML += ('\
 				<div class="row-container">\
 					<div class="line-labels">\
-						<div class="hh-label" onClick="noteLabelClick(event, \'hh\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'hh\')">hi-hat</div>\
-						<div class="snare-label" onClick="noteLabelClick(event, \'snare\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'snare\')">snare</div>\
-						<div class="kick-label" onClick="noteLabelClick(event, \'kick\')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'kick\')">kick</div>\
+						<div class="hh-label" onClick="noteLabelClick(event, \'hh\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'hh\', ' + baseindex + ')">hi-hat</div>\
+						<div class="snare-label" onClick="noteLabelClick(event, \'snare\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'snare\', ' + baseindex + ')">snare</div>\
+						<div class="kick-label" onClick="noteLabelClick(event, \'kick\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'kick\', ' + baseindex + ')">kick</div>\
 					</div>\
 					<div class="music-line-container">\
 						\
