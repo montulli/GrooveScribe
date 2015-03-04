@@ -1780,36 +1780,24 @@
 				switch(HH_Array[i]) {
 					case constant_ABC_HH_Normal:  // normal
 					case constant_ABC_HH_Close:  // normal
-						if(midi_output_type == "general_MIDI")
 							hh_note = 42;
-						else
-							hh_note = 'Ab1';
 						break;
 					case constant_ABC_HH_Accent:  // accent
 						if(midi_output_type == "general_MIDI") {
 							hh_note = 42;
 							hh_velocity = velocity_accent;
 						} else {
-							hh_note = 'B0';
+							hh_note = 108;
 						}
 						break;
 					case constant_ABC_HH_Open:  // open
-						if(midi_output_type == "general_MIDI")
 							hh_note = 46;
-						else
-							hh_note = 'Bb0';
 						break;
 					case constant_ABC_HH_Ride:  // ride
-						if(midi_output_type == "general_MIDI")
 							hh_note = 51;
-						else
-							hh_note = 'D1';
 						break;
 					case constant_ABC_HH_Crash:  // crash
-						if(midi_output_type == "general_MIDI")
 							hh_note = 49;
-						else
-							hh_note = 'Eb1';
 						break;
 				}
 				
@@ -1824,18 +1812,14 @@
 				var snare_note = false;
 				switch(Snare_Array[i]) {
 					case constant_ABC_SN_Normal:  // normal
-						if(midi_output_type == "general_MIDI") {
-							snare_note = 8;
-						} else {
-							snare_note = 'A1';
-						}
+							snare_note = 38;
 						break;
 					case constant_ABC_SN_Accent:  // accent
 						if(midi_output_type == "general_MIDI") {
 							snare_note = 38;
 							snare_velocity = velocity_accent;
 						} else {
-							snare_note = 'C1';
+							snare_note = 22;   // custom note
 						}
 						break;	
 					case constant_ABC_SN_Ghost:  // ghost
@@ -1843,16 +1827,12 @@
 							snare_note = 38;
 							snare_velocity = velocity_ghost;
 						} else {
-							snare_note = 'Bb1';
+							snare_note = 21;
 							snare_velocity = velocity_ghost;
 						}
 						break;	
 					case constant_ABC_SN_XStick:  // xstick
-						if(midi_output_type == "general_MIDI") {
 							snare_note = 37;
-						} else {
-							snare_note = 'B1';
-						}
 						break;	
 				}
 				
@@ -1868,25 +1848,14 @@
 				var kick_splash_note = false;
 				switch(Kick_Array[i]) {
 				case constant_ABC_KI_Splash:  // normal
-					if(midi_output_type == "general_MIDI")
 						kick_splash_note = 44;
-					else
-						kick_splash_note = 'B0';
 					break;	
 				case constant_ABC_KI_SandK:  // normal
-					if(midi_output_type == "general_MIDI") {
 						kick_splash_note = 44;
 						kick_note = 35;
-					} else {
-						kick_splash_note = 'B0';
-						kick_note = 'Db1';
-					}
 					break;	
 				case constant_ABC_KI_Normal:  // normal
-					if(midi_output_type == "general_MIDI")
 						kick_note = 35;
-					else
-						kick_note = 'Db1';
 					break;	
 				}
 				if(kick_note != false) {
@@ -2137,11 +2106,11 @@
 		// note on
 		var note_type;
 		if(data.message == 144) {
-			if(data.note == 32 || data.note == 22 || data.note == 23 || data.note == 27 || data.note == 26)  {
+			if(data.note == 108 || data.note == 42 || data.note == 46 || data.note == 49 || data.note == 51)  {
 				note_type = "hi-hat";
-			} else if(data.note == 24 || data.note == 33 || data.note == 34 || data.note == 35) {
+			} else if(data.note == 21 || data.note == 22 || data.note == 37 || data.note == 38) {
 				note_type = "snare";
-			} else if(data.note == 25) {
+			} else if(data.note == 35 || data.note == 44) {
 				note_type = "kick";
 			}
 			hilight_note(note_type, (global_midi_note_num/getNoteScaler()));

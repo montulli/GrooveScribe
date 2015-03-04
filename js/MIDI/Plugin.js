@@ -137,6 +137,11 @@ if (window.AudioContext || window.webkitAudioContext) (function () {
 		var synth = MIDI.GeneralMIDI.byName[instrument];
 		var instrumentId = synth.number;
 		var url = urlList[index];
+		if (MIDI.Soundfont[instrument][url] == "") { // empty soundfont
+			// allow them to be empty
+			// requires the last note in the midi file to be valid
+			return;
+		}
 		if (!MIDI.Soundfont[instrument][url]) { // missing soundfont
 			return callback(instrument);
 		}
