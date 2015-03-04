@@ -1727,8 +1727,15 @@
 			Kick_Array[array_index] = get_kick_state(i+startIndexForClickableUI, "ABC");
 		}
 	}
-		
-	function MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, midi_output_type) {
+	
+	/* 
+	 * midi_output_type:  "general_MIDI" or "Custom"
+	 * num_notes_for_swing: how many notes are we using.   Since we need to know where the upstrokes are we need to know
+	 * 			what the proper division is.   It can change when we are doing permutations, otherwise it is what is the 
+	 *			global_notes_per_measure
+	 *
+	 */
+	function MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, midi_output_type, num_notes_for_swing) {
 			var array_length = getMaxArrayLengthForABCConverstion();  
 			var prev_hh_note = false;
 			var prev_snare_note = false;
@@ -1757,7 +1764,7 @@
 					// swing increases the distance between the 1 and the e ad shortens the distance between the e and the &
 					// likewise the distance between the & and the a is increased and the a and the 1 is shortened
 					//  So it sounds like this:   1-e&-a2-e&-a3-e&-a4-e&-a
-					var scaler = array_length / global_notes_per_measure;
+					var scaler = array_length / num_notes_for_swing;
 					var val = i%(4*scaler);
 					
 					if(val < scaler) {
@@ -1955,14 +1962,18 @@
 		
 		switch (global_permutationType) {
 		case "kick_16ths":
-		
+			
 			// compute sections with different kick patterns
 			for(var i=0; i < numSections; i++) {
 				var new_kick_array;
 				
 				new_kick_array = get_kick16th_permutation_array(i);
+
+				var num_notes_for_swing = 16;
+				if(global_notes_per_measure > 16)
+					num_notes_for_swing = global_notes_per_measure;
 			
-				MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, MIDI_type);
+				MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, MIDI_type, num_notes_for_swing);
 			}
 			break;
 			
@@ -1973,13 +1984,17 @@
 			for(var i=0; i < numSections; i++) {
 				var new_snare_array = get_snare_permutation_array(i);
 				
-				MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type);
+				var num_notes_for_swing = 16;
+				if(global_notes_per_measure > 16)
+					num_notes_for_swing = global_notes_per_measure;
+			
+				MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type,num_notes_for_swing);
 			}
 			break;
 			
 		case "none":
 		default:
-			MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type);
+			MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, global_notes_per_measure);
 			
 			if(isSecondMeasureVisable()) {
 				// reset arrays
