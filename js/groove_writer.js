@@ -2054,6 +2054,16 @@
 	}
 	
 	// modal play/stop button
+	function startOrStopMIDI_playback() {
+		
+		if(MIDI.Player.playing) {
+			stopMIDI_playback();
+		} else {
+			startMIDI_playback();
+		}			
+	}
+	
+	// modal play/pause button
 	function startOrPauseMIDI_playback() {
 		
 		if(MIDI.Player.playing) {
@@ -2403,7 +2413,7 @@
 			// otherwise we can't use spacebar in text fields :(
 			if(e.which == 32 && e.target.tagName != "INPUT" && e.target.tagName != "TEXTAREA") {
 				// spacebar
-				startOrPauseMIDI_playback();
+				startOrStopMIDI_playback();
 				return false;
 			}
 			if(e.which == 179) {
