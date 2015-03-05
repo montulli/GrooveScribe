@@ -1088,9 +1088,9 @@
 		var array_length = getMaxArrayLengthForABCConverstion();  
 		var scaler = 1;  // we are always in 24 notes here
 		var ABC_String = "";
-		var stickings_voice_string = "V:1\n";
-		var hh_snare_voice_string  = "V:2 stem=up\n";
-		var kick_voice_string      = "V:3 stem=down\n";
+		var stickings_voice_string = "V:Stickings\n";
+		var hh_snare_voice_string  = "V:Hands stem=up\n";
+		var kick_voice_string      = "V:Feet stem=down\n";
 			
 		for(var i=0; i < array_length; i++) {
 			
@@ -1124,10 +1124,10 @@
 			}
 		}
 		
-		stickings_voice_string += "|\n";
+		stickings_voice_string += "|";
 		hh_snare_voice_string += "|";
 		kick_voice_string += "|";
-		ABC_String += stickings_voice_string + hh_snare_voice_string + post_voice_abc + kick_voice_string + post_voice_abc;
+		ABC_String += stickings_voice_string + post_voice_abc + hh_snare_voice_string + post_voice_abc + kick_voice_string + post_voice_abc;
 		
 		return ABC_String;
 	}
@@ -1142,9 +1142,9 @@
 		var array_length = getMaxArrayLengthForABCConverstion();  
 		var scaler = 1;  // we are always in 32ths notes here
 		var ABC_String = "";
-		var stickings_voice_string = "V:1\n"    // for stickings.  they are all rests with text comments added
-		var hh_snare_voice_string = "V:2 stem=up\n";     // for hh and snare
-		var kick_voice_string = "V:3 stem=down\n";   // for kick drum
+		var stickings_voice_string = "V:Stickings\n"    // for stickings.  they are all rests with text comments added
+		var hh_snare_voice_string = "V:Hands stem=up\n";     // for hh and snare
+		var kick_voice_string = "V:Feet stem=down\n";   // for kick drum
 		
 			
 		for(var i=0; i < array_length; i++) {
@@ -1179,10 +1179,10 @@
 			}
 		}
 		
-		stickings_voice_string += "|\n";
+		stickings_voice_string += "|";
 		hh_snare_voice_string += "|";
 		kick_voice_string += "|";
-		ABC_String += stickings_voice_string + hh_snare_voice_string + post_voice_abc + kick_voice_string + post_voice_abc;
+		ABC_String += stickings_voice_string + post_voice_abc  + hh_snare_voice_string + post_voice_abc + kick_voice_string + post_voice_abc;
 		
 		return ABC_String;
 	}
@@ -1218,13 +1218,21 @@
 		else
 			fullABC += "L:1/32\n";
 		
-		fullABC += "%%flatbeams 1\n%%staves (1 2 3)\nK:C clef=perc\n";
+		fullABC +=  "%%flatbeams 1\n" +
+					"%%stretchlast 1\n" +
+					"%%pagewidth 595px\n" +
+					"%%leftmargin 10px\n" +
+					"%%rightmargin 10px\n" +
+					"%%staves (Stickings Hands Feet)\n" +
+					"K:C clef=perc\n";
 		
 		if(document.getElementById("showLegend").checked)
-			fullABC += 	'V:1 stem=up \n' +
+			fullABC += 	'V:Stickings\n' +
+						'x8 x8 x8 x8 x8 x8 x8 x8 ||\n' +
+						'V:Hands stem=up \n' +
 						'"^Hi-Hat"^g4 "^Open"!open!^g4 "^Close"!plus!^g4 "^Accent"!accent!^g4 ' +
 						'"^Crash"^A\'4 "^Ride"^f4 "^Snare"c4 "^Accent"!accent!c4 "^Cross"^c4 "^Ghost"_c4 x8 x8 x8 ||\n' +
-						'V:2 stem=down \n' +
+						'V:Feet stem=down \n' +
 						'z8 z8 z8 z8 z8 "^Kick"F4 "^Hi-Hat w/ foot"^d,4 x4 "^Kick & Hi-Hat"[F^d,]8  ||\n' +
 						'T:\n';
 				
