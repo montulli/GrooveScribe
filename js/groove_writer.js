@@ -2411,10 +2411,22 @@
 			// hide everything but the music and force a print
 			// doesn't work for browsers that don't have a blocking print call. (iOS)
 			showHideNonPrintableAreas(false);	
-			var oldColor = document.body.style.backgroundColor;
+			var style = window.getComputedStyle(document.body);
+			var oldColor = style.backgroundColor;
 			document.body.style.backgroundColor = "#FFF";
+			
+			var svgTargetDiv = document.getElementById("svgTarget");
+			var style = window.getComputedStyle(svgTargetDiv);
+			var oldBoxShadow = style.boxShadow;
+		
+			svgTargetDiv.style.boxShadow = "none";
+			
 			window.print();
+			
+			// reset
 			document.body.style.backgroundColor = oldColor;
+			svgTargetDiv.style.boxShadow = oldBoxShadow;
+			
 			showHideNonPrintableAreas(true);
 		} else {
 			// open a new window just for printing
