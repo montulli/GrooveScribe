@@ -16,7 +16,7 @@ if (typeof (grooves) === "undefined") var grooves = {};
 		'Funk': '?Div=16&Title=Funk&Swing=0&measures=2&showMeasures=1&H=|X-x-X-x-X-x-X-x-|X-x-X-x-X-x-X-x-|&S=|-----g-o-o--x--o|-----g-o-o--x--o|&K=|o-o-------o--o--|o-o-------o--o--|',
 		'Basic HipHop': '?Div=8&Swing=0&Title=Basic%20Hip%20Hop&measures=2&showMeasures=1&Tempo=120&H=|xxxxxxxx|xxxxxxxx|&S=|--o---o-|--o---o-|&K=|o--o----|o--o----|',
         'Upbeat Hi-hats':       '?Div=8&Swing=0&Title=Upbeats&measures=2&showMeasures=1&H=|-x-x-x-x|-x-x-x-x|&S=|--o---o-|--o---o-|&K=|o---o---|o---o---|',
-		'Syncopated Hi-hat #1': '?Div=16&Swing=0&Title=Syncopated%20hi-hat&measures=2&showMeasures=1&H=|x-xxx-xxx-xxx-xx|x-xxx-xxx-xxx-xx|&S=|----o-------o---|----o-------o---|&K=|o-------o-------|o-------o-------|',
+		'Syncopated Hi-hats': '?Div=16&Swing=0&Title=Syncopated%20hi-hat&measures=2&showMeasures=1&H=|x-xxx-xxx-xxx-xx|x-xxx-xxx-xxx-xx|&S=|----o-------o---|----o-------o---|&K=|o-------o-------|o-------o-------|',
 		'Train Beat':  '?Div=16&Swing=0&Title=Train%20Beat&Tempo=95&Measures=2&showMeasures=1&H=|----------------|----------------|&S=|ggOgggOgggOggOOg|OOOOOOOOOOOOOOOO|&K=|o-x-o-x-o-x-o-x-|o-------o-------|'
 	};
 

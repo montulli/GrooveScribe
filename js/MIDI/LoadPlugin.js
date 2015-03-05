@@ -57,8 +57,9 @@ MIDI.loadPlugin = function(conf) {
 		// use audio/ogg when supported
 		if (conf.targetFormat) {
 			var filetype = conf.targetFormat;
-		} else { // use smallest size
-			var filetype = types["audio/mpeg"] ? "mp3" : "ogg";
+		} else { 
+			var filetype = types["audio/ogg"] ? "ogg" : "mp3";    // prefer better quality 
+			//var filetype = types["audio/mpeg"] ? "mp3" : "ogg";    // prefer smaller size
 		}
 		// load the specified plugin
 		MIDI.lang = api;
