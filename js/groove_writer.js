@@ -1198,7 +1198,7 @@
 	
 	
 	// the top stuff in the ABC that doesn't depend on the notes
-	function get_top_ABC_BoilerPlate() {
+	function get_top_ABC_BoilerPlate(isPermutation) {
 		// boiler plate
 		var fullABC = "%abc\n\X:6\n"
 		
@@ -1218,15 +1218,29 @@
 		else
 			fullABC += "L:1/32\n";
 		
+		if(!isPermutation)
+			fullABC += "%%stretchlast 1\n";
+		
 		fullABC +=  "%%flatbeams 1\n" +
-					"%%stretchlast 1\n" +
 					"%%pagewidth 595px\n" +
 					"%%leftmargin 10px\n" +
 					"%%rightmargin 10px\n" +
-					"%%staves (Stickings Hands Feet)\n" +
-					"K:C clef=perc\n";
+					"%%topspace 0px\n" +
+					"%%staves (Stickings Hands Feet)\n";
+									
+		// print comments below the legend if there is one, otherwise in the header section
+		if(document.getElementById("tuneComments").value != "") {
+			fullABC += "P: " + document.getElementById("tuneComments").value + "\n";
+			fullABC += "%%musicspace 5px\n";  // add some space
+		} else {
+			fullABC += "%%musicspace 0px\n";
+		}
 		
-		if(document.getElementById("showLegend").checked)
+					
+		// the K ends the header;
+		fullABC +=	"K:C clef=perc\n";
+		
+		if(document.getElementById("showLegend").checked) {
 			fullABC += 	'V:Stickings\n' +
 						'x8 x8 x8 x8 x8 x8 x8 x8 ||\n' +
 						'V:Hands stem=up \n' +
@@ -1235,10 +1249,7 @@
 						'V:Feet stem=down \n' +
 						'z8 z8 z8 z8 z8 "^Kick"F4 "^Hi-Hat w/ foot"^d,4 x4 "^Kick & Hi-Hat"[F^d,]8  ||\n' +
 						'T:\n';
-				
-		// print this below the Legend if there is one.
-		// use the "parts" field to add comments because it prints above the music.
-		fullABC += "P: " + document.getElementById("tuneComments").value + "\n";
+		}
 		
 		// tempo setting
 		//fullABC += "Q: 1/4=" + getTempo() + "\n";	
@@ -1420,7 +1431,7 @@
 						  false, false, false, false, "F", false, "F", false];
 			break;
 		case 8:
-			kick_array = ["F", false, false, false, false, false, "F", false, 
+			kick_array = [false, false, false, false, false, false, "F", false, 
 						  "F", false, false, false, false, false, "F", false, 
 						  "F", false, false, false, false, false, "F", false, 
 						  "F", false, false, false, false, false, "F", false];
@@ -1438,13 +1449,13 @@
 						  false, false, "F", false, "F", false, "F", false];
 			break;
 		case 11:
-			kick_array = ["F", false, false, false, "F", false, "F", false, 
+			kick_array = [false, false, false, false, "F", false, "F", false, 
 						  "F", false, false, false, "F", false, "F", false, 
 						  "F", false, false, false, "F", false, "F", false, 
 						  "F", false, false, false, "F", false, "F", false];
 			break;
 		case 12:
-			kick_array = ["F", false, "F", false, false, false, "F", false, 
+			kick_array = [false, false, false, false, false, false, "F", false, 
 						  "F", false, "F", false, false, false, "F", false, 
 						  "F", false, "F", false, false, false, "F", false, 
 						  "F", false, "F", false, false, false, "F", false];
@@ -1503,7 +1514,7 @@
 						  false, false, "F", false, "F", false];
 			break;
 		case 6:
-			kick_array = ["F", false, false, false, "F", false,
+			kick_array = [false, false, false, false, "F", false,
 						  "F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false];
@@ -1562,7 +1573,7 @@
 						  false, false, "F", false, "F", false];
 			break;
 		case 6:
-			kick_array = ["F", false, false, false, "F", false,
+			kick_array = [false, false, false, false, "F", false,
 						  "F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false];
@@ -2193,7 +2204,7 @@
 		getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, 0);
 		
 		// abc header boilerplate
-		var fullABC = get_top_ABC_BoilerPlate();
+		var fullABC = get_top_ABC_BoilerPlate(global_permutationType != "none");
 		
 		switch (global_permutationType) {
 		case "kick_16ths":  // use the hh & snare from the user
