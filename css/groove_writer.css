@@ -503,6 +503,7 @@
 	}
 	#buttonsAboveSheetMusic {
 		margin-top: 2px;
+		margin-bottom: 5px;
 		width: 795px;
 		padding-right: 10px;
 		-webkit-justify-content: space-between;
