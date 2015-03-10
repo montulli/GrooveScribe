@@ -35,7 +35,7 @@
 	constant_ABC_HH_Close=  "!plus!^g";  
 	constant_ABC_HH_Accent= "!accent!^g";  
 	constant_ABC_HH_Normal= "^g"; 
-	constant_ABC_SN_Ghost=  "_c";  
+	constant_ABC_SN_Ghost=  "!(.!!).!c";  
 	constant_ABC_SN_Accent= "!accent!c";   
 	constant_ABC_SN_Normal= "c";   
 	constant_ABC_SN_XStick= "^c"; 
@@ -1222,10 +1222,13 @@
 			fullABC += "%%stretchlast 1\n";
 		
 		fullABC +=  "%%flatbeams 1\n" +
+					"%%ornament up\n" +
 					"%%pagewidth 595px\n" +
 					"%%leftmargin 10px\n" +
 					"%%rightmargin 10px\n" +
 					"%%topspace 0px\n" +
+					'%%deco (. 0 a 5 1 1 "@-8,-5("\n' +
+					'%%deco ). 0 a 5 1 1 "@4,-5)"\n' +
 					"%%staves (Stickings Hands Feet)\n";
 									
 		// print comments below the legend if there is one, otherwise in the header section
@@ -2256,10 +2259,41 @@
 		renderABCtoSVG();
 	}
 	
+	// -- Abc create argument
+	function AbcToSVGCallbacks() {
+	// -- required methods
+	
+	// include a file (%%abc-include)
+	this.read_file = function(fn) {
+		return inc_files.content
+	}
+	// insert the errors
+	this.errmsg = function(msg, l, c) {
+		var diverr = document.getElementById("diverr")
+		if (l)
+			diverr.innerHTML += '<b onclick="gotoabc(' +
+				l + ',' + c +
+				')" style="cursor: pointer; display: inline-block">' +
+				msg + "</b><br/>\n"
+		else
+			diverr.innerHTML += msg + "<br/>\n"
+	}
+	// image output
+	this.img_out = function(str) {
+		abc_images += str	// + '\n'
+	}
+	
+	// -- optional attributes
+	this.page_format = true		// define the non-page-breakable blocks
+}
+var abcToSVGCallback = new AbcToSVGCallbacks();   // global, and only one
+	
 	// called by create_ABC to remake the sheet music on the page
 	function renderABCtoSVG() {
 		var	svgTarget = document.getElementById("svgTarget"),
 			diverr = document.getElementById("diverr");
+		
+		/*
 		abc2svg_init();
 		page_format = false;		
 		annotate = false;    // linkback SVG notes to ABC source
@@ -2271,26 +2305,16 @@
 	
 		svgTarget.innerHTML =
 			abc_images.replace(/<abc type=/g, '<rect class="abc" abc=');
-
-	}
-		
-	// insert the errors
-	function errmsg(msg, l, c) {
-		var	diverr = document.getElementById("diverr")
-		if (l)
-			diverr.innerHTML += '<b onclick="gotoabc(' +
-				(l - 1) + ',' + c +
-				')" style="cursor: pointer; display: inline-block">' +
-				msg + "</b><br/>\n"
-		else
-			diverr.innerHTML += msg + "<br/>\n"
+		*/
+			
+		abc = new Abc(abcToSVGCallback);
+		abc_images = '';
+		diverr.innerHTML = '';
+		abc.tosvg("SOURCE", document.getElementById("ABCsource").value);
+		svgTarget.innerHTML = abc_images;
+			
 	}
 	
-	// svg image coming from abc2svg
-	function img_out(str) {
-		abc_images += str;
-		abc_images += '\n'
-	}
 	
 	function showHideNonPrintableAreas(showElseHide) {
 		var myElements = document.querySelectorAll(".nonPrintable");
