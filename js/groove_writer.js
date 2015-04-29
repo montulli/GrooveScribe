@@ -1089,8 +1089,8 @@
 		var scaler = 1;  // we are always in 24 notes here
 		var ABC_String = "";
 		var stickings_voice_string = "V:Stickings\n";
-		var hh_snare_voice_string  = "V:Hands stem=up\n";
-		var kick_voice_string      = "V:Feet stem=down\n";
+		var hh_snare_voice_string  = "V:Hands stem=up\n%%voicemap drum\n";
+		var kick_voice_string      = "V:Feet stem=down\n%%voicemap drum\n";
 			
 		for(var i=0; i < array_length; i++) {
 			
@@ -1143,8 +1143,8 @@
 		var scaler = 1;  // we are always in 32ths notes here
 		var ABC_String = "";
 		var stickings_voice_string = "V:Stickings\n"    // for stickings.  they are all rests with text comments added
-		var hh_snare_voice_string = "V:Hands stem=up\n";     // for hh and snare
-		var kick_voice_string = "V:Feet stem=down\n";   // for kick drum
+		var hh_snare_voice_string = "V:Hands stem=up\n%%voicemap drum\n";     // for hh and snare
+		var kick_voice_string = "V:Feet stem=down\n%%voicemap drum\n";   // for kick drum
 		
 			
 		for(var i=0; i < array_length; i++) {
@@ -1229,6 +1229,19 @@
 					"%%topspace 0px\n" +
 					'%%deco (. 0 a 5 1 1 "@-8,-5("\n' +
 					'%%deco ). 0 a 5 1 1 "@4,-5)"\n' +
+					'%%beginsvg\n' +
+					' <defs>\n' +
+					' <use id="VoidWithX" xlink:href="#acc2"/>\n' +
+					' </defs>s\n' +
+					'%%endsvg\n' +
+					'%%map drum ^g1, heads=VoidWithX print=g  % Hi-Hat\n' +
+					'%%map drum ^g2, heads=VoidWithX print=g  % Hi-Hat\n' +
+					'%%map drum ^g3, heads=VoidWithX print=g  % Hi-Hat\n' +
+					'%%map drum ^g4, heads=VoidWithX print=g  % Hi-Hat\n' +
+					'%%map drum ^g5, heads=VoidWithX print=g  % Hi-Hat\n' +
+					'%%map drum ^g6, heads=VoidWithX print=g  % Hi-Hat\n' +
+					'%%map drum ^g7, heads=VoidWithX print=g  % Hi-Hat\n' +
+					'%%map drum ^g8, heads=VoidWithX print=g  % Hi-Hat\n' +
 					"%%staves (Stickings Hands Feet)\n";
 									
 		// print comments below the legend if there is one, otherwise in the header section
@@ -1247,6 +1260,7 @@
 			fullABC += 	'V:Stickings\n' +
 						'x8 x8 x8 x8 x8 x8 x8 x8 ||\n' +
 						'V:Hands stem=up \n' +
+						'%%voicemap drum\n' +
 						'"^Hi-Hat"^g4 "^Open"!open!^g4 "^Close"!plus!^g4 "^Accent"!accent!^g4 ' +
 						'"^Crash"^A\'4 "^Ride"^f4 "^Snare"c4 "^Accent"!accent!c4 "^Cross"^c4 "^Ghost"!(.!!).!c4 x8 x8 x8 ||\n' +
 						'V:Feet stem=down \n' +
@@ -1973,6 +1987,7 @@
 		var Kick_Array = global_empty_note_array.slice(0);  // copy by value
 		var numSections = usingTriplets() ? 8 : 14;
 		
+		// just the first measure
 		getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, 0);
 		
 		var midiFile = new Midi.File();
@@ -1982,6 +1997,7 @@
 		midiTrack.setTempo(getTempo());
 		midiTrack.setInstrument(0, 0x13);
 		
+		// all of the permutations use just the first measure
 		switch (global_permutationType) {
 		case "kick_16ths":
 			
@@ -2261,32 +2277,45 @@
 	
 	// -- Abc create argument
 	function AbcToSVGCallbacks() {
-	// -- required methods
-	
-	// include a file (%%abc-include)
-	this.read_file = function(fn) {
-		return inc_files.content
+		// -- required methods
+		
+		// include a file (%%abc-include)
+		this.read_file = function(fn) {
+			return inc_files.content
+		}
+		// insert the errors
+		this.errmsg = function(msg, l, c) {
+			var diverr = document.getElementById("diverr")
+			if (l)
+				diverr.innerHTML += '<b onclick="gotoabc(' +
+					l + ',' + c +
+					')" style="cursor: pointer; display: inline-block">' +
+					msg + "</b><br/>\n"
+			else
+				diverr.innerHTML += msg + "<br/>\n"
+		}
+		
+		// for possible playback or linkage
+		this.get_abcmodel = function(tsfirst, voice_tb, music_types) {
+			
+			console.log(tsfirst);
+			var next = tsfirst.next;
+			
+			while(next) {
+				console.log(next);
+				next = next.next;	
+			}	
+		}
+		
+		// image output
+		this.img_out = function(str) {
+			abc_images += str	// + '\n'
+		}
+		
+		// -- optional attributes
+		this.page_format = true		// define the non-page-breakable blocks
 	}
-	// insert the errors
-	this.errmsg = function(msg, l, c) {
-		var diverr = document.getElementById("diverr")
-		if (l)
-			diverr.innerHTML += '<b onclick="gotoabc(' +
-				l + ',' + c +
-				')" style="cursor: pointer; display: inline-block">' +
-				msg + "</b><br/>\n"
-		else
-			diverr.innerHTML += msg + "<br/>\n"
-	}
-	// image output
-	this.img_out = function(str) {
-		abc_images += str	// + '\n'
-	}
-	
-	// -- optional attributes
-	this.page_format = true		// define the non-page-breakable blocks
-}
-var abcToSVGCallback = new AbcToSVGCallbacks();   // global, and only one
+	var abcToSVGCallback = new AbcToSVGCallbacks();   // global, and only one
 	
 	// called by create_ABC to remake the sheet music on the page
 	function renderABCtoSVG() {
@@ -2973,8 +3002,10 @@ var abcToSVGCallback = new AbcToSVGCallbacks();   // global, and only one
 		var wasStickingsVisable = isStickingsVisible();
 		global_notes_per_measure = newDivision;
 		
-		var newHTML = HTMLforStaffContainer(1,0);
-		newHTML += HTMLforStaffContainer(2, global_notes_per_measure);
+		var newHTML = "";
+		for(var cur_measure=1; cur_measure <= global_number_of_measures; cur_measure++) {
+			newHTML += HTMLforStaffContainer(cur_measure, (cur_measure-1)*global_notes_per_measure);
+		}
 		
 		// rewrite the HTML for the HTML note grid
 		document.getElementById("musicalInput").innerHTML = newHTML;
