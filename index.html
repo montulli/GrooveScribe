@@ -32,53 +32,58 @@
 		<script src="js/groove_writer.js"></script>
 		<script src="js/grooves.js"></script>
 		
+		<script>
+			// intantiate a global instance of the GrooveWriterClass.    This page only uses one
+			myGrooveWriter = new GrooveWriter();
+		</script>
+		
 	    <link rel="stylesheet" type="text/css" href="css/groove_writer.css">
     </head>
     <body>
 	    <div class="nonPrintable">
 			<!-- use css to position this to the upper right -->
 			<span id="upperRight">
-				<div class="rightButtons" id="permutationAnchor" onClick="permutationAnchorClick(event)">
+				<div class="rightButtons" id="permutationAnchor" onClick="myGrooveWriter.permutationAnchorClick(event)">
 					Permutations
 				</div>
-				<div class="rightButtons" id="groovesAnchor" onClick="groovesAnchorClick(event)">
+				<div class="rightButtons" id="groovesAnchor" onClick="myGrooveWriter.groovesAnchorClick(event)">
 					Grooves
 				</div>
 				<div class="rightButtons">
-					<a id="about" href="about.html">About</a>
+					<a id="about" href="about.html" target="_blank">About</a>
 				</div>
 			</span>
 		
 			<div id="divisionButtonContainer">
-			<a class="subdivision" id="4ths"  onClick="changeDivision(4)"><sup>1</sup>/<sub>4</sub> &#9834;</a>
-			<a class="subdivision" id="8ths"  onClick="changeDivision(8)"><sup>1</sup>/<sub>8</sub> &#9834;&#9834;</a>
-			<a class="subdivision" id="16ths" onClick="changeDivision(16)"><sup>1</sup>/<sub>16</sub> &#9835;</a>
-			<a class="subdivision" id="32ths" onClick="changeDivision(32)"><sup>1</sup>/<sub>32</sub> &#9835;&#9835;</a>
-			<a class="subdivision" id="12ths" onClick="changeDivision(12)"><sup>1</sup>/<sub>8 triplets</sub> &#9834;&#9834;</a>
-			<a class="subdivision" id="24ths" onClick="changeDivision(24)"><sup>1</sup>/<sub>16 triplets</sub> &#9835;</a>
+			<a class="subdivision" id="4ths"  onClick="myGrooveWriter.changeDivision(4)"><sup>1</sup>/<sub>4</sub> &#9834;</a>
+			<a class="subdivision" id="8ths"  onClick="myGrooveWriter.changeDivision(8)"><sup>1</sup>/<sub>8</sub> &#9834;&#9834;</a>
+			<a class="subdivision" id="16ths" onClick="myGrooveWriter.changeDivision(16)"><sup>1</sup>/<sub>16</sub> &#9835;</a>
+			<a class="subdivision" id="32ths" onClick="myGrooveWriter.changeDivision(32)"><sup>1</sup>/<sub>32</sub> &#9835;&#9835;</a>
+			<a class="subdivision" id="12ths" onClick="myGrooveWriter.changeDivision(12)"><sup>1</sup>/<sub>8 triplets</sub> &#9834;&#9834;</a>
+			<a class="subdivision" id="24ths" onClick="myGrooveWriter.changeDivision(24)"><sup>1</sup>/<sub>16 triplets</sub> &#9835;</a>
 			</div>
 			
 			<script>
-				if(is_touch_device()) {
-					document.write('<div id="advancedEditAnchor" onClick="event.preventDefault(); toggleAdvancedEdit()">Advanced Edit</div>');
+				if(myGrooveWriter.is_touch_device()) {
+					document.write('<div id="advancedEditAnchor" onClick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">Advanced Edit</div>');
 				}
 			</script>
 			
 			<div id="musicalInput">
 				<script>
 					var genHTML = "";
-					for(var cur_measure=1; cur_measure <= global_number_of_measures; cur_measure++) {
-						genHTML += HTMLforStaffContainer(cur_measure, (cur_measure-1)*global_notes_per_measure);
+					for(var cur_measure=1; cur_measure <= myGrooveWriter.numberOfMeasures(); cur_measure++) {
+						genHTML += myGrooveWriter.HTMLforStaffContainer(cur_measure, (cur_measure-1) * myGrooveWriter.notesPerMeasure());
 					}
 					document.write(genHTML);
 				</script>
 			</div>
 			<div id="buttonsAboveSheetMusic">
-				<button id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); showHideSecondMeasure(false, false);">Show/Hide 2nd Measure</button>
-				<button id="showHideStickingsButton" href="" onClick="event.preventDefault(); showHideStickings(false, false);">Show/Hide Stickings</button>
-				<button type="button" id="exportMidiButton" onclick="MIDI_save_as()">Export Midi File</button>
-				<button id="printButton" type="button" onclick="printMusic()">Print Sheet Music</button>
-				<button id="shareSaveButton" href="#" onClick="event.preventDefault(); show_FullURLPopup()">Share/Save Groove</button>
+				<button id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideSecondMeasure(false, false);">Show/Hide 2nd Measure</button>
+				<button id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);">Show/Hide Stickings</button>
+				<button type="button" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()">Export Midi File</button>
+				<button id="printButton" type="button" onclick="myGrooveWriter.printMusic()">Print Sheet Music</button>
+				<button id="shareSaveButton" href="#" onClick="event.preventDefault(); myGrooveWriter.show_FullURLPopup()">Share/Save Groove</button>
 			</div>
 		</div>  
 		<div class="Printable">
@@ -98,25 +103,25 @@
 				<img alt="Play" title="Play" id="playImage" src="images/grey_play.png">
 				<span id="tempoAndProgress">
 					<div id="tempo">
-						<input type=range min=40 max=240 value=90 id="tempoInput" list="tempoSettings" step=5 onChange="noteHasChanged()" oninput="tempoUpdate(value)">
+						<input type=range min=40 max=240 value=90 id="tempoInput" list="tempoSettings" step=5 onChange="myGrooveWriter.noteHasChanged()" oninput="myGrooveWriter.tempoUpdate(value)">
 						<div for=tempo id=tempoOutput>80 bpm</div>
 					</div>
 					<div id="swingAmount">
-						<input type=range min=0 max=50 value=0 id="swingInput" list="swingSettings" step=5 onChange="noteHasChanged()" oninput="swingUpdate(value)">
+						<input type=range min=0 max=50 value=0 id="swingInput" list="swingSettings" step=5 onChange="myGrooveWriter.noteHasChanged()" oninput="myGrooveWriter.swingUpdate(value)">
 						<div for=swingAmount id=swingOutput>0% swing</div>
 					</div>
 				</span>
-				<img onClick="repeatMIDI_playback();" alt="Repeat" title="Repeat" id="repeatImage" src="images/repeat.png">
+				<img onClick="myGrooveWriter.repeatMIDI_playback();" alt="Repeat" title="Repeat" id="repeatImage" src="images/repeat.png">
 				<br>
 				<div id="progress">
 					<progress id="MIDIProgress" value="0" max="100"></progress>
 				</div>
 			</div>	
 			<div id="sheetMusicTextFields">
-				<b>Title:</b> <input id="tuneTitle" onChange="create_ABC()" type="text"> &nbsp;
-				<b>Author:</b> <input id="tuneAuthor" onChange="create_ABC()"  type="text"> &nbsp;
-				<b>Comment:</b> <input id="tuneComments" onChange="create_ABC()"  type="text"> &nbsp;
-				<label><b>Legend:</b><input type="checkbox" id="showLegend" onChange="create_ABC()"></label>
+				<b>Title:</b> <input id="tuneTitle" onChange="myGrooveWriter.refresh_ABC()" type="text"> &nbsp;
+				<b>Author:</b> <input id="tuneAuthor" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
+				<b>Comment:</b> <input id="tuneComments" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
+				<label><b>Legend:</b><input type="checkbox" id="showLegend" onChange="myGrooveWriter.refresh_ABC()"></label>
 			</div>
 			
 			<div id="midiTextOutput">
@@ -130,7 +135,7 @@
 			</span>
 			<br>
 			<!-- ABC notation -->
-			<A href="" onClick="event.preventDefault(); ShowHideABCResults();">Show/Hide ABC Notation</a>
+			<A href="" onClick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a>
 			<div id="ABC_Results">
 				ABC Notation is used for rendering the music.  You can see what is being generated below.   
 				You can even edit it.  <br>
@@ -139,8 +144,8 @@
 				<p>
 				<textarea id="ABCsource" rows="10" cols="72" ></textarea>
 				<br>
-				<button type="button" onclick="renderABCtoSVG()">Re-render the music</button>
-				<button type="button" onclick="saveABCtoFile()">Save ABC to file</button>
+				<button type="button" onclick="myGrooveWriter.renderABCtoSVG()">Re-render the music</button>
+				<button type="button" onclick="myGrooveWriter.saveABCtoFile()">Save ABC to file</button>
 			</div>
 		</div>
 
@@ -148,74 +153,74 @@
 		<!-- context menu that will pop up over notes in advaced edit more -->
 		<div class="noteContextMenu">
 			<ul id="stickingContextMenu" class="list">
-				<li onClick='notePopupClick("sticking", "off")'>Off</li>
-				<li onClick='notePopupClick("sticking","right")'><b>R</b>ight</li>
-				<li onClick='notePopupClick("sticking","left")'><b>L</b>eft</li>
+				<li onClick='myGrooveWriter.notePopupClick("sticking", "off")'>Off</li>
+				<li onClick='myGrooveWriter.notePopupClick("sticking","right")'><b>R</b>ight</li>
+				<li onClick='myGrooveWriter.notePopupClick("sticking","left")'><b>L</b>eft</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
 			<ul id="hhContextMenu" class="list">
-				<li onClick='notePopupClick("hh", "off")'>Off</li>
-				<li onClick='notePopupClick("hh","normal")'>Hi-hat normal</li>
-				<li onClick='notePopupClick("hh","open")'>Hi-hat open</li>
-				<li onClick='notePopupClick("hh","close")'>Hi-hat closed</li>
-				<li onClick='notePopupClick("hh","accent")'>Hi-hat accent</li>
-				<li onClick='notePopupClick("hh","crash")'>Crash</li>
-				<li onClick='notePopupClick("hh","ride")'>Ride</li>
+				<li onClick='myGrooveWriter.notePopupClick("hh", "off")'>Off</li>
+				<li onClick='myGrooveWriter.notePopupClick("hh","normal")'>Hi-hat normal</li>
+				<li onClick='myGrooveWriter.notePopupClick("hh","open")'>Hi-hat open</li>
+				<li onClick='myGrooveWriter.notePopupClick("hh","close")'>Hi-hat closed</li>
+				<li onClick='myGrooveWriter.notePopupClick("hh","accent")'>Hi-hat accent</li>
+				<li onClick='myGrooveWriter.notePopupClick("hh","crash")'>Crash</li>
+				<li onClick='myGrooveWriter.notePopupClick("hh","ride")'>Ride</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
 			<ul id="snareContextMenu" class="list">
-				<li onClick='notePopupClick("snare", "off")'>Off</li>
+				<li onClick='myGrooveWriter.notePopupClick("snare", "off")'>Off</li>
 				<!-- li onClick='notePopupClick("snare", "normal")'>Snare Normal</li -->
-				<li onClick='notePopupClick("snare", "accent")'>Snare Accent</li>
-				<li onClick='notePopupClick("snare", "ghost")'>Ghost Note</li>
-				<li onClick='notePopupClick("snare", "xstick")'>Cross Stick</li>
+				<li onClick='myGrooveWriter.notePopupClick("snare", "accent")'>Snare Accent</li>
+				<li onClick='myGrooveWriter.notePopupClick("snare", "ghost")'>Ghost Note</li>
+				<li onClick='myGrooveWriter.notePopupClick("snare", "xstick")'>Cross Stick</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
 			<ul id="kickContextMenu" class="list">
-				<li onClick='notePopupClick("kick", "off")'>Off</li>
-				<li onClick='notePopupClick("kick", "normal")'>Kick Normal</li>
-				<li onClick='notePopupClick("kick", "splash")'>Hi-hat foot</li>
-				<li onClick='notePopupClick("kick", "kick_and_splash")'>Kick & Hi-hat splash</li>
+				<li onClick='myGrooveWriter.notePopupClick("kick", "off")'>Off</li>
+				<li onClick='myGrooveWriter.notePopupClick("kick", "normal")'>Kick Normal</li>
+				<li onClick='myGrooveWriter.notePopupClick("kick", "splash")'>Hi-hat foot</li>
+				<li onClick='myGrooveWriter.notePopupClick("kick", "kick_and_splash")'>Kick & Hi-hat splash</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
 			<ul id="hhLabelContextMenu" class="list">
-				<li onClick='noteLabelPopupClick("hh", "all_off")'>all Hi-hats <b>Off</b></li>
-				<li onClick='noteLabelPopupClick("hh", "all_on")'>all Hi-hats <b>On</b></li>				
-				<li onClick='noteLabelPopupClick("hh", "cancel")'>cancel</li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "all_off")'>all Hi-hats <b>Off</b></li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "all_on")'>all Hi-hats <b>On</b></li>				
+				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "cancel")'>cancel</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
 			<ul id="snareLabelContextMenu" class="list">
-				<li onClick='noteLabelPopupClick("snare", "all_off")'>all Snares <b>Off</b></li>
-				<li onClick='noteLabelPopupClick("snare", "all_on")'>all Snares <b>On</b></li>
-				<li onClick='noteLabelPopupClick("snare", "cancel")'>cancel</li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("snare", "all_off")'>all Snares <b>Off</b></li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("snare", "all_on")'>all Snares <b>On</b></li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("snare", "cancel")'>cancel</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
 			<ul id="kickLabelContextMenu" class="list">
-				<li onClick='noteLabelPopupClick("kick", "all_off")'>all Kicks <b>Off</b></li>
-				<li onClick='noteLabelPopupClick("kick", "all_on")'>all Kicks <b>On</b></li>
-				<li onClick='noteLabelPopupClick("kick", "cancel")'>cancel</li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("kick", "all_off")'>all Kicks <b>Off</b></li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("kick", "all_on")'>all Kicks <b>On</b></li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("kick", "cancel")'>cancel</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
 			<ul id="stickingsLabelContextMenu" class="list">
-				<li onClick='noteLabelPopupClick("stickings", "all_off")'>all <b>Off</b></li>
-				<li onClick='noteLabelPopupClick("stickings", "alternate")'>alternate</li>
-				<li onClick='noteLabelPopupClick("stickings", "all_right")'>all <b>R</b>s</li>
-				<li onClick='noteLabelPopupClick("stickings", "all_left")'>all <b>L</b>s</li>
-				<li onClick='noteLabelPopupClick("stickings", "cancel")'>cancel</li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "all_off")'>all <b>Off</b></li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "alternate")'>alternate</li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "all_right")'>all <b>R</b>s</li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "all_left")'>all <b>L</b>s</li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "cancel")'>cancel</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
 			<ul id="permutationContextMenu" class="list">
-				<li onClick='permutationPopupClick("none")'><b>None</b></li>
-				<li onClick='permutationPopupClick("kick_16ths")'><b>Kick</b> Permutation</li>
-				<li onClick='permutationPopupClick("snare_16ths")'><b>Snare</b> Permutation</li>
+				<li onClick='myGrooveWriter.permutationPopupClick("none")'><b>None</b></li>
+				<li onClick='myGrooveWriter.permutationPopupClick("kick_16ths")'><b>Kick</b> Permutation</li>
+				<li onClick='myGrooveWriter.permutationPopupClick("snare_16ths")'><b>Snare</b> Permutation</li>
 			</ul>
 		</div>
 		<div id="grooveListWrapper">
@@ -228,11 +233,11 @@
 		<!-- this is used by the share/save button, and is hidden by default -->
 		<div id="fullURLPopupContainer">
 			<div id="fullURLPopup">
-				<button id="fullURLCloseButton" onClick="close_FullURLPopup()">&times;</button>
+				<button id="fullURLCloseButton" onClick="myGrooveWriter.close_FullURLPopup()">&times;</button>
 				Use this URL to return with all the notes the way you set them.<br>
 				<br>
 				<input type="text" id="fullURLTextField"><br>
-				<label>Generate Short URL:<input type="checkbox" id="shortenerCheckbox" onchange="shortenerCheckboxChanged()"></label>
+				<label>Generate Short URL:<input type="checkbox" id="shortenerCheckbox" onchange="myGrooveWriter.shortenerCheckboxChanged()"></label>
 				<a href="#" id="fullURLLink">follow link</a>
 				<br>
 				<br>
@@ -244,7 +249,7 @@
 		<script>
 			// set up the page after it has fully loaded
 			window.onload = function () {
-				runsOnPageLoad();   // Initialize the notes
+				myGrooveWriter.runsOnPageLoad();   // Initialize the notes
 			}
 		</script>
 			

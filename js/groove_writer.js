@@ -4,44 +4,51 @@
 	// Author: Lou Montulli   
 	// Original Creation date: Feb 2015.
 
+// GrooveWriter class.   The only one in this file. 
+function GrooveWriter() { "use strict";
 
-	// globals
-	global_app_title = "Groove Writer";
-	global_number_of_measures = 2;  // only 2 for now (future expansion to more possible)
-	global_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
-	global_notes_per_measure = 8;  // default to 8ths
-	global_aNoteHasChangedSinceLastReset = false;  // global var
-	global_isMIDIPaused = false;
-	global_shouldMIDIRepeat = true;
-	global_visible_context_menu = false;   // a single context menu can be visible at a time.
-	global_permutationType = "none";
-	global_advancedEditIsOn = false;
-	global_measure_for_note_label_click = 0;
+	var root = this;
+
+	// public class vars
+	var class_number_of_measures = 2;  // only 2 for now (future expansion to more possible)
+	var class_notes_per_measure = 8;  // default to 8ths
+
+	// private vars in the scope of the class
+	var class_app_title = "Groove Writer";
+	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
+	var class_aNoteHasChangedSinceLastReset = false;  // global var
+	var class_isMIDIPaused = false;
+	var class_shouldMIDIRepeat = true;
+	var class_visible_context_menu = false;   // a single context menu can be visible at a time.
+	var class_permutationType = "none";
+	var class_advancedEditIsOn = false;
+	var class_measure_for_note_label_click = 0;
+	var class_which_index_last_clicked = 0;    // which note was last clicked for the context menu
 	
 	// constants
-	constant_default_tempo = 80;
-	constant_note_stem_off_color = "transparent";
-	constant_note_on_color_hex  = "#000000";  // black
-	constant_note_on_color_rgb  = 'rgb(0, 0, 0)';  // black
-	constant_note_off_color_hex = "#CCCCCC";  // gray
-	constant_note_off_color_rgb = 'rgb(204, 204, 204)';  // gray
-	constant_note_hidden_color_rgb = "transparent";
-	constant_ABC_STICK_R=  '"R"x';
-	constant_ABC_STICK_L=  '"L"x';
-	constant_ABC_STICK_OFF=  '""x';
-	constant_ABC_HH_Ride=  "^f";       
-	constant_ABC_HH_Crash=  "^A'";       
-	constant_ABC_HH_Open=   "!open!^g";  
-	constant_ABC_HH_Close=  "!plus!^g";  
-	constant_ABC_HH_Accent= "!accent!^g";  
-	constant_ABC_HH_Normal= "^g"; 
-	constant_ABC_SN_Ghost=  "!(.!!).!c";  
-	constant_ABC_SN_Accent= "!accent!c";   
-	constant_ABC_SN_Normal= "c";   
-	constant_ABC_SN_XStick= "^c"; 
-	constant_ABC_KI_SandK=  "[F^d,]";  // kick & splash
-	constant_ABC_KI_Splash= "^d,";     // splash only
-	constant_ABC_KI_Normal= "F";   
+	var constant_default_tempo = 80;
+	var constant_note_stem_off_color = "transparent";
+	var constant_note_on_color_hex  = "#000000";  // black
+	var constant_note_on_color_rgb  = 'rgb(0, 0, 0)';  // black
+	var constant_note_off_color_hex = "#CCCCCC";  // gray
+	var constant_note_off_color_rgb = 'rgb(204, 204, 204)';  // gray
+	var constant_note_hidden_color_rgb = "transparent";
+	var constant_ABC_STICK_R=  '"R"x';
+	var constant_ABC_STICK_L=  '"L"x';
+	var constant_ABC_STICK_OFF=  '""x';
+	var constant_ABC_HH_Ride=  "^f";       
+	var constant_ABC_HH_Crash=  "^A'";       
+	var constant_ABC_HH_Open=   "!open!^g";  
+	var constant_ABC_HH_Close=  "!plus!^g";  
+	var constant_ABC_HH_Accent= "!accent!^g";  
+	var constant_ABC_HH_Normal= "^g"; 
+	var constant_ABC_SN_Ghost=  "!(.!!).!c";  
+	var constant_ABC_SN_Accent= "!accent!c";   
+	var constant_ABC_SN_Normal= "c";   
+	var constant_ABC_SN_XStick= "^c"; 
+	var constant_ABC_KI_SandK=  "[F^d,]";  // kick & splash
+	var constant_ABC_KI_Splash= "^d,";     // splash only
+	var constant_ABC_KI_Normal= "F";   
 				
 	// functions
 	
@@ -62,8 +69,16 @@
 		   return(getQueryVariableFromString(variable, def_value, window.location.search));
 	}	
 	// here because we need the function defined first.
-	global_notes_per_measure = parseInt(getQueryVariableFromURL("Div", "8"));	// default to 8ths
+	class_notes_per_measure = parseInt(getQueryVariableFromURL("Div", "8"));	// default to 8ths
 
+
+	root.numberOfMeasures = function () {
+		return class_number_of_measures;
+	}
+	
+	root.notesPerMeasure = function () {
+		return class_notes_per_measure;
+	}	
 	// check for firefox browser
 	function isFirefox() {
 		var val = navigator.userAgent.toLowerCase(); 
@@ -75,7 +90,7 @@
 		
 	// is the division a triplet groove?   6, 12, or 24 notes
 	function usingTriplets() {
-		if(isTripletDivision(global_notes_per_measure))
+		if(isTripletDivision(class_notes_per_measure))
 			return true;
 			
 		return false;
@@ -89,10 +104,11 @@
 		return false;
 	}
 	
+	// public function
 	// is the browser a touch device.   Usually this means no right click
-	function is_touch_device() {
+	root.is_touch_device = function() {
 		 return (('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
-	}
+	};
 
 	// the note grouping size is how groups of notes within a measure group
 	// for 8ths and 16th we group with 4
@@ -100,7 +116,7 @@
 	function note_grouping_size() {	
 		var note_grouping = 4;
 		
-		switch(global_notes_per_measure) {
+		switch(class_notes_per_measure) {
 		case 4:
 			note_grouping = 1;
 			break;
@@ -141,7 +157,7 @@
 	function ABC_gen_note_grouping_size() {	
 		var note_grouping = note_grouping_size() * 2;
 		
-		switch(global_notes_per_measure) {
+		switch(class_notes_per_measure) {
 		case 4:
 		case 8:
 		case 16:
@@ -526,44 +542,44 @@
 	// only one note for each instrument can be highlighted at a time
 	// Also unhighlight other instruments if their index is not equal to the passed in index
 	// this means that only notes falling on the current beat will be highlighted.
-	global_cur_hh_highlight_id = false;
-	global_cur_snare_highlight_id = false;
-	global_cur_kick_highlight_id = false;
+	var class_cur_hh_highlight_id = false;
+	var class_cur_snare_highlight_id = false;
+	var class_cur_kick_highlight_id = false;
 	function hilight_note(instrument, id) {
 		
 		id = Math.floor(id);
-		if(id < 0 || id >= global_notes_per_measure*global_number_of_measures)
+		if(id < 0 || id >= class_notes_per_measure*class_number_of_measures)
 			return;
 		
 		// turn this one on;
 		document.getElementById(instrument + id).style.borderColor = "orange";
 		
 		// turn off all the previously highlighted notes that are not on the same beat
-		if(global_cur_hh_highlight_id !== false && global_cur_hh_highlight_id != id) {
-				if(global_cur_hh_highlight_id < global_notes_per_measure*global_number_of_measures)
-					document.getElementById("hi-hat" + global_cur_hh_highlight_id).style.borderColor = "transparent";
-				global_cur_hh_highlight_id = false;
+		if(class_cur_hh_highlight_id !== false && class_cur_hh_highlight_id != id) {
+				if(class_cur_hh_highlight_id < class_notes_per_measure*class_number_of_measures)
+					document.getElementById("hi-hat" + class_cur_hh_highlight_id).style.borderColor = "transparent";
+				class_cur_hh_highlight_id = false;
 		}
-		if(global_cur_snare_highlight_id !== false && global_cur_snare_highlight_id != id) {
-				if(global_cur_snare_highlight_id < global_notes_per_measure*global_number_of_measures)
-					document.getElementById("snare" + global_cur_snare_highlight_id).style.borderColor = "transparent";
-				global_cur_snare_highlight_id = false;
+		if(class_cur_snare_highlight_id !== false && class_cur_snare_highlight_id != id) {
+				if(class_cur_snare_highlight_id < class_notes_per_measure*class_number_of_measures)
+					document.getElementById("snare" + class_cur_snare_highlight_id).style.borderColor = "transparent";
+				class_cur_snare_highlight_id = false;
 		}
-		if(global_cur_kick_highlight_id !== false && global_cur_kick_highlight_id != id) {
-				if(global_cur_kick_highlight_id < global_notes_per_measure*global_number_of_measures)
-					document.getElementById("kick" + global_cur_kick_highlight_id).style.borderColor = "transparent";
-				global_cur_kick_highlight_id = false;
+		if(class_cur_kick_highlight_id !== false && class_cur_kick_highlight_id != id) {
+				if(class_cur_kick_highlight_id < class_notes_per_measure*class_number_of_measures)
+					document.getElementById("kick" + class_cur_kick_highlight_id).style.borderColor = "transparent";
+				class_cur_kick_highlight_id = false;
 		}
 			
 		switch(instrument) {
 			case "hi-hat":
-				global_cur_hh_highlight_id = id;
+				class_cur_hh_highlight_id = id;
 				break;
 			case "snare":
-				global_cur_snare_highlight_id = id;
+				class_cur_snare_highlight_id = id;
 				break;
 			case "kick":
-				global_cur_kick_highlight_id = id;
+				class_cur_kick_highlight_id = id;
 				break;
 			default: 
 				alert("bad case in hilight_note");
@@ -574,17 +590,17 @@
 	function clear_all_highlights(instrument) {
 		
 		// now turn off  notes if necessary;
-		if(global_cur_hh_highlight_id !== false) {
-				document.getElementById("hi-hat" + global_cur_hh_highlight_id).style.borderColor = "transparent";
-				global_cur_hh_highlight_id = false;
+		if(class_cur_hh_highlight_id !== false) {
+				document.getElementById("hi-hat" + class_cur_hh_highlight_id).style.borderColor = "transparent";
+				class_cur_hh_highlight_id = false;
 		}
-		if(global_cur_snare_highlight_id !== false) {
-				document.getElementById("snare" + global_cur_snare_highlight_id).style.borderColor = "transparent";
-				global_cur_snare_highlight_id = false;
+		if(class_cur_snare_highlight_id !== false) {
+				document.getElementById("snare" + class_cur_snare_highlight_id).style.borderColor = "transparent";
+				class_cur_snare_highlight_id = false;
 		}
-		if(global_cur_kick_highlight_id !== false) {
-				document.getElementById("kick" + global_cur_kick_highlight_id).style.borderColor = "transparent";
-				global_cur_kick_highlight_id = false;
+		if(class_cur_kick_highlight_id !== false) {
+				document.getElementById("kick" + class_cur_kick_highlight_id).style.borderColor = "transparent";
+				class_cur_kick_highlight_id = false;
 		}
 		
 	}
@@ -593,20 +609,20 @@
 	// every click passes through here.
 	// close a popup if one is up and we click off of it.
 	function documentOnClickHanderCloseContextMenu(event) {
-		if(global_visible_context_menu ) {
-			hideContextMenu( global_visible_context_menu );
+		if(class_visible_context_menu ) {
+			hideContextMenu( class_visible_context_menu );
 		}
 	}
 	
 	function showContextMenu(contextMenu) {
 		
 		// if there is another context menu open, close it
-		if(global_visible_context_menu ) {
-			hideContextMenu( global_visible_context_menu );
+		if(class_visible_context_menu ) {
+			hideContextMenu( class_visible_context_menu );
 		}
 		
 		contextMenu.style.display = "block";
-		global_visible_context_menu = contextMenu;
+		class_visible_context_menu = contextMenu;
 		
 		// use a timeout to setup the onClick handler.
 		// otherwise the click that opened the menu will close it
@@ -622,24 +638,24 @@
 		if(contextMenu) {
 			contextMenu.style.display = "none";
 		}
-		global_visible_context_menu = false;
+		class_visible_context_menu = false;
 		
 	}
 	
-	function noteHasChanged() {
-		global_aNoteHasChangedSinceLastReset = true;
+	root.noteHasChanged = function() {
+		class_aNoteHasChangedSinceLastReset = true;
 	}
 	
 	function noteHasChangedReset() {
-		global_aNoteHasChangedSinceLastReset = false;
+		class_aNoteHasChangedSinceLastReset = false;
 	}
 	
 	function noteHasChangedSinceLastReset() {
-		return global_aNoteHasChangedSinceLastReset;
+		return class_aNoteHasChangedSinceLastReset;
 	}
 	
 	// the user has clicked on the permutation menu
-	function permutationAnchorClick(event) {
+	root.permutationAnchorClick = function(event) {
 		
 		var contextMenu = document.getElementById("permutationContextMenu");
 		if(contextMenu) {
@@ -654,7 +670,7 @@
 	}
 	
 	// the user has clicked on the grooves menu
-	function groovesAnchorClick(event) {
+	root.groovesAnchorClick = function(event) {
 		
 		var contextMenu = document.getElementById("grooveListWrapper");
 		if(contextMenu) {
@@ -678,8 +694,8 @@
 		
 	}
 	
-	function permutationPopupClick(perm_type) {
-		global_permutationType = perm_type;
+	root.permutationPopupClick = function(perm_type) {
+		class_permutationType = perm_type;
 		
 		switch (perm_type) {
 		case "kick_16ths":
@@ -701,7 +717,7 @@
 			showHideCSS_ClassVisibility(".kick-container", true, true);  // show it
 			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
 			// document.getElementById("staff-container2").style.display = "block";
-			global_permutationType = "none";
+			class_permutationType = "none";
 			document.getElementById("permutationAnchor").style.backgroundColor = "#FFFFCC";;
 			break;
 		}
@@ -710,25 +726,25 @@
 	}
 	
 	// user has clicked on the advanced edit button
-	function toggleAdvancedEdit() {
-		if(global_advancedEditIsOn) {
+	this.toggleAdvancedEdit = function() {
+		if(class_advancedEditIsOn) {
 			// turn it off
-			global_advancedEditIsOn = false;
+			class_advancedEditIsOn = false;
 			document.getElementById("advancedEditAnchor").style.backgroundColor = "#FFFFCC";;
 		} else {
-			global_advancedEditIsOn = true;
+			class_advancedEditIsOn = true;
 			document.getElementById("advancedEditAnchor").style.backgroundColor = "orange";;
 		}
 	}
 	
 	
 	// context menu for labels
-	function noteLabelClick(event, instrument, measure) {
+	root.noteLabelClick = function(event, instrument, measure) {
 		var contextMenu = false;
 		
 		// store this in a global, there can only ever be one context menu open at a time.
 		// Yes, I agree this sucks
-		global_measure_for_note_label_click = measure;
+		class_measure_for_note_label_click = measure;
 		
 		switch(instrument) {
 		case "stickings":
@@ -761,7 +777,7 @@
 	}
 	
 	
-	function noteLabelPopupClick(instrument, action) {
+	root.noteLabelPopupClick = function(instrument, action) {
 		var setFunction = false;
 		var contextMenu = false;
 		
@@ -789,8 +805,8 @@
 		
 		// start at the first note of the measure we want to effect.   Only fill in the 
 		// notes for that measure
-		var startIndex = global_notes_per_measure * (global_measure_for_note_label_click-1);
-		for(var i=startIndex; i-startIndex < global_notes_per_measure; i++) {
+		var startIndex = class_notes_per_measure * (class_measure_for_note_label_click-1);
+		for(var i=startIndex; i-startIndex < class_notes_per_measure; i++) {
 			if(action == "all_off")
 				setFunction(i, "off")
 			else if(instrument == "stickings" && action == "all_right")
@@ -809,7 +825,7 @@
 				alert("Bad IF case in noteLabelPopupClick");
 		}
 		
-		global_measure_for_note_label_click = 0;  // reset
+		class_measure_for_note_label_click = 0;  // reset
 		
 		create_ABC();
 		
@@ -818,8 +834,8 @@
 	
 	// returns true on error!
 	// returns false if working.  (this is because of the onContextMenu handler 
-	function noteRightClick(event, type, id) {
-		global_which_index_last_clicked = id;
+	root.noteRightClick = function(event, type, id) {
+		class_which_index_last_clicked = id;
 		var contextMenu;
 		
 		switch(type) {
@@ -855,10 +871,10 @@
 		return false;
 	}
 	
-	function noteLeftClick(event, type, id) {
+	root.noteLeftClick = function(event, type, id) {
 		
 		// use a popup if advanced edit is on
-		if(global_advancedEditIsOn == true) {
+		if(class_advancedEditIsOn == true) {
 			noteRightClick(event, type, id);
 		
 		} else {	
@@ -886,8 +902,8 @@
 		
 	};
 
-	function notePopupClick(type, new_setting) {
-		var id = global_which_index_last_clicked
+	root.notePopupClick = function(type, new_setting) {
+		var id = class_which_index_last_clicked
 		
 		switch(type) {
 			case "sticking":
@@ -911,7 +927,7 @@
 	
 	// called when we initially mouseOver a note.   
 	// We can use it to sense left or right mouse or ctrl events
-	function noteOnMouseEnter(event, instrument, id) {
+	root.noteOnMouseEnter = function(event, instrument, id) {
 	
 		var action = false;
 		
@@ -952,7 +968,7 @@
 	function getNoteScaler() {
 		var scaler;
 
-		switch(global_notes_per_measure) {
+		switch(class_notes_per_measure) {
 		case 4:
 			scaler = 8;
 			break;
@@ -1067,36 +1083,24 @@
 		return ABC_String
 	}
 	
-	// this determines the max size of the note array during conversion
-	// we use 16 notes for non triplets
-	// we use 12 notes for triplets
-	function getMaxArrayLengthForABCConverstion() {
-		max_size = 32;
-		
-		if(usingTriplets())
-			max_size = 24;
-			
-		return max_size;
-	}
-	
+
 	// takes 3 arrays 24 elements long that represent the snare, HH & kick.
 	// each element contains either the note value in ABC "F","^g" or false to represent off
 	// translates them to an ABC string in 2 voices
 	// post_voice_abc is a string added to the end of each voice line that can end the line
-	function snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc) {
+	function snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes) {
 	
-		var array_length = getMaxArrayLengthForABCConverstion();  
 		var scaler = 1;  // we are always in 24 notes here
 		var ABC_String = "";
 		var stickings_voice_string = "V:Stickings\n";
 		var hh_snare_voice_string  = "V:Hands stem=up\n%%voicemap drum\n";
 		var kick_voice_string      = "V:Feet stem=down\n%%voicemap drum\n";
 			
-		for(var i=0; i < array_length; i++) {
+		for(var i=0; i < num_notes; i++) {
 			
 			// triplets are special.  We want to output a note or a rest for every space of time
-			var end_of_group = 24/global_notes_per_measure;  // assuming we are always dealing with 24 notes
-			var grouping_size_for_rests = 24/global_notes_per_measure;   // we scale up the notes to fit a 24 length array
+			var end_of_group = 24/class_notes_per_measure;  // assuming we are always dealing with 24 notes
+			var grouping_size_for_rests = 24/class_notes_per_measure;   // we scale up the notes to fit a 24 length array
 			
 			
 			if(i % ABC_gen_note_grouping_size() == 0) {
@@ -1107,14 +1111,14 @@
 			 
 			if( i % grouping_size_for_rests == 0 ) {
 				// we will only output a rest for each place there could be a note
-				stickings_voice_string += getABCforRest(sticking_array.slice(i), global_empty_note_array, grouping_size_for_rests, scaler, true);
+				stickings_voice_string += getABCforRest(sticking_array.slice(i), class_empty_note_array, grouping_size_for_rests, scaler, true);
 				hh_snare_voice_string += getABCforRest(snare_array.slice(i), HH_array.slice(i), grouping_size_for_rests, scaler, false);
-				kick_voice_string += getABCforRest(kick_array.slice(i), global_empty_note_array, grouping_size_for_rests, scaler, true);
+				kick_voice_string += getABCforRest(kick_array.slice(i), class_empty_note_array, grouping_size_for_rests, scaler, true);
 			} 
 			
-			stickings_voice_string += getABCforNote(sticking_array.slice(i), global_empty_note_array, end_of_group, scaler);
+			stickings_voice_string += getABCforNote(sticking_array.slice(i), class_empty_note_array, end_of_group, scaler);
 			hh_snare_voice_string += getABCforNote(snare_array.slice(i), HH_array.slice(i), end_of_group, scaler);
-			kick_voice_string += getABCforNote(kick_array.slice(i), global_empty_note_array, end_of_group, scaler);
+			kick_voice_string += getABCforNote(kick_array.slice(i), class_empty_note_array, end_of_group, scaler);
 			
 			if((i % ABC_gen_note_grouping_size()) == ABC_gen_note_grouping_size()-1) {
 			
@@ -1137,9 +1141,8 @@
 	// translates them to an ABC string in 2 voices
 	// post_voice_abc is a string added to the end of each voice line that can end the line
 	//
-	function snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc) {
+	function snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes) {
 	
-		var array_length = getMaxArrayLengthForABCConverstion();  
 		var scaler = 1;  // we are always in 32ths notes here
 		var ABC_String = "";
 		var stickings_voice_string = "V:Stickings\n"    // for stickings.  they are all rests with text comments added
@@ -1147,7 +1150,7 @@
 		var kick_voice_string = "V:Feet stem=down\n%%voicemap drum\n";   // for kick drum
 		
 			
-		for(var i=0; i < array_length; i++) {
+		for(var i=0; i < num_notes; i++) {
 			
 			var grouping_size_for_rests = ABC_gen_note_grouping_size();
 			
@@ -1161,15 +1164,15 @@
 			if(i % ABC_gen_note_grouping_size() == 0) {
 				// we will only output a rest at the beginning of a beat phrase, or if triplets for every space
 				var hidden_rest = false;
-				stickings_voice_string += getABCforRest(sticking_array.slice(i), global_empty_note_array, grouping_size_for_rests, scaler, true);
+				stickings_voice_string += getABCforRest(sticking_array.slice(i), class_empty_note_array, grouping_size_for_rests, scaler, true);
 				hh_snare_voice_string += getABCforRest(snare_array.slice(i), HH_array.slice(i), grouping_size_for_rests, scaler, hidden_rest);
-				kick_voice_string += getABCforRest(kick_array.slice(i), global_empty_note_array, grouping_size_for_rests, scaler, hidden_rest);
+				kick_voice_string += getABCforRest(kick_array.slice(i), class_empty_note_array, grouping_size_for_rests, scaler, hidden_rest);
 			
 			} 
 			
-			stickings_voice_string += getABCforNote(sticking_array.slice(i), global_empty_note_array, end_of_group, scaler);
+			stickings_voice_string += getABCforNote(sticking_array.slice(i), class_empty_note_array, end_of_group, scaler);
 			hh_snare_voice_string += getABCforNote(snare_array.slice(i), HH_array.slice(i), end_of_group, scaler);
-			kick_voice_string += getABCforNote(kick_array.slice(i), global_empty_note_array, end_of_group, scaler);
+			kick_voice_string += getABCforNote(kick_array.slice(i), class_empty_note_array, end_of_group, scaler);
 			
 			if((i % ABC_gen_note_grouping_size()) == ABC_gen_note_grouping_size()-1) {
 			
@@ -1187,12 +1190,12 @@
 		return ABC_String;
 	}
 	
-	function snare_HH_kick_ABC(sticking_array, HH_array, snare_array, kick_array, post_voice_abc) {
+	function snare_HH_kick_ABC(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes) {
 		
 		if(usingTriplets()) {
-			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc);
+			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes);
 		} else {
-			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc);
+			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes);
 		}
 	}
 	
@@ -1662,14 +1665,14 @@
 	
 	function get_kick16th_permutation_array(section) {
 		if(usingTriplets()) {
-			if(global_notes_per_measure == 6)
+			if(class_notes_per_measure == 6)
 				return get_kick16th_triplets_permutation_array_for_4ths(section);
-			else if(global_notes_per_measure == 12)
+			else if(class_notes_per_measure == 12)
 				return get_kick16th_triplets_permutation_array_for_8ths(section);
-			else if(global_notes_per_measure == 24)
+			else if(class_notes_per_measure == 24)
 				return get_kick16th_triplets_permutation_array_for_16ths(section);
 			else
-				return global_empty_note_array;
+				return class_empty_note_array;
 		} else	{
 			return get_kick16th_strait_permutation_array(section);
 		}
@@ -1738,12 +1741,14 @@
 	
 	// query the clickable UI and generate a 32 element array representing the notes
 	// note: the ui may have fewer notes, but we scale them to fit into the 32 elements proportionally
+	// If using triplets returns 24 notes.   Otherwise always 32.
+	// Return value is the number of notes.
 	function getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, startIndexForClickableUI) {
 		
-		scaler = getNoteScaler();  // fill proportionally
+		var scaler = getNoteScaler();  // fill proportionally
 		
 		// fill in the arrays from the clickable UI
-		for(var i=0; i < global_notes_per_measure+0; i++) {
+		for(var i=0; i < class_notes_per_measure+0; i++) {
 			var array_index = (i)*scaler;
 			
 			// only grab the stickings if they are visible
@@ -1756,17 +1761,20 @@
 		
 			Kick_Array[array_index] = get_kick_state(i+startIndexForClickableUI, "ABC");
 		}
+		
+		var num_notes = (usingTriplets() ? 24 : 32);
+		return num_notes;
 	}
 	
 	/* 
 	 * midi_output_type:  "general_MIDI" or "Custom"
+	 * 32nd notes are assumed to be passed in unless we are using triplets then 24th notes.  :)
 	 * num_notes_for_swing: how many notes are we using.   Since we need to know where the upstrokes are we need to know
 	 * 			what the proper division is.   It can change when we are doing permutations, otherwise it is what is the 
-	 *			global_notes_per_measure
+	 *			class_notes_per_measure
 	 *
 	 */
-	function MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, midi_output_type, num_notes_for_swing) {
-			var array_length = getMaxArrayLengthForABCConverstion();  
+	function MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, midi_output_type, num_notes, num_notes_for_swing, swing_percentage) { 
 			var prev_hh_note = false;
 			var prev_snare_note = false;
 			var prev_kick_note = false;
@@ -1778,7 +1786,7 @@
 			else
 				midi_channel = 0; // for our internal midi player
 			
-			for(var i=0; i < array_length; i++)  {
+			for(var i=0; i < num_notes; i++)  {
 	
 				var duration = 16; // "ticks"  1/32th notes
 				var velocity_normal = 85; // how hard the note hits
@@ -1788,13 +1796,12 @@
 				if(usingTriplets())
 					duration = 21.33;
 				
-				swing_percentage = getSwing()/100;
 				if(swing_percentage != 0) {
 					// swing effects the note placement of the e and the a.  (1e&a)
 					// swing increases the distance between the 1 and the e ad shortens the distance between the e and the &
 					// likewise the distance between the & and the a is increased and the a and the 1 is shortened
 					//  So it sounds like this:   1-e&-a2-e&-a3-e&-a4-e&-a
-					var scaler = array_length / num_notes_for_swing;
+					var scaler = num_notes / num_notes_for_swing;
 					var val = i%(4*scaler);
 					
 					if(val < scaler) {
@@ -1920,32 +1927,32 @@
 		return tempo;
 	}
 	
-	function setTempo(tempo) {
+	root.setTempo = function(tempo) {
 		tempo = parseInt(tempo);
 		if(tempo < 19 && tempo > 281)
 			tempo = constant_default_tempo;
 		document.getElementById("tempoInput").value = tempo;
 		
-		tempoUpdate(tempo);
+		root.tempoUpdate(tempo);
 		
 		return tempo;
 	}
 	
 	// used to update the on screen tempo display
 	// also the onClick handler for the tempo slider
-	function tempoUpdate(tempo) {
+	root.tempoUpdate = function(tempo) {
 		document.getElementById('tempoOutput').innerHTML = "" + tempo + " bpm";
 	}
 
 	// used to update the on screen swing display
 	// also the onClick handler for the swing slider
-	function swingUpdate(swingAmount) {
+	root.swingUpdate = function(swingAmount) {
 		if(!swingAmount) {
 			// grab the actual amount from the slider
 			swingAmount = parseInt(document.getElementById("swingInput").value);
 		}
 		
-		if(usingTriplets() || global_notes_per_measure == 4)
+		if(usingTriplets() || class_notes_per_measure == 4)
 			document.getElementById('swingOutput').innerHTML = "swing N/A";
 		else	
 			document.getElementById('swingOutput').innerHTML = "" + swingAmount + "% swing";
@@ -1956,7 +1963,7 @@
 		if(swing < 0 || swing > 60)
 			swing = 0;
 		
-		if(usingTriplets() || global_notes_per_measure == 4)
+		if(usingTriplets() || class_notes_per_measure == 4)
 			swing = 0;
 		
 		// our real swing value only goes to 60%. 
@@ -1969,20 +1976,20 @@
 			swing = 0;
 		document.getElementById("swingInput").value = swing;
 		
-		swingUpdate(swing);
+		root.swingUpdate(swing);
 		
 		return swing;
 	}
 	
 	function create_MIDI(MIDI_type) {
-		var Sticking_Array = global_empty_note_array.slice(0);  // copy by value
-		var HH_Array = global_empty_note_array.slice(0);  // copy by value
-		var Snare_Array = global_empty_note_array.slice(0);  // copy by value
-		var Kick_Array = global_empty_note_array.slice(0);  // copy by value
+		var Sticking_Array = class_empty_note_array.slice(0);  // copy by value
+		var HH_Array = class_empty_note_array.slice(0);  // copy by value
+		var Snare_Array = class_empty_note_array.slice(0);  // copy by value
+		var Kick_Array = class_empty_note_array.slice(0);  // copy by value
 		var numSections = usingTriplets() ? 8 : 14;
 		
 		// just the first measure
-		getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, 0);
+		var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, 0);
 		
 		var midiFile = new Midi.File();
 		var midiTrack = new Midi.Track();
@@ -1991,8 +1998,10 @@
 		midiTrack.setTempo(getTempo());
 		midiTrack.setInstrument(0, 0x13);
 		
+		var swing_percentage = getSwing()/100;
+		
 		// all of the permutations use just the first measure
-		switch (global_permutationType) {
+		switch (class_permutationType) {
 		case "kick_16ths":
 			
 			// compute sections with different kick patterns
@@ -2002,10 +2011,10 @@
 				new_kick_array = get_kick16th_permutation_array(i);
 
 				var num_notes_for_swing = 16;
-				if(global_notes_per_measure > 16)
-					num_notes_for_swing = global_notes_per_measure;
+				if(class_notes_per_measure > 16)
+					num_notes_for_swing = class_notes_per_measure;
 			
-				MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, MIDI_type, num_notes_for_swing);
+				MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage);
 			}
 			break;
 			
@@ -2017,27 +2026,27 @@
 				var new_snare_array = get_snare_permutation_array(i);
 				
 				var num_notes_for_swing = 16;
-				if(global_notes_per_measure > 16)
-					num_notes_for_swing = global_notes_per_measure;
+				if(class_notes_per_measure > 16)
+					num_notes_for_swing = class_notes_per_measure;
 			
-				MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type,num_notes_for_swing);
+				MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage);
 			}
 			break;
 			
 		case "none":
 		default:
-			MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, global_notes_per_measure);
+			MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, num_notes, class_notes_per_measure, swing_percentage);
 			
 			if(isSecondMeasureVisable()) {
 				// reset arrays
-				Sticking_Array = global_empty_note_array.slice(0);  // copy by value
-				HH_Array = global_empty_note_array.slice(0);  // copy by value
-				Snare_Array = global_empty_note_array.slice(0);  // copy by value
-				Kick_Array = global_empty_note_array.slice(0);  // copy by value
+				Sticking_Array = class_empty_note_array.slice(0);  // copy by value
+				HH_Array = class_empty_note_array.slice(0);  // copy by value
+				Snare_Array = class_empty_note_array.slice(0);  // copy by value
+				Kick_Array = class_empty_note_array.slice(0);  // copy by value
 		
-				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, global_notes_per_measure);
+				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, class_notes_per_measure);
 				
-				MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type);
+				MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage);
 			}
 		}
 		
@@ -2048,23 +2057,23 @@
 	}
 	
 	function loadMIDI_for_playback() {
-		midi_url = create_MIDI("our_MIDI");
+		var midi_url = create_MIDI("our_MIDI");
 		
 		MIDI.Player = MIDI.Player;
 		MIDI.Player.timeWarp = 1; // speed the song is played back
 		MIDI.Player.loadFile(midi_url, MIDILoaderCallback());
 	}
 	
-	function MIDI_save_as() {
-		midi_url = create_MIDI("general_MIDI");
+	root.MIDI_save_as = function() {
+		var midi_url = create_MIDI("general_MIDI");
 		
 		// save as 
 		document.location = midi_url;
 	}
 	
-	function pauseMIDI_playback() {
-		if(global_isMIDIPaused == false) {
-			global_isMIDIPaused = true;
+	root.pauseMIDI_playback = function() {
+		if(class_isMIDIPaused == false) {
+			class_isMIDIPaused = true;
 			document.getElementById("playImage").src="images/play.png";
 			MIDI.Player.pause();
 			clear_all_highlights()
@@ -2072,26 +2081,26 @@
 	}
 	
 	// play button or keypress
-	function startMIDI_playback() {
+	root.startMIDI_playback = function() {
 		if(MIDI.Player.playing) {
 			return;
-		} else if(global_isMIDIPaused && false == noteHasChangedSinceLastReset() ) {
+		} else if(class_isMIDIPaused && false == noteHasChangedSinceLastReset() ) {
 			MIDI.Player.resume();
 		} else {
 			MIDI.Player.stop();
 			loadMIDI_for_playback();
 			noteHasChangedReset();  // reset so we know if there is a change
-			MIDI.Player.loop(global_shouldMIDIRepeat);   // set the loop parameter
+			MIDI.Player.loop(class_shouldMIDIRepeat);   // set the loop parameter
 			MIDI.Player.start();
 		}
 		document.getElementById("playImage").src="images/pause.png";
-		global_isMIDIPaused = false;
+		class_isMIDIPaused = false;
 	}
 	
 	// stop button or keypress
-	function stopMIDI_playback() {
-		if(MIDI.Player.playing || global_isMIDIPaused ) {
-			global_isMIDIPaused = false;
+	root.stopMIDI_playback = function() {
+		if(MIDI.Player.playing || class_isMIDIPaused ) {
+			class_isMIDIPaused = false;
 			MIDI.Player.stop();
 			//document.getElementById("stopImage").src="images/grey_stop.png";
 			document.getElementById("playImage").src="images/play.png";
@@ -2101,49 +2110,49 @@
 	}
 	
 	// modal play/stop button
-	function startOrStopMIDI_playback() {
+	root.startOrStopMIDI_playback = function() {
 		
 		if(MIDI.Player.playing) {
-			stopMIDI_playback();
+			root.stopMIDI_playback();
 		} else {
-			startMIDI_playback();
+			root.startMIDI_playback();
 		}			
 	}
 	
 	// modal play/pause button
-	function startOrPauseMIDI_playback() {
+	root.startOrPauseMIDI_playback = function() {
 		
 		if(MIDI.Player.playing) {
-			pauseMIDI_playback();
+			root.pauseMIDI_playback();
 		} else {
-			startMIDI_playback();
+			root.startMIDI_playback();
 		}			
 	}
 	
-	function repeatMIDI_playback() {
-		if(global_shouldMIDIRepeat == false) {
+	root.repeatMIDI_playback = function() {
+		if(class_shouldMIDIRepeat == false) {
 			document.getElementById("repeatImage").src="images/repeat.png";
-			global_shouldMIDIRepeat = true;
+			class_shouldMIDIRepeat = true;
 			MIDI.Player.loop(true);
 		} else {
 			document.getElementById("repeatImage").src="images/grey_repeat.png";
-			global_shouldMIDIRepeat = false;
+			class_shouldMIDIRepeat = false;
 			MIDI.Player.loop(false);
 		}
 	}
 	
 	var note_count = 0;
-	var global_midi_note_num = 0;  // global, but only used in this function
+	var class_midi_note_num = 0;  // global, but only used in this function
 	function ourMIDICallback(data) {
 		document.getElementById("MIDIProgress").value = (data.now/data.end)*100;
 		
 		if(data.now < 1) {
 			// this is considered the start.   It usually comes in at .5 for some reason?
-			global_midi_note_num = 0;
+			class_midi_note_num = 0;
 		}
 		if(data.now == data.end) {
 			
-			if(global_shouldMIDIRepeat) {
+			if(class_shouldMIDIRepeat) {
 		
 				if(noteHasChangedSinceLastReset()) {
 					loadMIDI_for_playback();  // regen before repeat
@@ -2170,11 +2179,11 @@
 			} else if(data.note == 35 || data.note == 44) {
 				note_type = "kick";
 			}
-			hilight_note(note_type, (global_midi_note_num/getNoteScaler()));
+			hilight_note(note_type, (class_midi_note_num/getNoteScaler()));
 		}
 		
 		if(data.note == 60)
-			global_midi_note_num++;
+			class_midi_note_num++;
 	
 		if(0 && data.message == 144) {
 			note_count++;
@@ -2183,7 +2192,7 @@
 			if(data.note != 60)
 				newHTML += "<b>";
 				
-			newHTML += note_type + " total notes: " + note_count + " - count#: " + global_midi_note_num + 
+			newHTML += note_type + " total notes: " + note_count + " - count#: " + class_midi_note_num + 
 											" now: " + data.now + 
 											" note: " + data.note + 
 											" message: " + data.message + 
@@ -2203,23 +2212,28 @@
 		MIDI.Player.addListener(ourMIDICallback);
 	}
 	
+	// called by the HTML when changes happen to forms
+	root.refresh_ABC = function() {
+		create_ABC();
+	}
+	
 	// this is called by a bunch of places anytime we modify the musical notes on the page
 	// this will recreate the ABC code and will then use the ABC to rerender the sheet music
 	// on the page.
 	function create_ABC() {
 	
-		var Sticking_Array = global_empty_note_array.slice(0);  // copy by value
-		var HH_Array = global_empty_note_array.slice(0);  // copy by value
-		var Snare_Array = global_empty_note_array.slice(0);  // copy by value
-		var Kick_Array = global_empty_note_array.slice(0);  // copy by value
+		var Sticking_Array = class_empty_note_array.slice(0);  // copy by value
+		var HH_Array = class_empty_note_array.slice(0);  // copy by value
+		var Snare_Array = class_empty_note_array.slice(0);  // copy by value
+		var Kick_Array = class_empty_note_array.slice(0);  // copy by value
 		var numSections = usingTriplets() ? 8 : 14;
 		
-		getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, 0);
+		var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, 0);
 		
 		// abc header boilerplate
-		var fullABC = get_top_ABC_BoilerPlate(global_permutationType != "none");
+		var fullABC = get_top_ABC_BoilerPlate(class_permutationType != "none");
 		
-		switch (global_permutationType) {
+		switch (class_permutationType) {
 		case "kick_16ths":  // use the hh & snare from the user
 		
 			// compute sections with different kick patterns
@@ -2229,7 +2243,7 @@
 				new_kick_array = get_kick16th_permutation_array(i);
 								
 				fullABC += get_permutation_pre_ABC(i);
-				fullABC += snare_HH_kick_ABC(Sticking_Array, HH_Array, Snare_Array, new_kick_array, get_permutation_post_ABC(i));
+				fullABC += snare_HH_kick_ABC(Sticking_Array, HH_Array, Snare_Array, new_kick_array, get_permutation_post_ABC(i), num_notes);
 			}
 			break;
 			
@@ -2240,23 +2254,23 @@
 				var new_snare_array = get_snare_permutation_array(i);
 				
 				fullABC += get_permutation_pre_ABC(i);
-				fullABC += snare_HH_kick_ABC(Sticking_Array, HH_Array, new_snare_array, Kick_Array, get_permutation_post_ABC(i));
+				fullABC += snare_HH_kick_ABC(Sticking_Array, HH_Array, new_snare_array, Kick_Array, get_permutation_post_ABC(i), num_notes);
 			}
 			break;
 			
 		case "none":
 		default:
-			fullABC += snare_HH_kick_ABC(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "\\\n");
+			fullABC += snare_HH_kick_ABC(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "\\\n", num_notes);
 			
 			if(isSecondMeasureVisable()) {
 				// reset arrays
-				Sticking_Array = global_empty_note_array.slice(0);  // copy by value
-				HH_Array = global_empty_note_array.slice(0);  // copy by value
-				Snare_Array = global_empty_note_array.slice(0);  // copy by value
-				Kick_Array = global_empty_note_array.slice(0);  // copy by value
+				Sticking_Array = class_empty_note_array.slice(0);  // copy by value
+				HH_Array = class_empty_note_array.slice(0);  // copy by value
+				Snare_Array = class_empty_note_array.slice(0);  // copy by value
+				Kick_Array = class_empty_note_array.slice(0);  // copy by value
 		
-				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, global_notes_per_measure);
-				fullABC += snare_HH_kick_ABC(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "|\n");
+				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, class_notes_per_measure);
+				fullABC += snare_HH_kick_ABC(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "|\n", num_notes);
 			}
 			
 			break;
@@ -2265,13 +2279,14 @@
 		
 		document.getElementById("ABCsource").value = fullABC;
 
-		noteHasChanged(); // pretty likely the case
-		renderABCtoSVG();
+		root.noteHasChanged(); // pretty likely the case
+		root.renderABCtoSVG();
 	}
 	
 	// -- Abc create argument
 	function AbcToSVGCallbacks() {
 		// -- required methods
+		this.abc_svg_output;
 		
 		// include a file (%%abc-include)
 		this.read_file = function(fn) {
@@ -2303,7 +2318,7 @@
 		
 		// image output
 		this.img_out = function(str) {
-			abc_images += str	// + '\n'
+			this.abc_svg_output += str	// + '\n'
 		}
 		
 		// -- optional attributes
@@ -2312,7 +2327,7 @@
 	var abcToSVGCallback = new AbcToSVGCallbacks();   // global, and only one
 	
 	// called by create_ABC to remake the sheet music on the page
-	function renderABCtoSVG() {
+	root.renderABCtoSVG = function() {
 		var	svgTarget = document.getElementById("svgTarget"),
 			diverr = document.getElementById("diverr");
 		
@@ -2330,11 +2345,12 @@
 			abc_images.replace(/<abc type=/g, '<rect class="abc" abc=');
 		*/
 			
-		abc = new Abc(abcToSVGCallback);
-		abc_images = '';
+		var abc = new Abc(abcToSVGCallback);
+		abcToSVGCallback.abc_svg_output = '';   // clear
 		diverr.innerHTML = '';
-		abc.tosvg("SOURCE", document.getElementById("ABCsource").value);
-		svgTarget.innerHTML = abc_images;
+		var abc_source = document.getElementById("ABCsource").value
+		abc.tosvg("SOURCE", abc_source);
+		svgTarget.innerHTML = abcToSVGCallback.abc_svg_output;
 			
 	}
 	
@@ -2349,7 +2365,7 @@
 		
 	}
 	
-	function ShowHideABCResults() {
+	root.ShowHideABCResults = function() {
 		var ABCResults = document.getElementById("ABC_Results");
 		
 		
@@ -2370,7 +2386,7 @@
 		return false;  // don't follow the link
 	}
 	
-	function showHideSecondMeasure(force, showElseHide) {
+	root.showHideSecondMeasure = function(force, showElseHide) {
 		var secondMeasure = document.getElementById("staff-container2");
 		
 		if(force) {
@@ -2393,7 +2409,7 @@
 	function showHideCSS_ClassDisplay(className, force, showElseHide, showState) {
 		var myElements = document.querySelectorAll(className);
 		for (var i = 0; i < myElements.length; i++) {
-			stickings = myElements[i];
+			var stickings = myElements[i];
 	
 			if(force) {
 				if(showElseHide)
@@ -2413,7 +2429,7 @@
 	function showHideCSS_ClassVisibility(className, force, showElseHide) {
 		var myElements = document.querySelectorAll(className);
 		for (var i = 0; i < myElements.length; i++) {
-			stickings = myElements[i];
+			var stickings = myElements[i];
 	
 			if(force) {
 				if(showElseHide)
@@ -2441,7 +2457,7 @@
 		return false;
 	}
 	
-	function showHideStickings(force, showElseHide) {
+	root.showHideStickings = function(force, showElseHide) {
 	
 		showHideCSS_ClassDisplay(".stickings-container", force, showElseHide, "block");
 		showHideCSS_ClassDisplay(".stickings-label", force, showElseHide, "block");
@@ -2451,7 +2467,7 @@
 		return false;  // don't follow the link
 	}
 	
-	function printMusic() {
+	root.printMusic = function() {
 		var oldMethod = isFirefox();
 		
 		if(oldMethod) {
@@ -2477,8 +2493,8 @@
 			showHideNonPrintableAreas(true);
 		} else {
 			// open a new window just for printing
-			var win = window.open("", global_app_title + " Print");
-			win.document.body.innerHTML = "<title>" + global_app_title + "</title>\n";
+			var win = window.open("", class_app_title + " Print");
+			win.document.body.innerHTML = "<title>" + class_app_title + "</title>\n";
 			win.document.body.innerHTML += document.getElementById("svgTarget").innerHTML;
 			win.print();
 		}
@@ -2506,21 +2522,23 @@
 			// otherwise we can't use spacebar in text fields :(
 			if(e.which == 32 && e.target.tagName != "INPUT" && e.target.tagName != "TEXTAREA") {
 				// spacebar
-				startOrStopMIDI_playback();
+				root.startOrStopMIDI_playback();
 				return false;
 			}
 			if(e.which == 179) {
 				// Play button
-				startOrPauseMIDI_playback();
+				root.startOrPauseMIDI_playback();
 			}
 			if(e.which == 178) {
 				// Stop button
-				stopMIDI_playback()
+				root.stopMIDI_playback()
 			}
 		}
 	}
 	
-	function runsOnPageLoad() {
+	// public function.
+	// This function initializes the data for the groove writer web page
+	root.runsOnPageLoad = function() {
 		
 		// setup for URL shortener
 		gapi.client.setApiKey('AIzaSyBnjOal_AHASONxMQSZPk6E5w9M04CGLcA'); 
@@ -2531,7 +2549,7 @@
 		setupPermutationMenu();
 						
 		// set the background color of the current subdivision
-		document.getElementById(global_notes_per_measure + "ths").style.background = "orange";
+		document.getElementById(class_notes_per_measure + "ths").style.background = "orange";
 		
 		set_Default_notes(window.location.search);
 		
@@ -2541,7 +2559,7 @@
 			callback: function() {
 				MIDI.programChange(0, 127);   // use "Gunshot" instrument because I don't know how to create new ones
 				document.getElementById("playImage").src="images/play.png";
-				document.getElementById("playImage").onclick = function (event){event.preventDefault(); startOrPauseMIDI_playback();};  // enable play button
+				document.getElementById("playImage").onclick = function (event){event.preventDefault(); root.startOrPauseMIDI_playback();};  // enable play button
 				
 				setupHotKeys();  // spacebar to play
 			}
@@ -2583,6 +2601,7 @@
 	// or  B=o---o---o----oo-o--oo---|
 	//
 	function setNotesFromURLData(drumType, noteString, numberOfMeasures)  {
+		var setFunction;
 		
 		if(drumType == "Stickings") {
 			setFunction = set_sticking_state;
@@ -2601,10 +2620,10 @@
 		var notes = noteString.replace(/\|/g, '');
 		
 		// multiple measures of "how_many_notes"
-		var notesOnScreen = global_notes_per_measure * numberOfMeasures;
+		var notesOnScreen = class_notes_per_measure * numberOfMeasures;
 		
-		noteStringScaler = 1;
-		displayScaler = 1;
+		var noteStringScaler = 1;
+		var displayScaler = 1;
 		if(notes.length > notesOnScreen && notes.length/notesOnScreen >= 2) {
 			// if we encounter a 16th note groove for an 8th note board, let's scale it	down	
 			noteStringScaler = Math.ceil(notes.length/notesOnScreen);
@@ -2616,7 +2635,7 @@
 			
 		//  DisplayIndex is the index into the notes on the HTML page  starts at 1/32\n%%flatbeams
 		var displayIndex = 0;
-		var topDisplay = global_notes_per_measure*global_number_of_measures;
+		var topDisplay = class_notes_per_measure*class_number_of_measures;
 		for(var i=0; i < notes.length && displayIndex < topDisplay; i += noteStringScaler, displayIndex += displayScaler) {
 		
 			switch(notes[i]) {
@@ -2683,7 +2702,7 @@
 		var fullURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
 		
 		// # of notes
-		fullURL += "?Div=" + global_notes_per_measure;
+		fullURL += "?Div=" + class_notes_per_measure;
 		
 		var title = document.getElementById("tuneTitle").value.trim();
 		if(title != "")
@@ -2717,14 +2736,14 @@
 		var Stickings = "&Stickings=|";
 		
 		// run through both measures.
-		topIndex = global_notes_per_measure*global_number_of_measures;
+		var topIndex = class_notes_per_measure*class_number_of_measures;
 		for(var i=0; i < topIndex; i++) {
 			Stickings += get_sticking_state(i, "URL"); 
 			HH += get_hh_state(i, "URL"); 
 			Snare += get_snare_state(i, "URL");
 			Kick += get_kick_state(i, "URL");
 		
-			if(((i+1) % global_notes_per_measure) == 0) {
+			if(((i+1) % class_notes_per_measure) == 0) {
 				Stickings += "|";
 				HH += "|";
 				Snare += "|";
@@ -2741,8 +2760,8 @@
 		return fullURL;
 	}
 	
-	function show_FullURLPopup() {
-		popup = document.getElementById("fullURLPopup");
+	root.show_FullURLPopup = function() {
+		var popup = document.getElementById("fullURLPopup");
 				
 		new Share("#shareButton", {
 		  networks: {
@@ -2781,8 +2800,8 @@
 		});
 				
 		if(popup) {
-			fullURL = get_FullURLForPage();
-			textField = document.getElementById("fullURLTextField");
+			var fullURL = get_FullURLForPage();
+			var textField = document.getElementById("fullURLTextField");
 			textField.value = fullURL;
 			
 			popup.style.visibility = "visible";
@@ -2796,8 +2815,8 @@
 		}
 	}
 	
-	function close_FullURLPopup() {
-		popup = document.getElementById("fullURLPopup");
+	root.close_FullURLPopup = function() {
+		var popup = document.getElementById("fullURLPopup");
 				
 		if(popup) 
 			popup.style.visibility = "hidden";
@@ -2883,7 +2902,7 @@
 		
 		Division = parseInt(getQueryVariableFromString("Div", 0, encodedURLData));
 		if(Division) {
-			if(Division != global_notes_per_measure) {
+			if(Division != class_notes_per_measure) {
 				changeDivisionWithNotes(Division);
 			}
 		}
@@ -2892,7 +2911,7 @@
 		if(!Stickings) {
 			getQueryVariableFromString("Stickings", false, encodedURLData)
 			if(!Stickings) {
-				Stickings = GetDefaultStickingsGroove(global_notes_per_measure);
+				Stickings = GetDefaultStickingsGroove(class_notes_per_measure);
 			}
 		} else {
 			stickings_set_from_URL = true;
@@ -2902,20 +2921,20 @@
 		if(!HH) {
 			getQueryVariableFromString("HH", false, encodedURLData)
 			if(!HH) {
-				HH = GetDefaultHHGroove(global_notes_per_measure);
+				HH = GetDefaultHHGroove(class_notes_per_measure);
 			}
 		}
 		
 		Snare = getQueryVariableFromString("S", false, encodedURLData);
 		if(!Snare) {
-			Snare = GetDefaultSnareGroove(global_notes_per_measure);
+			Snare = GetDefaultSnareGroove(class_notes_per_measure);
 		}
 		
 		Kick = getQueryVariableFromString("K", false, encodedURLData);
 		if(!Kick) {
 			getQueryVariableFromString("B", false, encodedURLData)
 			if(!Kick) {
-				Kick = GetDefaultKickGroove(global_notes_per_measure);
+				Kick = GetDefaultKickGroove(class_notes_per_measure);
 			}
 		}
 			
@@ -2929,11 +2948,11 @@
 		setNotesFromURLData("S", Snare, numberOfMeasures);
 		setNotesFromURLData("K", Kick, numberOfMeasures);
 		
-		numberOfMeasuresToShow = getQueryVariableFromString("showMeasures", 1, encodedURLData);
+		var numberOfMeasuresToShow = getQueryVariableFromString("showMeasures", 1, encodedURLData);
 		if(numberOfMeasuresToShow == 2)
-			showHideSecondMeasure(true, true);
+			root.showHideSecondMeasure(true, true);
 		else
-			showHideSecondMeasure(true, false);
+			root.showHideSecondMeasure(true, false);
 		
 		if(stickings_set_from_URL) 
 				showHideStickings(true, true);
@@ -2955,7 +2974,7 @@
 		
 		var tempo = getQueryVariableFromString("tempo", "", encodedURLData);
 		if(tempo != "")
-			setTempo(tempo);
+			root.setTempo(tempo);
 		
 		var swing = getQueryVariableFromString("swing", "", encodedURLData);
 		if(swing != "")
@@ -2964,7 +2983,7 @@
 		create_ABC();
 	}
 	
-	function loadNewGroove(encodedURLData)  {
+	root.loadNewGroove = function(encodedURLData)  {
 		set_Default_notes(encodedURLData)
 	}
 	
@@ -2977,7 +2996,7 @@
 		return myABC;
 	}
 		
-	function saveABCtoFile() {
+	root.saveABCtoFile = function() {
 		myABC = getABCDataWithLineEndings();
 		
 		myURL = 'data:text/plain;charset=utf-8;base64,' + btoa(myABC);
@@ -2991,24 +3010,24 @@
 	// eg  16th to 8ths or   32nds to 8th note triplets
 	// need to re-layout the html notes, change any globals and then reinitialize
 	function changeDivisionWithNotes (newDivision, Stickings, HH, Snare, Kick) {
-		var oldDivision = global_notes_per_measure;
+		var oldDivision = class_notes_per_measure;
 		var wasSecondMeasureVisabile = isSecondMeasureVisable();
 		var wasStickingsVisable = isStickingsVisible();
-		global_notes_per_measure = newDivision;
+		class_notes_per_measure = newDivision;
 		
 		var newHTML = "";
-		for(var cur_measure=1; cur_measure <= global_number_of_measures; cur_measure++) {
-			newHTML += HTMLforStaffContainer(cur_measure, (cur_measure-1)*global_notes_per_measure);
+		for(var cur_measure=1; cur_measure <= class_number_of_measures; cur_measure++) {
+			newHTML += root.HTMLforStaffContainer(cur_measure, (cur_measure-1)*class_notes_per_measure);
 		}
 		
 		// rewrite the HTML for the HTML note grid
 		document.getElementById("musicalInput").innerHTML = newHTML;
 		
 		if(wasSecondMeasureVisabile)
-			showHideSecondMeasure(true, true);
+			root.showHideSecondMeasure(true, true);
 		
 		if(wasStickingsVisable)
-			showHideStickings(true, true);
+			root.showHideStickings(true, true);
 		
 		// now set the right notes on and off
 		if(Stickings && HH && Snare && Kick) {
@@ -3022,36 +3041,36 @@
 		document.getElementById(oldDivision + "ths").style.background = "#FFFFCC";
 		
 		// highlight the new div
-		document.getElementById(global_notes_per_measure + "ths").style.background = "orange";
+		document.getElementById(class_notes_per_measure + "ths").style.background = "orange";
 		
 		// if the permutation menu is not "none" this will change the layout
 		// otherwise it should do nothing
 		setupPermutationMenu();
 		
 		// update the swing output display
-		swingUpdate();
+		root.swingUpdate();
 	}
 	
 	// change the base division to something else.
 	// eg  16th to 8ths or   32nds to 8th note triplets
 	// need to re-layout the html notes, change any globals and then reinitialize
-	function changeDivision (newDivision) {
+	root.changeDivision = function(newDivision) {
 		var uiStickings="|";
 		var uiHH="|";
 		var uiSnare="|";
 		var uiKick="|";
 		
-		if(!isTripletDivision(global_notes_per_measure) && !isTripletDivision(newDivision)) {
+		if(!isTripletDivision(class_notes_per_measure) && !isTripletDivision(newDivision)) {
 			// get the encoded notes out of the UI.
 			// run through both measures.
-			topIndex = global_notes_per_measure*global_number_of_measures;
+			var topIndex = class_notes_per_measure*class_number_of_measures;
 			for(var i=0; i < topIndex; i++) {
 					uiStickings += get_sticking_state(i, "URL"); 
 					uiHH += get_hh_state(i, "URL"); 
 					uiSnare += get_snare_state(i, "URL");
 					uiKick += get_kick_state(i, "URL");
 				
-				if(i == global_notes_per_measure-1) {
+				if(i == class_notes_per_measure-1) {
 					uiStickings += "|"
 					uiHH += "|"
 					uiSnare += "|";
@@ -3061,7 +3080,7 @@
 			
 			// override the hi-hat if we are going to a higher division.
 			// otherwise the notes get lost in translation (not enough)
-			if(newDivision > global_notes_per_measure)
+			if(newDivision > class_notes_per_measure)
 				uiHH = GetDefaultHHGroove(newDivision);
 		} else {
 			// triplets don't scale well, so use defaults when we change
@@ -3076,16 +3095,16 @@
 		create_ABC();
 	}
 		
-
+	// public function
 	// function to create HTML for the music staff and notes.   We usually want more than one of these
 	// baseIndex is the index for the css labels "staff-container1, staff-container2"
 	// indexStartForNotes is the index for the note ids.  
-	function HTMLforStaffContainer(baseindex, indexStartForNotes) {
+	root.HTMLforStaffContainer = function(baseindex, indexStartForNotes) {
 		var newHTML = ('\
 			<div class="staff-container" id="staff-container' + baseindex + '">\
 				<div class="row-container">\
 					<div class="line-labels">\
-						<div class="stickings-label" onClick="noteLabelClick(event, \'stickings\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'stickings\', ' + baseindex + ')">stickings</div>\
+						<div class="stickings-label" onClick="myGrooveWriter.noteLabelClick(event, \'stickings\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'stickings\', ' + baseindex + ')">stickings</div>\
 					</div>\
 					<div class="music-line-container">\
 						\
@@ -3094,17 +3113,17 @@
 						newHTML += ('\
 							<div class="stickings-container">\
 								<div class="opening_note_space"> </div>');
-								for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
+								for(var i = indexStartForNotes; i < class_notes_per_measure+indexStartForNotes; i++) {
 								
 									newHTML += ('\
 										<div id="sticking' + i + '" class="sticking">\
-											<div class="sticking_right"  id="sticking_right' + i + '"  onClick="noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'sticking\', ' + i + ') onmouseenter="noteOnMouseEnter(event, \'sticking\'">R</div>\
-											<div class="sticking_left"  id="sticking_left' + i + '"  onClick="noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'sticking\', ' + i + ')", ' + i + ')">L</div>\
+											<div class="sticking_right"  id="sticking_right' + i + '"  onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ') onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'sticking\'">R</div>\
+											<div class="sticking_left"  id="sticking_left' + i + '"  onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')", ' + i + ')">L</div>\
 										</div>\
 									');
 									
 									// add space between notes, exept on the last note
-									if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
+									if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}
@@ -3118,9 +3137,9 @@
 		newHTML += ('\
 				<div class="row-container">\
 					<div class="line-labels">\
-						<div class="hh-label" onClick="noteLabelClick(event, \'hh\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'hh\', ' + baseindex + ')">hi-hat</div>\
-						<div class="snare-label" onClick="noteLabelClick(event, \'snare\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'snare\', ' + baseindex + ')">snare</div>\
-						<div class="kick-label" onClick="noteLabelClick(event, \'kick\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); noteLabelClick(event, \'kick\', ' + baseindex + ')">kick</div>\
+						<div class="hh-label" onClick="myGrooveWriter.noteLabelClick(event, \'hh\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'hh\', ' + baseindex + ')">hi-hat</div>\
+						<div class="snare-label" onClick="myGrooveWriter.noteLabelClick(event, \'snare\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'snare\', ' + baseindex + ')">snare</div>\
+						<div class="kick-label" onClick="myGrooveWriter.noteLabelClick(event, \'kick\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'kick\', ' + baseindex + ')">kick</div>\
 					</div>\
 					<div class="music-line-container">\
 						\
@@ -3135,10 +3154,10 @@
 						newHTML += ('\
 							<div class="hi-hat-container">\
 								<div class="opening_note_space"> </div>');
-								for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
+								for(var i = indexStartForNotes; i < class_notes_per_measure+indexStartForNotes; i++) {
 								
 									newHTML += ('\
-										<div id="hi-hat' + i + '" class="hi-hat" onClick="noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'hh\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'hh\', ' + i + ')">\
+										<div id="hi-hat' + i + '" class="hi-hat" onClick="myGrooveWriter.noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'hh\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'hh\', ' + i + ')">\
 											<div class="hh_crash"  id="hh_crash'  + i + '">*</div>\
 											<div class="hh_ride"   id="hh_ride'   + i + '">R</div>\
 											<div class="hh_cross"  id="hh_cross'  + i + '">X</div>\
@@ -3148,7 +3167,7 @@
 										</div>\
 									');
 									
-									if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
+									if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}
@@ -3157,9 +3176,9 @@
 							newHTML += ('\
 							<div class="snare-container">\
 								<div class="opening_note_space"> </div> ');
-								for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
+								for(var i = indexStartForNotes; i < class_notes_per_measure+indexStartForNotes; i++) {
 									newHTML += ('\
-										<div id="snare' + i + '" class="snare" onClick="noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'snare\', ' + i + ')">\
+										<div id="snare' + i + '" class="snare" onClick="myGrooveWriter.noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'snare\', ' + i + ')">\
 										<div class="snare_ghost"  id="snare_ghost'  + i + '">(&bull;)</div>\
 										<div class="snare_circle" id="snare_circle' + i + '"></div>\
 										<div class="snare_xstick" id="snare_xstick' + i + '">X</div>\
@@ -3167,7 +3186,7 @@
 										</div> \
 										');
 										
-									if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
+									if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}
@@ -3176,15 +3195,15 @@
 							newHTML += ('\
 							<div class="kick-container">\
 								<div class="opening_note_space"> </div> ');
-								for(var i = indexStartForNotes; i < global_notes_per_measure+indexStartForNotes; i++) {
+								for(var i = indexStartForNotes; i < class_notes_per_measure+indexStartForNotes; i++) {
 									newHTML += ('\
-										<div id="kick' + i + '" class="kick" onClick="noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); noteRightClick(event, \'kick\', ' + i + ')" onmouseenter="noteOnMouseEnter(event, \'kick\', ' + i + ')">\
+										<div id="kick' + i + '" class="kick" onClick="myGrooveWriter.noteLeftClick(event, \'kick\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'kick\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'kick\', ' + i + ')">\
 										<div class="kick_splash" id="kick_splash' + i + '">X</div></a>\
 										<div class="kick_circle" id="kick_circle' + i + '"></div></a>\
 										</div> \
 									');
 									
-									if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < global_notes_per_measure+indexStartForNotes-1) {
+									if((i-(indexStartForNotes-1)) % note_grouping_size() == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}
@@ -3198,5 +3217,6 @@
 		
 		return newHTML;
 	}  // end function HTMLforStaffContainer
+};  // end of class
 		
 		

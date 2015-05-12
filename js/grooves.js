@@ -59,7 +59,7 @@ if (typeof (grooves) === "undefined") var grooves = {};
 				HTML += '<li class="gooveListHeaderLI">' + key + "</li>\n";
 				HTML += root.arrayAsHTMLList(arrayToPrint[key]);
 			} else {
-				HTML += '<li class="gooveListLI" onClick="loadNewGroove(\'' + arrayToPrint[key] + '\')">' + key + '</li>\n';
+				HTML += '<li class="gooveListLI" onClick="myGrooveWriter.loadNewGroove(\'' + arrayToPrint[key] + '\')">' + key + '</li>\n';
 			}
 		}
 		HTML += "</ul>\n";
