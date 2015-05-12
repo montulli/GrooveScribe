@@ -66,10 +66,8 @@
 			
 			<div id="musicalInput">
 				<script>
-					var genHTML = "";
-					for(var cur_measure=1; cur_measure <= global_number_of_measures; cur_measure++) {
-						genHTML += HTMLforStaffContainer(cur_measure, (cur_measure-1)*global_notes_per_measure);
-					}
+					genHTML = HTMLforStaffContainer(1, 0);
+					genHTML += HTMLforStaffContainer(2, global_notes_per_measure);
 					document.write(genHTML);
 				</script>
 			</div>
