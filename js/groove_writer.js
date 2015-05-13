@@ -1763,12 +1763,12 @@ function GrooveWriter() { "use strict";
 		document.getElementById("ABCsource").value = fullABC;
 
 		root.noteHasChanged(); // pretty likely the case
-		root.renderABCtoSVG();
+		root.displayNewSVG();
 	}
 	
 	
 	// called by create_ABC to remake the sheet music on the page
-	root.renderABCtoSVG = function() {
+	root.displayNewSVG = function() {
 		var	svgTarget = document.getElementById("svgTarget"),
 			diverr = document.getElementById("diverr");
 		

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>Groove Display</title>
+		
+		<meta name="viewport" content="width=810, initial-scale=1.25">
+		
+		<!--   Other peoples JS libraries    -->
+		<!--   midi.js package for sound   -->
+		<script src="./js/MIDI/AudioDetect.js" type="text/javascript"></script>
+		<script src="./js/MIDI/LoadPlugin.js" type="text/javascript"></script>
+		<script src="./js/MIDI/Plugin.js" type="text/javascript"></script>
+		<script src="./js/MIDI/Player.js" type="text/javascript"></script>
+		<script src="./js/Window/DOMLoader.XMLHttp.js" type="text/javascript"></script>
+		<!-- jasmid package midi package required by midi.js above -->
+		<script src="./inc/jasmid/stream.js"></script>
+		<script src="./inc/jasmid/midifile.js"></script>
+		<script src="./inc/jasmid/replayer.js"></script>
+		<!-- jsmidgen -->
+		<script src="./js/jsmidgen.js" type="text/javascript"></script>
+		<!-- extras -->
+		<script src="./inc/Base64.js" type="text/javascript"></script>
+		<script src="./inc/base64binary.js" type="text/javascript"></script>
+		<!-- script to render ABC to an SVG image -->
+		<script type="text/javascript" src="./js/abc2svg-1.js"></script>
+		
+		<!--   our custom JS  -->
+		<script src="js/groove_utils.js"></script>
+		
+		
+	    <link rel="stylesheet" type="text/css" href="css/groove_writer.css">
+    </head>
+    <body>
+	Groove Display:
+	<br>
+	<script>
+			var GrooveData;  // global;
+	
+			// set up the page after it has fully loaded
+			window.onload = function () {
+				myGrooveUtils = new GrooveUtils();
+			
+				// load the groove from the URL data if it was passed in.
+				GrooveData = myGrooveUtils.getGrooveDataFromUrlString(window.location.search);
+				var abcNotation = myGrooveUtils.createABCFromGrooveData(GrooveData);
+				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
+				
+				//document.write("<p><pre>" + svgReturn.svg + "</pre>");
+				//document.write("<p><textarea cols=60 rows=30>" + abcNotation + "</textarea>");
+				//document.write("<pre>" + JSON.stringify(GrooveData, null, 2) + "</pre>");
+				
+				myGrooveUtils.midiEventCallbacks.loadMidiDataEvent = function(myroot) { 
+					var midiURL = myGrooveUtils.create_MIDIURLFromGrooveData(GrooveData, "our_MIDI");
+					myGrooveUtils.loadMIDIFromURL(midiURL);
+					myGrooveUtils.midiResetNoteHasChanged();
+				}
+				
+				myGrooveUtils.oneTimeInitializeMidi();
+			}
+			
+			// update the tempo string display
+			tempoUpdate = function(tempo) {
+				document.getElementById('tempoOutput').innerHTML = "" + tempo + " bpm";
+				GrooveData.tempo = tempo;
+			}
+
+			// used to update the on screen swing display
+			// also the onClick handler for the swing slider
+			swingUpdate = function(swingAmount) {
+				if(!swingAmount) {
+					// grab the actual amount from the slider
+					swingAmount = parseInt(document.getElementById("swingInput").value);
+				}
+				
+				if(usingTriplets() || class_notes_per_measure == 4) {
+					document.getElementById('swingOutput').innerHTML = "swing N/A";	
+				} else {
+					document.getElementById('swingOutput').innerHTML = "" + swingAmount + "% swing";
+					GrooveData.swingPercent = swingAmount;
+				}
+			}
+			
+			
+	</script>
+	
+	<div id="playerControl">
+		<img alt="Play" title="Play" id="midiPlayImage" src="images/grey_play.png">
+		<span id="tempoAndProgress">
+			<div id="tempo">
+				<input type=range min=40 max=240 value=90 id="tempoInput" list="tempoSettings" step=5 onChange="myGrooveUtils.midiNoteHasChanged()" oninput="tempoUpdate(value)">
+				<div for=tempo id=tempoOutput>80 bpm</div>
+			</div>
+			<div id="swingAmount">
+				<input type=range min=0 max=50 value=0 id="swingInput" list="swingSettings" step=5 onChange="myGrooveUtils.midiNoteHasChanged()" oninput="swingUpdate(value)">
+				<div for=swingAmount id=swingOutput>0% swing</div>
+			</div>
+		</span>
+		<img onClick="myGrooveUtils.repeatMIDI_playback();" alt="Repeat" title="Repeat" id="midiRepeatImage" src="images/repeat.png">
+		<br>
+		<div id="progress">
+			<progress id="MIDIProgress" value="0" max="100"></progress>
+		</div>
+	</div>	

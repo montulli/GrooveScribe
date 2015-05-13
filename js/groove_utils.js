@@ -5,6 +5,11 @@ function GrooveUtils() { "use strict";
 
 	var root = this;
 
+	// midi state variables
+	root.isMIDIPaused = false;
+	root.shouldMIDIRepeat = true;
+	root.midiDataURL = "";    // used to store the midi data for playback
+		
 	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
 	
 	// constants
@@ -44,6 +49,53 @@ function GrooveUtils() { "use strict";
 		this.tempo             = constant_DEFAULT_TEMPO;
 	}
 	
+	root.midiEventCallbackClass = function(classRoot) {
+		this.classRoot = classRoot;
+		this.noteHasChangedSinceLastDataLoad = false;
+		
+		this.playEvent = function(root){
+			document.getElementById("midiPlayImage").src="images/pause.png";
+		}; 
+		this.loadMidiDataEvent = function(root) {
+			this.noteHasChangedSinceLastDataLoad = false;
+		}; 
+		this.doesMidiDataNeedRefresh = function(root) { 
+			return this.noteHasChangeSinceLastDataLoad;
+		};
+		this.pauseEvent = function(root){
+			document.getElementById("midiPlayImage").src="images/play.png";
+		};  
+		
+		this.resumeEvent = function(root){};
+		this.stopEvent = function(root){
+			document.getElementById("midiPlayImage").src="images/play.png";
+			document.getElementById("MIDIProgress").value = 0;
+		};
+		this.repeatChangeEvent = function(root, newValue){
+			if(newValue)
+				document.getElementById("midiRepeatImage").src="images/repeat.png";
+			else
+				document.getElementById("midiRepeatImage").src="images/grey_repeat.png";
+		};
+		this.percentProgress = function(root, percent){
+			document.getElementById("MIDIProgress").value = percent;
+		};
+		this.notePlaying = function(root, note_type, note_position){};
+		
+		this.midiInitialized = function(root) {
+				document.getElementById("midiPlayImage").src="images/play.png";
+				document.getElementById("midiPlayImage").onclick = function (event){myGrooveUtils.startOrStopMIDI_playback();};  // enable play button
+				setupHotKeys();  // spacebar to play
+		}
+	}
+	root.midiEventCallbacks = new root.midiEventCallbackClass(root);
+	
+	root.midiNoteHasChanged = function() {
+		root.midiEventCallbacks.noteHasChangedSinceLastDataLoad = true;
+	}
+	root.midiResetNoteHasChanged = function() {
+		root.midiEventCallbacks.noteHasChangedSinceLastDataLoad = false;
+	}
 		
 	root.getQueryVariableFromString = function(variable, def_value, my_string)
 	{
@@ -372,6 +424,41 @@ function GrooveUtils() { "use strict";
 		return myGrooveData;
 	}
 	
+	function setupHotKeys() {
+		
+		var isCtrl = false;
+		document.onkeyup=function(e) {
+				if(e.which == 17) 
+					isCtrl=false;
+		}
+			
+		document.onkeydown=function(e){
+			if(e.which == 17) 
+				isCtrl=true;
+			/*
+			if(e.which == 83 && isCtrl == true) {
+				 alert('CTRL-S pressed');
+				 return false;
+			}
+			*/
+			// only accept the event if it not going to an INPUT field
+			// otherwise we can't use spacebar in text fields :(
+			if(e.which == 32 && e.target.tagName != "INPUT" && e.target.tagName != "TEXTAREA") {
+				// spacebar
+				root.startOrStopMIDI_playback();
+				return false;
+			}
+			if(e.which == 179) {
+				// Play button
+				root.startOrPauseMIDI_playback();
+			}
+			if(e.which == 178) {
+				// Stop button
+				root.stopMIDI_playback()
+			}
+		}
+	}
+	
 	/* 
 	 * midi_output_type:  "general_MIDI" or "Custom"
 	 * num_notes: number of notes in the arrays
@@ -534,6 +621,199 @@ function GrooveUtils() { "use strict";
 				midiTrack.addNoteOff(0, 60, duration);  // add a blank note for spacing
 			}
 	} // end of function
+	
+	// returns a URL that is a MIDI track
+	root.create_MIDIURLFromGrooveData = function(myGrooveData, MIDI_type) {
+		
+		var midiFile = new Midi.File();
+		var midiTrack = new Midi.Track();
+		midiFile.addTrack(midiTrack);
+
+		midiTrack.setTempo(myGrooveData.tempo);
+		midiTrack.setInstrument(0, 0x13);
+		
+		var swing_percentage = myGrooveData.swingPercent/100;
+		
+		var total_notes = myGrooveData.notesPerMeasure * myGrooveData.numberOfMeasures;
+		root.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, 
+											myGrooveData.hh_array, 
+											myGrooveData.snare_array, 
+											myGrooveData.kick_array, 
+											MIDI_type, 
+											total_notes, 
+											myGrooveData.notesPerMeasure, 
+											myGrooveData.swingPercent);
+			
+				
+		var midi_url = "data:audio/midi;base64," + btoa(midiFile.toBytes());
+		
+		return midi_url;
+	}
+	
+	root.loadMIDIFromURL = function(midiURL) {
+		
+		MIDI.Player.timeWarp = 1; // speed the song is played back
+		MIDI.Player.loadFile(midiURL, MIDILoaderCallback());
+	}
+	
+	root.MIDI_save_as = function(midiURL) {
+		
+		// save as 
+		document.location = midiURL;
+	}
+	
+	root.pauseMIDI_playback = function() {
+		if(root.isMIDIPaused == false) {
+			root.isMIDIPaused = true;
+			root.midiEventCallbacks.pauseEvent(root.midiEventCallbacks.classRoot);
+			MIDI.Player.pause();
+			clear_all_highlights()
+		}
+	}
+	
+	// play button or keypress
+	root.startMIDI_playback = function() {
+		if(MIDI.Player.playing) {
+			return;
+		} else if(root.isMIDIPaused && false == root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot) ) {
+			MIDI.Player.resume();
+		} else {
+			root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot);
+			MIDI.Player.stop();
+			MIDI.Player.loop(root.shouldMIDIRepeat);   // set the loop parameter
+			MIDI.Player.start();
+		}
+		root.midiEventCallbacks.playEvent(root.midiEventCallbacks.classRoot);
+		root.isMIDIPaused = false;
+	}
+	
+	// stop button or keypress
+	root.stopMIDI_playback = function() {
+		if(MIDI.Player.playing || root.isMIDIPaused ) {
+			root.isMIDIPaused = false;
+			MIDI.Player.stop();
+			root.midiEventCallbacks.stopEvent(root.midiEventCallbacks.classRoot);
+		} 
+	}
+	
+	// modal play/stop button
+	root.startOrStopMIDI_playback = function() {
+		
+		if(MIDI.Player.playing) {
+			root.stopMIDI_playback();
+		} else {
+			root.startMIDI_playback();
+		}			
+	}
+	
+	// modal play/pause button
+	root.startOrPauseMIDI_playback = function() {
+		
+		if(MIDI.Player.playing) {
+			root.pauseMIDI_playback();
+		} else {
+			root.startMIDI_playback();
+		}			
+	}
+	
+	root.repeatMIDI_playback = function() {
+		if(root.shouldMIDIRepeat == false) {
+			root.shouldMIDIRepeat = true;
+			MIDI.Player.loop(true);
+		} else {
+			root.shouldMIDIRepeat = false;
+			MIDI.Player.loop(false);
+		}
+		root.midiEventCallbacks.repeatChangeEvent(root.midiEventCallbacks.classRoot, root.shouldMIDIRepeat);
+			
+	}
+	
+	root.oneTimeInitializeMidi = function() {
+		MIDI.loadPlugin({
+			soundfontUrl: "./soundfont/",
+			instruments: ["gunshot" ],
+			callback: function() {
+				MIDI.programChange(0, 127);   // use "Gunshot" instrument because I don't know how to create new ones
+				root.midiEventCallbacks.midiInitialized(root.midiEventCallbacks.classRoot);
+		
+			}
+		});
+	}
+	
+	var debug_note_count = 0;
+	var class_midi_note_num = 0;  // global, but only used in this function
+	function ourMIDICallback(data) {
+		root.midiEventCallbacks.percentProgress(root.midiEventCallbacks.classRoot, (data.now/data.end)*100);
+		
+		if(data.now < 1) {
+			// this is considered the start.   It usually comes in at .5 for some reason?
+			class_midi_note_num = 0;
+		}
+		if(data.now == data.end) {
+			
+			if(root.shouldMIDIRepeat) {
+		
+				if(root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot)) {
+					MIDI.Player.stop();
+					root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot);
+					MIDI.Player.start();
+				}
+			} else {
+				// not repeating, so stopping
+				MIDI.Player.stop();
+				root.midiEventCallbacks.percentProgress(root.midiEventCallbacks.classRoot, 100);
+				root.midiEventCallbacks.stopEvent(root.midiEventCallbacks.classRoot);
+			}
+		}
+		
+		// note on
+		var note_type;
+		if(data.message == 144) {
+			if(data.note == 108 || data.note == 42 || data.note == 46 || data.note == 49 || data.note == 51)  {
+				note_type = "hi-hat";
+			} else if(data.note == 21 || data.note == 22 || data.note == 37 || data.note == 38) {
+				note_type = "snare";
+			} else if(data.note == 35 || data.note == 44) {
+				note_type = "kick";
+			}
+			root.midiEventCallbacks.notePlaying(root.midiEventCallbacks.classRoot, note_type, class_midi_note_num);
+		}
+		
+		if(data.note == 60)
+			class_midi_note_num++;
+	
+		if(0 && data.message == 144) {
+			debug_note_count++;
+			// my debugging code for midi
+			var newHTML = "";
+			if(data.note != 60)
+				newHTML += "<b>";
+				
+			newHTML += note_type + " total notes: " + note_count + " - count#: " + class_midi_note_num + 
+											" now: " + data.now + 
+											" note: " + data.note + 
+											" message: " + data.message + 
+											" channel: " + data.channel + 
+											" velocity: " + data.velocity +
+											"<br>";
+											
+			if(data.note != 60)
+				newHTML += "</b>";
+			
+			document.getElementById("midiTextOutput").innerHTML += newHTML;
+		}
+		
+	}
+	
+	function MIDILoaderCallback() {
+		MIDI.Player.addListener(ourMIDICallback);
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	// the top stuff in the ABC that doesn't depend on the notes
@@ -750,8 +1030,64 @@ function GrooveUtils() { "use strict";
 			
 		return note_grouping;
 	}
-				
+	
+	// since note values are 16ths or 12ths this corrects for that by multiplying note values
+	root.getNoteScaler = function(notes_per_measure) {
+		var scaler;
 
+		switch(notes_per_measure) {
+		case 4:
+			scaler = 8;
+			break;
+		case 6:
+			scaler = 4;  // triplet
+			break;
+		case 8:
+			scaler = 4;
+			break;
+		case 12:
+			scaler = 2;  // triplet
+			break;
+		case 16:
+			scaler = 2;
+			break;
+		case 24:
+			scaler = 1;  // triplet
+			break;
+		case 32:
+			scaler = 1;
+			break;
+		default:
+			alert("bad case in getNoteScaler()");
+			scaler = 1;
+		}
+			
+		return scaler;
+	}
+	
+	// take any size array and make it have 32 notes per measure by padding it with rests in the spaces between
+	// For triplets, expands to 24 notes per measure
+	// For non Triplets, expands to 32 notes per measure
+	function scaleNoteArrayToFullSize(note_array, num_measures, notes_per_measure) {
+		var scaler = root.getNoteScaler(notes_per_measure);  // fill proportionally
+		var retArray = [];
+		
+		if(notes_per_measure == 32 || notes_per_measure == 24)
+			return note_array;   // no need to expand
+		
+		for(var i=0; i < num_measures * 32; i++) 
+			retArray[i] = false;
+		
+		// sparsely fill in the return array with data from passed in array
+		for(var i=0; i < num_measures * notes_per_measure; i++) {
+			var ret_array_index = (i)*scaler;
+			
+			retArray[ret_array_index] = note_array[i];
+		}
+		
+		return retArray;
+	}
+	
 	// takes 4 arrays 24 elements long that represent the stickings, snare, HH & kick.
 	// each element contains either the note value in ABC "F","^g" or false to represent off
 	// translates them to an ABC string in 2 voices
@@ -794,11 +1130,15 @@ function GrooveUtils() { "use strict";
 				hh_snare_voice_string += " ";   // Add a space to break the bar line every group notes
 				kick_voice_string += " ";
 			}
+			
+			// add a bar line every 24 notes
+			if(((i+1) % 24) == 0) {
+				stickings_voice_string += "|";
+				hh_snare_voice_string += "|";
+				kick_voice_string += "|";
+			}
 		}
 		
-		stickings_voice_string += "|";
-		hh_snare_voice_string += "|";
-		kick_voice_string += "|";
 		ABC_String += stickings_voice_string + post_voice_abc + hh_snare_voice_string + post_voice_abc + kick_voice_string + post_voice_abc;
 		
 		return ABC_String;
@@ -817,9 +1157,8 @@ function GrooveUtils() { "use strict";
 		var hh_snare_voice_string = "V:Hands stem=up\n%%voicemap drum\n";     // for hh and snare
 		var kick_voice_string = "V:Feet stem=down\n%%voicemap drum\n";   // for kick drum
 		
-			
 		for(var i=0; i < num_notes; i++) {
-			
+					
 			var grouping_size_for_rests = ABC_gen_note_grouping_size(false);
 			
 			var end_of_group;
@@ -848,17 +1187,24 @@ function GrooveUtils() { "use strict";
 				hh_snare_voice_string += " ";   // Add a space to break the bar line every group notes
 				kick_voice_string += " ";
 			}
+			
+			// add a bar line every 32 notes
+			if(((i+1) % 32) == 0) {
+				stickings_voice_string += "|";
+				hh_snare_voice_string += "|";
+				kick_voice_string += "|";
+			}
 		}
 		
-		stickings_voice_string += "|";
-		hh_snare_voice_string += "|";
-		kick_voice_string += "|";
+		
 		ABC_String += stickings_voice_string + post_voice_abc  + hh_snare_voice_string + post_voice_abc + kick_voice_string + post_voice_abc;
 		
 		return ABC_String;
 	}
 	
 	// create ABC from note arrays
+	// The Arrays passed in must be 32 or 24 notes long 
+	// notes_per_measure denotes the number of notes that _should_ be in the measure even though the arrays are always large
 	root.create_ABC_from_snare_HH_kick_arrays = function(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure) {
 		
 		if((num_notes % 3) == 0) { // triplets 
@@ -868,6 +1214,33 @@ function GrooveUtils() { "use strict";
 		}
 	}
 	
+	// create ABC notation from a GrooveData class
+	// returns a string of ABC Notation data
+	
+	root.createABCFromGrooveData = function(myGrooveData) {
+	
+		var FullNoteStickingArray = scaleNoteArrayToFullSize(myGrooveData.sticking_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure);
+		var FullNoteHHArray       = scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure);
+		var FullNoteSnareArray    = scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure);
+		var FullNoteKickArray     = scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure);
+	
+		var fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(false, 
+															myGrooveData.title, 
+															myGrooveData.author, 
+															myGrooveData.comments, 
+															myGrooveData.showLegend, 
+															root.isTripletDivision(myGrooveData.notesPerMeasure));
+		
+		fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(FullNoteStickingArray, 
+																	  FullNoteHHArray, 
+																	  FullNoteSnareArray, 
+																	  FullNoteKickArray, 
+																	  "|\n", 
+																	  FullNoteHHArray.length, 
+																	  myGrooveData.notesPerMeasure);
+			
+		return fullABC;
+	}
 	
 	// callback class for abc generator library
 	function SVGLibCallback() {
@@ -915,7 +1288,6 @@ function GrooveUtils() { "use strict";
 		abcToSVGCallback.abc_svg_output = '';   // clear
 		abcToSVGCallback.abc_error_output = '';   // clear
 		
-		diverr.innerHTML = '';
 		abc.tosvg("SOURCE", abc_source);
 		return {
 			svg: abcToSVGCallback.abc_svg_output,
