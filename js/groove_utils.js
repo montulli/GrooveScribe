@@ -8,6 +8,8 @@ function GrooveUtils() { "use strict";
 	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
 	
 	// constants
+	var constant_MAX_MEASURES=  10;
+	var constant_DEFAULT_TEMPO= 80;
 	var constant_ABC_STICK_R=  '"R"x';
 	var constant_ABC_STICK_L=  '"L"x';
 	var constant_ABC_STICK_OFF=  '""x';
@@ -24,6 +26,351 @@ function GrooveUtils() { "use strict";
 	var constant_ABC_KI_SandK=  "[F^d,]";  // kick & splash
 	var constant_ABC_KI_Splash= "^d,";     // splash only
 	var constant_ABC_KI_Normal= "F";   
+	
+	root.grooveData = function() {
+		this.notesPerMeasure   = 8;
+		this.numberOfMeasures  = 2;
+		this.showMeasures      = 1;
+		this.sticking_array    = class_empty_note_array.slice(0);  // copy by value
+		this.hh_array          = class_empty_note_array.slice(0);  // copy by value
+		this.snare_array       = class_empty_note_array.slice(0);  // copy by value
+		this.kick_array        = class_empty_note_array.slice(0);  // copy by value
+		this.showStickings     = false;
+		this.title             = "";
+		this.author            = "";
+		this.comments          = "";
+		this.showLegend        = false;
+		this.swingPercent      = 0;
+		this.tempo             = constant_DEFAULT_TEMPO;
+	}
+	
+		
+	root.getQueryVariableFromString = function(variable, def_value, my_string)
+	{
+		   var query = my_string.substring(1);
+		   var vars = query.split("&");
+		   for (var i=0;i<vars.length;i++) {
+				   var pair = vars[i].split("=");
+				   if(pair[0].toLowerCase() == variable.toLowerCase()){return pair[1];}
+		   }
+		   return(def_value);
+	}	
+	
+	// Get the "?query" values from the page URL
+	root.getQueryVariableFromURL = function(variable, def_value)
+	{
+		   return(root.getQueryVariableFromString(variable, def_value, window.location.search));
+	}	
+	
+	// figure it out from the division  Division is number of notes per measure 4, 6, 8, 12, 16, 24, 32, etc...
+	root.isTripletDivision = function(division) {
+		if(division % 6 == 0)
+			return true;
+			
+		return false;
+	}
+	
+	root.GetDefaultStickingsGroove = function(division, numMeasures) {
+		var retString = "";
+		if(root.isTripletDivision(division)) {
+			for(var i=0; i<numMeasures; i++)
+				retString += "|------------------------";
+			retString += "|";
+		} else { 
+			for(var i=0; i<numMeasures; i++)
+				retString += "|--------------------------------";
+			retString += "|";
+		}
+		return retString;
+	}
+	
+	root.GetDefaultHHGroove = function(division, numMeasures) {
+		var retString = "";
+		if(root.isTripletDivision(division)) {
+			for(var i=0; i<numMeasures; i++)
+				retString += "|xxxxxxxxxxxxxxxxxxxxxxxx";
+			retString += "|";
+		} else { 
+			for(var i=0; i<numMeasures; i++)
+				retString += "|x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-";
+			retString += "|";
+		}
+		return retString;
+	}
+	
+	root.GetDefaultSnareGroove = function(division, numMeasures) {
+		var retString = "";
+		if(root.isTripletDivision(division)) {
+			for(var i=0; i<numMeasures; i++)
+				retString += "|---O-----O--";
+			retString += "|";
+		} else { 
+			for(var i=0; i<numMeasures; i++)
+				retString += "|--------O---------------O-------";
+			retString += "|";
+		}
+		return retString;
+	}
+	
+	root.GetDefaultKickGroove = function(division, numMeasures) {
+		var retString = "";
+		if(root.isTripletDivision(division)) {
+			for(var i=0; i<numMeasures; i++)
+				retString += "|o-----o-----";
+			retString += "|";
+		} else { 
+			for(var i=0; i<numMeasures; i++)
+				retString += "|o---------------o---------------";
+			retString += "|";
+		}
+		return retString;
+	}
+	
+	
+	// takes a character from tablature form and converts it to our ABC Notation form.
+	// uses drum tab format adapted from wikipedia: http://en.wikipedia.org/wiki/Drum_tablature
+	//
+	//
+	//  HiHat support:   
+	//     	x: normal
+	//     	X: accent
+	//     	o: open
+	//		+: close
+	//     	c: crash
+	//      r: ride
+	//     	-: off
+	//
+	//   Snare support:
+	//     	o: normal
+	//     	O: accent
+	//     	g: ghost
+	//      x: cross stick
+	//     	-: off
+	//  
+	//   Kick support:
+	//     	o: normal
+	//     	x: hi hat splash with foot
+	//     	X: kick & hi hat splash with foot simultaneously
+	//
+	//  Note that "|" and " " will be skipped so that standard drum tabs can be applied
+	//  Example:
+	//     H=|x---x---x---x---|x---x---x---x---|x---x---x---x---|
+	// or  H=x-x-x-x-x-x-x-x-x-x-x-x-
+	//     S=|----o-------o---|----o-------o---|----o-------o---|
+	// or  S=--o---o---o---o---o---o-
+	//     B=|o-------o-------|o-------o-o-----|o-----o-o-------|
+	// or  B=o---o---o----oo-o--oo---|
+	//
+	function tablatureToABCNotationPerNote(drumType, tablatureChar) {
+	
+		switch(tablatureChar) {
+			case "c":
+				if(drumType == "H") 
+					return constant_ABC_HH_Crash;
+				break;
+			case "g":
+				if(drumType == "S") 
+					return constant_ABC_SN_Ghost;
+				break;
+			case "l":
+			case "L":
+				if(drumType == "Stickings") 
+					return constant_ABC_STICK_L;
+			break;
+			case "O":
+				if(drumType == "S") 
+					return constant_ABC_SN_Accent;
+				break;
+			case "o":
+				switch(drumType) {
+					case "H":
+						return constant_ABC_HH_Open;
+						break;
+					case "S":
+						return constant_ABC_SN_Normal;
+						break;
+					case "K":
+						return constant_ABC_KI_Normal;
+						break;
+					}
+				break;
+			case "r":
+			case "R":
+				switch(drumType) {
+					case "H":
+						return constant_ABC_HH_Ride;
+						break;
+					case "Stickings":
+						return constant_ABC_STICK_R;
+						break;
+					}
+				break;
+			case "x":
+				switch(drumType) {
+					case "S":
+						return constant_ABC_SN_XStick;
+						break;
+					case "K":
+						return constant_ABC_KI_Splash;
+						break;
+					case "H":
+						return constant_ABC_HH_Normal;
+						break;
+					}
+				break;
+			case "X":
+				switch(drumType) {
+					case "K":
+						return constant_ABC_KI_SandK;
+						break;
+					case "H":
+						return constant_ABC_HH_Accent;
+						break;
+					}
+				break;
+			case "+":
+				if(drumType == "H") {
+					return constant_ABC_HH_Close;
+				} 
+				break;
+			case "-":
+				return false;
+				break;
+		}	
+		
+		alert("Bad tablature note found in tablatureToABCNotationPerNote.  Tab: " + tablatureChar + " for drum type: " + drumType);
+		return false;
+	}
+	
+	// takes a string of notes encoded in a serialized string and convert it to an array that represents the notes
+	// uses drum tab format adapted from wikipedia: http://en.wikipedia.org/wiki/Drum_tablature
+	//
+	//  Note that "|" and " " will be skipped so that standard drum tabs can be applied
+	//  Example:
+	//     H=|x---x---x---x---|x---x---x---x---|x---x---x---x---|
+	// or  H=x-x-x-x-x-x-x-x-x-x-x-x-
+	//     S=|----o-------o---|----o-------o---|----o-------o---|
+	// or  S=--o---o---o---o---o---o-
+	//     B=|o-------o-------|o-------o-o-----|o-----o-o-------|
+	// or  B=o---o---o----oo-o--oo---|
+	// 
+	// Returns array that contains notesPerMeasure * numberOfMeasures entries.   
+	function noteArraysFromURLData(drumType, noteString, notesPerMeasure, numberOfMeasures)  {
+		var setFunction;
+		var retArray = [];
+		
+		// decode the %7C url encoding types
+		noteString = decodeURIComponent(noteString);
+		
+		var retArraySize = notesPerMeasure * numberOfMeasures
+		
+		// ignore "|" by removing them
+		var notes = noteString.replace(/\|/g, '');
+		
+		var noteStringScaler = 1;
+		var displayScaler = 1;
+		if(notes.length > retArraySize && notes.length/retArraySize >= 2) {
+			// if we encounter a 16th note groove for an 8th note board, let's scale it	down	
+			noteStringScaler = Math.ceil(notes.length/retArraySize);
+		} else if(notes.length < retArraySize && retArraySize/notes.length >= 2) {
+			// if we encounter a 8th note groove for an 16th note board, let's scale it up
+			displayScaler = Math.ceil(retArraySize/notes.length);
+		} 
+			
+		// initialize an array that can carry all the measures in one array
+		for(var i=0; i < retArraySize; i++) {
+			retArray[i] = false;
+		}
+			
+		var retArrayIndex = 0;
+		for(var i=0; i < notes.length && retArrayIndex < retArraySize; i += noteStringScaler, retArrayIndex += displayScaler) {
+			retArray[retArrayIndex] = tablatureToABCNotationPerNote(drumType, notes[i]);
+		}
+		
+		return retArray;
+	}
+	
+	root.getGrooveDataFromUrlString = function(encodedURLData) {
+		var Stickings_string;
+		var HH_string;
+		var Snare_string;
+		var Kick_string;
+		var stickings_set_from_URL = false;
+		var myGrooveData = new root.grooveData();
+		
+		myGrooveData.notesPerMeasure = parseInt(root.getQueryVariableFromString("Div", 8, encodedURLData));
+				
+		myGrooveData.numberOfMeasures = parseInt(root.getQueryVariableFromString("measures", 2, encodedURLData));
+		if(myGrooveData.numberOfMeasures < 1 || isNaN(myGrooveData.numberOfMeasures))
+			myGrooveData.numberOfMeasures = 1;
+		else if(myGrooveData.numberOfMeasures > constant_MAX_MEASURES)
+			myGrooveData.numberOfMeasures = constant_MAX_MEASURES;
+			
+			
+		Stickings_string = root.getQueryVariableFromString("Stickings", false, encodedURLData);
+		if(!Stickings_string) {
+			Stickings_string = root.GetDefaultStickingsGroove(myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+			myGrooveData.showStickings = false;
+		} else {
+			myGrooveData.showStickings = true;
+		}
+		
+		HH_string = root.getQueryVariableFromString("H", false, encodedURLData);
+		if(!HH_string) {
+			root.getQueryVariableFromString("HH", false, encodedURLData)
+			if(!HH_string) {
+				HH_string = root.GetDefaultHHGroove(myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+			}
+		}
+		
+		Snare_string = root.getQueryVariableFromString("S", false, encodedURLData);
+		if(!Snare_string) {
+			Snare_string = root.GetDefaultSnareGroove(myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+		}
+		
+		Kick_string = root.getQueryVariableFromString("K", false, encodedURLData);
+		if(!Kick_string) {
+			root.getQueryVariableFromString("B", false, encodedURLData)
+			if(!Kick_string) {
+				Kick_string = root.GetDefaultKickGroove(myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+			}
+		}
+			
+		
+		myGrooveData.sticking_array = noteArraysFromURLData("Stickings", Stickings_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+		myGrooveData.hh_array       = noteArraysFromURLData("H", HH_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+		myGrooveData.snare_array    = noteArraysFromURLData("S", Snare_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+		myGrooveData.kick_array     = noteArraysFromURLData("K", Kick_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+			
+		myGrooveData.showMeasures = parseInt(root.getQueryVariableFromString("showMeasures", 1, encodedURLData));
+		if(myGrooveData.showMeasures < 1 || isNaN(myGrooveData.showMeasures))
+			myGrooveData.showMeasures = 1;
+		else if(myGrooveData.showMeasures > myGrooveData.numberOfMeasures)
+			myGrooveData.showMeasures = myGrooveData.numberOfMeasures;
+		
+			
+		myGrooveData.title = root.getQueryVariableFromString("title", "", encodedURLData);
+		myGrooveData.title = decodeURI(myGrooveData.title);
+		myGrooveData.title = myGrooveData.title.replace(/\+/g, " ");
+						
+		myGrooveData.author = root.getQueryVariableFromString("author", "", encodedURLData);
+		myGrooveData.author = decodeURI(myGrooveData.author);
+		myGrooveData.author = myGrooveData.author.replace(/\+/g, " ");
+		
+		myGrooveData.comments = root.getQueryVariableFromString("comments", "", encodedURLData);
+		myGrooveData.comments = decodeURI(myGrooveData.comments);
+		myGrooveData.comments = myGrooveData.comments.replace(/\+/g, " ");
+		
+		myGrooveData.tempo = parseInt(root.getQueryVariableFromString("tempo", constant_DEFAULT_TEMPO, encodedURLData));
+		if(isNaN(myGrooveData.tempo) || myGrooveData.tempo < 20 || myGrooveData.tempo > 400)
+			myGrooveData.tempo = constant_DEFAULT_TEMPO;
+				
+		myGrooveData.swingPercent = parseInt(root.getQueryVariableFromString("swing", 0, encodedURLData));
+		if(isNaN(myGrooveData.swingPercent) || myGrooveData.swingPercent < 0 || myGrooveData.swingPercent > 100)
+			myGrooveData.swingPercent = 0;
+		
+		return myGrooveData;
+	}
 	
 	/* 
 	 * midi_output_type:  "general_MIDI" or "Custom"
@@ -227,6 +574,9 @@ function GrooveUtils() { "use strict";
 					' </defs>s\n' +
 					'%%endsvg\n' +
 					'%%map drum ^g heads=VoidWithX print=g  % Hi-Hat\n' +
+					'%%map drum ^A\' heads=VoidWithX print=A\'  % Crash\n' +
+					'%%map drum ^f heads=VoidWithX print=f  % Ride\n' +
+					'%%map drum ^c heads=VoidWithX print=c  % Cross Stick\n' +
 					'%%map drum ^d, heads=VoidWithX print=d,  % Foot Splash\n' +
 					"%%staves (Stickings Hands Feet)\n";
 									
@@ -250,6 +600,7 @@ function GrooveUtils() { "use strict";
 						'"^Hi-Hat"^g4 "^Open"!open!^g4 "^Close"!plus!^g4 "^Accent"!accent!^g4 ' +
 						'"^Crash"^A\'4 "^Ride"^f4 "^Snare"c4 "^Accent"!accent!c4 "^Cross"^c4 "^Ghost"!(.!!).!c4 x8 x8 x8 ||\n' +
 						'V:Feet stem=down \n' +
+						'%%voicemap drum\n' +
 						'z8 z8 z8 z8 z8 "^Kick"F4 "^Hi-Hat w/ foot"^d,4 x4 "^Kick & Hi-Hat"[F^d,]8  ||\n' +
 						'T:\n';
 		}
@@ -344,6 +695,45 @@ function GrooveUtils() { "use strict";
 		return ABC_String
 	}
 	
+	// the note grouping size is how groups of notes within a measure group
+	// for 8ths and 16th we group with 4
+	// for triplets we group with 3
+	root.noteGroupingSize = function(notes_per_measure) {	
+		var note_grouping = 4;
+		
+		switch(notes_per_measure) {
+		case 4:
+			note_grouping = 1;
+			break;
+		case 6:
+			note_grouping = 3;
+			break;
+		case 8:
+			note_grouping = 2;
+			break;
+		case 12:
+			note_grouping = 3;
+			break;
+		case 16:
+			note_grouping = 4;
+			break;
+		case 24:
+			note_grouping = 6;
+			break;
+		case 32:
+			note_grouping = 8;
+			break;
+		default:
+			alert("bad switch in GrooveUtils.noteGroupingSize()");
+			if(root.isTripletDivision(notesPerMeasure))
+				note_grouping = 3;
+			else
+				note_grouping = 4;
+		}
+		
+		return note_grouping;
+	}
+	
 	
 	// when we generate ABC we use a default larger note array and transpose it
 	// For 8th note triplets that means we need to use a larger grouping to make it
@@ -366,7 +756,7 @@ function GrooveUtils() { "use strict";
 	// each element contains either the note value in ABC "F","^g" or false to represent off
 	// translates them to an ABC string in 2 voices
 	// post_voice_abc is a string added to the end of each voice line that can end the line
-	function snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes) {
+	function snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure) {
 	
 		var scaler = 1;  // we are always in 24 notes here
 		var ABC_String = "";
@@ -377,13 +767,13 @@ function GrooveUtils() { "use strict";
 		for(var i=0; i < num_notes; i++) {
 			
 			// triplets are special.  We want to output a note or a rest for every space of time
-			var end_of_group = 24/class_notes_per_measure;  // assuming we are always dealing with 24 notes
-			var grouping_size_for_rests = 24/class_notes_per_measure;   // we scale up the notes to fit a 24 length array
+			var end_of_group = 24/notes_per_measure;  // assuming we are always dealing with 24 notes
+			var grouping_size_for_rests = 24/notes_per_measure;   // we scale up the notes to fit a 24 length array
 			
 			
 			if(i % ABC_gen_note_grouping_size(true) == 0) {
 				// creates the 3 or the 6 over the note grouping
-				hh_snare_voice_string += "(" + note_grouping_size() + ":" + note_grouping_size() + ":" + note_grouping_size();
+				hh_snare_voice_string += "(" + root.noteGroupingSize(notes_per_measure) + ":" + root.noteGroupingSize(notes_per_measure) + ":" + root.noteGroupingSize(notes_per_measure);
 				//kick_voice_string += "(3:3:3";    // creates the 3 over the note grouping for kick drum
 			} 
 			 
@@ -419,7 +809,7 @@ function GrooveUtils() { "use strict";
 	// translates them to an ABC string in 3 voices
 	// post_voice_abc is a string added to the end of each voice line that can end the line
 	//
-	function snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes) {
+	function snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure) {
 	
 		var scaler = 1;  // we are always in 32ths notes here
 		var ABC_String = "";
@@ -469,12 +859,12 @@ function GrooveUtils() { "use strict";
 	}
 	
 	// create ABC from note arrays
-	root.create_ABC_from_snare_HH_kick_arrays = function(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes) {
+	root.create_ABC_from_snare_HH_kick_arrays = function(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure) {
 		
 		if((num_notes % 3) == 0) { // triplets 
-			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes);
+			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure);
 		} else {
-			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes);
+			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure);
 		}
 	}
 	
