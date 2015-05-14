@@ -52,6 +52,8 @@
 				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 				
 				document.getElementById(svgTargetId).innerHTML = "<p><pre>" + svgReturn.svg + "</pre>";
+				document.getElementById(svgTargetId).innerHTML = '<a href="https://b125c4f8bf7d89726feec9ab8202d31e0c8d14d8.googledrive.com/host/0B2wxVWzVoWGYfnB5b3VTekxyYUowVjZ5YVE3UllLaVk5dVd4TzF4Q2ZaUXVsazhNSTdRM1E/?' + GrooveDefinition + '">' + svgReturn.svg + '</a>';
+				
 				
 				myGrooveUtils.midiEventCallbacks.loadMidiDataEvent = function(myroot) { 
 					var midiURL = myGrooveUtils.create_MIDIURLFromGrooveData(GrooveData, "our_MIDI");
@@ -75,10 +77,24 @@
 			
 	</script>
 	
+	<h1>Groove Lesson example</h1>
+	This is an example page.    I want to talk about the first groove and what it is useful for. 
+	<br>
 	<div id="groove1"></div>
 	
+	<hr>
+	<h2>Topic 2</h2>
+	Here is another groove.  Lorem ipsum dolor sit amet, lorem albucius et eam, id eum agam tibique. Altera tincidunt instructior nec te, vim oblique albucius no. Te dico eirmod has, vis ei agam cotidieque consequuntur. Et duo homero labore malorum, sint molestie vel ex, ei sed prima justo. Legere vidisse cu sed. Cum te populo utroque, novum zril eligendi ad his.
+	<br>
 	<div id="groove2"></div>
 	
+	<hr>
+	<h2>Topic 3</h2>
+	Offendit iracundia no sit. Nec dolorum appetere delicata ea, eligendi repudiare quaerendum usu ut. Per te consul doctus inermis, et dolorum corrumpit sea, ut sed modo nostro. Admodum deleniti consulatu te qui. Vim an vide possim repudiandae, nemore vituperatoribus cum no. An mel ullum detraxit, laboramus voluptaria eu qui, putent maiorum voluptaria et pro.
+	<p>
+	
+No possim oblique periculis nec, saperet pertinacia omittantur id usu. At mei omnes vocibus salutandi, no habeo illum instructior cum. Cu graecis adipisci sed, has numquam torquatos et. Sea offendit verterem ea. Vim eu partem tractatos, modo wisi persecuti vix ei.
+	<br>
 	<div id="groove3"></div>
 	
 	
