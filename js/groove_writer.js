@@ -868,41 +868,7 @@ function GrooveWriter() { "use strict";
 	}
 	
 	
-	// since note values are 16ths or 12ths this corrects for that by multiplying note values
-	function getNoteScaler() {
-		var scaler;
-
-		switch(class_notes_per_measure) {
-		case 4:
-			scaler = 8;
-			break;
-		case 6:
-			scaler = 4;  // triplet
-			break;
-		case 8:
-			scaler = 4;
-			break;
-		case 12:
-			scaler = 2;  // triplet
-			break;
-		case 16:
-			scaler = 2;
-			break;
-		case 24:
-			scaler = 1;  // triplet
-			break;
-		case 32:
-			scaler = 1;
-			break;
-		
-		default:
-			alert("bad case in getNoteScaler()");
-			scaler = 1;
-		}
-		
-			
-		return scaler;
-	}
+	
 
 	function get_permutation_pre_ABC(section) {
 		var abc = "";
@@ -1378,7 +1344,7 @@ function GrooveWriter() { "use strict";
 	// Return value is the number of notes.
 	function getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, startIndexForClickableUI) {
 		
-		var scaler = getNoteScaler();  // fill proportionally
+		var scaler = myGrooveUtils.getNoteScaler(class_notes_per_measure);  // fill proportionally
 		
 		// fill in the arrays from the clickable UI
 		for(var i=0; i < class_notes_per_measure+0; i++) {
@@ -1524,6 +1490,7 @@ function GrooveWriter() { "use strict";
 				Snare_Array = class_empty_note_array.slice(0);  // copy by value
 				Kick_Array = class_empty_note_array.slice(0);  // copy by value
 		
+				// get second measure
 				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, class_notes_per_measure);
 				
 				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage);
@@ -1658,7 +1625,7 @@ function GrooveWriter() { "use strict";
 			} else if(data.note == 35 || data.note == 44) {
 				note_type = "kick";
 			}
-			hilight_note(note_type, (class_midi_note_num/getNoteScaler()));
+			hilight_note(note_type, (class_midi_note_num/myGrooveUtils.getNoteScaler(class_notes_per_measure)));
 		}
 		
 		if(data.note == 60)
@@ -1927,41 +1894,7 @@ function GrooveWriter() { "use strict";
 		
 	}
 
-	function setupHotKeys() {
 		
-		var isCtrl = false;
-		document.onkeyup=function(e) {
-				if(e.which == 17) 
-					isCtrl=false;
-		}
-			
-		document.onkeydown=function(e){
-			if(e.which == 17) 
-				isCtrl=true;
-			/*
-			if(e.which == 83 && isCtrl == true) {
-				 alert('CTRL-S pressed');
-				 return false;
-			}
-			*/
-			// only accept the event if it not going to an INPUT field
-			// otherwise we can't use spacebar in text fields :(
-			if(e.which == 32 && e.target.tagName != "INPUT" && e.target.tagName != "TEXTAREA") {
-				// spacebar
-				root.startOrStopMIDI_playback();
-				return false;
-			}
-			if(e.which == 179) {
-				// Play button
-				root.startOrPauseMIDI_playback();
-			}
-			if(e.which == 178) {
-				// Stop button
-				root.stopMIDI_playback()
-			}
-		}
-	}
-	
 	// public function.
 	// This function initializes the data for the groove writer web page
 	root.runsOnPageLoad = function() {
@@ -1980,17 +1913,8 @@ function GrooveWriter() { "use strict";
 		// load the groove from the URL data if it was passed in.
 		set_Default_notes(window.location.search);
 		
-		MIDI.loadPlugin({
-			soundfontUrl: "./soundfont/",
-			instruments: ["gunshot" ],
-			callback: function() {
-				MIDI.programChange(0, 127);   // use "Gunshot" instrument because I don't know how to create new ones
-				document.getElementById("playImage").src="images/play.png";
-				document.getElementById("playImage").onclick = function (event){event.preventDefault(); root.startOrPauseMIDI_playback();};  // enable play button
-				
-				setupHotKeys();  // spacebar to play
-			}
-		});
+		myGrooveUtils.oneTimeInitializeMidi();
+		
 	}
 	
 	// takes a string of notes encoded in a serialized string and sets the notes on or off
@@ -2269,7 +2193,7 @@ function GrooveWriter() { "use strict";
 	root.show_FullURLPopup = function() {
 		var popup = document.getElementById("fullURLPopup");
 				
-		new Share("#shareButton", {
+		var ShareButton = new Share("#shareButton", {
 		  networks: {
 			facebook: {
 				before: function() {

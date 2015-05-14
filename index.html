@@ -101,7 +101,7 @@
 			<div class="warnings" id="diverr"></div>
 			
 			<div id="playerControl">
-				<img alt="Play" title="Play" id="playImage" src="images/grey_play.png">
+				<img alt="Play" title="Play" id="midiPlayImage" src="images/grey_play.png">
 				<span id="tempoAndProgress">
 					<div id="tempo">
 						<input type=range min=40 max=240 value=90 id="tempoInput" list="tempoSettings" step=5 onChange="myGrooveWriter.noteHasChanged()" oninput="myGrooveWriter.tempoUpdate(value)">
@@ -112,7 +112,7 @@
 						<div for=swingAmount id=swingOutput>0% swing</div>
 					</div>
 				</span>
-				<img onClick="myGrooveWriter.repeatMIDI_playback();" alt="Repeat" title="Repeat" id="repeatImage" src="images/repeat.png">
+				<img onClick="myGrooveWriter.repeatMIDI_playback();" alt="Repeat" title="Repeat" id="midiRepeatImage" src="images/repeat.png">
 				<br>
 				<div id="progress">
 					<progress id="MIDIProgress" value="0" max="100"></progress>

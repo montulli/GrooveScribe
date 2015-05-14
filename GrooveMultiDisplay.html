@@ -32,26 +32,26 @@
     </head>
     <body>
 	<script>
-			var GrooveData;  // global;
+			var UniqueCounter = 0;  // global
 	
-			// set up the page after it has fully loaded
-			window.onload = function () {
-				myGrooveUtils = new GrooveUtils();
+	
+			function AddGroove(HtmlTagId, GrooveDefinition) {
+				var myGrooveUtils = new GrooveUtils();
+				UniqueCounter++;
+				
+				svgTargetId = "svgTarget" + UniqueCounter;
+				midiPlayerTargetId = "midiPlayerTarget" + UniqueCounter;
 			
+				document.getElementById(HtmlTagId).innerHTML = '' +
+						'<div id="' + svgTargetId + '" class="svgTarget"></div>\n' +
+						'<div id="' + midiPlayerTargetId + '"></div>\n';
+						
 				// load the groove from the URL data if it was passed in.
-				GrooveData = myGrooveUtils.getGrooveDataFromUrlString(window.location.search);
+				var GrooveData = myGrooveUtils.getGrooveDataFromUrlString(GrooveDefinition);
 				var abcNotation = myGrooveUtils.createABCFromGrooveData(GrooveData);
 				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 				
-				document.getElementById('svgTarget').innerHTML = svgReturn.svg;
-				//document.write("<p><textarea cols=60 rows=30>" + abcNotation + "</textarea>");
-				//document.write("<pre>" + JSON.stringify(GrooveData, null, 2) + "</pre>");
-				
-				myGrooveUtils.midiEventCallbacks.loadMidiDataEvent = function(myroot) { 
-					var midiURL = myGrooveUtils.create_MIDIURLFromGrooveData(GrooveData, "our_MIDI");
-					myGrooveUtils.loadMIDIFromURL(midiURL);
-					myGrooveUtils.midiResetNoteHasChanged();
-				}
+				document.getElementById(svgTargetId).innerHTML = "<p><pre>" + svgReturn.svg + "</pre>";
 				
 				myGrooveUtils.midiEventCallbacks.loadMidiDataEvent = function(myroot) { 
 					var midiURL = myGrooveUtils.create_MIDIURLFromGrooveData(GrooveData, "our_MIDI");
@@ -59,13 +59,28 @@
 					myGrooveUtils.midiResetNoteHasChanged();
 				}
 	
-				myGrooveUtils.AddMidiPlayerToPage("midiPlayer");
+				myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId);
 				myGrooveUtils.oneTimeInitializeMidi();
 			}
 			
-						
+	
+			// set up the page after it has fully loaded
+			window.onload = function () {
+				AddGroove("groove1", 'Div=16&Title=Funk&Tempo=80&Measures=2&showMeasures=2&H=|X-x-X-x-X-x-X-x-|X-x-X-x-X-x-X-x-|&S=|-----g-o-o--x--o|-----g-o-o--x--o|&K=|o-o-------o--o--|o-o-------o--o--|');
+				AddGroove("groove2", 'Div=24&Title=Rosanna Shuffle&Author=Jeff Pocaro&Tempo=85&Measures=2&showMeasures=1&H=|x-xx-xx-xx-xx-xx-xx-xx-x|xxxxxxxxxxxxxxxxxxxxxxxx|&S=|-g--g-Og--g--g--g-Og--g-|------O-----------O-----|&K=|o----o---o-o--o---o----o|o-----------o-----------|');
+				AddGroove("groove3", 'Div=16&Title=Samba&Tempo=80&Measures=2&showMeasures=1&H=|xxXxxxXxxxXxxxXx|xxXxxxXxxxXxxxXx|&S=|o-o-oo-o-o-ooooo|o-o-oo-o-o-ooooo|&K=|o-ooo--oo-oooo-o|o-ooo--oo-oooo-o|');
+			}
+			
+			
 			
 	</script>
 	
-	<div id="svgTarget" class=svgTarget></div>
-	<div id="midiPlayer"></div>	
+	<div id="groove1"></div>
+	
+	<div id="groove2"></div>
+	
+	<div id="groove3"></div>
+	
+	
+	
+	

@@ -355,7 +355,7 @@
 	#ABC_Results {
 		display: none;
 	}
-	#svgTarget {
+	.svgTarget {
 		width: 795px;
 		background: #FFF;
 		box-shadow: 7px 7px 5px #888888;
