@@ -9,6 +9,7 @@ function GrooveUtils() { "use strict";
 	root.isMIDIPaused = false;
 	root.shouldMIDIRepeat = true;
 	root.midiDataURL = "";    // used to store the midi data for playback
+	root.swingIsEnabled = false;
 		
 	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
 	
@@ -1248,6 +1249,9 @@ function GrooveUtils() { "use strict";
 	
 	var debug_note_count = 0;
 	var class_midi_note_num = 0;  // global, but only used in this function
+	// This is the function that the 3rd party midi library calls to give us events.
+	// This is different from the callbacks that we use for the midi code in this library to
+	// do events.   (Double chaining)
 	function ourMIDICallback(data) {
 		root.midiEventCallbacks.percentProgress(root.midiEventCallbacks.classRoot, (data.now/data.end)*100);
 		
@@ -1318,9 +1322,25 @@ function GrooveUtils() { "use strict";
 	// update the tempo string display
 	root.tempoUpdate = function(tempo) {
 		document.getElementById('tempoOutput').innerHTML = "" + tempo + " bpm";
-		GrooveData.tempo = tempo;
 	}
 
+	root.tempoUpdateEvent = function(event) {
+		root.tempoUpdate(event.target.value);
+	}
+	
+	root.doesDivisionSupportSwing = function(division) {
+	
+		if(root.isTripletDivision(division) || division == 4)
+			return false;
+	}
+	
+	root.swingEnabled = function(trueElseFalse) {
+		if(root.swingIsEnabled != trueElseFalse)
+			root.swingUpdate(false);
+	
+		root.swingIsEnabled = trueElseFalse;
+	}
+	
 	// used to update the on screen swing display
 	// also the onClick handler for the swing slider
 	root.swingUpdate = function(swingAmount) {
@@ -1329,12 +1349,16 @@ function GrooveUtils() { "use strict";
 			swingAmount = parseInt(document.getElementById("swingInput").value);
 		}
 		
-		if(usingTriplets() || class_notes_per_measure == 4) {
+		if(root.swingIsEnabled == false) {
 			document.getElementById('swingOutput').innerHTML = "swing N/A";	
 		} else {
 			document.getElementById('swingOutput').innerHTML = "" + swingAmount + "% swing";
-			GrooveData.swingPercent = swingAmount;
+			root.swingPercent = swingAmount;
 		}
+	}
+	
+	root.swingUpdateEvent = function(event) {
+		root.swingUpdate(event.target.value);
 	}
 	
 	root.HTMLForMidiPlayer = function() {
@@ -1343,15 +1367,15 @@ function GrooveUtils() { "use strict";
 			'	<img alt="Play" title="Play" id="midiPlayImage" src="images/grey_play.png">' +
 			'	<span id="tempoAndProgress">' +
 			'		<div id="tempo">' +
-			'			<input type=range min=40 max=240 value=90 id="tempoInput" list="tempoSettings" step=5 onChange="myGrooveUtils.midiNoteHasChanged()" oninput="myGrooveUtils.tempoUpdate(value)">' +
+			'			<input type=range min=40 max=240 value=90 id="tempoInput" list="tempoSettings" step=5>' +
 			'			<div for=tempo id=tempoOutput>80 bpm</div>' +
 			'		</div>' +
 			'		<div id="swingAmount">' +
-			'			<input type=range min=0 max=50 value=0 id="swingInput" list="swingSettings" step=5 onChange="myGrooveUtils.midiNoteHasChanged()" oninput="myGrooveUtils.swingUpdate(value)">' +
+			'			<input type=range min=0 max=50 value=0 id="swingInput" list="swingSettings" step=5 >' +
 			'			<div for=swingAmount id=swingOutput>0% swing</div>' +
 			'		</div>' +
 			'	</span>' +
-			'	<img onClick="myGrooveUtils.repeatMIDI_playback();" alt="Repeat" title="Repeat" id="midiRepeatImage" src="images/repeat.png">' +
+			'	<img alt="Repeat" title="Repeat" id="midiRepeatImage" src="images/repeat.png">' +
 			'	<br>' +
 			'	<div id="progress">' +
 			'		<progress id="MIDIProgress" value="0" max="100"></progress>' +
@@ -1361,10 +1385,31 @@ function GrooveUtils() { "use strict";
 	
 	// pass in a tag ID.  (not a class)
 	// HTML will be put within the tag replacing whatever else was there
-	root.AddMidiPlayerToPage = function(HTML_Id_to_attach_to) {
+	root.AddMidiPlayerToPage = function(HTML_Id_to_attach_to, division) {
 		var html_element = document.getElementById(HTML_Id_to_attach_to); 
 		if(html_element)
 			html_element.innerHTML = root.HTMLForMidiPlayer();
+			
+		// now attach the onclicks
+		var html_element = document.getElementById("tempoInput"); 
+		if(html_element) {
+			html_element.addEventListener("input", root.tempoUpdateEvent, false);
+			html_element.addEventListener("change", root.midiNoteHasChanged, false);
+		}
+		
+		var html_element = document.getElementById("swingInput"); 
+		if(html_element) {
+			html_element.addEventListener("input", root.swingUpdateEvent, false);
+			html_element.addEventListener("change", root.midiNoteHasChanged, false);
+		}
+		
+		var html_element = document.getElementById("midiRepeatImage"); 
+		if(html_element) {
+			html_element.addEventListener("click", root.repeatMIDI_playback, false);
+		}
+		
+		// enable or disable swing
+		root.swingEnabled( root.doesDivisionSupportSwing(division) );
 	}
 
 } // end of class

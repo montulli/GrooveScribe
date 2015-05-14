@@ -21,8 +21,6 @@ function GrooveWriter() { "use strict";
 	var class_app_title = "Groove Writer";
 	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
 	var class_aNoteHasChangedSinceLastReset = false;  // global var
-	var class_isMIDIPaused = false;
-	var class_shouldMIDIRepeat = true;
 	var class_visible_context_menu = false;   // a single context menu can be visible at a time.
 	var class_permutationType = "none";
 	var class_advancedEditIsOn = false;
@@ -1427,7 +1425,8 @@ function GrooveWriter() { "use strict";
 		return swing;
 	}
 	
-	function create_MIDI(MIDI_type) {
+	
+	function createMidiUrlFromClickableUI(MIDI_type) {
 		var Sticking_Array = class_empty_note_array.slice(0);  // copy by value
 		var HH_Array = class_empty_note_array.slice(0);  // copy by value
 		var Snare_Array = class_empty_note_array.slice(0);  // copy by value
@@ -1503,162 +1502,15 @@ function GrooveWriter() { "use strict";
 		return midi_url;
 	}
 	
-	function loadMIDI_for_playback() {
-		var midi_url = create_MIDI("our_MIDI");
-		
-		MIDI.Player.timeWarp = 1; // speed the song is played back
-		MIDI.Player.loadFile(midi_url, MIDILoaderCallback());
-	}
-	
 	root.MIDI_save_as = function() {
-		var midi_url = create_MIDI("general_MIDI");
+		var midi_url = createMidiUrlFromClickableUI("general_MIDI");
 		
 		// save as 
 		document.location = midi_url;
 	}
+
 	
-	root.pauseMIDI_playback = function() {
-		if(class_isMIDIPaused == false) {
-			class_isMIDIPaused = true;
-			document.getElementById("playImage").src="images/play.png";
-			MIDI.Player.pause();
-			clear_all_highlights()
-		}
-	}
-	
-	// play button or keypress
-	root.startMIDI_playback = function() {
-		if(MIDI.Player.playing) {
-			return;
-		} else if(class_isMIDIPaused && false == noteHasChangedSinceLastReset() ) {
-			MIDI.Player.resume();
-		} else {
-			MIDI.Player.stop();
-			loadMIDI_for_playback();
-			noteHasChangedReset();  // reset so we know if there is a change
-			MIDI.Player.loop(class_shouldMIDIRepeat);   // set the loop parameter
-			MIDI.Player.start();
-		}
-		document.getElementById("playImage").src="images/pause.png";
-		class_isMIDIPaused = false;
-	}
-	
-	// stop button or keypress
-	root.stopMIDI_playback = function() {
-		if(MIDI.Player.playing || class_isMIDIPaused ) {
-			class_isMIDIPaused = false;
-			MIDI.Player.stop();
-			//document.getElementById("stopImage").src="images/grey_stop.png";
-			document.getElementById("playImage").src="images/play.png";
-			document.getElementById("MIDIProgress").value = 0;
-			clear_all_highlights();
-		} 
-	}
-	
-	// modal play/stop button
-	root.startOrStopMIDI_playback = function() {
-		
-		if(MIDI.Player.playing) {
-			root.stopMIDI_playback();
-		} else {
-			root.startMIDI_playback();
-		}			
-	}
-	
-	// modal play/pause button
-	root.startOrPauseMIDI_playback = function() {
-		
-		if(MIDI.Player.playing) {
-			root.pauseMIDI_playback();
-		} else {
-			root.startMIDI_playback();
-		}			
-	}
-	
-	root.repeatMIDI_playback = function() {
-		if(class_shouldMIDIRepeat == false) {
-			document.getElementById("repeatImage").src="images/repeat.png";
-			class_shouldMIDIRepeat = true;
-			MIDI.Player.loop(true);
-		} else {
-			document.getElementById("repeatImage").src="images/grey_repeat.png";
-			class_shouldMIDIRepeat = false;
-			MIDI.Player.loop(false);
-		}
-	}
-	
-	var note_count = 0;
-	var class_midi_note_num = 0;  // global, but only used in this function
-	function ourMIDICallback(data) {
-		document.getElementById("MIDIProgress").value = (data.now/data.end)*100;
-		
-		if(data.now < 1) {
-			// this is considered the start.   It usually comes in at .5 for some reason?
-			class_midi_note_num = 0;
-		}
-		if(data.now == data.end) {
-			
-			if(class_shouldMIDIRepeat) {
-		
-				if(noteHasChangedSinceLastReset()) {
-					loadMIDI_for_playback();  // regen before repeat
-					noteHasChangedReset();  // reset so we know if there is a change
-					MIDI.Player.stop();
-					MIDI.Player.start();
-				}
-			} else {
-				// not repeating, so stopping
-				MIDI.Player.stop();
-				document.getElementById("MIDIProgress").value = 100;
-				document.getElementById("playImage").src="images/play.png";
-				clear_all_highlights();
-			}
-		}
-		
-		// note on
-		var note_type;
-		if(data.message == 144) {
-			if(data.note == 108 || data.note == 42 || data.note == 46 || data.note == 49 || data.note == 51)  {
-				note_type = "hi-hat";
-			} else if(data.note == 21 || data.note == 22 || data.note == 37 || data.note == 38) {
-				note_type = "snare";
-			} else if(data.note == 35 || data.note == 44) {
-				note_type = "kick";
-			}
-			hilight_note(note_type, (class_midi_note_num/myGrooveUtils.getNoteScaler(class_notes_per_measure)));
-		}
-		
-		if(data.note == 60)
-			class_midi_note_num++;
-	
-		if(0 && data.message == 144) {
-			note_count++;
-			// my debugging code for midi
-			var newHTML = "";
-			if(data.note != 60)
-				newHTML += "<b>";
-				
-			newHTML += note_type + " total notes: " + note_count + " - count#: " + class_midi_note_num + 
-											" now: " + data.now + 
-											" note: " + data.note + 
-											" message: " + data.message + 
-											" channel: " + data.channel + 
-											" velocity: " + data.velocity +
-											"<br>";
-											
-			if(data.note != 60)
-				newHTML += "</b>";
-			
-			document.getElementById("midiTextOutput").innerHTML += newHTML;
-		}
-		
-	}
-	
-	function MIDILoaderCallback() {
-		MIDI.Player.addListener(ourMIDICallback);
-	}
-	
-	// called by the HTML when changes happen to forms
+	// called by the HTML when changes happen to forms that require the ABC to update
 	root.refresh_ABC = function() {
 		create_ABC();
 	}
@@ -1910,8 +1762,22 @@ function GrooveWriter() { "use strict";
 		// set the background color of the current subdivision
 		document.getElementById(class_notes_per_measure + "ths").style.background = "orange";
 		
+		// add html for the midi player
+		myGrooveUtils.AddMidiPlayerToPage("midiPlayer");
+		
 		// load the groove from the URL data if it was passed in.
 		set_Default_notes(window.location.search);
+		
+		myGrooveUtils.midiEventCallbacks.loadMidiDataEvent = function(myroot) { 
+			
+			var midiURL = createMidiUrlFromClickableUI("our_MIDI");
+			myGrooveUtils.loadMIDIFromURL(midiURL);
+			myGrooveUtils.midiResetNoteHasChanged();
+		}
+		
+		myGrooveUtils.midiEventCallbacks.notePlaying = function(myroot, note_type, note_position) {
+			hilight_note(note_type, (note_position/myGrooveUtils.getNoteScaler(class_notes_per_measure)));
+		}
 		
 		myGrooveUtils.oneTimeInitializeMidi();
 		
@@ -2388,8 +2254,10 @@ function GrooveWriter() { "use strict";
 		// otherwise it should do nothing
 		setupPermutationMenu();
 		
+		// enable or disable swing
+		myGrooveUtils.swingEnabled( myGrooveUtils.doesDivisionSupportSwing(newDivision) );
 		// update the swing output display
-		root.swingUpdate();
+		myGrooveUtils.swingUpdate();
 	}
 	
 	// change the base division to something else.

@@ -52,14 +52,8 @@
 					myGrooveUtils.loadMIDIFromURL(midiURL);
 					myGrooveUtils.midiResetNoteHasChanged();
 				}
-				
-				myGrooveUtils.midiEventCallbacks.loadMidiDataEvent = function(myroot) { 
-					var midiURL = myGrooveUtils.create_MIDIURLFromGrooveData(GrooveData, "our_MIDI");
-					myGrooveUtils.loadMIDIFromURL(midiURL);
-					myGrooveUtils.midiResetNoteHasChanged();
-				}
-	
-				myGrooveUtils.AddMidiPlayerToPage("midiPlayer");
+			
+				myGrooveUtils.AddMidiPlayerToPage("midiPlayer", GrooveData.notesPerMeasure);
 				myGrooveUtils.oneTimeInitializeMidi();
 			}
 			
