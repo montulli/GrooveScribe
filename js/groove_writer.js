@@ -20,7 +20,6 @@ function GrooveWriter() { "use strict";
 	// private vars in the scope of the class
 	var class_app_title = "Groove Writer";
 	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
-	var class_aNoteHasChangedSinceLastReset = false;  // global var
 	var class_visible_context_menu = false;   // a single context menu can be visible at a time.
 	var class_permutationType = "none";
 	var class_advancedEditIsOn = false;
@@ -544,18 +543,6 @@ function GrooveWriter() { "use strict";
 		
 	}
 	
-	root.noteHasChanged = function() {
-		class_aNoteHasChangedSinceLastReset = true;
-	}
-	
-	function noteHasChangedReset() {
-		class_aNoteHasChangedSinceLastReset = false;
-	}
-	
-	function noteHasChangedSinceLastReset() {
-		return class_aNoteHasChangedSinceLastReset;
-	}
-	
 	// the user has clicked on the permutation menu
 	root.permutationAnchorClick = function(event) {
 		
@@ -717,6 +704,10 @@ function GrooveWriter() { "use strict";
 				setFunction(i, "left");
 			else if(instrument == "stickings" && action == "alternate")
 				setFunction(i, (i % 2 == 0 ? "right" :"left") );
+			else if(instrument == "hh" && action == "downbeats")
+				setFunction(i, (i % 2 == 0 ? "normal" :"off") );
+			else if(instrument == "hh" && action == "upbeats")
+				setFunction(i, (i % 2 == 0 ? "off" :"normal") );
 			else if(instrument == "snare" && action == "all_on")
 				setFunction(i, "accent");
 			else if(action == "all_on")
@@ -1581,7 +1572,7 @@ function GrooveWriter() { "use strict";
 		
 		document.getElementById("ABCsource").value = fullABC;
 
-		root.noteHasChanged(); // pretty likely the case
+		myGrooveUtils.midiNoteHasChanged(); // pretty likely the case
 		root.displayNewSVG();
 	}
 	
@@ -1925,6 +1916,16 @@ function GrooveWriter() { "use strict";
 			// if we encounter a 8th note groove for an 16th note board, let's scale it up
 			displayScaler = Math.ceil(notesOnScreen/notes.length);
 		} 
+		
+		if(drumType == "Stickings") {
+			setFunction = set_sticking_state;
+		} else if(drumType == "H") {
+			setFunction = set_hh_state;
+		} else if(drumType == "S") {
+			setFunction = set_snare_state;
+		} else if(drumType == "K") {
+			setFunction = set_kick_state;
+		}
 	
 		//  DisplayIndex is the index into the notes on the HTML page  starts at 1/32\n%%flatbeams
 		var displayIndex = 0;
@@ -1933,55 +1934,55 @@ function GrooveWriter() { "use strict";
 		
 			switch(abcArray[i]) {
 			case constant_ABC_STICK_R:
-				set_sticking_state(displayIndex, "right");
+				setFunction(displayIndex, "right");
 				break;
 			case constant_ABC_STICK_L:
-				set_sticking_state(displayIndex, "left");
+				setFunction(displayIndex, "left");
 				break;
 			case constant_ABC_STICK_OFF:
-				set_sticking_state(displayIndex, "off");
+				setFunction(displayIndex, "off");
 				break;
 			case constant_ABC_HH_Ride: 
-				set_hh_state(displayIndex, "ride");
+				setFunction(displayIndex, "ride");
 				break;
 			case constant_ABC_HH_Crash:   
-				set_hh_state(displayIndex, "crash");
+				setFunction(displayIndex, "crash");
 				break;
 			case constant_ABC_HH_Open: 
-				set_hh_state(displayIndex, "open");
+				setFunction(displayIndex, "open");
 				break;
 			case constant_ABC_HH_Close:  
-				set_hh_state(displayIndex, "close");
+				setFunction(displayIndex, "close");
 				break;
 			case constant_ABC_HH_Accent: 
-				set_hh_state(displayIndex, "accent");
+				setFunction(displayIndex, "accent");
 				break;
 			case constant_ABC_HH_Normal:
-				set_hh_state(displayIndex, "normal");
+				setFunction(displayIndex, "normal");
 				break;
 			case constant_ABC_SN_Ghost:
-				set_snare_state(displayIndex, "ghost");
+				setFunction(displayIndex, "ghost");
 				break;
 			case constant_ABC_SN_Accent:
-				set_snare_state(displayIndex, "accent");
+				setFunction(displayIndex, "accent");
 				break;
 			case constant_ABC_SN_Normal:
-				set_snare_state(displayIndex, "normal");
+				setFunction(displayIndex, "normal");
 				break;
 			case constant_ABC_SN_XStick:
-				set_snare_state(displayIndex, "xstick");
+				setFunction(displayIndex, "xstick");
 				break;
 			case constant_ABC_KI_SandK:
-				set_kick_state(displayIndex, "kick_and_splash");
+				setFunction(displayIndex, "kick_and_splash");
 				break;
 			case constant_ABC_KI_Splash:
-				set_kick_state(displayIndex, "splash");
+				setFunction(displayIndex, "splash");
 				break;
 			case constant_ABC_KI_Normal:
-				set_kick_state(displayIndex, "normal");
+				setFunction(displayIndex, "normal");
 				break;
 			case false:
-				// do nothing
+				setFunction(displayIndex, "off")
 				break;
 			default:
 				alert("Bad note in setNotesFromABCArray: " + abcArray[i])

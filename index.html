@@ -177,7 +177,7 @@
 		<div class="noteContextMenu">
 			<ul id="snareContextMenu" class="list">
 				<li onClick='myGrooveWriter.notePopupClick("snare", "off")'>Off</li>
-				<!-- li onClick='notePopupClick("snare", "normal")'>Snare Normal</li -->
+				<li onClick='myGrooveWriter.notePopupClick("snare", "normal")'>Snare Normal</li>
 				<li onClick='myGrooveWriter.notePopupClick("snare", "accent")'>Snare Accent</li>
 				<li onClick='myGrooveWriter.notePopupClick("snare", "ghost")'>Ghost Note</li>
 				<li onClick='myGrooveWriter.notePopupClick("snare", "xstick")'>Cross Stick</li>
@@ -192,9 +192,20 @@
 			</ul>
 		</div>
 		<div class="noteContextMenu">
+			<ul id="stickingsLabelContextMenu" class="list">
+				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "all_off")'>all <b>Off</b></li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "alternate")'>alternate</li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "all_right")'>all <b>R</b>s</li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "all_left")'>all <b>L</b>s</li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "cancel")'>cancel</li>
+			</ul>
+		</div>
+		<div class="noteContextMenu">
 			<ul id="hhLabelContextMenu" class="list">
 				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "all_off")'>all Hi-hats <b>Off</b></li>
 				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "all_on")'>all Hi-hats <b>On</b></li>				
+				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "downbeats")'>downbeats</li>
+				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "upbeats")'>upbeats</li>
 				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "cancel")'>cancel</li>
 			</ul>
 		</div>
@@ -210,15 +221,6 @@
 				<li onClick='myGrooveWriter.noteLabelPopupClick("kick", "all_off")'>all Kicks <b>Off</b></li>
 				<li onClick='myGrooveWriter.noteLabelPopupClick("kick", "all_on")'>all Kicks <b>On</b></li>
 				<li onClick='myGrooveWriter.noteLabelPopupClick("kick", "cancel")'>cancel</li>
-			</ul>
-		</div>
-		<div class="noteContextMenu">
-			<ul id="stickingsLabelContextMenu" class="list">
-				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "all_off")'>all <b>Off</b></li>
-				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "alternate")'>alternate</li>
-				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "all_right")'>all <b>R</b>s</li>
-				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "all_left")'>all <b>L</b>s</li>
-				<li onClick='myGrooveWriter.noteLabelPopupClick("stickings", "cancel")'>cancel</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">

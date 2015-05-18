@@ -944,6 +944,8 @@ function GrooveUtils() { "use strict";
 	}
 	root.midiEventCallbacks = new root.midiEventCallbackClass(root);
 	
+	// This is called so that the MIDI player will reload the groove
+	// at repeat time.   If not set then the midi player just repeats what is already loaded.
 	root.midiNoteHasChanged = function() {
 		root.midiEventCallbacks.noteHasChangedSinceLastDataLoad = true;
 	}
