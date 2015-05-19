@@ -446,8 +446,8 @@ function GrooveUtils() { "use strict";
 					"%%leftmargin 10px\n" +
 					"%%rightmargin 10px\n" +
 					"%%topspace 0px\n" +
-					'%%deco (. 0 a 5 1 1 "@-8,-5("\n' +
-					'%%deco ). 0 a 5 1 1 "@4,-5)"\n' +
+					'%%deco (. 0 a 5 1 1 "@-8,-3("\n' +
+					'%%deco ). 0 a 5 1 1 "@4,-3)"\n' +
 					'%%beginsvg\n' +
 					' <defs>\n' +
 					' <use id="VoidWithX" xlink:href="#acc2"/>\n' +
@@ -495,6 +495,32 @@ function GrooveUtils() { "use strict";
 		return fullABC;
 	}
 	
+	// looks for modifiers like !accent! or !plus! and moves them outside of the group abc array.
+	// Most modifiers (but not all) will not render correctly if they are inside the abc group.
+	// returns a string that should be added to the abc_notation if found.
+	function moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, modifier_to_look_for) {
+		
+		var found_modifier = false;
+		var rindex = abcNoteStrings.notes1.lastIndexOf(modifier_to_look_for);
+		if(rindex > -1) {
+			found_modifier = true;
+			abcNoteStrings.notes1 = abcNoteStrings.notes1.slice(rindex+modifier_to_look_for.length);
+		}
+		rindex = abcNoteStrings.notes2.lastIndexOf(modifier_to_look_for)
+		if(rindex > -1) {
+			found_modifier = true;
+			abcNoteStrings.notes2 = abcNoteStrings.notes2.slice(rindex+modifier_to_look_for.length);
+		}
+		rindex = abcNoteStrings.notes3.lastIndexOf(modifier_to_look_for)
+		if(rindex > -1) {
+			found_modifier = true;
+			abcNoteStrings.notes3 = abcNoteStrings.notes3.slice(rindex+modifier_to_look_for.length);
+		}
+		if(found_modifier)
+			return modifier_to_look_for;
+			
+		return "";  // didn't find it so return nothing
+	}
 	
 	// note1_array:   an array containing "false" or a note character in ABC to designate that is is on
 	// note2_array:   an array containing "false" or a note character in ABC to designate that is is on
@@ -502,9 +528,9 @@ function GrooveUtils() { "use strict";
 	function getABCforNote(note1_array, note2_array, note3_array, end_of_group, scaler) {
 	
 			var ABC_String = "";
-			var note1_ABC_String = "";
-			var note2_ABC_String = ""; 
-			var note3_ABC_String = ""; 
+			var abcNoteStrings = {notes1 : "",
+							      notes2 : "",
+							      notes3 : ""};
 			var num_notes_on = 0;
 			
 			if(note1_array[0] != false) {
@@ -517,7 +543,7 @@ function GrooveUtils() { "use strict";
 						nextCount++;
 				}
 					
-				note1_ABC_String += note1_array[0] + (scaler * nextCount);
+				abcNoteStrings.notes1 += note1_array[0] + (scaler * nextCount);
 				num_notes_on++;
 			}
 			
@@ -531,7 +557,7 @@ function GrooveUtils() { "use strict";
 						nextCount++;
 				}
 					
-				note2_ABC_String += note2_array[0] + (scaler * nextCount);
+				abcNoteStrings.notes2 += note2_array[0] + (scaler * nextCount);
 				num_notes_on++;
 			}
 			
@@ -545,7 +571,7 @@ function GrooveUtils() { "use strict";
 						nextCount++;
 				}
 					
-				note3_ABC_String += note3_array[0] + (scaler * nextCount);
+				abcNoteStrings.notes3 += note3_array[0] + (scaler * nextCount);
 				num_notes_on++;
 			}
 			
@@ -554,25 +580,13 @@ function GrooveUtils() { "use strict";
 				// horrible hack.  Turns out ABC will render the accents wrong unless the are outside the brackets []
 				// look for any accents that are delimited by "!"  (eg !accent!  or !plus!)
 				// move the accents to the front
-				var rindex = note1_ABC_String.lastIndexOf("!")
-				if(rindex > -1) {
-					ABC_String += note1_ABC_String.slice(0, rindex+1);
-					note1_ABC_String = note1_ABC_String.slice(rindex+1);
-				}
-				rindex = note2_ABC_String.lastIndexOf("!")
-				if(rindex > -1) {
-					ABC_String += note2_ABC_String.slice(0, rindex+1)
-					note2_ABC_String = note2_ABC_String.slice(rindex+1);
-				}
-				rindex = note3_ABC_String.lastIndexOf("!")
-				if(rindex > -1) {
-					ABC_String += note3_ABC_String.slice(0, rindex+1)
-					note3_ABC_String = note3_ABC_String.slice(rindex+1);
-				}
-				
-				ABC_String += "[" + note1_ABC_String + note2_ABC_String + note3_ABC_String + "]";  // [^gc]
+				ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!accent!");
+				ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!plus!");
+				ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!open!");
+								
+				ABC_String += "[" + abcNoteStrings.notes1 + abcNoteStrings.notes2 + abcNoteStrings.notes3 + "]";  // [^gc]
 			} else {
-				ABC_String += note1_ABC_String + note2_ABC_String + note3_ABC_String;  // note this could be a noOp if all strings are blank
+				ABC_String += abcNoteStrings.notes1 + abcNoteStrings.notes2 + abcNoteStrings.notes3;  // note this could be a noOp if all strings are blank
 			}
 			
 			return ABC_String;
