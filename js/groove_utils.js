@@ -48,6 +48,7 @@ function GrooveUtils() { "use strict";
 		this.showLegend        = false;
 		this.swingPercent      = 0;
 		this.tempo             = constant_DEFAULT_TEMPO;
+		this.kickStemsUp       = true;
 	}
 	
 	
@@ -714,14 +715,13 @@ function GrooveUtils() { "use strict";
 	// each element contains either the note value in ABC "F","^g" or false to represent off
 	// translates them to an ABC string in 2 voices
 	// post_voice_abc is a string added to the end of each voice line that can end the line
-	function snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure) {
+	function snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up) {
 	
 		var scaler = 1;  // we are always in 24 notes here
 		var ABC_String = "";
 		var stickings_voice_string = "V:Stickings\n";
 		var hh_snare_voice_string  = "V:Hands stem=up\n%%voicemap drum\n";
 		var kick_voice_string      = "V:Feet stem=down\n%%voicemap drum\n";
-		var kick_stems_up = true;
 			
 		for(var i=0; i < num_notes; i++) {
 			
@@ -784,14 +784,13 @@ function GrooveUtils() { "use strict";
 	// translates them to an ABC string in 3 voices
 	// post_voice_abc is a string added to the end of each voice line that can end the line
 	//
-	function snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure) {
+	function snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up) {
 	
 		var scaler = 1;  // we are always in 32ths notes here
 		var ABC_String = "";
 		var stickings_voice_string = "V:Stickings\n"    // for stickings.  they are all rests with text comments added
 		var hh_snare_voice_string = "V:Hands stem=up\n%%voicemap drum\n";     // for hh and snare
 		var kick_voice_string = "V:Feet stem=down\n%%voicemap drum\n";   // for kick drum
-		var kick_stems_up = true;
 		
 		for(var i=0; i < num_notes; i++) {
 					
@@ -851,12 +850,12 @@ function GrooveUtils() { "use strict";
 	// create ABC from note arrays
 	// The Arrays passed in must be 32 or 24 notes long 
 	// notes_per_measure denotes the number of notes that _should_ be in the measure even though the arrays are always large
-	root.create_ABC_from_snare_HH_kick_arrays = function(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure) {
+	root.create_ABC_from_snare_HH_kick_arrays = function(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up) {
 		
 		if((num_notes % 3) == 0) { // triplets 
-			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure);
+			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up);
 		} else {
-			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure);
+			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up);
 		}
 	}
 	
@@ -883,7 +882,8 @@ function GrooveUtils() { "use strict";
 																	  FullNoteKickArray, 
 																	  "|\n", 
 																	  FullNoteHHArray.length, 
-																	  myGrooveData.notesPerMeasure);
+																	  myGrooveData.notesPerMeasure,
+																	  myGrooveData.kickStemsUp);
 			
 		return fullABC;
 	}

@@ -1536,7 +1536,7 @@ function GrooveWriter() { "use strict";
 				new_kick_array = get_kick16th_permutation_array(i);
 								
 				fullABC += get_permutation_pre_ABC(i);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, get_permutation_post_ABC(i), num_notes, class_notes_per_measure);
+				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, get_permutation_post_ABC(i), num_notes, class_notes_per_measure, false);
 			}
 			break;
 			
@@ -1547,13 +1547,13 @@ function GrooveWriter() { "use strict";
 				var new_snare_array = get_snare_permutation_array(i);
 				
 				fullABC += get_permutation_pre_ABC(i);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, get_permutation_post_ABC(i), num_notes, class_notes_per_measure);
+				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, get_permutation_post_ABC(i), num_notes, class_notes_per_measure, false);
 			}
 			break;
 			
 		case "none":
 		default:
-			fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "\\\n", num_notes, class_notes_per_measure);
+			fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "\\\n", num_notes, class_notes_per_measure, true);
 			
 			if(isSecondMeasureVisable()) {
 				// reset arrays
@@ -1563,7 +1563,7 @@ function GrooveWriter() { "use strict";
 				Kick_Array = class_empty_note_array.slice(0);  // copy by value
 		
 				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, class_notes_per_measure);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "|\n", num_notes, class_notes_per_measure);
+				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "|\n", num_notes, class_notes_per_measure, true);
 			}
 			
 			break;
