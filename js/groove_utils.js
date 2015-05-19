@@ -494,40 +494,58 @@ function GrooveUtils() { "use strict";
 	// note1_array:   an array containing "false" or a note character in ABC to designate that is is on
 	// note2_array:   an array containing "false" or a note character in ABC to designate that is is on
 	// end_of_group:  when to stop looking ahead in the array.
-	function getABCforNote(note1_array, note2_array, end_of_group, scaler) {
+	function getABCforNote(note1_array, note2_array, note3_array, end_of_group, scaler) {
 	
 			var ABC_String = "";
 			var note1_ABC_String = "";
 			var note2_ABC_String = ""; 
+			var note3_ABC_String = ""; 
+			var num_notes_on = 0;
 			
 			if(note1_array[0] != false) {
 				// look ahead and see when the next note is
 				var nextCount = 1;
 				for(var indexB = 1; indexB < end_of_group; indexB++) {
-					if(note1_array[indexB] != false || note2_array[indexB] != false)
+					if(note1_array[indexB] != false || note2_array[indexB] != false || note3_array[indexB] != false)
 						break;
 					else
 						nextCount++;
 				}
 					
 				note1_ABC_String += note1_array[0] + (scaler * nextCount);
+				num_notes_on++;
 			}
 			
 			if(note2_array[0] != false) {
 				// look ahead and see when the next note is
 				var nextCount = 1;
 				for(var indexB = 1; indexB < end_of_group; indexB++) {
-					if(note1_array[indexB] != false || note2_array[indexB] != false)
+					if(note1_array[indexB] != false || note2_array[indexB] != false || note3_array[indexB] != false)
 						break;
 					else
 						nextCount++;
 				}
 					
 				note2_ABC_String += note2_array[0] + (scaler * nextCount);
+				num_notes_on++;
 			}
 			
-			if(note1_array[0] != false && note2_array[0] != false) {
-				// if both notes are on, we need to combine them with []
+			if(note3_array[0] != false) {
+				// look ahead and see when the next note is
+				var nextCount = 1;
+				for(var indexB = 1; indexB < end_of_group; indexB++) {
+					if(note1_array[indexB] != false || note2_array[indexB] != false || note3_array[indexB] != false)
+						break;
+					else
+						nextCount++;
+				}
+					
+				note3_ABC_String += note3_array[0] + (scaler * nextCount);
+				num_notes_on++;
+			}
+			
+			if(num_notes_on > 1) {
+				// if multiple are on, we need to combine them with []
 				// horrible hack.  Turns out ABC will render the accents wrong unless the are outside the brackets []
 				// look for any accents that are delimited by "!"  (eg !accent!  or !plus!)
 				// move the accents to the front
@@ -541,24 +559,29 @@ function GrooveUtils() { "use strict";
 					ABC_String += note2_ABC_String.slice(0, rindex+1)
 					note2_ABC_String = note2_ABC_String.slice(rindex+1);
 				}
+				rindex = note3_ABC_String.lastIndexOf("!")
+				if(rindex > -1) {
+					ABC_String += note3_ABC_String.slice(0, rindex+1)
+					note3_ABC_String = note3_ABC_String.slice(rindex+1);
+				}
 				
-				ABC_String += "[" + note1_ABC_String + note2_ABC_String + "]";  // [^gc]
+				ABC_String += "[" + note1_ABC_String + note2_ABC_String + note3_ABC_String + "]";  // [^gc]
 			} else {
-				ABC_String += note1_ABC_String + note2_ABC_String;  // note this could be a noOp is both strings are blank
+				ABC_String += note1_ABC_String + note2_ABC_String + note3_ABC_String;  // note this could be a noOp if all strings are blank
 			}
 			
 			return ABC_String;
 	}
 	
 	// calculate the rest ABC string
-	function getABCforRest(note1_array, note2_array, end_of_group, scaler, use_hidden_rest) {
+	function getABCforRest(note1_array, note2_array, note3_array, end_of_group, scaler, use_hidden_rest) {
 		var ABC_String = "";
 		
 		// count the # of rest
-		if(note1_array[0] == false && note2_array[0] == false) {
+		if(note1_array[0] == false && note2_array[0] == false && note3_array[0] == false) {
 			var restCount = 1;
 			for(var indexB = 1; indexB < end_of_group; indexB++) {
-				if(note1_array[indexB] != false || note2_array[indexB] != false)
+				if(note1_array[indexB] != false || note2_array[indexB] != false || note3_array[indexB] != false)
 					break;
 				else
 					restCount++;
@@ -698,6 +721,7 @@ function GrooveUtils() { "use strict";
 		var stickings_voice_string = "V:Stickings\n";
 		var hh_snare_voice_string  = "V:Hands stem=up\n%%voicemap drum\n";
 		var kick_voice_string      = "V:Feet stem=down\n%%voicemap drum\n";
+		var kick_stems_up = true;
 			
 		for(var i=0; i < num_notes; i++) {
 			
@@ -714,14 +738,26 @@ function GrooveUtils() { "use strict";
 			 
 			if( i % grouping_size_for_rests == 0 ) {
 				// we will only output a rest for each place there could be a note
-				stickings_voice_string += getABCforRest(sticking_array.slice(i), class_empty_note_array, grouping_size_for_rests, scaler, true);
-				hh_snare_voice_string += getABCforRest(snare_array.slice(i), HH_array.slice(i), grouping_size_for_rests, scaler, false);
-				kick_voice_string += getABCforRest(kick_array.slice(i), class_empty_note_array, grouping_size_for_rests, scaler, true);
+				stickings_voice_string += getABCforRest(sticking_array.slice(i), class_empty_note_array, class_empty_note_array, grouping_size_for_rests, scaler, true);
+				
+				if(kick_stems_up) {
+					hh_snare_voice_string += getABCforRest(snare_array.slice(i), HH_array.slice(i), kick_array.slice(i), grouping_size_for_rests, scaler, false);
+					kick_voice_string = "";
+				} else {
+					hh_snare_voice_string += getABCforRest(snare_array.slice(i), HH_array.slice(i), class_empty_note_array, grouping_size_for_rests, scaler, false);
+					kick_voice_string += getABCforRest(kick_array.slice(i), class_empty_note_array, class_empty_note_array, grouping_size_for_rests, scaler, true);
+				}
 			} 
 			
-			stickings_voice_string += getABCforNote(sticking_array.slice(i), class_empty_note_array, end_of_group, scaler);
-			hh_snare_voice_string += getABCforNote(snare_array.slice(i), HH_array.slice(i), end_of_group, scaler);
-			kick_voice_string += getABCforNote(kick_array.slice(i), class_empty_note_array, end_of_group, scaler);
+			stickings_voice_string += getABCforNote(sticking_array.slice(i), class_empty_note_array, class_empty_note_array, end_of_group, scaler);
+			
+			if(kick_stems_up) {
+				hh_snare_voice_string += getABCforNote(snare_array.slice(i), HH_array.slice(i), kick_array.slice(i), end_of_group, scaler);
+				kick_voice_string = "";
+			} else {
+				hh_snare_voice_string += getABCforNote(snare_array.slice(i), HH_array.slice(i), class_empty_note_array, end_of_group, scaler);
+				kick_voice_string += getABCforNote(kick_array.slice(i), class_empty_note_array, class_empty_note_array, end_of_group, scaler);
+			}
 			
 			if((i % ABC_gen_note_grouping_size(true)) == ABC_gen_note_grouping_size(true)-1) {
 			
@@ -755,6 +791,7 @@ function GrooveUtils() { "use strict";
 		var stickings_voice_string = "V:Stickings\n"    // for stickings.  they are all rests with text comments added
 		var hh_snare_voice_string = "V:Hands stem=up\n%%voicemap drum\n";     // for hh and snare
 		var kick_voice_string = "V:Feet stem=down\n%%voicemap drum\n";   // for kick drum
+		var kick_stems_up = true;
 		
 		for(var i=0; i < num_notes; i++) {
 					
@@ -769,17 +806,27 @@ function GrooveUtils() { "use strict";
 			 
 			if(i % ABC_gen_note_grouping_size(false) == 0) {
 				// we will only output a rest at the beginning of a beat phrase, or if triplets for every space
-				var hidden_rest = false;
-				stickings_voice_string += getABCforRest(sticking_array.slice(i), class_empty_note_array, grouping_size_for_rests, scaler, true);
-				hh_snare_voice_string += getABCforRest(snare_array.slice(i), HH_array.slice(i), grouping_size_for_rests, scaler, hidden_rest);
-				kick_voice_string += getABCforRest(kick_array.slice(i), class_empty_note_array, grouping_size_for_rests, scaler, hidden_rest);
-			
+				stickings_voice_string += getABCforRest(sticking_array.slice(i), class_empty_note_array, class_empty_note_array, grouping_size_for_rests, scaler, true);
+				
+				if(kick_stems_up) {
+					hh_snare_voice_string += getABCforRest(snare_array.slice(i), HH_array.slice(i), kick_array.slice(i), grouping_size_for_rests, scaler, false);
+					kick_voice_string = "";
+				} else {
+					hh_snare_voice_string += getABCforRest(snare_array.slice(i), HH_array.slice(i), class_empty_note_array, grouping_size_for_rests, scaler, false);
+					kick_voice_string += getABCforRest(kick_array.slice(i), class_empty_note_array, class_empty_note_array, grouping_size_for_rests, scaler, false);
+				}
 			} 
 			
-			stickings_voice_string += getABCforNote(sticking_array.slice(i), class_empty_note_array, end_of_group, scaler);
-			hh_snare_voice_string += getABCforNote(snare_array.slice(i), HH_array.slice(i), end_of_group, scaler);
-			kick_voice_string += getABCforNote(kick_array.slice(i), class_empty_note_array, end_of_group, scaler);
+			stickings_voice_string += getABCforNote(sticking_array.slice(i), class_empty_note_array, class_empty_note_array, end_of_group, scaler);
 			
+			if(kick_stems_up) {
+				hh_snare_voice_string += getABCforNote(snare_array.slice(i), HH_array.slice(i), kick_array.slice(i), end_of_group, scaler);
+				kick_voice_string = "";
+			} else {
+				hh_snare_voice_string += getABCforNote(snare_array.slice(i), HH_array.slice(i), class_empty_note_array, end_of_group, scaler);
+				kick_voice_string += getABCforNote(kick_array.slice(i), class_empty_note_array, class_empty_note_array, end_of_group, scaler);
+			}
+				
 			if((i % ABC_gen_note_grouping_size(false)) == ABC_gen_note_grouping_size(false)-1) {
 			
 				stickings_voice_string += " ";
