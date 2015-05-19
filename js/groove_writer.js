@@ -1524,10 +1524,11 @@ function GrooveWriter() { "use strict";
 		var tuneAuthor = document.getElementById("tuneAuthor").value;
 		var tuneComments = document.getElementById("tuneComments").value;
 		var showLegend = document.getElementById("showLegend").checked;
-		var fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets());
+		var fullABC = "";
 		
 		switch (class_permutationType) {
 		case "kick_16ths":  // use the hh & snare from the user
+			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false);
 		
 			// compute sections with different kick patterns
 			for(var i=0; i < numSections; i++) {
@@ -1541,6 +1542,7 @@ function GrooveWriter() { "use strict";
 			break;
 			
 		case "snare_16ths":  // use the hh & kick from the user
+			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false);
 		
 			//compute 16 sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
@@ -1553,6 +1555,8 @@ function GrooveWriter() { "use strict";
 			
 		case "none":
 		default:
+			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), true);
+		
 			fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "\\\n", num_notes, class_notes_per_measure, true);
 			
 			if(isSecondMeasureVisable()) {

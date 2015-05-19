@@ -417,7 +417,7 @@ function GrooveUtils() { "use strict";
 	
 	
 	// the top stuff in the ABC that doesn't depend on the notes
-	root.get_top_ABC_BoilerPlate = function(isPermutation, tuneTitle, tuneAuthor, tuneComments, showLegend, isTriplets) {
+	root.get_top_ABC_BoilerPlate = function(isPermutation, tuneTitle, tuneAuthor, tuneComments, showLegend, isTriplets, kick_stems_up) {
 		// boiler plate
 		var fullABC = "%abc\n\X:6\n"
 		
@@ -457,8 +457,12 @@ function GrooveUtils() { "use strict";
 					'%%map drum ^A\' heads=VoidWithX print=A\'  % Crash\n' +
 					'%%map drum ^f heads=VoidWithX print=f  % Ride\n' +
 					'%%map drum ^c heads=VoidWithX print=c  % Cross Stick\n' +
-					'%%map drum ^d, heads=VoidWithX print=d,  % Foot Splash\n' +
-					"%%staves (Stickings Hands Feet)\n";
+					'%%map drum ^d, heads=VoidWithX print=d,  % Foot Splash\n';
+					
+		if(kick_stems_up)
+			fullABC += "%%staves (Stickings Hands)\n";
+		else
+			fullABC += "%%staves (Stickings Hands Feet)\n";
 									
 		// print comments below the legend if there is one, otherwise in the header section
 		if(tuneComments != "") {
@@ -732,8 +736,8 @@ function GrooveUtils() { "use strict";
 			
 			if(i % ABC_gen_note_grouping_size(true) == 0) {
 				// creates the 3 or the 6 over the note grouping
+				// looks like (3:3:3 or (6:6:6
 				hh_snare_voice_string += "(" + root.noteGroupingSize(notes_per_measure) + ":" + root.noteGroupingSize(notes_per_measure) + ":" + root.noteGroupingSize(notes_per_measure);
-				//kick_voice_string += "(3:3:3";    // creates the 3 over the note grouping for kick drum
 			} 
 			 
 			if( i % grouping_size_for_rests == 0 ) {
@@ -774,7 +778,11 @@ function GrooveUtils() { "use strict";
 			}
 		}
 		
-		ABC_String += stickings_voice_string + post_voice_abc + hh_snare_voice_string + post_voice_abc + kick_voice_string + post_voice_abc;
+		if(kick_stems_up) 	
+			ABC_String += stickings_voice_string + post_voice_abc + hh_snare_voice_string + post_voice_abc;
+		else
+			ABC_String += stickings_voice_string + post_voice_abc + hh_snare_voice_string + post_voice_abc + kick_voice_string + post_voice_abc;
+		
 		
 		return ABC_String;
 	}
@@ -841,8 +849,10 @@ function GrooveUtils() { "use strict";
 			}
 		}
 		
-		
-		ABC_String += stickings_voice_string + post_voice_abc  + hh_snare_voice_string + post_voice_abc + kick_voice_string + post_voice_abc;
+		if(kick_stems_up) 	
+			ABC_String += stickings_voice_string + post_voice_abc + hh_snare_voice_string + post_voice_abc;
+		else
+			ABC_String += stickings_voice_string + post_voice_abc + hh_snare_voice_string + post_voice_abc + kick_voice_string + post_voice_abc;
 		
 		return ABC_String;
 	}
@@ -870,11 +880,12 @@ function GrooveUtils() { "use strict";
 		var FullNoteKickArray     = scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure);
 	
 		var fullABC = root.get_top_ABC_BoilerPlate(false, 
-															myGrooveData.title, 
-															myGrooveData.author, 
-															myGrooveData.comments, 
-															myGrooveData.showLegend, 
-															root.isTripletDivision(myGrooveData.notesPerMeasure));
+													myGrooveData.title, 
+													myGrooveData.author, 
+													myGrooveData.comments, 
+													myGrooveData.showLegend, 
+													root.isTripletDivision(myGrooveData.notesPerMeasure),
+													myGrooveData.kickStemsUp);
 		
 		fullABC += root.create_ABC_from_snare_HH_kick_arrays(FullNoteStickingArray, 
 																	  FullNoteHHArray, 
