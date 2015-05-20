@@ -1,8 +1,12 @@
 
 
+global_num_GrooveUtilsCreated = 0;
+
 // GrooveUtils class.   The only one in this file. 
 function GrooveUtils() { "use strict";
 
+	global_num_GrooveUtilsCreated++;   // should increment on every new
+	
 	var root = this;
 
 	// midi state variables
@@ -10,6 +14,7 @@ function GrooveUtils() { "use strict";
 	root.shouldMIDIRepeat = true;
 	root.midiDataURL = "";    // used to store the midi data for playback
 	root.swingIsEnabled = false;
+	root.grooveUtilsUniqueIndex = global_num_GrooveUtilsCreated;
 		
 	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
 	
@@ -706,17 +711,20 @@ function GrooveUtils() { "use strict";
 		return scaler;
 	}
 	
-	// take any size array and make it have 32 notes per measure by padding it with rests in the spaces between
+	// take any size array and make it larger by padding it with rests in the spaces between
 	// For triplets, expands to 24 notes per measure
 	// For non Triplets, expands to 32 notes per measure
 	function scaleNoteArrayToFullSize(note_array, num_measures, notes_per_measure) {
 		var scaler = root.getNoteScaler(notes_per_measure);  // fill proportionally
 		var retArray = [];
+		var isTriplets = root.isTripletDivision(notes_per_measure);
+													
 		
-		if(notes_per_measure == 32 || notes_per_measure == 24)
+		if(note_array.length == (num_measures*notes_per_measure) && (notes_per_measure == 32 || notes_per_measure == 24))
 			return note_array;   // no need to expand
 		
-		for(var i=0; i < num_measures * 32; i++) 
+		// preset to false (rest) all entries in the expanded array
+		for(var i=0; i < num_measures * (isTriplets ? 24 : 32); i++) 
 			retArray[i] = false;
 		
 		// sparsely fill in the return array with data from passed in array
@@ -876,7 +884,7 @@ function GrooveUtils() { "use strict";
 	// notes_per_measure denotes the number of notes that _should_ be in the measure even though the arrays are always large
 	root.create_ABC_from_snare_HH_kick_arrays = function(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up) {
 		
-		if((num_notes % 3) == 0) { // triplets 
+		if((notes_per_measure % 3) == 0) { // triplets 
 			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up);
 		} else {
 			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up);
@@ -888,10 +896,10 @@ function GrooveUtils() { "use strict";
 	
 	root.createABCFromGrooveData = function(myGrooveData) {
 	
-		var FullNoteStickingArray = scaleNoteArrayToFullSize(myGrooveData.sticking_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure);
-		var FullNoteHHArray       = scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure);
-		var FullNoteSnareArray    = scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure);
-		var FullNoteKickArray     = scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure);
+		var FullNoteStickingArray = scaleNoteArrayToFullSize(myGrooveData.sticking_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure);
+		var FullNoteHHArray       = scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure);
+		var FullNoteSnareArray    = scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure);
+		var FullNoteKickArray     = scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure);
 	
 		var fullABC = root.get_top_ABC_BoilerPlate(false, 
 													myGrooveData.title, 
@@ -980,21 +988,22 @@ function GrooveUtils() { "use strict";
 		this.noteHasChangedSinceLastDataLoad = false;
 		
 		this.playEvent = function(root){
-			document.getElementById("midiPlayImage").src="images/pause.png";
+			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/pause.png";
 		}; 
 		this.loadMidiDataEvent = function(root) {
+			root.loadMIDIFromURL(root.midiDataURL);		
 			root.midiEventCallbacks.noteHasChangedSinceLastDataLoad = false;
 		}; 
 		this.doesMidiDataNeedRefresh = function(root) { 
 			return root.midiEventCallbacks.noteHasChangedSinceLastDataLoad;
 		};
 		this.pauseEvent = function(root){
-			document.getElementById("midiPlayImage").src="images/play.png";
+			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/play.png";
 		};  
 		
 		this.resumeEvent = function(root){};
 		this.stopEvent = function(root){
-			document.getElementById("midiPlayImage").src="images/play.png";
+			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/play.png";
 			document.getElementById("MIDIProgress").value = 0;
 		};
 		this.repeatChangeEvent = function(root, newValue){
@@ -1004,17 +1013,23 @@ function GrooveUtils() { "use strict";
 				document.getElementById("midiRepeatImage").src="images/grey_repeat.png";
 		};
 		this.percentProgress = function(root, percent){
-			document.getElementById("MIDIProgress").value = percent;
+			document.getElementById("MIDIProgress" + root.grooveUtilsUniqueIndex).value = percent;
 		};
 		this.notePlaying = function(root, note_type, note_position){};
 		
 		this.midiInitialized = function(root) {
-				document.getElementById("midiPlayImage").src="images/play.png";
-				document.getElementById("midiPlayImage").onclick = function (event){ root.startOrStopMIDI_playback();};  // enable play button
+				document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/play.png";
+				document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).onclick = function (event){ root.startOrStopMIDI_playback();};  // enable play button
 				setupHotKeys();  // spacebar to play
 		}
 	}
 	root.midiEventCallbacks = new root.midiEventCallbackClass(root);
+	
+	// set a URL for midi playback.
+	// usefull for static content, so you don't have to override the loadMidiDataEvent callback
+	root.setMidiURL = function(midiURL) {
+		root.midiDataURL = midiURL;
+	}
 	
 	// This is called so that the MIDI player will reload the groove
 	// at repeat time.   If not set then the midi player just repeats what is already loaded.
@@ -1307,8 +1322,11 @@ function GrooveUtils() { "use strict";
 	
 	root.oneTimeInitializeMidi = function() {
 		
-		if(root.midiInitialized)
+		if(root.midiInitialized) {
+			root.midiEventCallbacks.midiInitialized(root.midiEventCallbacks.classRoot);
 			return;
+		}
+		
 		root.midiInitialized = true;
 		MIDI.loadPlugin({
 			soundfontUrl: "./soundfont/",
@@ -1393,9 +1411,17 @@ function GrooveUtils() { "use strict";
 		MIDI.Player.addListener(ourMIDICallback);
 	}
 	
+    root.getTempo = function() {
+        var tempo = parseInt(document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex).value);
+        if(tempo < 19 && tempo > 281)
+            tempo = constant_default_tempo;
+        
+        return tempo;
+    }
+
 	// update the tempo string display
 	root.tempoUpdate = function(tempo) {
-		document.getElementById('tempoOutput').innerHTML = "" + tempo + " bpm";
+		document.getElementById('tempoOutput' + root.grooveUtilsUniqueIndex).innerHTML = "" + tempo + " bpm";
 	}
 
 	root.tempoUpdateEvent = function(event) {
@@ -1415,18 +1441,30 @@ function GrooveUtils() { "use strict";
 		root.swingIsEnabled = trueElseFalse;
 	}
 	
+	root.getSwing = function() {
+        var swing = parseInt(document.getElementById("swingInput" + root.grooveUtilsUniqueIndex).value);
+        if(swing < 0 || swing > 60)
+            swing = 0;
+        
+        if(root.swingIsEnabled == false)
+            swing = 0;
+        
+        // our real swing value only goes to 60%. 
+        return (swing);
+    }
+
 	// used to update the on screen swing display
 	// also the onClick handler for the swing slider
 	root.swingUpdate = function(swingAmount) {
 		if(!swingAmount) {
 			// grab the actual amount from the slider
-			swingAmount = parseInt(document.getElementById("swingInput").value);
+			swingAmount = parseInt(document.getElementById("swingInput" + root.grooveUtilsUniqueIndex).value);
 		}
 		
 		if(root.swingIsEnabled == false) {
-			document.getElementById('swingOutput').innerHTML = "swing N/A";	
+			document.getElementById('swingOutput'+ root.grooveUtilsUniqueIndex).innerHTML = "swing N/A";	
 		} else {
-			document.getElementById('swingOutput').innerHTML = "" + swingAmount + "% swing";
+			document.getElementById('swingOutput'+ root.grooveUtilsUniqueIndex).innerHTML = "" + swingAmount + "% swing";
 			root.swingPercent = swingAmount;
 		}
 	}
@@ -1437,22 +1475,23 @@ function GrooveUtils() { "use strict";
 	
 	root.HTMLForMidiPlayer = function() {
 		return ('' +
-			'<div id="playerControl">' +
-			'	<img alt="Play" title="Play" id="midiPlayImage" src="images/grey_play.png">' +
-			'	<span id="tempoAndProgress">' +
-			'		<div id="tempo">' +
-			'			<input type=range min=40 max=240 value=90 id="tempoInput" list="tempoSettings" step=5>' +
-			'			<div for=tempo id=tempoOutput>80 bpm</div>' +
-			'		</div>' +
-			'		<div id="swingAmount">' +
-			'			<input type=range min=0 max=50 value=0 id="swingInput" list="swingSettings" step=5 >' +
-			'			<div for=swingAmount id=swingOutput>0% swing</div>' +
-			'		</div>' +
-			'	</span>' +
-			'	<img alt="Repeat" title="Repeat" id="midiRepeatImage" src="images/repeat.png">' +
-			'	<br>' +
-			'	<div id="progress">' +
-			'		<progress id="MIDIProgress" value="0" max="100"></progress>' +
+			'<div class="playerControl">' +
+			'	<div class="playerControlsRow">' +
+			'		<img alt="Play" title="Play" class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '" src="images/grey_play.png">' +
+			'		<span class="tempoAndProgress">' +
+			'			<div class="tempoRow">' +
+			'				<input type=range min=40 max=240 value=90 class="tempoInput" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings" step=5>' +
+			'				<div for="tempo" class="tempoOutput" id="tempoOutput' + root.grooveUtilsUniqueIndex + '">80 bpm</div>' +
+			'			</div>' +
+			'			<div id="swingRow">' +
+			'				<input type=range min=0 max=50 value=0 class="swingInput" id="swingInput' + root.grooveUtilsUniqueIndex + '" list="swingSettings" step=5 >' +
+			'				<div for="swingAmount" class="swingOutput" id="swingOutput' + root.grooveUtilsUniqueIndex + '">0% swing</div>' +
+			'			</div>' +
+			'		</span>' +
+			//'		<img alt="Repeat" title="Repeat" class="midiRepeatImage" id="midiRepeatImage' + root.grooveUtilsUniqueIndex + '" src="images/repeat.png">' +
+			'	</div>' +
+			'	<div class="midiProgressRow">' +
+			'		<progress class="MIDIProgress" id="MIDIProgress' + root.grooveUtilsUniqueIndex + '" value="0" max="100"></progress>' +
 			'	</div>' +
 			'</div>');
 	}
@@ -1465,19 +1504,19 @@ function GrooveUtils() { "use strict";
 			html_element.innerHTML = root.HTMLForMidiPlayer();
 			
 		// now attach the onclicks
-		var html_element = document.getElementById("tempoInput"); 
+		var html_element = document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex); 
 		if(html_element) {
 			html_element.addEventListener("input", root.tempoUpdateEvent, false);
 			html_element.addEventListener("change", root.midiNoteHasChanged, false);
 		}
 		
-		var html_element = document.getElementById("swingInput"); 
+		var html_element = document.getElementById("swingInput" + root.grooveUtilsUniqueIndex); 
 		if(html_element) {
 			html_element.addEventListener("input", root.swingUpdateEvent, false);
 			html_element.addEventListener("change", root.midiNoteHasChanged, false);
 		}
 		
-		var html_element = document.getElementById("midiRepeatImage"); 
+		var html_element = document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex); 
 		if(html_element) {
 			html_element.addEventListener("click", root.repeatMIDI_playback, false);
 		}

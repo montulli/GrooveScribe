@@ -35,7 +35,7 @@
 			var UniqueCounter = 0;  // global
 	
 	
-			function AddGroove(HtmlTagId, GrooveDefinition) {
+			function AddGrooveToHTMLElement(HtmlTagId, GrooveDefinition, showPlayer, linkToEditor) {
 				var myGrooveUtils = new GrooveUtils();
 				UniqueCounter++;
 				
@@ -43,34 +43,39 @@
 				midiPlayerTargetId = "midiPlayerTarget" + UniqueCounter;
 			
 				document.getElementById(HtmlTagId).innerHTML = '' +
-						'<div id="' + svgTargetId + '" class="svgTarget"></div>\n' +
-						'<div id="' + midiPlayerTargetId + '"></div>\n';
+						'<div id="' + svgTargetId + '" class="svgTarget" style="display:inline-block"></div>\n' +
+						'<div id="' + midiPlayerTargetId + '" style="width: 200px; display:inline-block"></div>\n';
 						
 				// load the groove from the URL data if it was passed in.
 				var GrooveData = myGrooveUtils.getGrooveDataFromUrlString(GrooveDefinition);
+				console.log(GrooveData);
 				var abcNotation = myGrooveUtils.createABCFromGrooveData(GrooveData);
 				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 				
-				document.getElementById(svgTargetId).innerHTML = "<p><pre>" + svgReturn.svg + "</pre>";
-				document.getElementById(svgTargetId).innerHTML = '<a href="https://b125c4f8bf7d89726feec9ab8202d31e0c8d14d8.googledrive.com/host/0B2wxVWzVoWGYfnB5b3VTekxyYUowVjZ5YVE3UllLaVk5dVd4TzF4Q2ZaUXVsazhNSTdRM1E/?' + GrooveDefinition + '">' + svgReturn.svg + '</a>';
+				if(linkToEditor)
+					document.getElementById(svgTargetId).innerHTML = '<a href="' + linkToEditor + GrooveDefinition + '">' + svgReturn.svg + '</a>';
+				else
+					document.getElementById(svgTargetId).innerHTML = svgReturn.svg;
 				
-				
-				myGrooveUtils.midiEventCallbacks.loadMidiDataEvent = function(myroot) { 
+				if(showPlayer) {
 					var midiURL = myGrooveUtils.create_MIDIURLFromGrooveData(GrooveData, "our_MIDI");
-					myGrooveUtils.loadMIDIFromURL(midiURL);
-					myGrooveUtils.midiResetNoteHasChanged();
+					myGrooveUtils.setMidiURL(midiURL);
+		
+					myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId);
+					myGrooveUtils.oneTimeInitializeMidi();
 				}
-	
-				myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId);
-				myGrooveUtils.oneTimeInitializeMidi();
+				
+				console.log(myGrooveUtils);
+				return myGrooveUtils;
 			}
 			
 	
 			// set up the page after it has fully loaded
 			window.onload = function () {
-				AddGroove("groove1", 'Div=16&Title=Funk&Tempo=80&Measures=2&showMeasures=2&H=|X-x-X-x-X-x-X-x-|X-x-X-x-X-x-X-x-|&S=|-----g-o-o--x--o|-----g-o-o--x--o|&K=|o-o-------o--o--|o-o-------o--o--|');
-				AddGroove("groove2", 'Div=24&Title=Rosanna Shuffle&Author=Jeff Pocaro&Tempo=85&Measures=2&showMeasures=1&H=|x-xx-xx-xx-xx-xx-xx-xx-x|xxxxxxxxxxxxxxxxxxxxxxxx|&S=|-g--g-Og--g--g--g-Og--g-|------O-----------O-----|&K=|o----o---o-o--o---o----o|o-----------o-----------|');
-				AddGroove("groove3", 'Div=16&Title=Samba&Tempo=80&Measures=2&showMeasures=1&H=|xxXxxxXxxxXxxxXx|xxXxxxXxxxXxxxXx|&S=|o-o-oo-o-o-ooooo|o-o-oo-o-o-ooooo|&K=|o-ooo--oo-oooo-o|o-ooo--oo-oooo-o|');
+				var editorURL = "https://b125c4f8bf7d89726feec9ab8202d31e0c8d14d8.googledrive.com/host/0B2wxVWzVoWGYfnB5b3VTekxyYUowVjZ5YVE3UllLaVk5dVd4TzF4Q2ZaUXVsazhNSTdRM1E/";
+				var GU1 = AddGrooveToHTMLElement("groove1", '?Div=16&Title=Funk&Tempo=80&Measures=2&showMeasures=1&H=|X-x-X-x-X-x-X-x-|X-x-X-x-X-x-X-x-|&S=|-----g-o-o--x--o|-----g-o-o--x--o|&K=|o-o-------o--o--|o-o-------o--o--|', true, editorURL);
+				var GU2 = AddGrooveToHTMLElement("groove2", '?Div=24&Title=Rosanna%20Shuffle&Author=Jeff%20Pocaro&Tempo=85&Measures=2&showMeasures=1&H=|x-xx-xx-xx-xx-xx-xx-xx-x|xxxxxxxxxxxxxxxxxxxxxxxx|&S=|-g--g-Og--g--g--g-Og--g-|------O-----------O-----|&K=|o----o---o----o---o----o|o-----------o-----------|', true, editorURL);
+				var GU3 = AddGrooveToHTMLElement("groove3", '?Div=16&Title=Samba&Tempo=80&Measures=2&showMeasures=1&H=|xxXxxxXxxxXxxxXx|xxXxxxXxxxXxxxXx|&S=|o-o--o-o-o-o-oo-|o-o--o-o-o-o-oo-|&K=|o--oo--oo--oo--o|o--oo--oo--oo--o|', true, editorURL);
 			}
 			
 			

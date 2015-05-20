@@ -1354,68 +1354,6 @@ function GrooveWriter() { "use strict";
 		return num_notes;
 	}
 	
-	function getTempo() {
-		var tempo = parseInt(document.getElementById("tempoInput").value);
-		if(tempo < 19 && tempo > 281)
-			tempo = constant_default_tempo;
-		
-		return tempo;
-	}
-	
-	root.setTempo = function(tempo) {
-		tempo = parseInt(tempo);
-		if(tempo < 19 && tempo > 281)
-			tempo = constant_default_tempo;
-		document.getElementById("tempoInput").value = tempo;
-		
-		root.tempoUpdate(tempo);
-		
-		return tempo;
-	}
-	
-	// used to update the on screen tempo display
-	// also the onClick handler for the tempo slider
-	root.tempoUpdate = function(tempo) {
-		document.getElementById('tempoOutput').innerHTML = "" + tempo + " bpm";
-	}
-
-	// used to update the on screen swing display
-	// also the onClick handler for the swing slider
-	root.swingUpdate = function(swingAmount) {
-		if(!swingAmount) {
-			// grab the actual amount from the slider
-			swingAmount = parseInt(document.getElementById("swingInput").value);
-		}
-		
-		if(usingTriplets() || class_notes_per_measure == 4)
-			document.getElementById('swingOutput').innerHTML = "swing N/A";
-		else	
-			document.getElementById('swingOutput').innerHTML = "" + swingAmount + "% swing";
-	}
-
-	function getSwing() {
-		var swing = parseInt(document.getElementById("swingInput").value);
-		if(swing < 0 || swing > 60)
-			swing = 0;
-		
-		if(usingTriplets() || class_notes_per_measure == 4)
-			swing = 0;
-		
-		// our real swing value only goes to 60%. 
-		return (swing);
-	}
-	
-	function setSwing(swing) {
-		swing = parseInt(swing);
-		if(swing < 0 && swing > 60)
-			swing = 0;
-		document.getElementById("swingInput").value = swing;
-		
-		root.swingUpdate(swing);
-		
-		return swing;
-	}
-	
 	
 	function createMidiUrlFromClickableUI(MIDI_type) {
 		var Sticking_Array = class_empty_note_array.slice(0);  // copy by value
@@ -1431,10 +1369,10 @@ function GrooveWriter() { "use strict";
 		var midiTrack = new Midi.Track();
 		midiFile.addTrack(midiTrack);
 
-		midiTrack.setTempo(getTempo());
+		midiTrack.setTempo(myGrooveUtils.getTempo());
 		midiTrack.setInstrument(0, 0x13);
 		
-		var swing_percentage = getSwing()/100;
+		var swing_percentage = myGrooveUtils.getSwing()/100;
 		
 		// all of the permutations use just the first measure
 		switch (class_permutationType) {
@@ -2017,10 +1955,10 @@ function GrooveWriter() { "use strict";
 		if(comments != "")
 			fullURL += "&Comments=" + encodeURI(comments);
 		
-		fullURL += "&Tempo=" + getTempo();
+		fullURL += "&Tempo=" + myGrooveUtils.getTempo();
 		
-		if(getSwing() > 0)
-			fullURL += "&Swing=" + getSwing();
+		if(myGrooveUtils.getSwing() > 0)
+			fullURL += "&Swing=" + myGrooveUtils.getSwing();
 		
 		// # of measures
 		fullURL += "&Measures=2";
@@ -2188,9 +2126,9 @@ function GrooveWriter() { "use strict";
 		
 		document.getElementById("tuneComments").value = myGrooveData.comments;
 		
-		root.setTempo(myGrooveData.tempo);
+		myGrooveUtils.tempoUpdate(myGrooveData.tempo);
 		
-		setSwing(myGrooveData.swingPercent);
+		myGrooveUtils.swingUpdate(myGrooveData.swingPercent);
 		
 		create_ABC();
 	}
