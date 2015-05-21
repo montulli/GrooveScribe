@@ -44,7 +44,7 @@
 			
 				document.getElementById(HtmlTagId).innerHTML = '' +
 						'<div id="' + svgTargetId + '" class="svgTarget" style="display:inline-block"></div>\n' +
-						'<div id="' + midiPlayerTargetId + '" style="width: 200px; display:inline-block; vertical-align: bottom"></div>\n';
+						'<div id="' + midiPlayerTargetId + '" style="width: 260px; display:inline-block; vertical-align: bottom"></div>\n';
 						
 				// load the groove from the URL data if it was passed in.
 				var GrooveData = myGrooveUtils.getGrooveDataFromUrlString(GrooveDefinition);
@@ -58,10 +58,10 @@
 					document.getElementById(svgTargetId).innerHTML = svgReturn.svg;
 				
 				if(showPlayer) {
-					var midiURL = myGrooveUtils.create_MIDIURLFromGrooveData(GrooveData, "our_MIDI");
-					myGrooveUtils.setMidiURL(midiURL);
-		
-					myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId);
+					myGrooveUtils.setGrooveData(GrooveData);
+				
+					myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId, GrooveData.notesPerMeasure, true);
+					myGrooveUtils.expandOrRetractMIDI_playback(true, false);  // make it small
 					myGrooveUtils.oneTimeInitializeMidi();
 				}
 				

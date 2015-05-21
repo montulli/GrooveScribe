@@ -12,7 +12,6 @@ function GrooveUtils() { "use strict";
 	// midi state variables
 	root.isMIDIPaused = false;
 	root.shouldMIDIRepeat = true;
-	root.midiDataURL = "";    // used to store the midi data for playback
 	root.swingIsEnabled = false;
 	root.grooveUtilsUniqueIndex = global_num_GrooveUtilsCreated;
 		
@@ -55,9 +54,7 @@ function GrooveUtils() { "use strict";
 		this.tempo             = constant_DEFAULT_TEMPO;
 		this.kickStemsUp       = true;
 	}
-	
-	
-		
+			
 	root.getQueryVariableFromString = function(variable, def_value, my_string)
 	{
 		   var query = my_string.substring(1);
@@ -990,9 +987,18 @@ function GrooveUtils() { "use strict";
 		this.playEvent = function(root){
 			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/pause.png";
 		}; 
+		// default loadMIDIDataEvent.  You probably want to override this
+		// it will only make changes to the tempo and swing
 		this.loadMidiDataEvent = function(root) {
-			root.loadMIDIFromURL(root.midiDataURL);		
-			root.midiEventCallbacks.noteHasChangedSinceLastDataLoad = false;
+			if(root.myGrooveData) {
+				root.myGrooveData.tempo = root.getTempo();
+				root.myGrooveData.swingPercent = root.getSwing();
+				var midiURL = root.create_MIDIURLFromGrooveData(root.myGrooveData);
+				root.loadMIDIFromURL(midiURL);		
+				root.midiEventCallbacks.noteHasChangedSinceLastDataLoad = false;
+			} else {
+				alert("can't load midi song.   myGrooveData is empty");
+			}
 		}; 
 		this.doesMidiDataNeedRefresh = function(root) { 
 			return root.midiEventCallbacks.noteHasChangedSinceLastDataLoad;
@@ -1004,13 +1010,13 @@ function GrooveUtils() { "use strict";
 		this.resumeEvent = function(root){};
 		this.stopEvent = function(root){
 			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/play.png";
-			document.getElementById("MIDIProgress").value = 0;
+			document.getElementById("MIDIProgress" + root.grooveUtilsUniqueIndex).value = 0;
 		};
 		this.repeatChangeEvent = function(root, newValue){
 			if(newValue)
-				document.getElementById("midiRepeatImage").src="images/repeat.png";
+				document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex).src="images/repeat.png";
 			else
-				document.getElementById("midiRepeatImage").src="images/grey_repeat.png";
+				document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex).src="images/grey_repeat.png";
 		};
 		this.percentProgress = function(root, percent){
 			document.getElementById("MIDIProgress" + root.grooveUtilsUniqueIndex).value = percent;
@@ -1027,8 +1033,8 @@ function GrooveUtils() { "use strict";
 	
 	// set a URL for midi playback.
 	// usefull for static content, so you don't have to override the loadMidiDataEvent callback
-	root.setMidiURL = function(midiURL) {
-		root.midiDataURL = midiURL;
+	root.setGrooveData = function(grooveData) {
+		root.myGrooveData = grooveData;
 	}
 	
 	// This is called so that the MIDI player will reload the groove
@@ -1422,6 +1428,8 @@ function GrooveUtils() { "use strict";
 	// update the tempo string display
 	root.tempoUpdate = function(tempo) {
 		document.getElementById('tempoOutput' + root.grooveUtilsUniqueIndex).innerHTML = "" + tempo + " bpm";
+		root.midiNoteHasChanged();
+		
 	}
 
 	root.tempoUpdateEvent = function(event) {
@@ -1466,6 +1474,7 @@ function GrooveUtils() { "use strict";
 		} else {
 			document.getElementById('swingOutput'+ root.grooveUtilsUniqueIndex).innerHTML = "" + swingAmount + "% swing";
 			root.swingPercent = swingAmount;
+			root.midiNoteHasChanged();
 		}
 	}
 	
@@ -1473,12 +1482,29 @@ function GrooveUtils() { "use strict";
 		root.swingUpdate(event.target.value);
 	}
 	
-	root.HTMLForMidiPlayer = function() {
-		return ('' +
-			'<div class="playerControl">' +
+	
+	root.expandOrRetractMIDI_playback = function(force, expandElseContract) {
+		var tempoAndProgressElement = document.getElementById('tempoAndProgress'+ root.grooveUtilsUniqueIndex);
+		var playerControlElement = document.getElementById('playerControl'+ root.grooveUtilsUniqueIndex);
+		var midiExpandImageElement = document.getElementById('midiExpandImage'+ root.grooveUtilsUniqueIndex);
+		
+		if( tempoAndProgressElement.style.display == "none" || (force && expandElseContract) ) {
+			tempoAndProgressElement.style.display = 'inline-block';
+			playerControlElement.style.width = '100%';
+			midiExpandImageElement.src = "images/shrinkLeft.png";
+		} else {
+			tempoAndProgressElement.style.display = 'none';
+			playerControlElement.style.width = '85px';
+			midiExpandImageElement.src = "images/expandRight.png";
+		}
+	}
+	
+	root.HTMLForMidiPlayer = function(expandable) {
+		var newHTML = '' +
+			'<div id="playerControl' + root.grooveUtilsUniqueIndex + '" class="playerControl">' +
 			'	<div class="playerControlsRow">' +
 			'		<img alt="Play" title="Play" class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '" src="images/grey_play.png">' +
-			'		<span class="tempoAndProgress">' +
+			'		<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
 			'			<div class="tempoRow">' +
 			'				<input type=range min=40 max=240 value=90 class="tempoInput" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings" step=5>' +
 			'				<div for="tempo" class="tempoOutput" id="tempoOutput' + root.grooveUtilsUniqueIndex + '">80 bpm</div>' +
@@ -1487,40 +1513,51 @@ function GrooveUtils() { "use strict";
 			'				<input type=range min=0 max=50 value=0 class="swingInput" id="swingInput' + root.grooveUtilsUniqueIndex + '" list="swingSettings" step=5 >' +
 			'				<div for="swingAmount" class="swingOutput" id="swingOutput' + root.grooveUtilsUniqueIndex + '">0% swing</div>' +
 			'			</div>' +
-			'		</span>' +
-			//'		<img alt="Repeat" title="Repeat" class="midiRepeatImage" id="midiRepeatImage' + root.grooveUtilsUniqueIndex + '" src="images/repeat.png">' +
+			'		</span>';
+			
+			//'		<img alt="Repeat" title="Repeat" class="midiRepeatImage" id="midiRepeatImage' + root.grooveUtilsUniqueIndex + '" src="images/repeat.png">'
+		
+		if(expandable)
+			newHTML += 	'       <img alt="expand/contract" class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '" src="images/shrinkLeft.png" width="32" height="32">';
+			
+		newHTML += '' + 	
 			'	</div>' +
 			'	<div class="midiProgressRow">' +
 			'		<progress class="MIDIProgress" id="MIDIProgress' + root.grooveUtilsUniqueIndex + '" value="0" max="100"></progress>' +
 			'	</div>' +
-			'</div>');
+			'</div>';
+			
+		return newHTML;
 	}
 	
 	// pass in a tag ID.  (not a class)
 	// HTML will be put within the tag replacing whatever else was there
-	root.AddMidiPlayerToPage = function(HTML_Id_to_attach_to, division) {
+	root.AddMidiPlayerToPage = function(HTML_Id_to_attach_to, division, expandable) {
 		var html_element = document.getElementById(HTML_Id_to_attach_to); 
 		if(html_element)
-			html_element.innerHTML = root.HTMLForMidiPlayer();
+			html_element.innerHTML = root.HTMLForMidiPlayer(expandable);
 			
 		// now attach the onclicks
 		var html_element = document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex); 
 		if(html_element) {
 			html_element.addEventListener("input", root.tempoUpdateEvent, false);
-			html_element.addEventListener("change", root.midiNoteHasChanged, false);
 		}
 		
 		var html_element = document.getElementById("swingInput" + root.grooveUtilsUniqueIndex); 
 		if(html_element) {
 			html_element.addEventListener("input", root.swingUpdateEvent, false);
-			html_element.addEventListener("change", root.midiNoteHasChanged, false);
 		}
 		
 		var html_element = document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex); 
 		if(html_element) {
 			html_element.addEventListener("click", root.repeatMIDI_playback, false);
 		}
-		
+
+	var html_element = document.getElementById("midiExpandImage" + root.grooveUtilsUniqueIndex); 
+		if(html_element) {
+			html_element.addEventListener("click", root.expandOrRetractMIDI_playback, false);
+		}
+				
 		// enable or disable swing
 		root.swingEnabled( root.doesDivisionSupportSwing(division) );
 	}
