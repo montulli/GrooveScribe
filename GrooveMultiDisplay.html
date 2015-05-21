@@ -35,7 +35,7 @@
 			var UniqueCounter = 0;  // global
 	
 	
-			function AddGrooveToHTMLElement(HtmlTagId, GrooveDefinition, showPlayer, linkToEditor) {
+			function DisplayGrooveInHTMLElementId(HtmlTagId, GrooveDefinition, showPlayer, linkToEditor) {
 				var myGrooveUtils = new GrooveUtils();
 				UniqueCounter++;
 				
@@ -44,7 +44,7 @@
 			
 				document.getElementById(HtmlTagId).innerHTML = '' +
 						'<div id="' + svgTargetId + '" class="svgTarget" style="display:inline-block"></div>\n' +
-						'<div id="' + midiPlayerTargetId + '" style="width: 200px; display:inline-block"></div>\n';
+						'<div id="' + midiPlayerTargetId + '" style="width: 200px; display:inline-block; vertical-align: bottom"></div>\n';
 						
 				// load the groove from the URL data if it was passed in.
 				var GrooveData = myGrooveUtils.getGrooveDataFromUrlString(GrooveDefinition);
@@ -53,7 +53,7 @@
 				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 				
 				if(linkToEditor)
-					document.getElementById(svgTargetId).innerHTML = '<a href="' + linkToEditor + GrooveDefinition + '">' + svgReturn.svg + '</a>';
+					document.getElementById(svgTargetId).innerHTML = '<a style="text-decoration: none" href="' + linkToEditor + GrooveDefinition + '">' + svgReturn.svg + '</a>';
 				else
 					document.getElementById(svgTargetId).innerHTML = svgReturn.svg;
 				
@@ -65,17 +65,15 @@
 					myGrooveUtils.oneTimeInitializeMidi();
 				}
 				
-				console.log(myGrooveUtils);
-				return myGrooveUtils;
 			}
 			
 	
 			// set up the page after it has fully loaded
 			window.onload = function () {
 				var editorURL = "https://b125c4f8bf7d89726feec9ab8202d31e0c8d14d8.googledrive.com/host/0B2wxVWzVoWGYfnB5b3VTekxyYUowVjZ5YVE3UllLaVk5dVd4TzF4Q2ZaUXVsazhNSTdRM1E/";
-				var GU1 = AddGrooveToHTMLElement("groove1", '?Div=16&Title=Funk&Tempo=80&Measures=2&showMeasures=1&H=|X-x-X-x-X-x-X-x-|X-x-X-x-X-x-X-x-|&S=|-----g-o-o--x--o|-----g-o-o--x--o|&K=|o-o-------o--o--|o-o-------o--o--|', true, editorURL);
-				var GU2 = AddGrooveToHTMLElement("groove2", '?Div=24&Title=Rosanna%20Shuffle&Author=Jeff%20Pocaro&Tempo=85&Measures=2&showMeasures=1&H=|x-xx-xx-xx-xx-xx-xx-xx-x|xxxxxxxxxxxxxxxxxxxxxxxx|&S=|-g--g-Og--g--g--g-Og--g-|------O-----------O-----|&K=|o----o---o----o---o----o|o-----------o-----------|', true, editorURL);
-				var GU3 = AddGrooveToHTMLElement("groove3", '?Div=16&Title=Samba&Tempo=80&Measures=2&showMeasures=1&H=|xxXxxxXxxxXxxxXx|xxXxxxXxxxXxxxXx|&S=|o-o--o-o-o-o-oo-|o-o--o-o-o-o-oo-|&K=|o--oo--oo--oo--o|o--oo--oo--oo--o|', true, editorURL);
+				var GU1 = DisplayGrooveInHTMLElementId("groove1", '?Div=16&Title=Funk&Tempo=80&Measures=2&showMeasures=1&H=|X-x-X-x-X-x-X-x-|X-x-X-x-X-x-X-x-|&S=|-----g-o-o--x--o|-----g-o-o--x--o|&K=|o-o-------o--o--|o-o-------o--o--|', true, editorURL);
+				var GU2 = DisplayGrooveInHTMLElementId("groove2", '?Div=24&Title=Rosanna%20Shuffle&Author=Jeff%20Pocaro&Tempo=85&Measures=2&showMeasures=1&H=|x-xx-xx-xx-xx-xx-xx-xx-x|xxxxxxxxxxxxxxxxxxxxxxxx|&S=|-g--g-Og--g--g--g-Og--g-|------O-----------O-----|&K=|o----o---o----o---o----o|o-----------o-----------|', true, editorURL);
+				var GU3 = DisplayGrooveInHTMLElementId("groove3", '?Div=16&Title=Samba&Tempo=80&Measures=2&showMeasures=1&H=|xxXxxxXxxxXxxxXx|xxXxxxXxxxXxxxXx|&S=|o-o--o-o-o-o-oo-|o-o--o-o-o-o-oo-|&K=|o--oo--oo--oo--o|o--oo--oo--oo--o|', true, editorURL);
 			}
 			
 			
