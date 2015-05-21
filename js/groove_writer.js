@@ -1421,7 +1421,7 @@ function GrooveWriter() { "use strict";
 				// get second measure
 				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, class_notes_per_measure);
 				
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage);
+				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, num_notes, class_notes_per_measure, swing_percentage);
 			}
 		}
 		

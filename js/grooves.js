@@ -25,7 +25,7 @@ if (typeof (grooves) === "undefined") var grooves = {};
 		'Half Time Shuffle in 16th notes': '?Div=24&Swing=0&Tempo=85&Measures=2&showMeasures=1&H=|x-xx-xx-xx-xx-xx-xx-xx-x|xxxxxxxxxxxxxxxxxxxxxxxx|&S=|-g--g-Og--g--g--g-Og--g-|------O-----------O-----|&K=|------------------------|o-----------o-----------|',
 		'Purdie Shuffle':    '?Div=12&Title=Purdie%20Shuffle&Swing=0&measures=2&showMeasures=1&H=|x-xx-xx-xx-x|x-xx-xx-xx-x|&S=|-g--g-Og--g-|-g--g-Og--g-|&K=|o----o-----o|o----o-----o|',
 		'Bonham Shuffle':    '?Div=12&Title=Fool%20in%20The%20Rain%20Shuffle&Author=John%20Bonham&Tempo=105&Swing=0&Measures=2&showMeasures=1&H=|x-o+-xx-xx-x|x-xx-xx-xx-x|&S=|-g--g-O---g-|-g--g-Og--g-|&K=|o-o--o-----o|------------|',
-		'Rosanna Shuffle':   '?Div=24&Title=Rosanna%20Shuffle&Author=Jeff%20Pocaro&Tempo=85&Swing=0&Measures=2&showMeasures=1&H=|x-xx-xx-xx-xx-xx-xx-xx-x|xxxxxxxxxxxxxxxxxxxxxxxx|&S=|-g--g-Og--g--g--g-Og--g-|------O-----------O-----|&K=|o----o---o----o---o----o|o-----------o-----------|',
+		'Rosanna Shuffle':   '?Div=24&Title=Rosanna%20Shuffle&Author=Jeff%20Pocaro&Tempo=85&Measures=2&showMeasures=1&H=|x-xx-xx-xx-xx-xx-xx-xx-x|x-xx-xx-xx-xx-xx-xx-xx-x|&S=|-g--g-Og--g--g--g-Og--g-|-g--g-Og--g--g--g-Og--g-|&K=|o----o---o----o---o----o|o----o---o----o---o----o|',
 	};
 
 	root.Jazz = {
