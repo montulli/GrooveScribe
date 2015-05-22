@@ -768,7 +768,7 @@ function GrooveWriter() { "use strict";
 		
 		// use a popup if advanced edit is on
 		if(class_advancedEditIsOn == true) {
-			noteRightClick(event, type, id);
+			root.noteRightClick(event, type, id);
 		
 		} else {	
 		
