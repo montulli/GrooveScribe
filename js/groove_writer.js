@@ -1450,7 +1450,7 @@ function GrooveWriter() { "use strict";
 		case "kick_16ths":
 		case "kick_16ths_with_upbeats":
 			var includeUpbeatsAndDownbeats = (class_permutationType == "kick_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(true)
+			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
 			
 			// compute sections with different kick patterns
 			for(var i=0; i < numSections; i++) {
@@ -1470,7 +1470,7 @@ function GrooveWriter() { "use strict";
 		case "snare_16ths":  // use the hh & snare from the user
 		case "snare_16ths_with_upbeats":
 			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(true)
+			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
 			
 			//compute sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
@@ -1487,7 +1487,7 @@ function GrooveWriter() { "use strict";
 		case "snare_accent_16ths":  // use the hh & snare from the user
 		case "snare_accent_16ths_with_upbeats": 
 			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_accent_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(true)
+			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
 			
 			//compute sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
@@ -1563,7 +1563,7 @@ function GrooveWriter() { "use strict";
 		case "kick_16ths":  // use the hh & snare from the user
 		case "kick_16ths_with_upbeats":
 			var includeUpbeatsAndDownbeats = (class_permutationType == "kick_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(true)
+			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
 		
 			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false);
 		
@@ -1582,7 +1582,7 @@ function GrooveWriter() { "use strict";
 		case "snare_16ths":  // use the hh & kick from the user
 		case "snare_16ths_with_upbeats":
 			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(true)
+			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
 		
 			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false);
 		
@@ -1599,7 +1599,7 @@ function GrooveWriter() { "use strict";
 		case "snare_accent_16ths":  // use the hh & snare from the user
 		case "snare_accent_16ths_with_upbeats":
 			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_accent_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(true)
+			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
 		
 			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false);
 		
