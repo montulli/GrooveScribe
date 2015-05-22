@@ -1228,11 +1228,11 @@ function GrooveUtils() { "use strict";
 		
 		// the midi converter expects all the arrays to be 32 or 24 notes long.  
 		// Expand them
-		var FullNoteHHArray       = scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure);
-		var FullNoteSnareArray    = scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure);
-		var FullNoteKickArray     = scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure);
+		var FullNoteHHArray       = scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure);
+		var FullNoteSnareArray    = scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure);
+		var FullNoteKickArray     = scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure);
 	
-		var total_notes = myGrooveData.notesPerMeasure * myGrooveData.numberOfMeasures;
+		var total_notes = FullNoteHHArray.length;
 		root.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, 
 											FullNoteHHArray, 
 											FullNoteSnareArray, 
