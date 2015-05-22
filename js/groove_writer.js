@@ -588,6 +588,7 @@ function GrooveWriter() { "use strict";
 		
 		switch (perm_type) {
 		case "kick_16ths":
+		case "kick_16ths_with_upbeats":
 			showHideCSS_ClassVisibility(".kick-container", true, false);  // hide it
 			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
 			document.getElementById("staff-container2").style.display = "none";
@@ -595,6 +596,9 @@ function GrooveWriter() { "use strict";
 			break;
 			
 		case "snare_16ths":
+		case "snare_16ths_with_upbeats":
+		case "snare_accent_16ths":
+		case "snare_accent_16ths_with_upbeats":
 			showHideCSS_ClassVisibility(".kick-container", true, true);  // show it
 			showHideCSS_ClassVisibility(".snare-container", true, false);  // hide it
 			document.getElementById("staff-container2").style.display = "none";
@@ -768,7 +772,7 @@ function GrooveWriter() { "use strict";
 		
 		// use a popup if advanced edit is on
 		if(class_advancedEditIsOn == true) {
-			noteRightClick(event, type, id);
+			root.noteRightClick(event, type, id);
 		
 		} else {	
 		
@@ -859,8 +863,12 @@ function GrooveWriter() { "use strict";
 	
 	
 
-	function get_permutation_pre_ABC(section) {
+	function get_permutation_pre_ABC(section, includeUpbeatsAndDownbeats) {
 		var abc = "";
+		
+		if(!includeUpbeatsAndDownbeats && section > 8)
+			section += 2;  // skip past the upbeats & downbeats
+		
 		
 		if(usingTriplets()) {
 			// skip every fourth one
@@ -899,18 +907,24 @@ function GrooveWriter() { "use strict";
 			abc += "%\n%\n% doubles on the \"a\"\n%\n";		
 			break;
 		case 9:
-			abc += "T: \nP: Triples\n%\n%\n% triples on the \"1\"\n%\n"
+			abc += "T: \nP: Up/Down Beats\n%\n%\n% upbeats on the \"1\"\n%\n"
 			break;
 		case 10:
-			abc += "%\n%\n% triples on the \"e\"\n%\n"
+			abc += "%\n%\n% downbeats on the \"e\"\n%\n"
 			break;
 		case 11:
-			abc += "%\n%\n% triples on the \"&\"\n%\n";
+			abc += "T: \nP: Triples\n%\n%\n% triples on the \"1\"\n%\n"
 			break;
 		case 12:
-			abc += "%\n%\n% triples on the \"a\"\n%\n";		
+			abc += "%\n%\n% triples on the \"e\"\n%\n"
 			break;
 		case 13:
+			abc += "%\n%\n% triples on the \"&\"\n%\n";
+			break;
+		case 14:
+			abc += "%\n%\n% triples on the \"a\"\n%\n";		
+			break;
+		case 15:
 			abc += "T: \nP: Quads\n%\n%\n% quads\n%\n";		
 			break;
 		default:
@@ -921,13 +935,17 @@ function GrooveWriter() { "use strict";
 		return abc;
 	}
 	
-	function get_permutation_post_ABC(section) {
+	function get_permutation_post_ABC(section, includeUpbeatsAndDownbeats) {
 		var abc = "";
+		
+		if(!includeUpbeatsAndDownbeats && section > 8)
+			section += 2;  // skip past the upbeats & downbeats
 		
 		if(usingTriplets()) {
 			// skip every third one
 			section += Math.floor(section/3);
 		}
+		
 		switch(section) {
 		case 0:
 			abc += "|\n";
@@ -960,16 +978,22 @@ function GrooveWriter() { "use strict";
 			abc += "\\\n";
 			break;
 		case 10:
-			abc += "\n";
+			abc += "|\n";
 			break;
 		case 11:
 			abc += "\\\n";
 			break;
 		case 12:
-			abc += "|\n";		
+			abc += "\n";		
 			break;
 		case 13:
 			abc += "\\\n";
+			break;
+		case 14:
+			abc += "|\n";		
+			break;
+		case 15:
+			abc += "|\n";		
 			break;
 		default:
 			abc += "\nT: Error: No index passed\n";
@@ -980,8 +1004,11 @@ function GrooveWriter() { "use strict";
 	}
 	
 	// 16th note permutation array expressed in 32nd notes
-	function get_kick16th_strait_permutation_array(section) {
+	function get_kick16th_strait_permutation_array(section, includeUpbeatsAndDownbeats) {
 		var kick_array;
+		
+		if(!includeUpbeatsAndDownbeats && section > 8)
+			section += 2;  // skip past the upbeats & downbeats
 		
 		switch(section) {
 		case 0:
@@ -1038,31 +1065,43 @@ function GrooveWriter() { "use strict";
 						  "F", false, false, false, false, false, "F", false, 
 						  "F", false, false, false, false, false, "F", false];
 			break;
-		case 9:
+		case 9:   // downbeats
+			kick_array = ["F", false, false, false, "F", false, false, false, 
+						  "F", false, false, false, "F", false, false, false, 
+						  "F", false, false, false, "F", false, false, false, 
+						  "F", false, false, false, "F", false, false, false];
+			break;
+		case 10:  // upbeats
+			kick_array = [false, false, "F", false, false, false, "F", false, 
+						  false, false, "F", false, false, false, "F", false, 
+						  false, false, "F", false, false, false, "F", false, 
+						  false, false, "F", false, false, false, "F", false];
+			break;
+		case 11:
 			kick_array = ["F", false, "F", false, "F", false, false, false, 
 						  "F", false, "F", false, "F", false, false, false, 
 						  "F", false, "F", false, "F", false, false, false, 
 						  "F", false, "F", false, "F", false, false, false];
 			break;
-		case 10:
+		case 12:
 			kick_array = [false, false, "F", false, "F", false, "F", false, 
 						  false, false, "F", false, "F", false, "F", false, 
 						  false, false, "F", false, "F", false, "F", false, 
 						  false, false, "F", false, "F", false, "F", false];
 			break;
-		case 11:
+		case 13:
 			kick_array = [false, false, false, false, "F", false, "F", false, 
 						  "F", false, false, false, "F", false, "F", false, 
 						  "F", false, false, false, "F", false, "F", false, 
 						  "F", false, false, false, "F", false, "F", false];
 			break;
-		case 12:
+		case 14:
 			kick_array = [false, false, false, false, false, false, "F", false, 
 						  "F", false, "F", false, false, false, "F", false, 
 						  "F", false, "F", false, false, false, "F", false, 
 						  "F", false, "F", false, false, false, "F", false];
 			break;
-		case 13:
+		case 15:
 		default:
 			kick_array = ["F", false, "F", false, "F", false, "F", false, 
 						  "F", false, "F", false, "F", false, "F", false, 
@@ -1195,7 +1234,7 @@ function GrooveWriter() { "use strict";
 	// 6 note triplet kick permutation expressed in 4th notes
 	function get_kick16th_triplets_permutation_array_for_4ths(section) {
 		var kick_array;
-		
+			
 		switch(section) {
 		case 0:
 			kick_array = [false, false, false, false, false, false, 
@@ -1251,7 +1290,7 @@ function GrooveWriter() { "use strict";
 		return kick_array;
 	}
 	
-	function get_kick16th_permutation_array(section) {
+	function get_kick16th_permutation_array(section, includeUpbeatsAndDownbeats) {
 		if(usingTriplets()) {
 			if(class_notes_per_measure == 6)
 				return get_kick16th_triplets_permutation_array_for_4ths(section);
@@ -1262,25 +1301,58 @@ function GrooveWriter() { "use strict";
 			else
 				return class_empty_note_array.slice(0);  // copy by value;
 		} else	{
-			return get_kick16th_strait_permutation_array(section);
+			return get_kick16th_strait_permutation_array(section, includeUpbeatsAndDownbeats);
 		}
 	}
 	
 	// snare permutation 
-	function get_snare_permutation_array(section) {
+	function get_snare_permutation_array(section, includeUpbeatsAndDownbeats) {
 
 		// its the same as the 16th kick permutation, but with different notes
-		snare_array = get_kick16th_permutation_array(section);
+		var snare_array = get_kick16th_permutation_array(section, includeUpbeatsAndDownbeats);
 		
 		// turn the kicks into snares
 		for(var i=0; i < snare_array.length; i++)
 		{
 			if(snare_array[i] != false)
-				snare_array[i] = "c";
+				snare_array[i] = constant_ABC_SN_Normal;
 		}
 		
 		return snare_array;
 	}
+	
+	function get_snare_accent_permutation_array(section, includeUpbeatsAndDownbeats) {
+
+		// its the same as the 16th kick permutation, but with different notes
+		var snare_array = get_kick16th_permutation_array(section, includeUpbeatsAndDownbeats);
+		
+		// turn the kicks into snares
+		for(var i=0; i < snare_array.length; i++)
+		{
+			if(snare_array[i] != false)
+				snare_array[i] = constant_ABC_SN_Accent;
+			else if((i%2) == 0)  // all other even notes are ghosted snares
+				snare_array[i] = constant_ABC_SN_Normal;
+		}
+		
+		return snare_array;
+	}
+	
+	function get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats) {
+		var numSections = 0;
+		
+		if(usingTriplets()) {
+			numSections = 8;
+		} else {
+			if(includeUpbeatsAndDownbeats)
+				numSections = 16;
+			else
+				numSections = 14;
+		}
+		
+		return numSections;
+	}
+		
 	
 	function get_kick_on_1_and_3_array(section) {
 		
@@ -1360,7 +1432,6 @@ function GrooveWriter() { "use strict";
 		var HH_Array = class_empty_note_array.slice(0);  // copy by value
 		var Snare_Array = class_empty_note_array.slice(0);  // copy by value
 		var Kick_Array = class_empty_note_array.slice(0);  // copy by value
-		var numSections = usingTriplets() ? 8 : 14;
 		
 		// just the first measure
 		var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, 0);
@@ -1377,12 +1448,15 @@ function GrooveWriter() { "use strict";
 		// all of the permutations use just the first measure
 		switch (class_permutationType) {
 		case "kick_16ths":
+		case "kick_16ths_with_upbeats":
+			var includeUpbeatsAndDownbeats = (class_permutationType == "kick_16ths_with_upbeats" ? true : false);
+			var numSections = get_numSectionsFor_permutation_array(true)
 			
 			// compute sections with different kick patterns
 			for(var i=0; i < numSections; i++) {
 				var new_kick_array;
 				
-				new_kick_array = get_kick16th_permutation_array(i);
+				new_kick_array = get_kick16th_permutation_array(i, includeUpbeatsAndDownbeats);
 
 				var num_notes_for_swing = 16;
 				if(class_notes_per_measure > 16)
@@ -1394,10 +1468,30 @@ function GrooveWriter() { "use strict";
 			
 		
 		case "snare_16ths":  // use the hh & snare from the user
-		
+		case "snare_16ths_with_upbeats":
+			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_16ths_with_upbeats" ? true : false);
+			var numSections = get_numSectionsFor_permutation_array(true)
+			
 			//compute sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
-				var new_snare_array = get_snare_permutation_array(i);
+				var new_snare_array = get_snare_permutation_array(i, includeUpbeatsAndDownbeats);
+				
+				var num_notes_for_swing = 16;
+				if(class_notes_per_measure > 16)
+					num_notes_for_swing = class_notes_per_measure;
+			
+				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage);
+			}
+			break;
+			
+		case "snare_accent_16ths":  // use the hh & snare from the user
+		case "snare_accent_16ths_with_upbeats": 
+			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_accent_16ths_with_upbeats" ? true : false);
+			var numSections = get_numSectionsFor_permutation_array(true)
+			
+			//compute sections with different snare patterns		
+			for(var i=0; i < numSections; i++) {
+				var new_snare_array = get_snare_accent_permutation_array(i, includeUpbeatsAndDownbeats);
 				
 				var num_notes_for_swing = 16;
 				if(class_notes_per_measure > 16)
@@ -1453,7 +1547,8 @@ function GrooveWriter() { "use strict";
 		var HH_Array = class_empty_note_array.slice(0);  // copy by value
 		var Snare_Array = class_empty_note_array.slice(0);  // copy by value
 		var Kick_Array = class_empty_note_array.slice(0);  // copy by value
-		var numSections = usingTriplets() ? 8 : 14;
+		var includeUpbeatsAndDownbeats = false;
+		var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
 		
 		var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, 0);
 		
@@ -1466,29 +1561,57 @@ function GrooveWriter() { "use strict";
 		
 		switch (class_permutationType) {
 		case "kick_16ths":  // use the hh & snare from the user
+		case "kick_16ths_with_upbeats":
+			var includeUpbeatsAndDownbeats = (class_permutationType == "kick_16ths_with_upbeats" ? true : false);
+			var numSections = get_numSectionsFor_permutation_array(true)
+		
 			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false);
 		
 			// compute sections with different kick patterns
 			for(var i=0; i < numSections; i++) {
 				var new_kick_array;
 				
-				new_kick_array = get_kick16th_permutation_array(i);
+				new_kick_array = get_kick16th_permutation_array(i, includeUpbeatsAndDownbeats);
+				var post_abc = get_permutation_post_ABC(i, includeUpbeatsAndDownbeats);
 								
-				fullABC += get_permutation_pre_ABC(i);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, get_permutation_post_ABC(i), num_notes, class_notes_per_measure, false);
+				fullABC += get_permutation_pre_ABC(i, includeUpbeatsAndDownbeats);
+				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, post_abc, num_notes, class_notes_per_measure, false);
 			}
 			break;
 			
 		case "snare_16ths":  // use the hh & kick from the user
+		case "snare_16ths_with_upbeats":
+			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_16ths_with_upbeats" ? true : false);
+			var numSections = get_numSectionsFor_permutation_array(true)
+		
 			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false);
 		
 			//compute 16 sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
-				var new_snare_array = get_snare_permutation_array(i);
+				var new_snare_array = get_snare_permutation_array(i, includeUpbeatsAndDownbeats);
+				var post_abc = get_permutation_post_ABC(i, includeUpbeatsAndDownbeats);
 				
-				fullABC += get_permutation_pre_ABC(i);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, get_permutation_post_ABC(i), num_notes, class_notes_per_measure, false);
+				fullABC += get_permutation_pre_ABC(i, includeUpbeatsAndDownbeats);
+				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false);
 			}
+			break;
+			
+		case "snare_accent_16ths":  // use the hh & snare from the user
+		case "snare_accent_16ths_with_upbeats":
+			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_accent_16ths_with_upbeats" ? true : false);
+			var numSections = get_numSectionsFor_permutation_array(true)
+		
+			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false);
+		
+			//compute 16 sections with different snare patterns		
+			for(var i=0; i < numSections; i++) {
+				var new_snare_array = get_snare_accent_permutation_array(i, includeUpbeatsAndDownbeats);
+				var post_abc = get_permutation_post_ABC(i, includeUpbeatsAndDownbeats);
+				
+				fullABC += get_permutation_pre_ABC(i, includeUpbeatsAndDownbeats);
+				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false);
+			}
+			break;
 			break;
 			
 		case "none":
@@ -2071,7 +2194,7 @@ function GrooveWriter() { "use strict";
 			});
 			request.execute(function(response) {      
 				if((response.id != null)){
-					textField = document.getElementById(cssIdOfTextFieldToFill);
+					var textField = document.getElementById(cssIdOfTextFieldToFill);
 					textField.value = response.id;
 				
 					// select the URL for copy/paste
@@ -2085,7 +2208,7 @@ function GrooveWriter() { "use strict";
 		
 	}
 	
-	function shortenerCheckboxChanged() {
+	root.shortenerCheckboxChanged = function () {
 		if(document.getElementById("shortenerCheckbox").checked)
 			get_ShortendURL(get_FullURLForPage(), 'fullURLTextField');
 		else	
