@@ -265,7 +265,7 @@ function GrooveUtils() { "use strict";
 	// or  B=o---o---o----oo-o--oo---|
 	// 
 	// Returns array that contains notesPerMeasure * numberOfMeasures entries.   
-	function noteArraysFromURLData(drumType, noteString, notesPerMeasure, numberOfMeasures)  {
+	root.noteArraysFromURLData = function(drumType, noteString, notesPerMeasure, numberOfMeasures)  {
 		var setFunction;
 		var retArray = [];
 		
@@ -275,7 +275,10 @@ function GrooveUtils() { "use strict";
 		var retArraySize = notesPerMeasure * numberOfMeasures
 		
 		// ignore "|" by removing them
-		var notes = noteString.replace(/\|/g, '');
+		//var notes = noteString.replace(/\|/g, '');
+		// ignore "|" & ")" & "(" & "[" & "]" & "!" by removing them
+		var notes = noteString.replace(/\!|\)|\(|\[|\]|\|/g, '');
+	
 		
 		var noteStringScaler = 1;
 		var displayScaler = 1;
@@ -347,10 +350,10 @@ function GrooveUtils() { "use strict";
 		}
 			
 		
-		myGrooveData.sticking_array = noteArraysFromURLData("Stickings", Stickings_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
-		myGrooveData.hh_array       = noteArraysFromURLData("H", HH_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
-		myGrooveData.snare_array    = noteArraysFromURLData("S", Snare_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
-		myGrooveData.kick_array     = noteArraysFromURLData("K", Kick_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+		myGrooveData.sticking_array = root.noteArraysFromURLData("Stickings", Stickings_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+		myGrooveData.hh_array       = root.noteArraysFromURLData("H", HH_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+		myGrooveData.snare_array    = root.noteArraysFromURLData("S", Snare_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+		myGrooveData.kick_array     = root.noteArraysFromURLData("K", Kick_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
 			
 		myGrooveData.showMeasures = parseInt(root.getQueryVariableFromString("showMeasures", 1, encodedURLData));
 		if(myGrooveData.showMeasures < 1 || isNaN(myGrooveData.showMeasures))

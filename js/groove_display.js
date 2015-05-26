@@ -78,36 +78,59 @@ var filesadded="" //list of files already added
 	(function() { "use strict";
 
 		var root = GrooveDisplay;
-
-		root.displayGrooveInHTMLElementId = function (HtmlTagId, GrooveDefinition, showPlayer, linkToEditor) {
-				var myGrooveUtils = new GrooveUtils();
-				GrooveDisplayUniqueCounter++;
-				
-				var svgTargetId = "svgTarget" + GrooveDisplayUniqueCounter;
-				var midiPlayerTargetId = "midiPlayerTarget" + GrooveDisplayUniqueCounter;
+		
+		// load a groove display into an HTML element
+		// pass in a GrooveUtils class
+		//      and a fully formed GrooveData class
+		
+		root.displayGrooveInHTMLElementIdFromGrooveData = function (HtmlTagId, myGrooveUtils, myGrooveData, showPlayer, linkToEditor) {
+			GrooveDisplayUniqueCounter++;
 			
-				document.getElementById(HtmlTagId).innerHTML = '' +
-						'<div id="' + svgTargetId + '" class="svgTarget" style="display:inline-block"></div>\n' +
-						'<div id="' + midiPlayerTargetId + '" style="width: 260px; display:inline-block; vertical-align: bottom"></div>\n';
-						
-				// load the groove from the URL data if it was passed in.
-				var GrooveData = myGrooveUtils.getGrooveDataFromUrlString(GrooveDefinition);
-				console.log(GrooveData);
-				var abcNotation = myGrooveUtils.createABCFromGrooveData(GrooveData);
-				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
-				
-				if(linkToEditor)
-					document.getElementById(svgTargetId).innerHTML = '<a style="text-decoration: none" href="' + linkToEditor + GrooveDefinition + '">' + svgReturn.svg + '</a>';
-				else
-					document.getElementById(svgTargetId).innerHTML = svgReturn.svg;
-				
-				if(showPlayer) {
-					myGrooveUtils.setGrooveData(GrooveData);
-				
-					myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId, GrooveData.notesPerMeasure, true);
-					myGrooveUtils.expandOrRetractMIDI_playback(true, false);  // make it small
-					myGrooveUtils.oneTimeInitializeMidi();
-				}
+			var svgTargetId = "svgTarget" + GrooveDisplayUniqueCounter;
+			var midiPlayerTargetId = "midiPlayerTarget" + GrooveDisplayUniqueCounter;
+		
+			document.getElementById(HtmlTagId).innerHTML = '' +
+					'<div id="' + svgTargetId + '" class="svgTarget" style="display:inline-block"></div>\n' +
+					'<div id="' + midiPlayerTargetId + '" style="width: 260px; display:inline-block; vertical-align: bottom"></div>\n';
+					
+			var abcNotation = myGrooveUtils.createABCFromGrooveData(myGrooveData);
+			var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
+			
+			if(linkToEditor)
+				document.getElementById(svgTargetId).innerHTML = '<a style="text-decoration: none" href="' + linkToEditor + GrooveDefinition + '">' + svgReturn.svg + '</a>';
+			else
+				document.getElementById(svgTargetId).innerHTML = svgReturn.svg;
+			
+			if(showPlayer) {
+				myGrooveUtils.setGrooveData(myGrooveData);
+			
+				myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId, myGrooveData.notesPerMeasure, true);
+				myGrooveUtils.expandOrRetractMIDI_playback(true, false);  // make it small
+				myGrooveUtils.oneTimeInitializeMidi();
+			}
+		
+		}
+		
+		// load a groove display into an HTML element
+		// pass in a URL Encoded "GrooveDefinition"
+		root.displayGrooveInHTMLElementId = function (HtmlTagId, GrooveDefinition, showPlayer, linkToEditor) {
+			var myGrooveUtils = new GrooveUtils();
+			
+			// load the groove from the URL data if it was passed in.
+			var GrooveData = myGrooveUtils.getGrooveDataFromUrlString(GrooveDefinition);
+			
+			root.displayGrooveInHTMLElementIdFromGrooveData(HtmlTagId, myGrooveUtils, GrooveData, showPlayer, linkToEditor);
+		}
+		
+		// Add a groove to a page with a fully formed GrooveData class
+		root.AddGrooveDisplayToPageFromGrooveData = function (myGrooveUtils, myGrooveData, showPlayer, linkToEditor) {
+			GrooveDisplayUniqueCounter++;
+			
+			// add an html Element to hold the grooveDisplay
+			var HTMLElementID = 'GrooveDisplay' + GrooveDisplayUniqueCounter;
+			document.write('<div id="' + HTMLElementID + '"></div>');
+			
+			window.addEventListener("load", function() { root.displayGrooveInHTMLElementIdFromGrooveData(HTMLElementID, myGrooveUtils, myGrooveData, showPlayer, linkToEditor);}, false);
 		}
 		
 		// Add a groove to a page
