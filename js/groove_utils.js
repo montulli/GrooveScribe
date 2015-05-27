@@ -256,6 +256,32 @@ function GrooveUtils() { "use strict";
 		return false;
 	}
 	
+	// takes two drum tab lines and merges them.    "-" are blanks so they will get overwritten in a merge.
+	// if there are two non "-" positions to merge, the dominateLine takes priority.
+	//
+	//  Example    |----o-------o---|   (dominate)
+	//           + |x-------x---x---|   (subordinate)
+	//             |x---o---x---o---|   (result)
+	// 
+	// this is useful to take an accent tab and an "others" tab and creating one tab out of it.
+	root.mergeDrumTabLines = function(dominateLine, subordinateLine) {
+		var maxLength = (dominateLine.length > subordinateLine.length ? dominateLine.length : subordinateLine.length);
+		var newLine = "";
+		
+		for(var i=0; i < maxLength; i++) {
+			var newChar = "-";
+			if(dominateLine.charAt(i) != "")
+				newChar = dominateLine.charAt(i);
+				
+			if(newChar == "-" && subordinateLine.charAt(i) != "")
+				newChar = subordinateLine.charAt(i);
+			
+			newLine += newChar;
+		}
+		
+		return newLine;
+	}
+	
 	// takes a string of notes encoded in a serialized string and convert it to an array that represents the notes
 	// uses drum tab format adapted from wikipedia: http://en.wikipedia.org/wiki/Drum_tablature
 	//
@@ -986,24 +1012,31 @@ function GrooveUtils() { "use strict";
 	//
 	// ******************************************************************************************************************
 	// ******************************************************************************************************************
-	
-	root.getMidiImageLocation = function() {
-		var location = "";
+	var baseLocation = "";  // global
+	root.getGrooveUtilsBaseLocation = function() {
+		
+		if(baseLocation.length > 0)
+			return baseLocation;
 		
 		if (global_gooveUtilsScriptSrc != "") {
 			var lastSlash = global_gooveUtilsScriptSrc.lastIndexOf("/");
 			// lets find the slash before it since we need to go up a directory
 			lastSlash = global_gooveUtilsScriptSrc.lastIndexOf("/", lastSlash-1);
-			location = global_gooveUtilsScriptSrc.slice(0,lastSlash+1);
+			baseLocation = global_gooveUtilsScriptSrc.slice(0,lastSlash+1);
 		} 
 
-		if(location.length < 1) {
-			location = "https://b125c4f8bf7d89726feec9ab8202d31e0c8d14d8.googledrive.com/host/0B2wxVWzVoWGYfnB5b3VTekxyYUowVjZ5YVE3UllLaVk5dVd4TzF4Q2ZaUXVsazhNSTdRM1E/";
+		if(baseLocation.length < 1) {
+			baseLocation = "https://b125c4f8bf7d89726feec9ab8202d31e0c8d14d8.googledrive.com/host/0B2wxVWzVoWGYfnB5b3VTekxyYUowVjZ5YVE3UllLaVk5dVd4TzF4Q2ZaUXVsazhNSTdRM1E/";
 		}
 		
-		location += "images/";
-		
-		return location;
+		return baseLocation;
+	}
+	
+	root.getMidiSoundFontLocation = function() {			
+		return root.getGrooveUtilsBaseLocation() + "soundfont/";
+	}
+	root.getMidiImageLocation = function() {
+		return root.getGrooveUtilsBaseLocation() + "images/";
 	}
 	
 	root.midiEventCallbackClass = function(classRoot) {
@@ -1011,7 +1044,7 @@ function GrooveUtils() { "use strict";
 		this.noteHasChangedSinceLastDataLoad = false;
 		
 		this.playEvent = function(root){
-			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src = root.getMidiImageLocation() + "images/pause.png";
+			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src = root.getMidiImageLocation() + "pause.png";
 		}; 
 		// default loadMIDIDataEvent.  You probably want to override this
 		// it will only make changes to the tempo and swing
@@ -1087,6 +1120,12 @@ function GrooveUtils() { "use strict";
 			var prev_kick_note = false;
 			var prev_kick_splash_note = false;
 			var midi_channel = 0;   
+			
+			if(swing_percentage < 0 || swing_percentage > .99)
+			{
+				alert("Swing percentage out of range in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+				swing_percentage = 0;
+			}
 			
 			if(midi_output_type == "general_MIDI")
 				midi_channel = 9; // for external midi player
@@ -1266,7 +1305,7 @@ function GrooveUtils() { "use strict";
 											MIDI_type, 
 											total_notes, 
 											myGrooveData.notesPerMeasure, 
-											myGrooveData.swingPercent);
+											swing_percentage);
 			
 				
 		var midi_url = "data:audio/midi;base64," + btoa(midiFile.toBytes());
@@ -1361,7 +1400,7 @@ function GrooveUtils() { "use strict";
 		
 		root.midiInitialized = true;
 		MIDI.loadPlugin({
-			soundfontUrl: "./soundfont/",
+			soundfontUrl: root.getMidiSoundFontLocation(),
 			instruments: ["gunshot" ],
 			callback: function() {
 				MIDI.programChange(0, 127);   // use "Gunshot" instrument because I don't know how to create new ones
@@ -1455,7 +1494,14 @@ function GrooveUtils() { "use strict";
 	root.tempoUpdate = function(tempo) {
 		document.getElementById('tempoOutput' + root.grooveUtilsUniqueIndex).innerHTML = "" + tempo + " bpm";
 		root.midiNoteHasChanged();
-		
+	}
+	
+	root.setTempo = function(newTempo) {
+		if(newTempo < 19 && newTempo > 281)
+            return;
+        
+		document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex).value = newTempo;
+        root.tempoUpdate(newTempo);
 	}
 
 	root.tempoUpdateEvent = function(event) {

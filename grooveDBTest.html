@@ -47,7 +47,7 @@
 	//TabIn.footOtherTab   = '<!--{$HasFootOtherTab|escape:'html'}-->';
 	
 	var TabIn = {};
-	TabIn.tempo          =  90;
+	TabIn.tempo          =  130;
 	TabIn.div            =  16;
 	TabIn.measures       =  2;
 	TabIn.hihatTab       = 'x---o---+---x---x---o---+---x---x---o---+---x---x---o---+---x---';
@@ -72,6 +72,9 @@
 	var myGrooveUtils = new GrooveUtils();	
 	var myGrooveData = new myGrooveUtils.grooveData();
 	
+	var combinedSnareTab = myGrooveUtils.mergeDrumTabLines(TabIn.snareAccentTab, TabIn.snareOtherTab);
+	var combinedKickTab  = myGrooveUtils.mergeDrumTabLines(TabIn.kickTab, TabIn.footOtherTab);
+	
 	
 	myGrooveData.tempo = TabIn.tempo;
 	myGrooveData.numberOfMeasures = TabIn.measures;
@@ -79,8 +82,8 @@
 	myGrooveData.notesPerMeasure = TabIn.notesPerTabMeasure;
 	myGrooveData.sticking_array = myGrooveUtils.noteArraysFromURLData("Stickings", "", TabIn.notesPerTabMeasure, TabIn.measures);
 	myGrooveData.hh_array = myGrooveUtils.noteArraysFromURLData("H", TabIn.hihatTab, TabIn.notesPerTabMeasure, TabIn.measures);
-	myGrooveData.snare_array = myGrooveUtils.noteArraysFromURLData("S", TabIn.snareAccentTab, TabIn.notesPerTabMeasure, TabIn.measures);
-	myGrooveData.kick_array = myGrooveUtils.noteArraysFromURLData("K", TabIn.kickTab, TabIn.notesPerTabMeasure, TabIn.measures);
+	myGrooveData.snare_array = myGrooveUtils.noteArraysFromURLData("S", combinedSnareTab, TabIn.notesPerTabMeasure, TabIn.measures);
+	myGrooveData.kick_array = myGrooveUtils.noteArraysFromURLData("K", combinedKickTab, TabIn.notesPerTabMeasure, TabIn.measures);
 
 	console.log(myGrooveData);
 	
@@ -102,6 +105,7 @@
 
 	myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId, myGrooveData.notesPerMeasure, true);
 	myGrooveUtils.expandOrRetractMIDI_playback(true, false);  // make it small
+	myGrooveUtils.setTempo(TabIn.tempo);
 	myGrooveUtils.oneTimeInitializeMidi();
 
 
