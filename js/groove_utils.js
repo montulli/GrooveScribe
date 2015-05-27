@@ -1,6 +1,10 @@
 
 
 global_num_GrooveUtilsCreated = 0;
+if(document.currentScript)
+	global_gooveUtilsScriptSrc = document.currentScript.src;
+else
+	global_gooveUtilsScriptSrc = "";
 
 // GrooveUtils class.   The only one in this file. 
 function GrooveUtils() { "use strict";
@@ -983,12 +987,31 @@ function GrooveUtils() { "use strict";
 	// ******************************************************************************************************************
 	// ******************************************************************************************************************
 	
+	root.getMidiImageLocation = function() {
+		var location = "";
+		
+		if (global_gooveUtilsScriptSrc != "") {
+			var lastSlash = global_gooveUtilsScriptSrc.lastIndexOf("/");
+			// lets find the slash before it since we need to go up a directory
+			lastSlash = global_gooveUtilsScriptSrc.lastIndexOf("/", lastSlash-1);
+			location = global_gooveUtilsScriptSrc.slice(0,lastSlash+1);
+		} 
+
+		if(location.length < 1) {
+			location = "https://b125c4f8bf7d89726feec9ab8202d31e0c8d14d8.googledrive.com/host/0B2wxVWzVoWGYfnB5b3VTekxyYUowVjZ5YVE3UllLaVk5dVd4TzF4Q2ZaUXVsazhNSTdRM1E/";
+		}
+		
+		location += "images/";
+		
+		return location;
+	}
+	
 	root.midiEventCallbackClass = function(classRoot) {
 		this.classRoot = classRoot;
 		this.noteHasChangedSinceLastDataLoad = false;
 		
 		this.playEvent = function(root){
-			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/pause.png";
+			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src = root.getMidiImageLocation() + "images/pause.png";
 		}; 
 		// default loadMIDIDataEvent.  You probably want to override this
 		// it will only make changes to the tempo and swing
@@ -1007,19 +1030,19 @@ function GrooveUtils() { "use strict";
 			return root.midiEventCallbacks.noteHasChangedSinceLastDataLoad;
 		};
 		this.pauseEvent = function(root){
-			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/play.png";
+			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src = root.getMidiImageLocation() + "play.png";
 		};  
 		
 		this.resumeEvent = function(root){};
 		this.stopEvent = function(root){
-			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/play.png";
+			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src = root.getMidiImageLocation() + "play.png";
 			document.getElementById("MIDIProgress" + root.grooveUtilsUniqueIndex).value = 0;
 		};
 		this.repeatChangeEvent = function(root, newValue){
 			if(newValue)
-				document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex).src="images/repeat.png";
+				document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex).src=root.getMidiImageLocation() + "repeat.png";
 			else
-				document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex).src="images/grey_repeat.png";
+				document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex).src=root.getMidiImageLocation() + "grey_repeat.png";
 		};
 		this.percentProgress = function(root, percent){
 			document.getElementById("MIDIProgress" + root.grooveUtilsUniqueIndex).value = percent;
@@ -1027,7 +1050,7 @@ function GrooveUtils() { "use strict";
 		this.notePlaying = function(root, note_type, note_position){};
 		
 		this.midiInitialized = function(root) {
-				document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/play.png";
+				document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src=root.getMidiImageLocation() + "play.png";
 				document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).onclick = function (event){ root.startOrStopMIDI_playback();};  // enable play button
 				setupHotKeys();  // spacebar to play
 		}
@@ -1494,11 +1517,11 @@ function GrooveUtils() { "use strict";
 		if( tempoAndProgressElement.style.display == "none" || (force && expandElseContract) ) {
 			tempoAndProgressElement.style.display = 'inline-block';
 			playerControlElement.style.width = '100%';
-			midiExpandImageElement.src = "images/shrinkLeft.png";
+			midiExpandImageElement.src = root.getMidiImageLocation() + "shrinkLeft.png";
 		} else {
 			tempoAndProgressElement.style.display = 'none';
 			playerControlElement.style.width = '85px';
-			midiExpandImageElement.src = "images/expandRight.png";
+			midiExpandImageElement.src = root.getMidiImageLocation() + "expandRight.png";
 		}
 	}
 	
@@ -1506,7 +1529,7 @@ function GrooveUtils() { "use strict";
 		var newHTML = '' +
 			'<div id="playerControl' + root.grooveUtilsUniqueIndex + '" class="playerControl">' +
 			'	<div class="playerControlsRow">' +
-			'		<img alt="Play" title="Play" class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '" src="images/grey_play.png">' +
+			'		<img alt="Play" title="Play" class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'grey_play.png">' +
 			'		<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
 			'			<div class="tempoRow">' +
 			'				<input type=range min=40 max=240 value=90 class="tempoInput" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings" step=5>' +
@@ -1518,10 +1541,10 @@ function GrooveUtils() { "use strict";
 			'			</div>' +
 			'		</span>';
 			
-			//'		<img alt="Repeat" title="Repeat" class="midiRepeatImage" id="midiRepeatImage' + root.grooveUtilsUniqueIndex + '" src="images/repeat.png">'
+			//'		<img alt="Repeat" title="Repeat" class="midiRepeatImage" id="midiRepeatImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'repeat.png">'
 		
 		if(expandable)
-			newHTML += 	'       <img alt="expand/contract" class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '" src="images/shrinkLeft.png" width="32" height="32">';
+			newHTML += 	'       <img alt="expand/contract" class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'shrinkLeft.png" width="32" height="32">';
 			
 		newHTML += '' + 	
 			'	</div>' +
