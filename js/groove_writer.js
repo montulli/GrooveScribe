@@ -573,8 +573,26 @@ function GrooveWriter() { "use strict";
 		}
 	}
 	
+	// the user has clicked on the help menu
+	root.helpAnchorClick = function(event) {
+		
+		var contextMenu = document.getElementById("helpContextMenu");
+		if(contextMenu) {
+			if (!event) var event = window.event;
+			if (event.pageX || event.pageY)
+			{
+				contextMenu.style.top = event.pageY + "px";
+				contextMenu.style.left = event.pageX-60 + "px";
+			}
+			showContextMenu(contextMenu);
+		}
+	}
+	
 	function setupPermutationMenu() {
 		// disable for triplets
+		if(!document.getElementById("permutationAnchor"))
+			return;
+		
 		if(usingTriplets) {
 			document.getElementById("permutationAnchor").style.fontColor = "gray";
 		} else {
@@ -1399,9 +1417,11 @@ function GrooveWriter() { "use strict";
 		return kick_array;
 	}
 	
-	// query the clickable UI and generate a 32 element array representing the notes
+	// query the clickable UI and generate a 32 element array representing the notes of one measure
 	// note: the ui may have fewer notes, but we scale them to fit into the 32 elements proportionally
 	// If using triplets returns 24 notes.   Otherwise always 32.
+	//
+	// (note: Only one measure, not all the notes on the page if multiple measures are present)
 	// Return value is the number of notes.
 	function getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, startIndexForClickableUI) {
 		
@@ -1532,10 +1552,90 @@ function GrooveWriter() { "use strict";
 		document.location = midi_url;
 	}
 
+	// creates a grooveData class from the clickable UI elements of the page
+	//
+	root.grooveDataFromClickableUI = function() {
+		var myGrooveData = new myGrooveUtils.grooveData();
+		
+		myGrooveData.notesPerMeasure   = class_notes_per_measure;
+		myGrooveData.numberOfMeasures  = class_number_of_measures;
+		myGrooveData.showMeasures      = (isSecondMeasureVisable() ? 2 : 1);
+		myGrooveData.showStickings     = isStickingsVisible();
+		myGrooveData.title             = document.getElementById("tuneTitle").value;
+		myGrooveData.author            = document.getElementById("tuneAuthor").value;
+		myGrooveData.comments          = document.getElementById("tuneComments").value;
+		myGrooveData.showLegend        = document.getElementById("showLegend").checked;
+		myGrooveData.swingPercent      = myGrooveUtils.getSwing();
+		myGrooveData.tempo             = myGrooveUtils.getTempo();
+		myGrooveData.kickStemsUp       = true;
+		
+		for(var i=0; i < class_number_of_measures; i++) {
+			var Sticking_Array = class_empty_note_array.slice(0);  // copy by value
+			var HH_Array = class_empty_note_array.slice(0);  // copy by value
+			var Snare_Array = class_empty_note_array.slice(0);  // copy by value
+			var Kick_Array = class_empty_note_array.slice(0);  // copy by value
+			
+			var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, i*class_notes_per_measure);
+			
+			if(i == 0) {  // assign
+				myGrooveData.sticking_array    =  Sticking_Array;
+				myGrooveData.hh_array          =  HH_Array;
+				myGrooveData.snare_array       =  Snare_Array;
+				myGrooveData.kick_array        =  Kick_Array;
+			} else {  // add on toGMTString
+				myGrooveData.sticking_array = myGrooveData.sticking_array.concat(Sticking_Array);
+				myGrooveData.hh_array = myGrooveData.hh_array.concat(HH_Array);
+				myGrooveData.snare_array = myGrooveData.snare_array.concat(Snare_Array);
+				myGrooveData.kick_array = myGrooveData.kick_array.concat(Kick_Array);
+			}
+		}
+		
+		return myGrooveData;
+	}
 	
 	// called by the HTML when changes happen to forms that require the ABC to update
 	root.refresh_ABC = function() {
 		create_ABC();
+	}
+	
+		
+	// Want to create something like this:
+	//
+	// {{GrooveTab
+	// |HasTempo=90
+	// |HasDivision=16
+	// |HasMeasures=2
+	// |HasTimeSignature=4/4
+	// |HasHiHatTab=x---o---+---x---x---o---+---x---x---o---+---x---x---o---+---x---
+	// |HasSnareAccentTab=--------O-------------------O-----------O---------------O-------
+	// |HasSnareOtherTab=--------------g-------------------g-----------g-----------------
+	// |HasKickTab=o---------------o---o---------------o-----------o---o---------o-
+	// |HasFootOtherTab=----------------------------------------------------------------
+	// }}
+    //
+	root.updateGrooveDBSource = function() {
+		if(!document.getElementById("GrooveDB_source"))
+			return;   // nothing to update
+			
+		var myGrooveData = root.grooveDataFromClickableUI();	
+		
+		var maxNotesInTab = myGrooveData.showMeasures * (myGrooveUtils.isTripletDivision(myGrooveData.notesPerMeasure) ? 24 : 32);
+		
+		var DBString = "{{GrooveTab";
+		
+		DBString += "\n|HasTempo=" + myGrooveData.tempo;
+		DBString += "\n|HasDivision=" + myGrooveData.notesPerMeasure;
+		DBString += "\n|HasMeasures=" + myGrooveData.showMeasures;
+		DBString += "\n|HasTimeSignature=4/4";
+		DBString += "\n|HasHiHatTab=" + myGrooveUtils.tabLineFromAbcNoteArray("H", myGrooveData.hh_array, true, true, maxNotesInTab, 0);
+		DBString += "\n|HasSnareAccentTab=" + myGrooveUtils.tabLineFromAbcNoteArray("S", myGrooveData.snare_array, true, false, maxNotesInTab, 0);
+		DBString += "\n|HasSnareOtherTab=" + myGrooveUtils.tabLineFromAbcNoteArray("S", myGrooveData.snare_array, false, true, maxNotesInTab, 0);
+		DBString += "\n|HasKickAccentTab=" + myGrooveUtils.tabLineFromAbcNoteArray("K", myGrooveData.kick_array, true, false, maxNotesInTab, 0);
+		DBString += "\n|HasFootOtherTab="  + myGrooveUtils.tabLineFromAbcNoteArray("K", myGrooveData.kick_array, false, true, maxNotesInTab, 0);
+		
+		DBString += "\n}}";
+		
+		document.getElementById("GrooveDB_source").value = DBString;
 	}
 	
 	// this is called by a bunch of places anytime we modify the musical notes on the page
@@ -1636,6 +1736,7 @@ function GrooveWriter() { "use strict";
 		
 		
 		document.getElementById("ABCsource").value = fullABC;
+		root.updateGrooveDBSource();
 
 		myGrooveUtils.midiNoteHasChanged(); // pretty likely the case
 		root.displayNewSVG();

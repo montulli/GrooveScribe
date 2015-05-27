@@ -36,6 +36,7 @@ function GrooveUtils() { "use strict";
 	var constant_ABC_KI_SandK=  "[F^d,]";  // kick & splash
 	var constant_ABC_KI_Splash= "^d,";     // splash only
 	var constant_ABC_KI_Normal= "F";   
+	var constant_ABC_OFF= false;
 	
 	root.grooveData = function() {
 		this.notesPerMeasure   = 8;
@@ -140,6 +141,9 @@ function GrooveUtils() { "use strict";
 	// takes a character from tablature form and converts it to our ABC Notation form.
 	// uses drum tab format adapted from wikipedia: http://en.wikipedia.org/wiki/Drum_tablature
 	//
+	//  Sticking support:
+	//		R: right
+	//  	L: left
 	//
 	//  HiHat support:   
 	//     	x: normal
@@ -252,6 +256,64 @@ function GrooveUtils() { "use strict";
 		return false;
 	}
 	
+	// same as above, but reversed
+	function ABCNotationToTablaturePerNote(drumType, abcChar) {
+		var tabChar = "-";
+		
+		switch(abcChar) {
+			case constant_ABC_STICK_R:
+				tabChar = "R";
+				break;
+			case constant_ABC_STICK_L:
+				tabChar = "R";
+				break;
+			case constant_ABC_STICK_OFF:
+				tabChar = "-";
+				break;
+			case constant_ABC_HH_Ride:  
+				tabChar = "r";
+				break;
+			case constant_ABC_HH_Crash:
+				tabChar = "c";
+				break;
+			case constant_ABC_HH_Open:
+				tabChar = "o";
+				break;
+			case constant_ABC_HH_Close:
+				tabChar = "+";
+				break;
+			case constant_ABC_SN_Accent:
+				tabChar = "O";
+				break;
+			case constant_ABC_HH_Normal:
+			case constant_ABC_SN_XStick:
+				tabChar = "x";
+				break;
+			case constant_ABC_SN_Ghost: 
+				tabChar = "g";
+				break;
+			case constant_ABC_SN_Normal:
+			case constant_ABC_KI_Normal:
+				tabChar = "o";
+				break;
+			case constant_ABC_HH_Accent:
+			case constant_ABC_KI_SandK:
+				tabChar = "X";
+				break;
+			case constant_ABC_KI_Splash:
+				tabChar = "x";
+				break;
+			case constant_ABC_OFF:
+				tabChar = "-";
+				break;
+			default:
+				alert("bad case in ABCNotationToTablaturePerNote");
+				break;
+		}	
+		
+		return tabChar;
+	}
+	
 	// takes a string of notes encoded in a serialized string and convert it to an array that represents the notes
 	// uses drum tab format adapted from wikipedia: http://en.wikipedia.org/wiki/Drum_tablature
 	//
@@ -278,7 +340,6 @@ function GrooveUtils() { "use strict";
 		//var notes = noteString.replace(/\|/g, '');
 		// ignore "|" & ")" & "(" & "[" & "]" & "!" by removing them
 		var notes = noteString.replace(/\!|\)|\(|\[|\]|\|/g, '');
-	
 		
 		var noteStringScaler = 1;
 		var displayScaler = 1;
@@ -301,6 +362,57 @@ function GrooveUtils() { "use strict";
 		}
 		
 		return retArray;
+	}
+	
+	// take an array of notes in ABC format and convert it into a drum tab String
+	// drumType - H, S, K, or Stickings
+	// noteArray - pass in an ABC array of notes
+	// getAccents - true to get accent notes.  (false to ignore accents)
+	// getOthers - true to get non-accent notes.  (false to ignore non-accents)
+	// maxLength - set smaller than noteArray length to get fewer notes
+	// separatorDistance - set to greater than zero integer to add "|" between measures
+	root.tabLineFromAbcNoteArray = function(drumType, noteArray, getAccents, getOthers, maxLength, separatorDistance) {
+		var returnTabLine = "";
+		
+		if(maxLength > noteArray.length)
+			maxLength = noteArray.length;
+		
+		for(var i=0; i < maxLength; i++) {
+			var newTabChar = ABCNotationToTablaturePerNote(drumType, noteArray[i]);
+			
+			if(separatorDistance > 0) 
+				returnTabLine += "|";
+				
+			if(drumType == "H" && newTabChar == "X") {
+				if(getAccents)
+					returnTabLine += newTabChar;
+				else
+					returnTabLine += "-";
+			} else if((drumType == "K" || drumType == "S") && (newTabChar == "o" || newTabChar == "O")) {
+				if(getAccents)
+					returnTabLine += newTabChar;
+				else
+					returnTabLine += "-";
+			} else if(drumType == "K" && newTabChar == "X") {
+				if(getAccents && getOthers)
+					returnTabLine += "X";  // kick & splash
+				else if(getAccents)
+					returnTabLine += "o";  // just kick
+				else	
+					returTabLine += "x";   // just splash
+			} else {
+				// all the "others"
+				if(getOthers)
+					returnTabLine += newTabChar;
+				else
+					returnTabLine += "-";
+			}
+			
+			if((separatorDistance+1 > 0) && (i % separatorDistance) == 0) 
+				returnTabLine += "|";
+		}	
+
+		return returnTabLine;
 	}
 	
 	root.getGrooveDataFromUrlString = function(encodedURLData) {

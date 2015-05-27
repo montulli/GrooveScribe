@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-		<title>Groove Writer</title>
+		<title>GrooveDB Authoring tool</title>
 		
 		<meta name="viewport" content="width=810, initial-scale=1.25">
 		
@@ -31,7 +31,7 @@
 		<!--   our custom JS  -->
 		<script src="js/groove_writer.js"></script>
 		<script src="js/groove_utils.js"></script>
-		<script src="js/grooves.js"></script>
+		<script src="js/baseGrooves.js"></script>
 		
 		<script>
 			// intantiate a global instance of the GrooveWriterClass.    This page only uses one
@@ -46,11 +46,8 @@
 	    <div class="nonPrintable">
 			<!-- use css to position this to the upper right -->
 			<span id="upperRight">
-				<div class="rightButtons" id="permutationAnchor" onClick="myGrooveWriter.permutationAnchorClick(event)">
-					Permutations
-				</div>
 				<div class="rightButtons" id="groovesAnchor" onClick="myGrooveWriter.groovesAnchorClick(event)">
-					Grooves
+					Base Grooves
 				</div>
 				<div class="rightButtons" id="helpAnchor" onClick="myGrooveWriter.helpAnchorClick(event)">
 					Help
@@ -83,10 +80,12 @@
 			</div>
 			<div id="buttonsAboveSheetMusic">
 				<button id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideSecondMeasure(false, false);">Show/Hide 2nd Measure</button>
+				<!--
 				<button id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);">Show/Hide Stickings</button>
 				<button type="button" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()">Export Midi File</button>
 				<button id="printButton" type="button" onclick="myGrooveWriter.printMusic()">Print Sheet Music</button>
 				<button id="shareSaveButton" href="#" onClick="event.preventDefault(); myGrooveWriter.show_FullURLPopup()">Share/Save Groove</button>
+				-->
 			</div>
 		</div>  
 		<div class="Printable">
@@ -124,7 +123,7 @@
 			</div>	
 			-->
 			
-			<div id="sheetMusicTextFields">
+			<div style="display: none" id="sheetMusicTextFields">
 				<b>Title:</b> <input id="tuneTitle" onChange="myGrooveWriter.refresh_ABC()" type="text"> &nbsp;
 				<b>Author:</b> <input id="tuneAuthor" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
 				<b>Comment:</b> <input id="tuneComments" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
@@ -141,8 +140,15 @@
 				or write down the groove to your latest tune.
 			</span>
 			<br>
+			<!-- GrooveDB output area -->
+			<div id="GrooveDB_MetaData">
+				This is the text that should be added to the grooveDB for this groove.   Copy and paste it into the edit window for a groove  <br>
+				<p>
+				<textarea id="GrooveDB_source" rows="12" cols="92" ></textarea>
+			</div>
+			
 			<!-- ABC notation -->
-			<A href="" onClick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a>
+			<!-- disable <A href="" onClick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a> -->
 			<div id="ABC_Results">
 				ABC Notation is used for rendering the music.  You can see what is being generated below.   
 				You can even edit it.  <br>
@@ -225,6 +231,12 @@
 				<li onClick='myGrooveWriter.noteLabelPopupClick("kick", "cancel")'>cancel</li>
 			</ul>
 		</div>
+		<div class="noteContextMenu">
+			<ul id="helpContextMenu" class="list">
+				<li><a href="help.html" target="_blank">Help</a></li>
+				<li><a href="about.html" target="_blank">About</a></li>
+			</ul>
+		</div>	
 		<div class="noteContextMenu">
 			<ul id="helpContextMenu" class="list">
 				<li><a href="help.html" target="_blank">Help</a></li>
