@@ -1,6 +1,10 @@
 
 
 global_num_GrooveUtilsCreated = 0;
+if(document.currentScript)
+	global_gooveUtilsScriptSrc = document.currentScript.src;
+else
+	global_gooveUtilsScriptSrc = "";
 
 // GrooveUtils class.   The only one in this file. 
 function GrooveUtils() { "use strict";
@@ -312,6 +316,32 @@ function GrooveUtils() { "use strict";
 		}	
 		
 		return tabChar;
+	}
+
+	// takes two drum tab lines and merges them.    "-" are blanks so they will get overwritten in a merge.
+	// if there are two non "-" positions to merge, the dominateLine takes priority.
+	//
+	//  Example    |----o-------o---|   (dominate)
+	//           + |x-------x---x---|   (subordinate)
+	//             |x---o---x---o---|   (result)
+	// 
+	// this is useful to take an accent tab and an "others" tab and creating one tab out of it.
+	root.mergeDrumTabLines = function(dominateLine, subordinateLine) {
+		var maxLength = (dominateLine.length > subordinateLine.length ? dominateLine.length : subordinateLine.length);
+		var newLine = "";
+		
+		for(var i=0; i < maxLength; i++) {
+			var newChar = "-";
+			if(dominateLine.charAt(i) != "")
+				newChar = dominateLine.charAt(i);
+				
+			if(newChar == "-" && subordinateLine.charAt(i) != "")
+				newChar = subordinateLine.charAt(i);
+			
+			newLine += newChar;
+		}
+		
+		return newLine;
 	}
 	
 	// takes a string of notes encoded in a serialized string and convert it to an array that represents the notes
@@ -1094,13 +1124,39 @@ function GrooveUtils() { "use strict";
 	//
 	// ******************************************************************************************************************
 	// ******************************************************************************************************************
+	var baseLocation = "";  // global
+	root.getGrooveUtilsBaseLocation = function() {
+		
+		if(baseLocation.length > 0)
+			return baseLocation;
+		
+		if (global_gooveUtilsScriptSrc != "") {
+			var lastSlash = global_gooveUtilsScriptSrc.lastIndexOf("/");
+			// lets find the slash before it since we need to go up a directory
+			lastSlash = global_gooveUtilsScriptSrc.lastIndexOf("/", lastSlash-1);
+			baseLocation = global_gooveUtilsScriptSrc.slice(0,lastSlash+1);
+		} 
+
+		if(baseLocation.length < 1) {
+			baseLocation = "https://b125c4f8bf7d89726feec9ab8202d31e0c8d14d8.googledrive.com/host/0B2wxVWzVoWGYfnB5b3VTekxyYUowVjZ5YVE3UllLaVk5dVd4TzF4Q2ZaUXVsazhNSTdRM1E/";
+		}
+		
+		return baseLocation;
+	}
+	
+	root.getMidiSoundFontLocation = function() {			
+		return root.getGrooveUtilsBaseLocation() + "soundfont/";
+	}
+	root.getMidiImageLocation = function() {
+		return root.getGrooveUtilsBaseLocation() + "images/";
+	}
 	
 	root.midiEventCallbackClass = function(classRoot) {
 		this.classRoot = classRoot;
 		this.noteHasChangedSinceLastDataLoad = false;
 		
 		this.playEvent = function(root){
-			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/pause.png";
+			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src = root.getMidiImageLocation() + "pause.png";
 		}; 
 		// default loadMIDIDataEvent.  You probably want to override this
 		// it will only make changes to the tempo and swing
@@ -1119,19 +1175,19 @@ function GrooveUtils() { "use strict";
 			return root.midiEventCallbacks.noteHasChangedSinceLastDataLoad;
 		};
 		this.pauseEvent = function(root){
-			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/play.png";
+			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src = root.getMidiImageLocation() + "play.png";
 		};  
 		
 		this.resumeEvent = function(root){};
 		this.stopEvent = function(root){
-			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/play.png";
+			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src = root.getMidiImageLocation() + "play.png";
 			document.getElementById("MIDIProgress" + root.grooveUtilsUniqueIndex).value = 0;
 		};
 		this.repeatChangeEvent = function(root, newValue){
 			if(newValue)
-				document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex).src="images/repeat.png";
+				document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex).src=root.getMidiImageLocation() + "repeat.png";
 			else
-				document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex).src="images/grey_repeat.png";
+				document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex).src=root.getMidiImageLocation() + "grey_repeat.png";
 		};
 		this.percentProgress = function(root, percent){
 			document.getElementById("MIDIProgress" + root.grooveUtilsUniqueIndex).value = percent;
@@ -1139,7 +1195,7 @@ function GrooveUtils() { "use strict";
 		this.notePlaying = function(root, note_type, note_position){};
 		
 		this.midiInitialized = function(root) {
-				document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src="images/play.png";
+				document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src=root.getMidiImageLocation() + "play.png";
 				document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).onclick = function (event){ root.startOrStopMIDI_playback();};  // enable play button
 				setupHotKeys();  // spacebar to play
 		}
@@ -1176,6 +1232,12 @@ function GrooveUtils() { "use strict";
 			var prev_kick_note = false;
 			var prev_kick_splash_note = false;
 			var midi_channel = 0;   
+			
+			if(swing_percentage < 0 || swing_percentage > .99)
+			{
+				alert("Swing percentage out of range in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+				swing_percentage = 0;
+			}
 			
 			if(midi_output_type == "general_MIDI")
 				midi_channel = 9; // for external midi player
@@ -1355,7 +1417,7 @@ function GrooveUtils() { "use strict";
 											MIDI_type, 
 											total_notes, 
 											myGrooveData.notesPerMeasure, 
-											myGrooveData.swingPercent);
+											swing_percentage);
 			
 				
 		var midi_url = "data:audio/midi;base64," + btoa(midiFile.toBytes());
@@ -1450,7 +1512,7 @@ function GrooveUtils() { "use strict";
 		
 		root.midiInitialized = true;
 		MIDI.loadPlugin({
-			soundfontUrl: "./soundfont/",
+			soundfontUrl: root.getMidiSoundFontLocation(),
 			instruments: ["gunshot" ],
 			callback: function() {
 				MIDI.programChange(0, 127);   // use "Gunshot" instrument because I don't know how to create new ones
@@ -1544,7 +1606,14 @@ function GrooveUtils() { "use strict";
 	root.tempoUpdate = function(tempo) {
 		document.getElementById('tempoOutput' + root.grooveUtilsUniqueIndex).innerHTML = "" + tempo + " bpm";
 		root.midiNoteHasChanged();
-		
+	}
+	
+	root.setTempo = function(newTempo) {
+		if(newTempo < 19 && newTempo > 281)
+            return;
+        
+		document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex).value = newTempo;
+        root.tempoUpdate(newTempo);
 	}
 
 	root.tempoUpdateEvent = function(event) {
@@ -1606,11 +1675,11 @@ function GrooveUtils() { "use strict";
 		if( tempoAndProgressElement.style.display == "none" || (force && expandElseContract) ) {
 			tempoAndProgressElement.style.display = 'inline-block';
 			playerControlElement.style.width = '100%';
-			midiExpandImageElement.src = "images/shrinkLeft.png";
+			midiExpandImageElement.src = root.getMidiImageLocation() + "shrinkLeft.png";
 		} else {
 			tempoAndProgressElement.style.display = 'none';
 			playerControlElement.style.width = '85px';
-			midiExpandImageElement.src = "images/expandRight.png";
+			midiExpandImageElement.src = root.getMidiImageLocation() + "expandRight.png";
 		}
 	}
 	
@@ -1618,7 +1687,7 @@ function GrooveUtils() { "use strict";
 		var newHTML = '' +
 			'<div id="playerControl' + root.grooveUtilsUniqueIndex + '" class="playerControl">' +
 			'	<div class="playerControlsRow">' +
-			'		<img alt="Play" title="Play" class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '" src="images/grey_play.png">' +
+			'		<img alt="Play" title="Play" class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'grey_play.png">' +
 			'		<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
 			'			<div class="tempoRow">' +
 			'				<input type=range min=40 max=240 value=90 class="tempoInput" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings" step=5>' +
@@ -1630,10 +1699,10 @@ function GrooveUtils() { "use strict";
 			'			</div>' +
 			'		</span>';
 			
-			//'		<img alt="Repeat" title="Repeat" class="midiRepeatImage" id="midiRepeatImage' + root.grooveUtilsUniqueIndex + '" src="images/repeat.png">'
+			//'		<img alt="Repeat" title="Repeat" class="midiRepeatImage" id="midiRepeatImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'repeat.png">'
 		
 		if(expandable)
-			newHTML += 	'       <img alt="expand/contract" class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '" src="images/shrinkLeft.png" width="32" height="32">';
+			newHTML += 	'       <img alt="expand/contract" class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'shrinkLeft.png" width="32" height="32">';
 			
 		newHTML += '' + 	
 			'	</div>' +
