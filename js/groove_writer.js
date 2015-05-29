@@ -1605,6 +1605,7 @@ function GrooveWriter() { "use strict";
 	// |HasTempo=90
 	// |HasDivision=16
 	// |HasMeasures=2
+	// |HasNotesPerMeasure=32
 	// |HasTimeSignature=4/4
 	// |HasHiHatTab=x---o---+---x---x---o---+---x---x---o---+---x---x---o---+---x---
 	// |HasSnareAccentTab=--------O-------------------O-----------O---------------O-------
@@ -1619,18 +1620,20 @@ function GrooveWriter() { "use strict";
 			
 		var myGrooveData = root.grooveDataFromClickableUI();	
 		
-		var maxNotesInTab = myGrooveData.showMeasures * (myGrooveUtils.isTripletDivision(myGrooveData.notesPerMeasure) ? 24 : 32);
+		var notesPerMeasureInTab = (myGrooveUtils.isTripletDivision(myGrooveData.notesPerMeasure) ? 24 : 32);
+		var maxNotesInTab = myGrooveData.showMeasures * notesPerMeasureInTab;
 		
 		var DBString = "{{GrooveTab";
 		
 		DBString += "\n|HasTempo=" + myGrooveData.tempo;
 		DBString += "\n|HasDivision=" + myGrooveData.notesPerMeasure;
 		DBString += "\n|HasMeasures=" + myGrooveData.showMeasures;
+		DBString += "\n|HasNotesPerMeasure=" + notesPerMeasureInTab;
 		DBString += "\n|HasTimeSignature=4/4";
 		DBString += "\n|HasHiHatTab=" + myGrooveUtils.tabLineFromAbcNoteArray("H", myGrooveData.hh_array, true, true, maxNotesInTab, 0);
 		DBString += "\n|HasSnareAccentTab=" + myGrooveUtils.tabLineFromAbcNoteArray("S", myGrooveData.snare_array, true, false, maxNotesInTab, 0);
 		DBString += "\n|HasSnareOtherTab=" + myGrooveUtils.tabLineFromAbcNoteArray("S", myGrooveData.snare_array, false, true, maxNotesInTab, 0);
-		DBString += "\n|HasKickAccentTab=" + myGrooveUtils.tabLineFromAbcNoteArray("K", myGrooveData.kick_array, true, false, maxNotesInTab, 0);
+		DBString += "\n|HasKickTab=" + myGrooveUtils.tabLineFromAbcNoteArray("K", myGrooveData.kick_array, true, false, maxNotesInTab, 0);
 		DBString += "\n|HasFootOtherTab="  + myGrooveUtils.tabLineFromAbcNoteArray("K", myGrooveData.kick_array, false, true, maxNotesInTab, 0);
 		
 		DBString += "\n}}";
