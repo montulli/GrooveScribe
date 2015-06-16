@@ -107,7 +107,7 @@
 				<img alt="Play" title="Play" id="midiPlayImage" src="images/grey_play.png">
 				<span id="tempoAndProgress">
 					<div id="tempo">
-						<input type=range min=40 max=240 value=90 id="tempoInput" list="tempoSettings" step=5 onChange="myGrooveUtils.noteHasChanged()" oninput="myGrooveUtils.tempoUpdate(value)">
+						<input type=range min=40 max=240 value=90 id="tempoInput" list="tempoSettings" step=5 onChange="myGrooveUtils.noteHasChanged()" oninput="myGrooveUtils.tempoUpdateEvent(value)">
 						<div for=tempo id=tempoOutput>80 bpm</div>
 					</div>
 					<div id="swingAmount">

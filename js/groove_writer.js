@@ -617,6 +617,8 @@ function GrooveWriter() { "use strict";
 		case "snare_16ths_with_upbeats":
 		case "snare_accent_16ths":
 		case "snare_accent_16ths_with_upbeats":
+		case "snare_accented_and_diddled_16ths":
+		case "snare_accented_and_diddled_16ths_with_upbeats":
 			showHideCSS_ClassVisibility(".kick-container", true, true);  // show it
 			showHideCSS_ClassVisibility(".snare-container", true, false);  // hide it
 			document.getElementById("staff-container2").style.display = "none";
@@ -1022,7 +1024,9 @@ function GrooveWriter() { "use strict";
 	}
 	
 	// 16th note permutation array expressed in 32nd notes
-	function get_kick16th_strait_permutation_array(section, includeUpbeatsAndDownbeats) {
+	// some kicks are excluded at the beginning of the measure to make the groupings
+	// easier to play through continuously
+	function get_kick16th_minus_some_strait_permutation_array(section, includeUpbeatsAndDownbeats) {
 		var kick_array;
 		
 		if(!includeUpbeatsAndDownbeats && section > 8)
@@ -1115,6 +1119,117 @@ function GrooveWriter() { "use strict";
 			break;
 		case 14:
 			kick_array = [false, false, false, false, false, false, "F", false, 
+						  "F", false, "F", false, false, false, "F", false, 
+						  "F", false, "F", false, false, false, "F", false, 
+						  "F", false, "F", false, false, false, "F", false];
+			break;
+		case 15:
+		default:
+			kick_array = ["F", false, "F", false, "F", false, "F", false, 
+						  "F", false, "F", false, "F", false, "F", false, 
+						  "F", false, "F", false, "F", false, "F", false, 
+						  "F", false, "F", false, "F", false, "F", false]
+			break;
+		}
+		
+		return kick_array;
+	}
+	
+	// 16th note permutation array expressed in 32nd notes
+	// all kicks are included, including the ones that start the measure
+	function get_kick16th_strait_permutation_array(section, includeUpbeatsAndDownbeats) {
+		var kick_array;
+		
+		if(!includeUpbeatsAndDownbeats && section > 8)
+			section += 2;  // skip past the upbeats & downbeats
+		
+		switch(section) {
+		case 0:
+			kick_array = [false, false, false, false, false, false, false, false, 
+						  false, false, false, false, false, false, false, false, 
+						  false, false, false, false, false, false, false, false, 
+						  false, false, false, false, false, false, false, false];
+			break;
+		case 1:
+			kick_array = ["F", false, false, false, false, false, false, false,
+						  "F", false, false, false, false, false, false, false,
+						  "F", false, false, false, false, false, false, false, 
+						  "F", false, false, false, false, false, false, false];
+			break;
+		case 2:
+			kick_array = [false, false, "F", false, false, false, false, false, 
+						  false, false, "F", false, false, false, false, false, 
+						  false, false, "F", false, false, false, false, false, 
+						  false, false, "F", false, false, false, false, false];
+			break;
+		case 3:
+			kick_array = [false, false, false, false, "F", false, false, false, 
+						  false, false, false, false, "F", false, false, false, 
+						  false, false, false, false, "F", false, false, false, 
+						  false, false, false, false, "F", false, false, false];
+			break;
+		case 4:
+			kick_array = [false, false, false, false, false, false, "F", false, 
+						  false, false, false, false, false, false, "F", false, 
+						  false, false, false, false, false, false, "F", false, 
+						  false, false, false, false, false, false, "F", false];
+			break
+		case 5:
+			kick_array = ["F", false, "F", false, false, false, false, false, 
+						  "F", false, "F", false, false, false, false, false, 
+						  "F", false, "F", false, false, false, false, false, 
+						  "F", false, "F", false, false, false, false, false];
+			break;
+		case 6:
+			kick_array = [false, false, "F", false, "F", false, false, false, 
+						  false, false, "F", false, "F", false, false, false, 
+						  false, false, "F", false, "F", false, false, false, 
+						  false, false, "F", false, "F", false, false, false];
+			break;
+		case 7:
+			kick_array = [false, false, false, false, "F", false, "F", false, 
+						  false, false, false, false, "F", false, "F", false, 
+						  false, false, false, false, "F", false, "F", false, 
+						  false, false, false, false, "F", false, "F", false];
+			break;
+		case 8:
+			kick_array = ["F", false, false, false, false, false, "F", false, 
+						  "F", false, false, false, false, false, "F", false, 
+						  "F", false, false, false, false, false, "F", false, 
+						  "F", false, false, false, false, false, "F", false];
+			break;
+		case 9:   // downbeats
+			kick_array = ["F", false, false, false, "F", false, false, false, 
+						  "F", false, false, false, "F", false, false, false, 
+						  "F", false, false, false, "F", false, false, false, 
+						  "F", false, false, false, "F", false, false, false];
+			break;
+		case 10:  // upbeats
+			kick_array = [false, false, "F", false, false, false, "F", false, 
+						  false, false, "F", false, false, false, "F", false, 
+						  false, false, "F", false, false, false, "F", false, 
+						  false, false, "F", false, false, false, "F", false];
+			break;
+		case 11:
+			kick_array = ["F", false, "F", false, "F", false, false, false, 
+						  "F", false, "F", false, "F", false, false, false, 
+						  "F", false, "F", false, "F", false, false, false, 
+						  "F", false, "F", false, "F", false, false, false];
+			break;
+		case 12:
+			kick_array = [false, false, "F", false, "F", false, "F", false, 
+						  false, false, "F", false, "F", false, "F", false, 
+						  false, false, "F", false, "F", false, "F", false, 
+						  false, false, "F", false, "F", false, "F", false];
+			break;
+		case 13:
+			kick_array = ["F", false, false, false, "F", false, "F", false, 
+						  "F", false, false, false, "F", false, "F", false, 
+						  "F", false, false, false, "F", false, "F", false, 
+						  "F", false, false, false, "F", false, "F", false];
+			break;
+		case 14:
+			kick_array = ["F", false, "F", false, false, false, "F", false, 
 						  "F", false, "F", false, false, false, "F", false, 
 						  "F", false, "F", false, false, false, "F", false, 
 						  "F", false, "F", false, false, false, "F", false];
@@ -1339,18 +1454,41 @@ function GrooveWriter() { "use strict";
 		return snare_array;
 	}
 	
+	// Snare permutation, with Accented permutation.   Snare hits every 16th note, accent moves
 	function get_snare_accent_permutation_array(section, includeUpbeatsAndDownbeats) {
 
 		// its the same as the 16th kick permutation, but with different notes
 		var snare_array = get_kick16th_permutation_array(section, includeUpbeatsAndDownbeats);
 		
-		// turn the kicks into snares
-		for(var i=0; i < snare_array.length; i++)
-		{
-			if(snare_array[i] != false)
-				snare_array[i] = constant_ABC_SN_Accent;
-			else if((i%2) == 0)  // all other even notes are ghosted snares
-				snare_array[i] = constant_ABC_SN_Normal;
+		if(section > 0) {   // Don't convert notes for the first measure since it is the ostinado
+			for(var i=0; i < snare_array.length; i++)
+			{
+				if(snare_array[i] != false)
+					snare_array[i] = constant_ABC_SN_Accent;
+				else if((i%2) == 0)  // all other even notes are ghosted snares  
+					snare_array[i] = constant_ABC_SN_Normal;
+			}
+		}
+		
+		return snare_array;
+	}
+	
+	// Snare permutation, with Accented and diddled permutation.   Accented notes are singles, non accents are diddled
+	function get_snare_accent_with_diddle_permutation_array(section, includeUpbeatsAndDownbeats) {
+
+		// its the same as the 16th kick permutation, but with different notes
+		var snare_array = get_kick16th_permutation_array(section, includeUpbeatsAndDownbeats);
+		
+		if(section > 0) {   // Don't convert notes for the first measure since it is the ostinado
+			for(var i=0; i < snare_array.length; i++)
+			{
+				if(snare_array[i] != false) {  
+					snare_array[i] = constant_ABC_SN_Accent;
+					i++;   // the next one is not diddled  (leave it false)
+				} else { // all other even notes are diddled, which means 32nd notes  
+					snare_array[i] = constant_ABC_SN_Normal;
+				}
+			}
 		}
 		
 		return snare_array;
@@ -1512,6 +1650,23 @@ function GrooveWriter() { "use strict";
 			//compute sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
 				var new_snare_array = get_snare_accent_permutation_array(i, includeUpbeatsAndDownbeats);
+				
+				var num_notes_for_swing = 16;
+				if(class_notes_per_measure > 16)
+					num_notes_for_swing = class_notes_per_measure;
+			
+				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage);
+			}
+			break;
+			
+		case "snare_accented_and_diddled_16ths":  // use the hh & snare from the user
+		case "snare_accented_and_diddled_16ths_with_upbeats": 
+			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_accented_and_diddled_16ths_with_upbeats" ? true : false);
+			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
+			
+			//compute sections with different snare patterns		
+			for(var i=0; i < numSections; i++) {
+				var new_snare_array = get_snare_accent_with_diddle_permutation_array(i, includeUpbeatsAndDownbeats);
 				
 				var num_notes_for_swing = 16;
 				if(class_notes_per_measure > 16)
@@ -1715,6 +1870,22 @@ function GrooveWriter() { "use strict";
 				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false);
 			}
 			break;
+		
+		case "snare_accented_and_diddled_16ths":  // use the hh & snare from the user
+		case "snare_accented_and_diddled_16ths_with_upbeats":
+			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_accented_and_diddled_16ths_with_upbeats" ? true : false);
+			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
+		
+			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false);
+		
+			//compute 16 sections with different snare patterns		
+			for(var i=0; i < numSections; i++) {
+				var new_snare_array = get_snare_accent_with_diddle_permutation_array(i, includeUpbeatsAndDownbeats);
+				var post_abc = get_permutation_post_ABC(i, includeUpbeatsAndDownbeats);
+				
+				fullABC += get_permutation_pre_ABC(i, includeUpbeatsAndDownbeats);
+				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false);
+			}
 			break;
 			
 		case "none":
@@ -1764,7 +1935,7 @@ function GrooveWriter() { "use strict";
 		var myElements = document.querySelectorAll(".nonPrintable");
 
 		for (var i = 0; i < myElements.length; i++) {
-			divBlock = myElements[i];
+			var divBlock = myElements[i];
 			divBlock.style.display = showElseHide ? "block" : "none";
 		}
 		
@@ -2353,7 +2524,7 @@ function GrooveWriter() { "use strict";
 		
 		document.getElementById("tuneComments").value = myGrooveData.comments;
 		
-		myGrooveUtils.tempoUpdate(myGrooveData.tempo);
+		myGrooveUtils.setTempo(myGrooveData.tempo);
 		
 		myGrooveUtils.swingUpdate(myGrooveData.swingPercent);
 		

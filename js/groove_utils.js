@@ -1603,7 +1603,7 @@ function GrooveUtils() { "use strict";
     }
 
 	// update the tempo string display
-	root.tempoUpdate = function(tempo) {
+	function tempoUpdate(tempo) {
 		document.getElementById('tempoOutput' + root.grooveUtilsUniqueIndex).innerHTML = "" + tempo + " bpm";
 		root.midiNoteHasChanged();
 	}
@@ -1613,11 +1613,12 @@ function GrooveUtils() { "use strict";
             return;
         
 		document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex).value = newTempo;
-        root.tempoUpdate(newTempo);
+        tempoUpdate(newTempo);
 	}
 
+	// update the tempo string display
 	root.tempoUpdateEvent = function(event) {
-		root.tempoUpdate(event.target.value);
+		tempoUpdate(event.target.value);
 	}
 	
 	root.doesDivisionSupportSwing = function(division) {
