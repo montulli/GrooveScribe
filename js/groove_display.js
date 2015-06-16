@@ -81,6 +81,27 @@
 		   
 			root.GrooveDisplayUniqueCounter = 1;
 			
+			// time signature looks like this  "4/4", "5/4", "6/8", etc   
+			// Two numbers separated by a slash
+			// return an array with two elements top and bottom in that order
+			function parseTimeSignature(timeSig) {
+			
+				
+				var timeSigTop = 4;
+				var timeSigBottom = 4;
+			
+				if(timeSig) {
+					var splitResults = timeSig.split("/");
+				
+					if(splitResults.length == 2) {
+						timeSigTop = Math.ceil(splitResults[0]);
+						timeSigBottom = Math.ceil(splitResults[1]);
+					}
+				}
+				
+				return [timeSigTop, timeSigBottom];
+			}
+			
 			// Used by the GrooveDB to display a groove on a page.
 			// Supports multiple grooves on one page as well.
 			// shows the groove via SVG sheet music and a midi player
@@ -101,6 +122,10 @@
 				myGrooveData.snare_array = myGrooveUtils.noteArraysFromURLData("S", combinedSnareTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
 				myGrooveData.kick_array = myGrooveUtils.noteArraysFromURLData("K", combinedKickTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
 
+				var timeSig = parseTimeSignature(GrooveDBTabIn.timeSignature);
+				myGrooveData.numBeats = timeSig[0];
+				myGrooveData.noteValue = timeSig[1];
+				
 				//console.log(myGrooveData);
 				
 				var svgTargetId = "SVG-" + root.GrooveDisplayUniqueCounter;

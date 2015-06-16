@@ -72,7 +72,7 @@ function GrooveWriter() { "use strict";
 		
 	// is the division a triplet groove?   6, 12, or 24 notes
 	function usingTriplets() {
-		if(myGrooveUtils.isTripletDivision(class_notes_per_measure))
+		if(myGrooveUtils.isTripletDivision(class_notes_per_measure, 4, 4))
 			return true;
 			
 		return false;
@@ -1563,7 +1563,7 @@ function GrooveWriter() { "use strict";
 	// Return value is the number of notes.
 	function getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, startIndexForClickableUI) {
 		
-		var scaler = myGrooveUtils.getNoteScaler(class_notes_per_measure);  // fill proportionally
+		var scaler = myGrooveUtils.getNoteScaler(class_notes_per_measure, 4);  // fill proportionally
 		
 		// fill in the arrays from the clickable UI
 		for(var i=0; i < class_notes_per_measure+0; i++) {
@@ -1620,7 +1620,7 @@ function GrooveWriter() { "use strict";
 				if(class_notes_per_measure > 16)
 					num_notes_for_swing = class_notes_per_measure;
 			
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage);
+				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
 			}
 			break;
 			
@@ -1638,7 +1638,7 @@ function GrooveWriter() { "use strict";
 				if(class_notes_per_measure > 16)
 					num_notes_for_swing = class_notes_per_measure;
 			
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage);
+				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
 			}
 			break;
 			
@@ -1655,7 +1655,7 @@ function GrooveWriter() { "use strict";
 				if(class_notes_per_measure > 16)
 					num_notes_for_swing = class_notes_per_measure;
 			
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage);
+				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
 			}
 			break;
 			
@@ -1672,13 +1672,13 @@ function GrooveWriter() { "use strict";
 				if(class_notes_per_measure > 16)
 					num_notes_for_swing = class_notes_per_measure;
 			
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage);
+				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
 			}
 			break;
 			
 		case "none":
 		default:
-			myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, num_notes, class_notes_per_measure, swing_percentage);
+			myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
 			
 			if(isSecondMeasureVisable()) {
 				// reset arrays
@@ -1690,7 +1690,7 @@ function GrooveWriter() { "use strict";
 				// get second measure
 				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, class_notes_per_measure);
 				
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, num_notes, class_notes_per_measure, swing_percentage);
+				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
 			}
 		}
 		
@@ -1775,7 +1775,7 @@ function GrooveWriter() { "use strict";
 			
 		var myGrooveData = root.grooveDataFromClickableUI();	
 		
-		var notesPerMeasureInTab = (myGrooveUtils.isTripletDivision(myGrooveData.notesPerMeasure) ? 24 : 32);
+		var notesPerMeasureInTab = (myGrooveUtils.isTripletDivision(myGrooveData.notesPerMeasure, 4, 4) ? 24 : 32);
 		var maxNotesInTab = myGrooveData.showMeasures * notesPerMeasureInTab;
 		
 		var DBString = "{{GrooveTab";
@@ -1823,7 +1823,7 @@ function GrooveWriter() { "use strict";
 			var includeUpbeatsAndDownbeats = (class_permutationType == "kick_16ths_with_upbeats" ? true : false);
 			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
 		
-			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false);
+			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
 		
 			// compute sections with different kick patterns
 			for(var i=0; i < numSections; i++) {
@@ -1833,7 +1833,7 @@ function GrooveWriter() { "use strict";
 				var post_abc = get_permutation_post_ABC(i, includeUpbeatsAndDownbeats);
 								
 				fullABC += get_permutation_pre_ABC(i, includeUpbeatsAndDownbeats);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, post_abc, num_notes, class_notes_per_measure, false);
+				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
 			}
 			break;
 			
@@ -1842,7 +1842,7 @@ function GrooveWriter() { "use strict";
 			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_16ths_with_upbeats" ? true : false);
 			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
 		
-			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false);
+			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
 		
 			//compute 16 sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
@@ -1850,7 +1850,7 @@ function GrooveWriter() { "use strict";
 				var post_abc = get_permutation_post_ABC(i, includeUpbeatsAndDownbeats);
 				
 				fullABC += get_permutation_pre_ABC(i, includeUpbeatsAndDownbeats);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false);
+				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
 			}
 			break;
 			
@@ -1859,7 +1859,7 @@ function GrooveWriter() { "use strict";
 			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_accent_16ths_with_upbeats" ? true : false);
 			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
 		
-			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false);
+			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
 		
 			//compute 16 sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
@@ -1867,7 +1867,7 @@ function GrooveWriter() { "use strict";
 				var post_abc = get_permutation_post_ABC(i, includeUpbeatsAndDownbeats);
 				
 				fullABC += get_permutation_pre_ABC(i, includeUpbeatsAndDownbeats);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false);
+				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
 			}
 			break;
 		
@@ -1876,7 +1876,7 @@ function GrooveWriter() { "use strict";
 			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_accented_and_diddled_16ths_with_upbeats" ? true : false);
 			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
 		
-			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false);
+			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
 		
 			//compute 16 sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
@@ -1884,15 +1884,15 @@ function GrooveWriter() { "use strict";
 				var post_abc = get_permutation_post_ABC(i, includeUpbeatsAndDownbeats);
 				
 				fullABC += get_permutation_pre_ABC(i, includeUpbeatsAndDownbeats);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false);
+				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
 			}
 			break;
 			
 		case "none":
 		default:
-			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), true);
+			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), true, 4, 4);
 		
-			fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "\\\n", num_notes, class_notes_per_measure, true);
+			fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "\\\n", num_notes, class_notes_per_measure, true, 4, 4);
 			
 			if(isSecondMeasureVisable()) {
 				// reset arrays
@@ -1902,7 +1902,7 @@ function GrooveWriter() { "use strict";
 				Kick_Array = class_empty_note_array.slice(0);  // copy by value
 		
 				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, class_notes_per_measure);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "|\n", num_notes, class_notes_per_measure, true);
+				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "|\n", num_notes, class_notes_per_measure, true, 4, 4);
 			}
 			
 			break;
@@ -2107,7 +2107,7 @@ function GrooveWriter() { "use strict";
 		}
 		
 		myGrooveUtils.midiEventCallbacks.notePlaying = function(myroot, note_type, note_position) {
-			hilight_note(note_type, (note_position/myGrooveUtils.getNoteScaler(class_notes_per_measure)));
+			hilight_note(note_type, (note_position/myGrooveUtils.getNoteScaler(class_notes_per_measure, 4)));
 		}
 		
 		myGrooveUtils.oneTimeInitializeMidi();
@@ -2610,7 +2610,7 @@ function GrooveWriter() { "use strict";
 		var uiSnare="|";
 		var uiKick="|";
 		
-		if(!myGrooveUtils.isTripletDivision(class_notes_per_measure) && !myGrooveUtils.isTripletDivision(newDivision)) {
+		if(!myGrooveUtils.isTripletDivision(class_notes_per_measure, 4, 4) && !myGrooveUtils.isTripletDivision(newDivision)) {
 			// get the encoded notes out of the UI.
 			// run through both measures.
 			var topIndex = class_notes_per_measure*class_number_of_measures;
@@ -2673,7 +2673,7 @@ function GrooveWriter() { "use strict";
 									');
 									
 									// add space between notes, exept on the last note
-									if((i-(indexStartForNotes-1)) % myGrooveUtils.noteGroupingSize(class_notes_per_measure) == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
+									if((i-(indexStartForNotes-1)) % myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}
@@ -2717,7 +2717,7 @@ function GrooveWriter() { "use strict";
 										</div>\
 									');
 									
-									if((i-(indexStartForNotes-1)) % myGrooveUtils.noteGroupingSize(class_notes_per_measure) == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
+									if((i-(indexStartForNotes-1)) % myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}
@@ -2736,7 +2736,7 @@ function GrooveWriter() { "use strict";
 										</div> \
 										');
 										
-									if((i-(indexStartForNotes-1)) % myGrooveUtils.noteGroupingSize(class_notes_per_measure) == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
+									if((i-(indexStartForNotes-1)) % myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}
@@ -2753,7 +2753,7 @@ function GrooveWriter() { "use strict";
 										</div> \
 									');
 									
-									if((i-(indexStartForNotes-1)) % myGrooveUtils.noteGroupingSize(class_notes_per_measure) == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
+									if((i-(indexStartForNotes-1)) % myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}

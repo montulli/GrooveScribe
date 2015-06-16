@@ -1,6 +1,6 @@
 <!--  A widget for turning a multipart drum tab in to pretty printed sheet music with midi playback
 -->
-
+<title>GrooveDB Display Test</title>
 <!--   Other peoples JS libraries    -->
 <!--   midi.js package for sound   -->
 <ssscript src="https://b125c4f8bf7d89726feec9ab8202d31e0c8d14d8.googledrive.com/host/0B2wxVWzVoWGYfnB5b3VTekxyYUowVjZ5YVE3UllLaVk5dVd4TzF4Q2ZaUXVsazhNSTdRM1E/./js/groove_display.js" type="text/javascript"></script>
@@ -33,6 +33,7 @@
 	TabIn.tempo          =  90;
 	TabIn.div            =  16;
 	TabIn.measures       =  2;
+	TabIn.timeSignature  = "4/4";
 	TabIn.hihatTab       = 'x---o---+---x---x---o---+---x---x---o---+---x---x---o---+---x---';
 	TabIn.snareAccentTab = '--------O-------------------O-----------O---------------O-------';
 	TabIn.snareOtherTab  = '--------------g-------------------g-----------g-----------------';
@@ -46,7 +47,7 @@
 	
 
 </script>
-<p>Second Verse, same as the first :)</p>
+<p>Triplets</p>
 
 <script src="./js/groove_display.js" type="text/javascript"></script>
 
@@ -54,17 +55,122 @@
 	
 	
 	var TabIn = {};
-	TabIn.tempo          =  110;
-	TabIn.div            =  16;
+	TabIn.tempo          =  70;
+	TabIn.div            =  24;
 	TabIn.measures       =  1;
-	TabIn.hihatTab       = 'o---x---x---x---x---x---x---x---';
-	TabIn.snareAccentTab = '--------O---------------O-------';
-	TabIn.snareOtherTab  = '--------------------------------';
-	TabIn.kickTab        = 'o-------------o-o---o-----------';
-	TabIn.footOtherTab   = '--------------------------------';
-	TabIn.notesPerTabMeasure = 32;
+	TabIn.hihatTab       = 'x-xx-xx-xx-xx-xx-xx-xx-x';
+	TabIn.snareAccentTab = '------O-----------O-----';
+	TabIn.snareOtherTab  = '-g--g--g--g--g--g--g--g-';
+	TabIn.kickTab        = '------------------------';
+	TabIn.footOtherTab   = '------------------------';
+	TabIn.notesPerTabMeasure = 24;
 	
 		// put it on the page
 	GrooveDisplay.GrooveDBFormatPutGrooveOnPage(TabIn);
 
 </script>
+
+Groove Expressed in less than 32 notes  (16 in this case)
+<script>
+	
+	
+	var TabIn = {};
+	TabIn.tempo          =  110;
+	TabIn.div            =  16;
+	TabIn.measures       =  1;
+	TabIn.hihatTab       = 'o-x-x-x-x-x-x-x-';
+	TabIn.snareAccentTab = '----O-------O---';
+	TabIn.snareOtherTab  = '----------------';
+	TabIn.kickTab        = 'o-------o-------';
+	TabIn.footOtherTab   = '----------------';
+	TabIn.notesPerTabMeasure = 16;
+	
+		// put it on the page
+	GrooveDisplay.GrooveDBFormatPutGrooveOnPage(TabIn);
+
+</script>
+
+5/4 groove
+<script>
+	
+	
+	var TabIn = {};
+	TabIn.tempo          =  170;
+	TabIn.div            =  16;
+	TabIn.measures       =  1;
+	TabIn.timeSignature  = "5/4";
+	TabIn.hihatTab       = 'x---x---x---x---x---x---x---x---x---x---';
+	TabIn.snareAccentTab = '------------O-------O-----------O-------';
+	TabIn.snareOtherTab  = '----------------------------------------';
+	TabIn.kickTab        = 'o-------o---------------o---o-----------';
+	TabIn.footOtherTab   = '----------------------------------------';
+	TabIn.notesPerTabMeasure = 40;
+	
+		// put it on the page
+	GrooveDisplay.GrooveDBFormatPutGrooveOnPage(TabIn);
+
+</script>
+
+6/8 groove
+<script>
+	
+	
+	var TabIn = {};
+	TabIn.tempo          =  130;
+	TabIn.div            =  16;
+	TabIn.measures       =  1;
+	TabIn.timeSignature  = "6/8";
+	TabIn.hihatTab       = 'x---x---x---x---x---x---x---x---x---x---x---x---';
+	TabIn.snareAccentTab = '--------O---------------O---------------O-------';
+	TabIn.snareOtherTab  = '------------------------------------------------';
+	TabIn.kickTab        = 'o---------------o---------------o---------------';
+	TabIn.footOtherTab   = '------------------------------------------------';
+	TabIn.notesPerTabMeasure = 48;
+	
+		// put it on the page
+	GrooveDisplay.GrooveDBFormatPutGrooveOnPage(TabIn);
+
+</script>
+
+6/4 groove
+<script>
+	
+	
+	var TabIn = {};
+	TabIn.tempo          =  130;
+	TabIn.div            =  16;
+	TabIn.measures       =  1;
+	TabIn.timeSignature  = "6/4";
+	TabIn.hihatTab       = 'x---x---x---x---x---x---x---x---x---x---x---x---';
+	TabIn.snareAccentTab = '--------O---------------O---------------O-------';
+	TabIn.snareOtherTab  = '------------------------------------------------';
+	TabIn.kickTab        = 'o---------------o---------------o---------------';
+	TabIn.footOtherTab   = '------------------------------------------------';
+	TabIn.notesPerTabMeasure = 48;
+	
+		// put it on the page
+	GrooveDisplay.GrooveDBFormatPutGrooveOnPage(TabIn);
+
+</script>
+
+4/2 groove
+<script>
+	
+	
+	var TabIn = {};
+	TabIn.tempo          =  110;
+	TabIn.div            =  16;
+	TabIn.measures       =  1;
+	TabIn.timeSignature  = "4/2";
+	TabIn.hihatTab       = 'o-x-x-x-x-x-x-x-';
+	TabIn.snareAccentTab = '----O-------O---';
+	TabIn.snareOtherTab  = '----------------';
+	TabIn.kickTab        = 'o-------o-------';
+	TabIn.footOtherTab   = '----------------';
+	TabIn.notesPerTabMeasure = 16;
+	
+		// put it on the page
+	GrooveDisplay.GrooveDBFormatPutGrooveOnPage(TabIn);
+
+</script>
+
