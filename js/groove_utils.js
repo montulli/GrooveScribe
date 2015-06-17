@@ -765,39 +765,46 @@ function GrooveUtils() { "use strict";
 	// the note grouping size is how groups of notes within a measure group
 	// for 8ths and 16th we group with 4
 	// for triplets we group with 3
+	// This function is for laying out the HTML
+	// see ABC_gen_note_grouping_size for the sheet music layout grouping size
 	root.noteGroupingSize = function(notes_per_measure, timeSigTop, timeSigBottom) {	
 		var note_grouping = 4;
 		
-		switch(notes_per_measure) {
-		case 4:
-			note_grouping = 1;
-			break;
-		case 6:
-			note_grouping = 3;
-			break;
-		case 8:
-			note_grouping = 2;
-			break;
-		case 12:
-			note_grouping = 3;
-			break;
-		case 16:
-			note_grouping = 4;
-			break;
-		case 24:
-			note_grouping = 6;
-			break;
-		case 32:
-			note_grouping = 8;
-			break;
-		default:
-			if(timeSigTop == 4 && timeSigBottom == 4)
+		if(timeSigTop == 4 && timeSigBottom == 4) {
+			
+			switch(notes_per_measure) {
+			// triplets
+			case 6:
+				note_grouping = 3;
+				break;
+			case 12:
+				note_grouping = 3;
+				break;
+			case 24:
+				note_grouping = 6;
+				break;
+				
+			// quads
+			case 4:	
+			case 8:	
+			case 16:
+			case 32:
+				note_grouping = notes_per_measure/4;
+				break;
+				
+			default:
 				alert("bad switch in GrooveUtils.noteGroupingSize()");
+				note_grouping = Math.ceil(notes_per_measure/4);
+			}
+		} else if((timeSigTop % 3) == 0) {
+			// 3/4, 6/8, 12/8, etc
+			note_grouping = notes_per_measure/4;
+		
+		} else {
 			// figure it out from the time signature
 			// TODO: figure out what to do about timeSigBottom
 			note_grouping = notes_per_measure/timeSigTop;
 		}
-		
 		return note_grouping;
 	}
 	
@@ -807,13 +814,28 @@ function GrooveUtils() { "use strict";
 	// scale correctly
 	// The base array is now 32 notes long to support 32nd notes
 	// since we would normally group by 4 we need to group by 8 since we are scaling it
-	function ABC_gen_note_grouping_size(usingTriplets) {	
+	function ABC_gen_note_grouping_size(usingTriplets, timeSigTop, timeSigBottom) {	
 		var note_grouping;
 		
-		if(usingTriplets)
-			note_grouping = 6;
-		else
+		if(timeSigTop == 4 && timeSigBottom == 4) {
+		
+			if(usingTriplets)
+				note_grouping = 6;
+			else
+				note_grouping = 8;
+				
+		} else if(timeSigTop == 6 && timeSigBottom == 8) {
+			// 6/8
+			note_grouping = 24;
+		
+		} else if(timeSigTop == 3 && timeSigBottom == 4) {
+			// 3/4
 			note_grouping = 8;
+		
+		} else {
+			// TODO: figure out what to do about timeSigBottom
+			note_grouping = 8;
+		}
 			
 		return note_grouping;
 	}
@@ -886,7 +908,7 @@ function GrooveUtils() { "use strict";
 			var grouping_size_for_rests = 24/notes_per_measure;   // we scale up the notes to fit a 24 length array
 			
 			
-			if(i % ABC_gen_note_grouping_size(true) == 0) {
+			if(i % ABC_gen_note_grouping_size(true, timeSigTop, timeSigBottom) == 0) {
 				// creates the 3 or the 6 over the note grouping
 				// looks like (3:3:3 or (6:6:6
 				hh_snare_voice_string += "(" + root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom)
@@ -917,7 +939,7 @@ function GrooveUtils() { "use strict";
 				kick_voice_string += getABCforNote(kick_array.slice(i), class_empty_note_array, class_empty_note_array, end_of_group, scaler);
 			}
 			
-			if((i % ABC_gen_note_grouping_size(true)) == ABC_gen_note_grouping_size(true)-1) {
+			if((i % ABC_gen_note_grouping_size(true, timeSigTop, timeSigBottom)) == ABC_gen_note_grouping_size(true, timeSigTop, timeSigBottom)-1) {
 			
 				stickings_voice_string += " ";
 				hh_snare_voice_string += " ";   // Add a space to break the bar line every group notes
@@ -956,16 +978,16 @@ function GrooveUtils() { "use strict";
 		
 		for(var i=0; i < num_notes; i++) {
 					
-			var grouping_size_for_rests = ABC_gen_note_grouping_size(false);
+			var grouping_size_for_rests = ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom);
 			
 			var end_of_group;
-			if(i%ABC_gen_note_grouping_size(false) == 0)
-				end_of_group = ABC_gen_note_grouping_size(false);
+			if(i%ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom) == 0)
+				end_of_group = ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom);
 			else
-				end_of_group = (ABC_gen_note_grouping_size(false)-((i)%ABC_gen_note_grouping_size(false)));
+				end_of_group = (ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom)-((i)%ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom)));
 					 
 			 
-			if(i % ABC_gen_note_grouping_size(false) == 0) {
+			if(i % ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom) == 0) {
 				// we will only output a rest at the beginning of a beat phrase, or if triplets for every space
 				stickings_voice_string += getABCforRest(sticking_array.slice(i), class_empty_note_array, class_empty_note_array, grouping_size_for_rests, scaler, true);
 				
@@ -988,7 +1010,7 @@ function GrooveUtils() { "use strict";
 				kick_voice_string += getABCforNote(kick_array.slice(i), class_empty_note_array, class_empty_note_array, end_of_group, scaler);
 			}
 				
-			if((i % ABC_gen_note_grouping_size(false)) == ABC_gen_note_grouping_size(false)-1) {
+			if((i % ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom)) == ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom)-1) {
 			
 				stickings_voice_string += " ";
 				hh_snare_voice_string += " ";   // Add a space to break the bar line every group notes
