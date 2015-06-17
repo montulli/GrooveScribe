@@ -823,17 +823,21 @@ function GrooveUtils() { "use strict";
 				note_grouping = 6;
 			else
 				note_grouping = 8;
-				
-		} else if(timeSigTop == 6 && timeSigBottom == 8) {
-			// 6/8
+		
+		} else if(timeSigTop == 3 && timeSigBottom == 8) {
+			// 3/8
+			note_grouping = 12;
+		
+		} else if((timeSigTop % 3) == 0 && timeSigBottom == 8) {
+			// 6/8, 9/8
 			note_grouping = 24;
 		
-		} else if(timeSigTop == 3 && timeSigBottom == 4) {
-			// 3/4
-			note_grouping = 8;
-		
+		} else if(timeSigBottom == 8) {
+
+			note_grouping = 16;
+			
 		} else {
-			// TODO: figure out what to do about timeSigBottom
+
 			note_grouping = 8;
 		}
 			
@@ -876,7 +880,11 @@ function GrooveUtils() { "use strict";
 			return note_array;   // no need to expand
 		
 		// preset to false (rest) all entries in the expanded array
-		for(var i=0; i < num_measures * (isTriplets ? 24 : 32); i++) 
+		if(isTriplets) {
+			for(var i=0; i < num_measures * 24; i++) 
+				retArray[i] = false;
+		}
+		for(var i=0; i < num_measures * notes_per_measure * scaler ; i++) 
 			retArray[i] = false;
 		
 		// sparsely fill in the return array with data from passed in array
