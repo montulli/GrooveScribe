@@ -103,26 +103,6 @@
 			<div class="warnings" id="diverr"></div>
 			
 			<div id="midiPlayer"><!-- space for the midiplayer to be attached by the javascript --></div>
-			<!--
-			<div id="playerControl">
-				<img alt="Play" title="Play" id="midiPlayImage" src="images/grey_play.png">
-				<span id="tempoAndProgress">
-					<div id="tempo">
-						<input type=range min=40 max=240 value=90 id="tempoInput" list="tempoSettings" step=5 onChange="myGrooveUtils.noteHasChanged()" oninput="myGrooveUtils.tempoUpdateEvent(value)">
-						<div for=tempo id=tempoOutput>80 bpm</div>
-					</div>
-					<div id="swingAmount">
-						<input type=range min=0 max=50 value=0 id="swingInput" list="swingSettings" step=5 onChange="myGrooveUtils.noteHasChanged()" oninput="myGrooveUtils.swingUpdate(value)">
-						<div for=swingAmount id=swingOutput>0% swing</div>
-					</div>
-				</span>
-				<img onClick="myGrooveUtils.repeatMIDI_playback();" alt="Repeat" title="Repeat" id="midiRepeatImage" src="images/repeat.png">
-				<br>
-				<div id="progress">
-					<progress id="MIDIProgress" value="0" max="100"></progress>
-				</div>
-			</div>	
-			-->
 			
 			<div id="sheetMusicTextFields">
 				<b>Title:</b> <input id="tuneTitle" onChange="myGrooveWriter.refresh_ABC()" type="text"> &nbsp;

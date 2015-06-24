@@ -20,7 +20,6 @@ function GrooveWriter() { "use strict";
 	// private vars in the scope of the class
 	var class_app_title = "Groove Writer";
 	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
-	var class_visible_context_menu = false;   // a single context menu can be visible at a time.
 	var class_permutationType = "none";
 	var class_advancedEditIsOn = false;
 	var class_measure_for_note_label_click = 0;
@@ -507,41 +506,7 @@ function GrooveWriter() { "use strict";
 	}
 	
 	
-	// every click passes through here.
-	// close a popup if one is up and we click off of it.
-	function documentOnClickHanderCloseContextMenu(event) {
-		if(class_visible_context_menu ) {
-			hideContextMenu( class_visible_context_menu );
-		}
-	}
 	
-	function showContextMenu(contextMenu) {
-		
-		// if there is another context menu open, close it
-		if(class_visible_context_menu ) {
-			hideContextMenu( class_visible_context_menu );
-		}
-		
-		contextMenu.style.display = "block";
-		class_visible_context_menu = contextMenu;
-		
-		// use a timeout to setup the onClick handler.
-		// otherwise the click that opened the menu will close it
-		// right away.  :(  
-		setTimeout(function(){
-			document.onclick = documentOnClickHanderCloseContextMenu;
-			},100);
-	}
-	
-	function hideContextMenu(contextMenu) {
-		document.onclick = false;
-		
-		if(contextMenu) {
-			contextMenu.style.display = "none";
-		}
-		class_visible_context_menu = false;
-		
-	}
 	
 	// the user has clicked on the permutation menu
 	root.permutationAnchorClick = function(event) {
@@ -554,7 +519,7 @@ function GrooveWriter() { "use strict";
 				contextMenu.style.top = event.pageY + "px";
 				contextMenu.style.left = event.pageX-75 + "px";
 			}
-			showContextMenu(contextMenu);
+			myGrooveUtils.showContextMenu(contextMenu);
 		}
 	}
 	
@@ -569,7 +534,7 @@ function GrooveWriter() { "use strict";
 				contextMenu.style.top = event.pageY + "px";
 				contextMenu.style.left = event.pageX-240 + "px";
 			}
-			showContextMenu(contextMenu);
+			myGrooveUtils.showContextMenu(contextMenu);
 		}
 	}
 	
@@ -584,7 +549,7 @@ function GrooveWriter() { "use strict";
 				contextMenu.style.top = event.pageY + "px";
 				contextMenu.style.left = event.pageX-60 + "px";
 			}
-			showContextMenu(contextMenu);
+			myGrooveUtils.showContextMenu(contextMenu);
 		}
 	}
 	
@@ -683,7 +648,7 @@ function GrooveWriter() { "use strict";
 				contextMenu.style.top = event.pageY-30 + "px";
 				contextMenu.style.left = event.pageX-35 + "px";
 			}
-			showContextMenu(contextMenu);
+			myGrooveUtils.showContextMenu(contextMenu);
 		}
 		
 		return false;
@@ -779,7 +744,7 @@ function GrooveWriter() { "use strict";
 				contextMenu.style.top = event.pageY-30 + "px";
 				contextMenu.style.left = event.pageX-75 + "px";
 			}
-			showContextMenu(contextMenu);
+			myGrooveUtils.showContextMenu(contextMenu);
 		}
 		else {
 			return true;  //error
@@ -1563,7 +1528,7 @@ function GrooveWriter() { "use strict";
 	// Return value is the number of notes.
 	function getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, startIndexForClickableUI) {
 		
-		var scaler = myGrooveUtils.getNoteScaler(class_notes_per_measure, 4);  // fill proportionally
+		var scaler = myGrooveUtils.getNoteScaler(class_notes_per_measure, 4, 4);  // fill proportionally
 		
 		// fill in the arrays from the clickable UI
 		for(var i=0; i < class_notes_per_measure+0; i++) {
@@ -1590,6 +1555,8 @@ function GrooveWriter() { "use strict";
 		var HH_Array = class_empty_note_array.slice(0);  // copy by value
 		var Snare_Array = class_empty_note_array.slice(0);  // copy by value
 		var Kick_Array = class_empty_note_array.slice(0);  // copy by value
+		
+		var metronomeFrequency = myGrooveUtils.getMetronomeFrequency(); 
 		
 		// just the first measure
 		var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, 0);
@@ -1620,7 +1587,7 @@ function GrooveWriter() { "use strict";
 				if(class_notes_per_measure > 16)
 					num_notes_for_swing = class_notes_per_measure;
 			
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
 			}
 			break;
 			
@@ -1638,7 +1605,7 @@ function GrooveWriter() { "use strict";
 				if(class_notes_per_measure > 16)
 					num_notes_for_swing = class_notes_per_measure;
 			
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
 			}
 			break;
 			
@@ -1655,7 +1622,7 @@ function GrooveWriter() { "use strict";
 				if(class_notes_per_measure > 16)
 					num_notes_for_swing = class_notes_per_measure;
 			
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
 			}
 			break;
 			
@@ -1672,13 +1639,13 @@ function GrooveWriter() { "use strict";
 				if(class_notes_per_measure > 16)
 					num_notes_for_swing = class_notes_per_measure;
 			
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
 			}
 			break;
 			
 		case "none":
 		default:
-			myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
+			myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
 			
 			if(isSecondMeasureVisable()) {
 				// reset arrays
@@ -1690,7 +1657,7 @@ function GrooveWriter() { "use strict";
 				// get second measure
 				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, class_notes_per_measure);
 				
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
+				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
 			}
 		}
 		
@@ -2107,7 +2074,7 @@ function GrooveWriter() { "use strict";
 		}
 		
 		myGrooveUtils.midiEventCallbacks.notePlaying = function(myroot, note_type, note_position) {
-			hilight_note(note_type, (note_position/myGrooveUtils.getNoteScaler(class_notes_per_measure, 4)));
+			hilight_note(note_type, (note_position/myGrooveUtils.getNoteScaler(class_notes_per_measure, 4, 4)));
 		}
 		
 		myGrooveUtils.oneTimeInitializeMidi();
