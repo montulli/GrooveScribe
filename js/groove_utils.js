@@ -689,17 +689,17 @@ function GrooveUtils() { "use strict";
 		var rindex = abcNoteStrings.notes1.lastIndexOf(modifier_to_look_for);
 		if(rindex > -1) {
 			found_modifier = true;
-			abcNoteStrings.notes1 = abcNoteStrings.notes1.slice(rindex+modifier_to_look_for.length);
+			abcNoteStrings.notes1 = abcNoteStrings.notes1.replace(modifier_to_look_for, "");
 		}
 		rindex = abcNoteStrings.notes2.lastIndexOf(modifier_to_look_for)
 		if(rindex > -1) {
 			found_modifier = true;
-			abcNoteStrings.notes2 = abcNoteStrings.notes2.slice(rindex+modifier_to_look_for.length);
+			abcNoteStrings.notes2 = abcNoteStrings.notes2.replace(modifier_to_look_for, "");
 		}
 		rindex = abcNoteStrings.notes3.lastIndexOf(modifier_to_look_for)
 		if(rindex > -1) {
 			found_modifier = true;
-			abcNoteStrings.notes3 = abcNoteStrings.notes3.slice(rindex+modifier_to_look_for.length);
+			abcNoteStrings.notes3 = abcNoteStrings.notes3.replace(modifier_to_look_for, "");
 		}
 		if(found_modifier)
 			return modifier_to_look_for;
@@ -768,6 +768,13 @@ function GrooveUtils() { "use strict";
 				ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!accent!");
 				ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!plus!");
 				ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!open!");
+				
+				// Look for '[' and ']'.   They are added on to the the kick and splash and could be added to other notes
+				// in the future.   They imply that the notes are on the same beat.   Since we are already putting multiple
+				// notes on the same beat (see code below this line that adds '[' & ']'), we need to remove them or the 
+				// resulting ABC will be invalid
+				moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "[");
+				moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "]");
 								
 				ABC_String += "[" + abcNoteStrings.notes1 + abcNoteStrings.notes2 + abcNoteStrings.notes3 + "]";  // [^gc]
 			} else {
