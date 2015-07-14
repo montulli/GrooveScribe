@@ -2071,6 +2071,7 @@ function GrooveWriter() { "use strict";
 			var midiURL = createMidiUrlFromClickableUI("our_MIDI");
 			myGrooveUtils.loadMIDIFromURL(midiURL);
 			myGrooveUtils.midiResetNoteHasChanged();
+			root.updateGrooveDBSource();
 		}
 		
 		myGrooveUtils.midiEventCallbacks.notePlaying = function(myroot, note_type, note_position) {
