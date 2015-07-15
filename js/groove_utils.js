@@ -23,8 +23,11 @@ function GrooveUtils() { "use strict";
 	
 	root.visible_context_menu = false;   // a single context menu can be visible at a time.
 	
+	root.current_midi_start_time = 0;
+	root.total_midi_play_time_msecs = 0;
 	
 	// constants
+	var CONSTANT_Midi_play_time_zero= "    ";
 	var constant_MAX_MEASURES=  10;
 	var constant_DEFAULT_TEMPO= 80;
 	var constant_ABC_STICK_R=  '"R"x';
@@ -1569,8 +1572,10 @@ function GrooveUtils() { "use strict";
 		if(MIDI.Player.playing) {
 			return;
 		} else if(root.isMIDIPaused && false == root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot) ) {
+			root.current_midi_start_time = new Date();
 			MIDI.Player.resume();
 		} else {
+			root.current_midi_start_time = new Date();
 			root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot);
 			MIDI.Player.stop();
 			MIDI.Player.loop(root.shouldMIDIRepeat);   // set the loop parameter
@@ -1640,6 +1645,20 @@ function GrooveUtils() { "use strict";
 		});
 	}
 	
+	// update the midi play timer on the player. 
+	// Keeps track of how long we have been playing.
+	root.updateMidiPlayTime = function() {
+	
+		var time_now = new Date();
+		var time_diff = new Date(time_now.getTime() - root.current_midi_start_time.getTime());
+		var time_string = time_diff.getMinutes() + ":" + (time_diff.getSeconds() < 10 ? "0" : "") + time_diff.getSeconds();
+		root.total_midi_play_time_msecs += time_diff.getTime();
+	
+		var MidiPlayTime = document.getElementById("MIDIPlayTime" + root.grooveUtilsUniqueIndex);
+        if(MidiPlayTime)
+            MidiPlayTime.innerHTML = time_string;
+	}
+	
 	var debug_note_count = 0;
 	var class_midi_note_num = 0;  // global, but only used in this function
 	// This is the function that the 3rd party midi library calls to give us events.
@@ -1647,6 +1666,8 @@ function GrooveUtils() { "use strict";
 	// do events.   (Double chaining)
 	function ourMIDICallback(data) {
 		root.midiEventCallbacks.percentProgress(root.midiEventCallbacks.classRoot, (data.now/data.end)*100);
+		
+		root.updateMidiPlayTime();
 		
 		if(data.now < 1) {
 			// this is considered the start.   It usually comes in at .5 for some reason?
@@ -1791,19 +1812,23 @@ function GrooveUtils() { "use strict";
 		var tempoAndProgressElement = document.getElementById('tempoAndProgress'+ root.grooveUtilsUniqueIndex);
 		var playerControlElement = document.getElementById('playerControl'+ root.grooveUtilsUniqueIndex);
 		var midiExpandImageElement = document.getElementById('midiExpandImage'+ root.grooveUtilsUniqueIndex);
+		var midiPlayTime = document.getElementById('MIDIPlayTime'+ root.grooveUtilsUniqueIndex);
+		var midiProgressRow = document.getElementById('MIDIProgressRow' + root.grooveUtilsUniqueIndex);
 		var midiProgressElement = document.getElementById('MIDIProgress'+ root.grooveUtilsUniqueIndex);
 		var midiMetronomeSelector = document.getElementById('metronomeSelector'+ root.grooveUtilsUniqueIndex);
 		
 		if( tempoAndProgressElement.style.display == "none" || (force && expandElseContract) ) {
-			tempoAndProgressElement.style.display = 'inline-block';
 			playerControlElement.style.width = '100%';
 			midiExpandImageElement.src = root.getMidiImageLocation() + "shrinkLeft.png";
-			midiProgressElement.style.width = '100%';
+			midiPlayTime.style.display = 'inline-block';
+			midiProgressElement.style.width = midiProgressRow.offsetWidth - 147 + "px";
 			midiMetronomeSelector.style.display = 'inline-block';
+			tempoAndProgressElement.style.display = 'inline-block';
 		} else {
 			tempoAndProgressElement.style.display = 'none';
 			playerControlElement.style.width = '85px';
 			midiExpandImageElement.src = root.getMidiImageLocation() + "expandRight.png";
+			midiPlayTime.style.display = 'none';
 			midiProgressElement.style.width = '45px';
 			midiMetronomeSelector.style.display = 'none';
 		
@@ -1896,7 +1921,8 @@ function GrooveUtils() { "use strict";
 			
 		newHTML += '' + 	
 			'	</div>' +
-			'	<div class="midiProgressRow">' +
+			'	<div class="MIDIProgressRow" id="MIDIProgressRow' + root.grooveUtilsUniqueIndex + '">' +
+			'       <span class="MIDIPlayTime" id="MIDIPlayTime' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Midi_play_time_zero + '</span>' +
 			'		<progress class="MIDIProgress" id="MIDIProgress' + root.grooveUtilsUniqueIndex + '" value="0" max="100"></progress>' +
 			'		<span class="metronomeSelector" id="metronomeSelector' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Metronome_text_OFF + '</span>' +
 			'	</div>' +

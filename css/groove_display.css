@@ -118,7 +118,7 @@
 		flex:none;
 		//border: 1px solid red;
 	}
-	.midiProgressRow {
+	.MIDIProgressRow {
 		//border: 1px solid red;
 		padding-top: 0px;
 		margin-left: 20px;
@@ -129,6 +129,17 @@
 		display: -webkit-flex;
 		flex-flow: flex-start;
 		flex-wrap: nowrap;
+	}
+	.MIDIPlayTime {
+		display: inline-block;
+		width: 40px;
+		color: #FFF;
+		font-size: 14px;
+		margin-left: -19px;
+		margin-top: -3px;
+		padding-right: 8px;
+		text-align: right;
+		flex: none;
 	}
 	.MIDIProgress {
 		width: 90%;
@@ -141,7 +152,7 @@
 		font-size: 16px;
 		color: #FFF;
 		padding: 0px;
-		margin-top: -4px;
+		margin-top: -5px;
 		width: 75px;
 		padding-left: 5px;
 		flex:none;
