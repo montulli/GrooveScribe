@@ -471,3 +471,9 @@
 		height: 18px;
 		cursor: pointer;
 	}  
+	#totalPlayTime {
+		z-index: 9999999999999;
+		position: absolute;
+		bottom: 3px;
+		right: 3px;
+	}

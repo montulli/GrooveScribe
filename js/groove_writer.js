@@ -1763,6 +1763,31 @@ function GrooveWriter() { "use strict";
 		document.getElementById("GrooveDB_source").value = DBString;
 	}
 	
+	// update the current URL so that reloads and history traversal and link shares and bookmarks work correctly
+	root.updateCurrentURL = function() {
+		var newURL = get_FullURLForPage();
+		var newTitle = false;
+		
+		var title = document.getElementById("tuneTitle").value.trim();
+		if(title != "")
+			newTitle = title;
+			
+		var author = document.getElementById("tuneAuthor").value.trim();
+		if(author != "") {
+			if(title)
+				newTitle += " by " + author;
+			else	
+				newTitle = "Groove by " + author;
+		}
+		
+		if(!newTitle) 
+			newTitle = "Groove Writer";
+		
+		document.title = newTitle
+		window.history.replaceState(null, newTitle, newURL);
+	
+	}
+	
 	// this is called by a bunch of places anytime we modify the musical notes on the page
 	// this will recreate the ABC code and will then use the ABC to rerender the sheet music
 	// on the page.
@@ -1880,6 +1905,10 @@ function GrooveWriter() { "use strict";
 		root.updateGrooveDBSource();
 
 		myGrooveUtils.midiNoteHasChanged(); // pretty likely the case
+		
+		// update the current URL so that reloads and history traversal and link shares and bookmarks work correctly
+		root.updateCurrentURL();
+		
 		root.displayNewSVG();
 	}
 	
@@ -2132,8 +2161,10 @@ function GrooveWriter() { "use strict";
 		// decode the %7C url encoding types
 		noteString = decodeURIComponent(noteString);
 		
-		// ignore "|" by removing them
-		var notes = noteString.replace(/\|/g, '');
+		// ignore ":" and "|" by removing them
+		var notes = noteString.replace(/:|\|/g, '');
+	
+		
 		
 		// multiple measures of "how_many_notes"
 		var notesOnScreen = class_notes_per_measure * numberOfMeasures;

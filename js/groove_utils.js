@@ -24,6 +24,7 @@ function GrooveUtils() { "use strict";
 	root.visible_context_menu = false;   // a single context menu can be visible at a time.
 	
 	root.current_midi_start_time = 0;
+	root.last_midi_update_time = 0;
 	root.total_midi_play_time_msecs = 0;
 	
 	// constants
@@ -412,8 +413,8 @@ function GrooveUtils() { "use strict";
 		
 		// ignore "|" by removing them
 		//var notes = noteString.replace(/\|/g, '');
-		// ignore "|" & ")" & "(" & "[" & "]" & "!" by removing them
-		var notes = noteString.replace(/\!|\)|\(|\[|\]|\|/g, '');
+		// ignore "|" & ")" & "(" & "[" & "]" & "!" & ":" by removing them
+		var notes = noteString.replace(/\:|\!|\)|\(|\[|\]|\|/g, '');
 		
 		var noteStringScaler = 1;
 		var displayScaler = 1;
@@ -1650,13 +1651,28 @@ function GrooveUtils() { "use strict";
 	root.updateMidiPlayTime = function() {
 	
 		var time_now = new Date();
-		var time_diff = new Date(time_now.getTime() - root.current_midi_start_time.getTime());
-		var time_string = time_diff.getMinutes() + ":" + (time_diff.getSeconds() < 10 ? "0" : "") + time_diff.getSeconds();
-		root.total_midi_play_time_msecs += time_diff.getTime();
-	
+		var play_time_diff = new Date(time_now.getTime() - root.current_midi_start_time.getTime());
+		var time_string = play_time_diff.getUTCMinutes() + ":" + (play_time_diff.getSeconds() < 10 ? "0" : "") + play_time_diff.getSeconds();
+		
 		var MidiPlayTime = document.getElementById("MIDIPlayTime" + root.grooveUtilsUniqueIndex);
         if(MidiPlayTime)
             MidiPlayTime.innerHTML = time_string;
+			
+		var TotalPlayTime = document.getElementById("totalPlayTime");
+		if(TotalPlayTime) {
+			if(root.last_midi_update_time == 0)
+				root.last_midi_update_time = root.current_midi_start_time;
+			var delta_time_diff = new Date(time_now - root.last_midi_update_time);
+			root.total_midi_play_time_msecs += delta_time_diff.getTime();
+			var totalTime = new Date(root.total_midi_play_time_msecs);
+			time_string = "";
+			if(totalTime.getUTCHours() > 0)
+				time_string = totalTime.getUTCHours() + ":" + (totalTime.getUTCMinutes() < 10 ? "0" : "");
+			time_string += totalTime.getUTCMinutes() + ":" + (totalTime.getSeconds() < 10 ? "0" : "") + totalTime.getSeconds();
+			TotalPlayTime.innerHTML = "Total Time: " + time_string;
+		}
+		
+		root.last_midi_update_time = time_now;
 	}
 	
 	var debug_note_count = 0;
