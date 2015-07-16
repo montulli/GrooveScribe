@@ -28,6 +28,10 @@ function GrooveWriter() { "use strict";
 	// constants
 	var constant_default_tempo = 80;
 	var constant_note_stem_off_color = "transparent";
+	var constant_subdivision_selected_background_color = "#FFFFCC";
+	var constant_subdivision_selected_text_color = "black";
+	var constant_permutation_selected_background_color = "#FFFFCC";
+	var constant_permutation_selected_text_color = "black";
 	var constant_note_on_color_hex  = "#000000";  // black
 	var constant_note_on_color_rgb  = 'rgb(0, 0, 0)';  // black
 	var constant_note_off_color_hex = "#CCCCCC";  // gray
@@ -575,7 +579,8 @@ function GrooveWriter() { "use strict";
 			showHideCSS_ClassVisibility(".kick-container", true, false);  // hide it
 			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
 			document.getElementById("staff-container2").style.display = "none";
-			document.getElementById("permutationAnchor").style.backgroundColor = "orange";
+			document.getElementById("permutationAnchor").style.background = constant_permutation_selected_background_color;
+			document.getElementById("permutationAnchor").style.color = constant_permutation_selected_text_color;
 			break;
 			
 		case "snare_16ths":
@@ -587,7 +592,8 @@ function GrooveWriter() { "use strict";
 			showHideCSS_ClassVisibility(".kick-container", true, true);  // show it
 			showHideCSS_ClassVisibility(".snare-container", true, false);  // hide it
 			document.getElementById("staff-container2").style.display = "none";
-			document.getElementById("permutationAnchor").style.backgroundColor = "orange";
+			document.getElementById("permutationAnchor").style.background = constant_permutation_selected_background_color;
+			document.getElementById("permutationAnchor").style.color = constant_permutation_selected_text_color;
 			break;
 
 		case "none":
@@ -596,7 +602,8 @@ function GrooveWriter() { "use strict";
 			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
 			// document.getElementById("staff-container2").style.display = "block";
 			class_permutationType = "none";
-			document.getElementById("permutationAnchor").style.backgroundColor = "#FFFFCC";;
+			document.getElementById("permutationAnchor").style.background = null;
+			document.getElementById("permutationAnchor").style.color = null;
 			break;
 		}
 		
@@ -2086,8 +2093,10 @@ function GrooveWriter() { "use strict";
 		
 		setupPermutationMenu();
 						
-		// set the background color of the current subdivision
-		document.getElementById(class_notes_per_measure + "ths").style.background = "orange";
+		// set the background and text color of the current subdivision
+		document.getElementById(class_notes_per_measure + "ths").style.background = constant_subdivision_selected_background_color;
+		document.getElementById(class_notes_per_measure + "ths").style.color = constant_subdivision_selected_text_color;
+		
 		
 		// add html for the midi player
 		myGrooveUtils.AddMidiPlayerToPage("midiPlayer");
@@ -2585,10 +2594,12 @@ function GrooveWriter() { "use strict";
 		}
 		
 		// un-highlight the old div 
-		document.getElementById(oldDivision + "ths").style.background = "#FFFFCC";
+		document.getElementById(oldDivision + "ths").style.background = null;
+		document.getElementById(oldDivision + "ths").style.color = null;
 		
 		// highlight the new div
-		document.getElementById(class_notes_per_measure + "ths").style.background = "orange";
+		document.getElementById(class_notes_per_measure + "ths").style.background = constant_subdivision_selected_background_color;
+		document.getElementById(class_notes_per_measure + "ths").style.color = constant_subdivision_selected_text_color;
 		
 		// if the permutation menu is not "none" this will change the layout
 		// otherwise it should do nothing

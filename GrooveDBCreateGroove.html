@@ -46,12 +46,8 @@
 	    <div class="nonPrintable">
 			<!-- use css to position this to the upper right -->
 			<span id="upperRight">
-				<div class="rightButtons" id="groovesAnchor" onClick="myGrooveWriter.groovesAnchorClick(event)">
-					Base Grooves
-				</div>
-				<div class="rightButtons" id="helpAnchor" onClick="myGrooveWriter.helpAnchorClick(event)">
-					Help
-				</div>
+				<span class="rightButtons" id="groovesAnchor" onClick="myGrooveWriter.groovesAnchorClick(event)">Base Grooves</span>
+				<span class="rightButtons" id="helpAnchor" onClick="myGrooveWriter.helpAnchorClick(event)">Help</span>
 			</span>
 		
 			<div id="divisionButtonContainer">
@@ -79,7 +75,7 @@
 				</script>
 			</div>
 			<div id="buttonsAboveSheetMusic">
-				<button id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideSecondMeasure(false, false);">Show/Hide 2nd Measure</button>
+				<span class="myButton" id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideSecondMeasure(false, false);">Show/Hide 2nd Measure</span>
 				<!--
 				<button id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);">Show/Hide Stickings</button>
 				<button type="button" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()">Export Midi File</button>

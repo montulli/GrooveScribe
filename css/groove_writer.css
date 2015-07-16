@@ -3,7 +3,7 @@
 	/* body * { border: 1px solid red; }		 */
 	body {
 		margin: 10px;
-		background: #B2B28F;
+		background: #AAA;
 		font-family: Calibri;
 	}
 	.warnings {
@@ -305,18 +305,6 @@
 		height:1px;
 		background: transparent;
 	}
-	.subdivision {
-		display: inline-block;
-		background: #FFFFCC;
-		font-size: 130%;
-		color: #0000EE;
-		text-decoration: none;
-		border:1px solid #CCCCCC;
-		border-radius: 5px;
-		box-shadow: 7px 7px 5px #888888;
-		padding: 4px;
-		cursor: pointer;
-	}
 	#advancedEditAnchor {
 		display: inline-block;
 		background: #FFFFCC;
@@ -329,18 +317,7 @@
 		padding: 4px;
 		cursor: pointer;
 	}
-	.rightButtons {
-		display: inline-block;
-		background: #FFFFCC;
-		color: #0000EE;
-		font-size: 80%;
-		text-decoration: none;
-		border:1px solid #CCCCCC;
-		border-radius: 5px;
-		box-shadow: 7px 7px 5px #888888;
-		padding: 4px;
-		cursor: pointer;
-	}
+	
 	#permutationType {
 		margin-top: 10px;
 	}
@@ -448,6 +425,62 @@
 		display: flex;
 		justify-content: space-between;
 	}
+	.OLDsubdivision {
+		display: inline-block;
+		background: #FFFFCC;
+		font-size: 130%;
+		color: #0000EE;
+		text-decoration: none;
+		border:1px solid #CCCCCC;
+		border-radius: 5px;
+		box-shadow: 7px 7px 5px #888888;
+		padding: 4px;
+		cursor: pointer;
+	}
+	.OLDrightButtons {
+		display: inline-block;
+		background: #FFFFCC;
+		color: #0000EE;
+		font-size: 80%;
+		text-decoration: none;
+		border:1px solid #CCCCCC;
+		border-radius: 5px;
+		box-shadow: 7px 7px 5px #888888;
+		padding: 4px;
+		cursor: pointer;
+	}
+	.myButton,  .subdivision, .rightButtons {
+	   border-top: 1px solid #96d1f8;
+	   background: #65a9d7;
+	   background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
+	   background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
+	   background: -moz-linear-gradient(top, #3e779d, #65a9d7);
+	   background: -ms-linear-gradient(top, #3e779d, #65a9d7);
+	   background: -o-linear-gradient(top, #3e779d, #65a9d7);
+	   padding: 5px 10px;
+	   -webkit-border-radius: 8px;
+	   -moz-border-radius: 8px;
+	   border-radius: 8px;
+	   box-shadow: 7px 7px 5px #888888;
+	   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+	   color: white;
+	   font-size: 14px;
+	   font-family: Georgia, serif;
+	   text-decoration: none;
+	   vertical-align: middle;
+	 }
+	.subdivision, .rightButtons {
+		font-size: 18px;
+	}  
+	.myButton:hover, .subdivision:hover, .rightButtons:hover  {
+	   border-top-color: #28597a;
+	   background: #28597a;
+	   color: #ccc;
+	 }
+	.myButton:active, .subdivision:active, .rightButtons:active  {
+	   border-top-color: #1b435e;
+	   background: #1b435e;
+    }
 	#showHideSecondMeasureButton {
 	}
 	#showHideStickingsButton {

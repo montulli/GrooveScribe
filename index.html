@@ -46,24 +46,18 @@
 	    <div class="nonPrintable">
 			<!-- use css to position this to the upper right -->
 			<span id="upperRight">
-				<div class="rightButtons" id="permutationAnchor" onClick="myGrooveWriter.permutationAnchorClick(event)">
-					Permutations
-				</div>
-				<div class="rightButtons" id="groovesAnchor" onClick="myGrooveWriter.groovesAnchorClick(event)">
-					Grooves
-				</div>
-				<div class="rightButtons" id="helpAnchor" onClick="myGrooveWriter.helpAnchorClick(event)">
-					Help
-				</div>
+				<span class="rightButtons" id="permutationAnchor" onClick="myGrooveWriter.permutationAnchorClick(event)">Permutations</span>
+				<span class="rightButtons" id="groovesAnchor" onClick="myGrooveWriter.groovesAnchorClick(event)">Grooves</span>
+				<span class="rightButtons" id="helpAnchor" onClick="myGrooveWriter.helpAnchorClick(event)">Help</span>
 			</span>
 		
 			<div id="divisionButtonContainer">
-			<a class="subdivision" id="4ths"  onClick="myGrooveWriter.changeDivision(4)"><sup>1</sup>/<sub>4</sub> &#9834;</a>
-			<a class="subdivision" id="8ths"  onClick="myGrooveWriter.changeDivision(8)"><sup>1</sup>/<sub>8</sub> &#9834;&#9834;</a>
-			<a class="subdivision" id="16ths" onClick="myGrooveWriter.changeDivision(16)"><sup>1</sup>/<sub>16</sub> &#9835;</a>
-			<a class="subdivision" id="32ths" onClick="myGrooveWriter.changeDivision(32)"><sup>1</sup>/<sub>32</sub> &#9835;&#9835;</a>
-			<a class="subdivision" id="12ths" onClick="myGrooveWriter.changeDivision(12)"><sup>1</sup>/<sub>8 triplets</sub> &#9834;&#9834;</a>
-			<a class="subdivision" id="24ths" onClick="myGrooveWriter.changeDivision(24)"><sup>1</sup>/<sub>16 triplets</sub> &#9835;</a>
+				<span class="subdivision" id="4ths"  onClick="myGrooveWriter.changeDivision(4)"><sup>1</sup>/<sub>4</sub> &#9834;</span>
+				<span class="subdivision" id="8ths"  onClick="myGrooveWriter.changeDivision(8)"><sup>1</sup>/<sub>8</sub> &#9834;&#9834;</span>
+				<span class="subdivision" id="16ths" onClick="myGrooveWriter.changeDivision(16)"><sup>1</sup>/<sub>16</sub> &#9835;</span>
+				<span class="subdivision" id="32ths" onClick="myGrooveWriter.changeDivision(32)"><sup>1</sup>/<sub>32</sub> &#9835;&#9835;</span>
+				<span class="subdivision" id="12ths" onClick="myGrooveWriter.changeDivision(12)"><sup>1</sup>/<sub>8 triplets</sub> &#9834;&#9834;</span>
+				<span class="subdivision" id="24ths" onClick="myGrooveWriter.changeDivision(24)"><sup>1</sup>/<sub>16 triplets</sub> &#9835;</span>
 			</div>
 			
 			<script>
@@ -82,11 +76,11 @@
 				</script>
 			</div>
 			<div id="buttonsAboveSheetMusic">
-				<button id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideSecondMeasure(false, false);">Show/Hide 2nd Measure</button>
-				<button id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);">Show/Hide Stickings</button>
-				<button type="button" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()">Export Midi File</button>
-				<button id="printButton" type="button" onclick="myGrooveWriter.printMusic()">Print Sheet Music</button>
-				<button id="shareSaveButton" href="#" onClick="event.preventDefault(); myGrooveWriter.show_FullURLPopup()">Share/Save Groove</button>
+				<span class="myButton" id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideSecondMeasure(false, false);">Show/Hide 2nd Measure</span>
+				<span class="myButton" id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);">Show/Hide Stickings</span>
+				<span class="myButton" type="button" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()">Export Midi File</span>
+				<span class="myButton" id="printButton" type="button" onclick="myGrooveWriter.printMusic()">Print Sheet Music</span>
+				<span class="myButton" id="shareSaveButton" href="#" onClick="event.preventDefault(); myGrooveWriter.show_FullURLPopup()">Share/Save Groove</span>
 			</div>
 		</div>  
 		<div class="Printable">

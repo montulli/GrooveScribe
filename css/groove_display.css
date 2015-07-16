@@ -20,11 +20,9 @@
 		display: block;
 	}
 	
-	.svgDisplayTarget {
-		width: 795px;
-		/background: #FFF;
-		/box-shadow: 7px 7px 5px #888888;
-		/border: 1px solid #000;
+	/* there is another .svgTarget definitiion in groove_display.css */
+	.svgTarget {
+		margin-top: 10px;
 	}
 	
 	#midiPlayer {
