@@ -31,7 +31,7 @@
 	.playerControl {
 		display: inline-block;
 		border: solid 1px #000000;
-		border-radius: 25px;
+		border-radius: 20px;
 		box-shadow: 7px 7px 5px #888888;
 		background-color: #000;
 		padding-top: 2px;
@@ -90,7 +90,7 @@
 		color: #FFF;
 		padding: 0px;
 		padding-left: 5px;
-		width: 75px;
+		width: 78px;
 		flex:none;
 	}
 	.swingInput  {
@@ -112,7 +112,7 @@
 		font-size: 16px;
 		color: #FFF;
 		padding-left: 5px;
-		width: 75px;
+		width: 78px;
 		flex:none;
 		//border: 1px solid red;
 	}
@@ -151,7 +151,7 @@
 		color: #FFF;
 		padding: 0px;
 		margin-top: -5px;
-		width: 75px;
+		width: 78px;
 		padding-left: 5px;
 		flex:none;
 		//border: 1px solid red;

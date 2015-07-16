@@ -425,30 +425,6 @@
 		display: flex;
 		justify-content: space-between;
 	}
-	.OLDsubdivision {
-		display: inline-block;
-		background: #FFFFCC;
-		font-size: 130%;
-		color: #0000EE;
-		text-decoration: none;
-		border:1px solid #CCCCCC;
-		border-radius: 5px;
-		box-shadow: 7px 7px 5px #888888;
-		padding: 4px;
-		cursor: pointer;
-	}
-	.OLDrightButtons {
-		display: inline-block;
-		background: #FFFFCC;
-		color: #0000EE;
-		font-size: 80%;
-		text-decoration: none;
-		border:1px solid #CCCCCC;
-		border-radius: 5px;
-		box-shadow: 7px 7px 5px #888888;
-		padding: 4px;
-		cursor: pointer;
-	}
 	.myButton,  .subdivision, .rightButtons {
 	   border-top: 1px solid #96d1f8;
 	   background: #65a9d7;
@@ -469,8 +445,11 @@
 	   text-decoration: none;
 	   vertical-align: middle;
 	 }
-	.subdivision, .rightButtons {
-		font-size: 18px;
+	.subdivision {
+		font-size: 16px;
+	} 
+	.rightButtons {
+		font-size: 11px;
 	}  
 	.myButton:hover, .subdivision:hover, .rightButtons:hover  {
 	   border-top-color: #28597a;

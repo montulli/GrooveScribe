@@ -1968,18 +1968,35 @@ function GrooveWriter() { "use strict";
 	root.showHideSecondMeasure = function(force, showElseHide) {
 		var secondMeasure = document.getElementById("staff-container2");
 		
+		// figure out if we are turning it on or off
+		var setToOn = true;
 		if(force) {
 			if(showElseHide)
-				secondMeasure.style.display = "inline-block";
+				setToOn = true;
 			else
-				secondMeasure.style.display = "none";
+				setToOn = false;
 		} else {
 			// no-force means to swap on each call
 			if(secondMeasure.style.display == "inline-block")
-				secondMeasure.style.display = "none";
+				setToOn = false;
 			else
-				secondMeasure.style.display = "inline-block";
+				setToOn = true;
 		}
+		
+		if(setToOn)
+			secondMeasure.style.display = "inline-block";
+		else
+			secondMeasure.style.display = "none";
+
+		// change button text
+		var SecondMeasureButton = document.getElementById("showHideSecondMeasureButton");
+		if(SecondMeasureButton) {
+			if(setToOn)
+				SecondMeasureButton.innerHTML = "Hide 2nd Measure";
+			else
+				SecondMeasureButton.innerHTML = "Show 2nd Measure";
+		}
+
 		
 		create_ABC();
 		return false;  // don't follow the link
@@ -1987,22 +2004,28 @@ function GrooveWriter() { "use strict";
 	
 	function showHideCSS_ClassDisplay(className, force, showElseHide, showState) {
 		var myElements = document.querySelectorAll(className);
+		var newStateIsOn = true;
+		
 		for (var i = 0; i < myElements.length; i++) {
-			var stickings = myElements[i];
+			var element = myElements[i];
 	
 			if(force) {
-				if(showElseHide)
-					stickings.style.display = showState;
-				else
-					stickings.style.display = "none";
+				newStateIsOn = showElseHide;
 			} else {
 				// no-force means to swap on each call
-				if(stickings.style.display == showState)
-					stickings.style.display = "none";
+				if(element.style.display == showState)
+					newStateIsOn = false;
 				else 
-					stickings.style.display = showState;
+					newStateIsOn = true;
 			}
+			
+			if(newStateIsOn)
+				element.style.display = showState;
+			else
+				element.style.display = "none";
 		}
+		
+		return newStateIsOn;
 	}
 	
 	function showHideCSS_ClassVisibility(className, force, showElseHide) {
@@ -2038,9 +2061,16 @@ function GrooveWriter() { "use strict";
 	
 	root.showHideStickings = function(force, showElseHide) {
 	
-		showHideCSS_ClassDisplay(".stickings-container", force, showElseHide, "block");
+		var OnElseOff = showHideCSS_ClassDisplay(".stickings-container", force, showElseHide, "block");
 		showHideCSS_ClassDisplay(".stickings-label", force, showElseHide, "block");
-		
+		var stickingsButton = document.getElementById("showHideStickingsButton");
+		if(stickingsButton) {
+			if(OnElseOff)
+				stickingsButton.innerHTML = "Hide Stickings";
+			else
+				stickingsButton.innerHTML = "Show Stickings";
+		}
+			
 		create_ABC();
 		
 		return false;  // don't follow the link
