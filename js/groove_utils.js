@@ -617,9 +617,12 @@ function GrooveUtils() { "use strict";
 		
 		// always add a Title even if it's blank
 		fullABC += "T: " + tuneTitle + "\n";
-			
-		// always add an author even if it's blank
-		fullABC += "C: " + tuneAuthor + "\n";
+		
+		if(tuneAuthor != "") {
+			fullABC += "C: " + tuneAuthor + "\n";
+			fullABC += "%%musicspace 20px\n";  // add some more space
+		}
+		
 		
 		if(isTriplets)
 			fullABC += "L:1/16\n";
@@ -656,11 +659,8 @@ function GrooveUtils() { "use strict";
 		// print comments below the legend if there is one, otherwise in the header section
 		if(tuneComments != "") {
 			fullABC += "P: " + tuneComments + "\n";
-			fullABC += "%%musicspace 5px\n";  // add some space
-		} else {
-			fullABC += "%%musicspace 0px\n";
+			fullABC += "%%musicspace 20px\n";  // add some more space
 		}
-		
 					
 		// the K ends the header;
 		fullABC +=	"K:C clef=perc\n";
