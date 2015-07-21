@@ -26,7 +26,7 @@
 		height: 60px;
 		border-bottom: 1px solid #000;
 		background: #009ffa;
-		max-width: 1000px;
+		max-width: 1024px;
 	}
 	#LeftHandNav {
 		width: 70px;
@@ -52,7 +52,7 @@
 		text-align: center;
 		padding: 20px 10px 0px 10px;
 		background: #3b5166;
-		color: #EEE;
+		color: #EEF;
 	}
 	.rightButtons  {
 	    display: inline-block;
@@ -60,11 +60,11 @@
 		font-weight: bold;
 		margin: 10px 5px 10px 5px;
 		padding: 10px 5px 10px 5px;
-		color: #EEE;
+		color: #EEF;
 	}
-	.subdivision {
+	.subdivision, #advancedEditAnchor {
 		display: block;
-		height: 64px;
+		height: 60px;
 		border-bottom: 1px solid #000;
 		text-align: center;
 		vertical-align: middle;
@@ -74,20 +74,17 @@
 		align-items: center;
 		justify-content: center;
 	}
+	#advancedEditAnchor {
+		background: #FFFFCC;
+		color: #3b5166;
+	}
 	.buttonText {
 	}
-	#musicalInput {
-		width: 100%;
-		max-width: 930px;
-		background: #FFF;
-		overflow-x: auto;
-		overflow-y: hidden;
-		white-space: nowrap;
-	}
+	
 	#NotationLine {
-		padding-top: 3px;
-		padding-bottom: 3px;
-		max-width: 930px;
+		padding-top: 6px;
+		padding-bottom: 6px;
+		max-width: 954px;
 		text-align: center;
 		border-top: 1px solid #000;
 		border-bottom: 1px solid #000;
@@ -108,12 +105,22 @@
 	#hiddenDescription {
 		display: none;
 	}
+	#musicalInput {
+		width: 100%;
+		max-width: 954px;
+		background: #FFF;
+		overflow-x: auto;
+		overflow-y: hidden;
+		white-space: nowrap;
+	}
+	#musicalCenter {
+		margin-left: auto;
+	}
 	.staff-container {
 		margin-left: 1px;
 		margin-top: 1px;
 		display: inline-block;
 		font-family:  Times New Roman;
-		position:relative;
 		background: #FFFFFF;
 	}
 	#staff-container2 {
@@ -133,8 +140,10 @@
 	}
 	.stickings-label {
 		display: none;
+		background: #f7f1cf;
 		padding-top: 7px;
-		margin-left: 8px;
+		padding-bottom: 4px;
+		padding-left: 8px;
 		font-size: 16px;
 		cursor: pointer;
 	}
@@ -167,6 +176,7 @@
 	}
 	.stickings-container {
 		display: none;
+		background: #f7f1cf;
 		margin-top: 0px;
 		white-space:nowrap;
 		-moz-user-select: none;
@@ -199,31 +209,31 @@
 		position: absolute; top: 36px;
 		width:100%; 
 		height:0px; 
-		border-top:3px solid #000; 
+		border-top:3px solid #cacaca; 
 	}
 	.staff-line-2{
 		position: absolute; top: 66px;
 		width:100%; 
 		height:0px; 
-		border-top:3px solid #000; 
+		border-top:3px solid #cacaca; 
 	}
 	.staff-line-3{
 		position: absolute; top: 97px;
 		width:100%; 
 		height:0px; 
-		border-top:3px solid #000; 
+		border-top:3px solid #cacaca; 
 	}
 	.staff-line-4{
 		position: absolute; top: 126px;
 		width:100%; 
 		height:0px; 
-		border-top:3px solid #000; 
+		border-top:3px solid #cacaca; 
 	}
 	.staff-line-5{
 		position: absolute; top: 157px;
 		width:100%; 
 		height:0px; 
-		border-top:3px solid #000; 
+		border-top:3px solid #cacaca; 
 	}
 	.notes-container {
 		position: relative; 
@@ -325,10 +335,11 @@
 	}
 	.snare_circle {
 		position: absolute; bottom: 0px; left: 0px;
-		width:100%;
-		height:60%;
+		width:90%;
+		height:50%;
 		background: #CCCCCC;
-		border-radius: 75px 45px 67px 45px;
+		border: 2px solid;
+		border-radius: 40px 40px 40px 40px;
 		cursor: pointer;
 	}
 	.snare_xstick {
@@ -344,10 +355,11 @@
 	}
 	.kick_circle {
 		position: absolute; top: 0px; left: 0px;
-		width:100%;
-		height:56%;
+		width:90%;
+		height:50%;
 		background: #CCCCCC;
-		border-radius: 75px 45px 67px 45px;
+		border: 2px solid;
+		border-radius: 40px 40px 40px 40px;
 		cursor: pointer;
 	}
 	
@@ -375,16 +387,7 @@
 		height:1px;
 		background: transparent;
 	}
-	#advancedEditAnchor {
-		display: inline-block;
-		background: #FFFFCC;
-		color: #0000EE;
-		font-size: 80%;
-		text-decoration: none;
-		border:1px solid #CCCCCC;
-		padding: 4px;
-		cursor: pointer;
-	}
+	
 	
 	#permutationType {
 		margin-top: 10px;
@@ -402,7 +405,7 @@
 	}
 	.svgTarget {
 		width: 100%;
-		max-width: 930px;
+		max-width: 954px;
 		background: #FFF;
 		border-bottom:1px solid #000;
 	}

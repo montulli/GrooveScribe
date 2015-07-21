@@ -3,7 +3,7 @@
     <head>
 		<title>Groove Writer</title>
 		
-		<meta name="viewport" content="width=810, initial-scale=1.25">
+		<meta name="viewport" content="width=1024, initial-scale=1.0">
 		
 		<!--   Other peoples JS libraries    -->
 		<!--   midi.js package for sound   -->
@@ -77,13 +77,15 @@
 			<span class="nonPrintable">
 				<div id="midiPlayer"><!-- space for the midiplayer to be attached by the javascript --></div>
 				<div id="musicalInput">
-					<script>
-						var genHTML = "";
-						for(var cur_measure=1; cur_measure <= myGrooveWriter.numberOfMeasures(); cur_measure++) {
-							genHTML += myGrooveWriter.HTMLforStaffContainer(cur_measure, (cur_measure-1) * myGrooveWriter.notesPerMeasure());
-						}
-						document.write(genHTML);
-					</script>
+					<div id="musicalCenter">
+						<script>
+							var genHTML = "";
+							for(var cur_measure=1; cur_measure <= myGrooveWriter.numberOfMeasures(); cur_measure++) {
+								genHTML += myGrooveWriter.HTMLforStaffContainer(cur_measure, (cur_measure-1) * myGrooveWriter.notesPerMeasure());
+							}
+							document.write(genHTML);
+						</script>
+					</div>
 				</div>
 				<div id="NotationLine">
 					<span id='NotationLabel'>Notation</span>
