@@ -28,7 +28,7 @@
 		width: 100%;
 		max-width: 930px;
 		/border: 1px solid red;
-		margin-bottom: -5px;
+		margin-bottom: -4px;
 	}
 	.playerControl {
 		display: inline-block;
@@ -113,15 +113,15 @@
 		//border: 1px solid red;
 	}
 	.MIDIProgressRow {
-		/display: none;
+		display: none;
 		//border: 1px solid red;
 		padding-top: 0px;
 		margin-left: 60px;
 		margin-right: 0px;
 		margin-bottom: px;
 		height: 16px;
-		display: flex;
-		display: -webkit-flex;
+		/display: flex;
+		/display: -webkit-flex;
 		flex-flow: flex-start;
 		flex-wrap: nowrap;
 	}

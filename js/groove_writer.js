@@ -1997,7 +1997,8 @@ function GrooveWriter() { "use strict";
 				SecondMeasureButton.innerHTML = "Show 2nd Measure";
 		}
 
-		
+		root.expandAuthoringViewWhenNecessary(class_notes_per_measure, isSecondMeasureVisable());
+
 		create_ABC();
 		return false;  // don't follow the link
 	}
@@ -2641,6 +2642,16 @@ function GrooveWriter() { "use strict";
 		myGrooveUtils.swingUpdate();
 	}
 	
+	
+	root.expandAuthoringViewWhenNecessary = function(numNotesPerMeasure, moreThanOneMeasure) {
+		// set the size of the musicalInput authoring element based on the number of notes
+		if(numNotesPerMeasure > 16 || (numNotesPerMeasure > 4 && moreThanOneMeasure)) {
+			document.getElementById("musicalInput").style.maxWidth = "10000px";
+		} else {
+			document.getElementById("musicalInput").style.maxWidth = null;
+		}
+	}
+	
 	// change the base division to something else.
 	// eg  16th to 8ths or   32nds to 8th note triplets
 	// need to re-layout the html notes, change any globals and then reinitialize
@@ -2680,6 +2691,8 @@ function GrooveWriter() { "use strict";
 			uiKick = myGrooveUtils.GetDefaultKickGroove(newDivision, 2);
 		}
 		
+		root.expandAuthoringViewWhenNecessary(newDivision, isSecondMeasureVisable());
+
 		changeDivisionWithNotes(newDivision, uiStickings, uiHH, uiSnare, uiKick);
 		
 		create_ABC();
