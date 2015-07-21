@@ -28,8 +28,8 @@ function GrooveWriter() { "use strict";
 	// constants
 	var constant_default_tempo = 80;
 	var constant_note_stem_off_color = "transparent";
-	var constant_subdivision_selected_background_color = "#FFFFCC";
-	var constant_subdivision_selected_text_color = "black";
+	var constant_subdivision_selected_background_color = "#53758e";
+	var constant_subdivision_selected_text_color = "#BBB";
 	var constant_permutation_selected_background_color = "#FFFFCC";
 	var constant_permutation_selected_text_color = "black";
 	var constant_note_on_color_hex  = "#000000";  // black

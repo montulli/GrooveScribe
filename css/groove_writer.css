@@ -2,8 +2,8 @@
 	/* this is for debugging layout issues - puts a read border around everything */
 	/* body * { border: 1px solid red; }		 */
 	body {
-		margin: 10px;
-		background: #AAA;
+		margin: 0px;
+		background: #CCC;
 		font-family: Calibri;
 	}
 	.warnings {
@@ -21,38 +21,108 @@
 	.nonPrintable {
 		display: block;
 	}
+	#TopNav {
+		width: 100%;
+		height: 60px;
+		border-bottom: 1px solid #000;
+		background: #009ffa;
+		max-width: 1000px;
+	}
+	#LeftHandNav {
+		width: 70px;
+		height: 100%;
+		position: fixed;
+		border-right: 1px solid #000;
+		background: #3b5166;
+	}
+	#RightHandContent {
+		margin-left: 70px;
+	}
+	#upperRight {
+		float: right;
+	}
 	#divisionButtonContainer {
+		
+	}
+	#timeLabel {
 		display: inline-block;
-		margin-right: 10px;
+		width: 50px;
+		height: 40px;
+		border-right: 1px solid #000;
+		text-align: center;
+		padding: 20px 10px 0px 10px;
+		background: #3b5166;
+		color: #BBB;
+	}
+	.rightButtons  {
+	    display: inline-block;
+		font-size: 16px;
+		font-weight: bold;
+		margin: 10px 5px 10px 5px;
+		padding: 10px 5px 10px 5px;
+		color: #BBB;
+	}
+	.subdivision {
+		display: block;
+		height: 64px;
+		border-bottom: 1px solid #000;
+		text-align: center;
+		vertical-align: middle;
+		color: #BBB;
+		display: -webkit-flex;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.buttonText {
 	}
 	#musicalInput {
-		margin-top: 10px;
 		width: 100%;
 		overflow-x: auto;
 		overflow-y: hidden;
+		white-space: nowrap;
+		background: #FFF;
+	}
+	#NotationLine {
+		padding-top: 3px;
+		padding-bottom: 3px;
+		max-width: 930px;
+		text-align: center;
+		border-top: 1px solid #000;
+		border-bottom: 1px solid #000;
+	}
+	#NotationLabel {
+		display: inline-block;
+		margin:auto;
+		font-size: 18px;
+		font-weight: bold;
+		text-align: center;
+	}
+	#KeyButton {
+		float: right;
+		font-size: 18px;
+		font-weight: bold;
+		text-align: right;
 	}
 	#hiddenDescription {
 		display: none;
 	}
 	.staff-container {
+		margin-left: 1px;
+		margin-top: 1px;
 		display: inline-block;
+		max-width: 930px;
 		font-family:  Times New Roman;
 		position:relative;
-		background: #FFFFCC;
-		border: 3px solid #000;
-		border-radius: 25px;
-		box-shadow: 7px 7px 5px #888888;
+		background: #FFFFFF;
 	}
 	#staff-container2 {
 		display: none;
+		border-left: 1px solid #000;
 	}
 	.heading1 {
 		font-size: 30px;
 		font-weight: bold;
-	}
-	#upperRight {
-		float: right;
-		margin-bottom: 6px;
 	}
 	.line-labels {
 		display: inline-block;
@@ -312,8 +382,6 @@
 		font-size: 80%;
 		text-decoration: none;
 		border:1px solid #CCCCCC;
-		border-radius: 5px;
-		box-shadow: 7px 7px 5px #888888;
 		padding: 4px;
 		cursor: pointer;
 	}
@@ -333,12 +401,14 @@
 		display: none;
 	}
 	.svgTarget {
-		width: 795px;
+		width: 100%;
+		max-width: 930px;
 		background: #FFF;
-		box-shadow: 7px 7px 5px #888888;
-		/border: 1px solid #000;
+		border-bottom:1px solid #000;
 	}
-	
+	#sheetMusicTextFields {
+		margin-top: 5px;
+	}
 	// Context Menu
 	.noteContextMenu { 
 		
@@ -416,7 +486,7 @@
 		float: right;
 	}
 	#buttonsAboveSheetMusic {
-		margin-top: 2px;
+		margin-top: 10px;
 		margin-bottom: 5px;
 		width: 795px;
 		padding-right: 10px;
@@ -425,32 +495,17 @@
 		display: flex;
 		justify-content: space-between;
 	}
-	.myButton,  .subdivision, .rightButtons {
+	.myButton {
 	   border-top: 1px solid #96d1f8;
 	   background: #65a9d7;
-	   background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
-	   background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
-	   background: -moz-linear-gradient(top, #3e779d, #65a9d7);
-	   background: -ms-linear-gradient(top, #3e779d, #65a9d7);
-	   background: -o-linear-gradient(top, #3e779d, #65a9d7);
 	   padding: 5px 10px;
-	   -webkit-border-radius: 8px;
-	   -moz-border-radius: 8px;
-	   border-radius: 8px;
-	   box-shadow: 7px 7px 5px #888888;
-	   text-shadow: rgba(0,0,0,.4) 0 1px 0;
 	   color: white;
 	   font-size: 14px;
 	   font-family: Georgia, serif;
 	   text-decoration: none;
 	   vertical-align: middle;
 	 }
-	.subdivision {
-		font-size: 16px;
-	} 
-	.rightButtons {
-		font-size: 11px;
-	}  
+	
 	.myButton:hover, .subdivision:hover, .rightButtons:hover  {
 	   border-top-color: #28597a;
 	   background: #28597a;

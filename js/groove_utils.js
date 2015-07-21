@@ -1916,7 +1916,7 @@ function GrooveUtils() { "use strict";
 	
 	root.HTMLForMidiPlayer = function(expandable) {
 		var newHTML = '' +
-			'<div id="playerControl' + root.grooveUtilsUniqueIndex + '" class="playerControl">' +
+			'<span id="playerControl' + root.grooveUtilsUniqueIndex + '" class="playerControl">' +
 			'	<div class="playerControlsRow">' +
 			'		<img alt="Play" title="Play" class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'grey_play.png">' +
 			'		<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
@@ -1934,7 +1934,8 @@ function GrooveUtils() { "use strict";
 		
 		if(expandable)
 			newHTML += 	'       <img alt="expand/contract" class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'shrinkLeft.png" width="32" height="32">';
-			
+		
+		
 		newHTML += '' + 	
 			'	</div>' +
 			'	<div class="MIDIProgressRow" id="MIDIProgressRow' + root.grooveUtilsUniqueIndex + '">' +
@@ -1942,7 +1943,7 @@ function GrooveUtils() { "use strict";
 			'		<progress class="MIDIProgress" id="MIDIProgress' + root.grooveUtilsUniqueIndex + '" value="0" max="100"></progress>' +
 			'		<span class="metronomeSelector" id="metronomeSelector' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Metronome_text_OFF + '</span>' +
 			'	</div>' +
-			'</div>';
+			'</span>';
 			
 		// context menu for the metronome (Click)
 		newHTML += '' +
