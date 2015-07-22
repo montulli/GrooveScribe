@@ -26,15 +26,16 @@
 	
 	#midiPlayer {
 		width: 100%;
+
+		height: 64px;
 		max-width: 954px;
-		/border: 1px solid red;
-		margin-bottom: -4px;
+		background-color: #2484c0;
+
 	}
 	.playerControl {
 		display: inline-block;
 		background-color: #2484c0;
 		width: 100%;  /* expand to the surounding element */
-		border-bottom: solid 1px #000000;
 	}
 	.playerControlsRow {
 		/border: 1px solid red;
@@ -46,10 +47,13 @@
 	.midiPlayImage, .midiRepeatImage{
 		width: 48px;
 		height: 48px;
+		padding-top: 8px;
+		padding-bottom: 8px;
 		position: relative; top: 0px;
 		cursor: pointer;
 		flex: none;
-		margin: 0px 30px 0px 10px;
+		margin: 0px 10px 0px 10px;
+
 	}
 	.midiExpandImage {
 		color:#fff;
@@ -66,14 +70,15 @@
 		/border: 1px solid red;
 		display: flex;
 		display: -webkit-flex;
+		height: 30px;
 		flex-flow: flex-start;
 		flex-wrap: nowrap;
 	}
-	.tempoInput  {
+	.tempoInput, .swingInput {
 		background-color: 3f91e5;
-		height:20px;
-		padding: 0px;
-		margin: 0px;
+		height:30px;
+		margin-right: 2%;
+		color: #66c0fe;
 		width: 90%;
 		flex: 1;
 		-webkit-flex: 1;
@@ -81,36 +86,24 @@
 	.tempoSettings {
 		color: #FFF;
 	}
-	.tempoOutput {
-		display: inline-block;
-		font-size: 16px;
-		color: #FFF;
-		padding: 0px;
-		padding-left: 5px;
-		width: 78px;
-		flex:none;
+	.tempoLabel, .swingLabel {
+		text-align: right;
+		padding-top: 4px;
+		width: 60px;
+		color: #66c0fe;
 	}
-	.swingInput  {
-		background-color: 3f91e5;
-		height:20px;
-		padding: 0px;
-		margin: 0px;
-		width: 90%;
-		flex: 1;
-		-webkit-flex: 1;
-		//border: 1px solid red;
+	.tempoOutput, .swingOutput {
+		display: inline-block;
+		text-align: left;
+		padding-top: 4px;
+		font-size: 16px;
+		color: #0cdef9;
+		padding-left: 8px;
+		width: 30px;
+		flex:none;
 	}
 	.swingSettings {
 		color: #FFF;
-	}
-	.swingOutput {
-		display: inline-block;
-		font-size: 16px;
-		color: #FFF;
-		padding-left: 5px;
-		width: 78px;
-		flex:none;
-		//border: 1px solid red;
 	}
 	.MIDIProgressRow {
 		display: none;
@@ -127,13 +120,13 @@
 	}
 	.MIDIPlayTime {
 		display: inline-block;
-		width: 40px;
-		color: #FFF;
-		font-size: 14px;
-		margin-left: -19px;
-		margin-top: -3px;
-		padding-right: 8px;
-		text-align: right;
+		width: 130px;
+		height: 30px;
+		color: #66c0fe;
+		font-size: 30px;
+		padding-top: 11px;
+		padding-bottom: 19px;
+		text-align: left;
 		flex: none;
 	}
 	.MIDIProgress {

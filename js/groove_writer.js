@@ -34,8 +34,10 @@ function GrooveWriter() { "use strict";
 	var constant_permutation_selected_text_color = "black";
 	var constant_note_on_color_hex  = "#000000";  // black
 	var constant_note_on_color_rgb  = 'rgb(0, 0, 0)';  // black
-	var constant_note_off_color_hex = "#CCCCCC";  // gray
-	var constant_note_off_color_rgb = 'rgb(204, 204, 204)';  // gray
+	var constant_note_off_color_hex = "#FFF"; 
+	var constant_note_off_color_rgb = 'rgb(255, 255, 255)';  // white
+	var constant_hihat_note_off_color_hex = "#CCC"; 
+	var constant_hihat_note_off_color_rgb = 'rgb(204, 204, 204)';  // white
 	var constant_note_hidden_color_rgb = "transparent";
 	var constant_ABC_STICK_R=  '"R"x';
 	var constant_ABC_STICK_L=  '"L"x';
@@ -207,12 +209,16 @@ function GrooveWriter() { "use strict";
 		switch(mode) {
 		case "off":
 			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_off_color_hex;
+			document.getElementById("kick_circle" + id).style.borderColor = null;
 			break;
 		case "normal":
 			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_on_color_hex;
+			document.getElementById("kick_circle" + id).style.borderColor = null;
 			break;
 		case "splash":
 			document.getElementById("kick_splash" + id).style.color = constant_note_on_color_hex;
+			document.getElementById("kick_circle" + id).style.borderColor = constant_note_hidden_color_rgb;
+			
 			break;
 		case "kick_and_splash":
 			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_on_color_hex;
@@ -228,6 +234,7 @@ function GrooveWriter() { "use strict";
 						
 		// hide everything optional
 		document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_hidden_color_rgb;
+		document.getElementById("snare_circle" + id).style.borderColor = constant_note_hidden_color_rgb;
 		document.getElementById("snare_ghost" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("snare_accent" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("snare_xstick" + id).style.color = constant_note_hidden_color_rgb;
@@ -236,9 +243,11 @@ function GrooveWriter() { "use strict";
 		switch(mode) {
 		case "off":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_off_color_hex;
+			document.getElementById("snare_circle" + id).style.borderColor = null;
 			break;
 		case "normal":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
+			document.getElementById("snare_circle" + id).style.borderColor = null;
 			break;
 		case "ghost":
 			document.getElementById("snare_ghost" + id).style.color = constant_note_on_color_hex;
@@ -246,6 +255,7 @@ function GrooveWriter() { "use strict";
 		case "accent":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
 			document.getElementById("snare_accent" + id).style.color = constant_note_on_color_hex;
+			document.getElementById("snare_circle" + id).style.borderColor = null;
 			break;
 		case "xstick":
 			document.getElementById("snare_xstick" + id).style.color = constant_note_on_color_hex;
@@ -332,7 +342,7 @@ function GrooveWriter() { "use strict";
 		// turn stuff on conditionally
 		switch(mode) {
 		case "off":
-			document.getElementById("hh_cross" + id).style.color = constant_note_off_color_hex;
+			document.getElementById("hh_cross" + id).style.color = constant_hihat_note_off_color_hex;
 			break;
 		case "normal":
 			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;

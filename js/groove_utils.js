@@ -28,7 +28,7 @@ function GrooveUtils() { "use strict";
 	root.total_midi_play_time_msecs = 0;
 	
 	// constants
-	var CONSTANT_Midi_play_time_zero= "    ";
+	var CONSTANT_Midi_play_time_zero= "0:00";
 	var constant_MAX_MEASURES=  10;
 	var constant_DEFAULT_TEMPO= 80;
 	var constant_ABC_STICK_R=  '"R"x';
@@ -1760,7 +1760,7 @@ function GrooveUtils() { "use strict";
 
 	// update the tempo string display
 	function tempoUpdate(tempo) {
-		document.getElementById('tempoOutput' + root.grooveUtilsUniqueIndex).innerHTML = "" + tempo + " bpm";
+		document.getElementById('tempoOutput' + root.grooveUtilsUniqueIndex).innerHTML = "" + tempo;
 		root.midiNoteHasChanged();
 	}
 	
@@ -1811,9 +1811,9 @@ function GrooveUtils() { "use strict";
 		}
 		
 		if(root.swingIsEnabled == false) {
-			document.getElementById('swingOutput'+ root.grooveUtilsUniqueIndex).innerHTML = "swing N/A";	
+			document.getElementById('swingOutput'+ root.grooveUtilsUniqueIndex).innerHTML = "N/A";	
 		} else {
-			document.getElementById('swingOutput'+ root.grooveUtilsUniqueIndex).innerHTML = "" + swingAmount + "% swing";
+			document.getElementById('swingOutput'+ root.grooveUtilsUniqueIndex).innerHTML = "" + swingAmount + "%";
 			root.swingPercent = swingAmount;
 			root.midiNoteHasChanged();
 		}
@@ -1919,14 +1919,17 @@ function GrooveUtils() { "use strict";
 			'<span id="playerControl' + root.grooveUtilsUniqueIndex + '" class="playerControl">' +
 			'	<div class="playerControlsRow">' +
 			'		<img alt="Play" title="Play" class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'grey_play.png">' +
+			'       <span class="MIDIPlayTime" id="MIDIPlayTime' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Midi_play_time_zero + '</span>' +
 			'		<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
 			'			<div class="tempoRow">' +
+			'				<span class="tempoLabel"">BPM</span>' +
+			'				<div for="tempo" class="tempoOutput" id="tempoOutput' + root.grooveUtilsUniqueIndex + '">80</div>' +
 			'				<input type=range min=40 max=240 value=90 class="tempoInput" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings" step=5>' +
-			'				<div for="tempo" class="tempoOutput" id="tempoOutput' + root.grooveUtilsUniqueIndex + '">80 bpm</div>' +
 			'			</div>' +
 			'			<div id="swingRow">' +
-			'				<input type=range min=0 max=50 value=0 class="swingInput" id="swingInput' + root.grooveUtilsUniqueIndex + '" list="swingSettings" step=5 >' +
+			'				<span class="swingLabel">SWING</span>' +
 			'				<div for="swingAmount" class="swingOutput" id="swingOutput' + root.grooveUtilsUniqueIndex + '">0% swing</div>' +
+			'				<input type=range min=0 max=50 value=0 class="swingInput" id="swingInput' + root.grooveUtilsUniqueIndex + '" list="swingSettings" step=5 >' +
 			'			</div>' +
 			'		</span>';
 			
@@ -1939,7 +1942,6 @@ function GrooveUtils() { "use strict";
 		newHTML += '' + 	
 			'	</div>' +
 			'	<div class="MIDIProgressRow" id="MIDIProgressRow' + root.grooveUtilsUniqueIndex + '">' +
-			'       <span class="MIDIPlayTime" id="MIDIPlayTime' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Midi_play_time_zero + '</span>' +
 			'		<progress class="MIDIProgress" id="MIDIProgress' + root.grooveUtilsUniqueIndex + '" value="0" max="100"></progress>' +
 			'		<span class="metronomeSelector" id="metronomeSelector' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Metronome_text_OFF + '</span>' +
 			'	</div>' +
