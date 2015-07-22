@@ -1574,9 +1574,11 @@ function GrooveUtils() { "use strict";
 			return;
 		} else if(root.isMIDIPaused && false == root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot) ) {
 			root.current_midi_start_time = new Date();
+			root.last_midi_update_time = 0;
 			MIDI.Player.resume();
 		} else {
 			root.current_midi_start_time = new Date();
+			root.last_midi_update_time = 0;
 			root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot);
 			MIDI.Player.stop();
 			MIDI.Player.loop(root.shouldMIDIRepeat);   // set the loop parameter

@@ -119,11 +119,9 @@
 	.MIDIPlayTime {
 		display: inline-block;
 		width: 130px;
-		height: 30px;
 		color: #66c0fe;
 		font-size: 30px;
-		padding-top: 11px;
-		padding-bottom: 19px;
+		padding-top: 14px;
 		text-align: left;
 		flex: none;
 	}

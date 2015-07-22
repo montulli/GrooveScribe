@@ -98,8 +98,8 @@
 	    display: inline-block;
 		font-size: 18px;
 		/font-weight: bold;
-		margin: 5px 5px 0px 5px;
-		padding: 5px 5px 0px 5px;
+		margin: 6px 3px 3px 3px;
+		padding: 3px 6px 3px 6px;
 		color: #EEF;
 	}
 	.subdivision, #advancedEditAnchor {
@@ -120,27 +120,27 @@
 	#advancedEditAnchor {
 		background: #FFFFCC;
 		color: #3b5166;
+		font-size: 14px;
 	}
 	.buttonText {
 	}
 	
 	#NotationLine {
 		max-width: 954px;
-		height: 35px;
+		height: 30px;
 		text-align: center;
-		padding-top: 30px;
+		padding-top: 35px;
 		border-top: 1px solid #000;
 		border-bottom: 1px solid #000;
 	}
 	#NotationLabel {
 		display: inline-block;
 		margin:auto;
-		font-size: 24px;
+		font-size: 20px;
 		font-weight: bold;
 		text-align: center;
 	}
 	#KeyButton {
-		padding-top: 4px;
 		float: right;
 		font-size: 18px;
 		text-align: right;
