@@ -28,14 +28,16 @@ function GrooveWriter() { "use strict";
 	// constants
 	var constant_default_tempo = 80;
 	var constant_note_stem_off_color = "transparent";
-	var constant_subdivision_selected_background_color = "#FFFFCC";
-	var constant_subdivision_selected_text_color = "black";
+	var constant_subdivision_selected_background_color = "#53758e";
+	var constant_subdivision_selected_text_color = "#FFF";
 	var constant_permutation_selected_background_color = "#FFFFCC";
 	var constant_permutation_selected_text_color = "black";
 	var constant_note_on_color_hex  = "#000000";  // black
 	var constant_note_on_color_rgb  = 'rgb(0, 0, 0)';  // black
-	var constant_note_off_color_hex = "#CCCCCC";  // gray
-	var constant_note_off_color_rgb = 'rgb(204, 204, 204)';  // gray
+	var constant_note_off_color_hex = "#FFF"; 
+	var constant_note_off_color_rgb = 'rgb(255, 255, 255)';  // white
+	var constant_hihat_note_off_color_hex = "#CCC"; 
+	var constant_hihat_note_off_color_rgb = 'rgb(204, 204, 204)';  // white
 	var constant_note_hidden_color_rgb = "transparent";
 	var constant_ABC_STICK_R=  '"R"x';
 	var constant_ABC_STICK_L=  '"L"x';
@@ -207,12 +209,16 @@ function GrooveWriter() { "use strict";
 		switch(mode) {
 		case "off":
 			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_off_color_hex;
+			document.getElementById("kick_circle" + id).style.borderColor = null;
 			break;
 		case "normal":
 			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_on_color_hex;
+			document.getElementById("kick_circle" + id).style.borderColor = null;
 			break;
 		case "splash":
 			document.getElementById("kick_splash" + id).style.color = constant_note_on_color_hex;
+			document.getElementById("kick_circle" + id).style.borderColor = constant_note_hidden_color_rgb;
+			
 			break;
 		case "kick_and_splash":
 			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_on_color_hex;
@@ -228,6 +234,7 @@ function GrooveWriter() { "use strict";
 						
 		// hide everything optional
 		document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_hidden_color_rgb;
+		document.getElementById("snare_circle" + id).style.borderColor = constant_note_hidden_color_rgb;
 		document.getElementById("snare_ghost" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("snare_accent" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("snare_xstick" + id).style.color = constant_note_hidden_color_rgb;
@@ -236,9 +243,11 @@ function GrooveWriter() { "use strict";
 		switch(mode) {
 		case "off":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_off_color_hex;
+			document.getElementById("snare_circle" + id).style.borderColor = null;
 			break;
 		case "normal":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
+			document.getElementById("snare_circle" + id).style.borderColor = null;
 			break;
 		case "ghost":
 			document.getElementById("snare_ghost" + id).style.color = constant_note_on_color_hex;
@@ -246,6 +255,7 @@ function GrooveWriter() { "use strict";
 		case "accent":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
 			document.getElementById("snare_accent" + id).style.color = constant_note_on_color_hex;
+			document.getElementById("snare_circle" + id).style.borderColor = null;
 			break;
 		case "xstick":
 			document.getElementById("snare_xstick" + id).style.color = constant_note_on_color_hex;
@@ -332,7 +342,7 @@ function GrooveWriter() { "use strict";
 		// turn stuff on conditionally
 		switch(mode) {
 		case "off":
-			document.getElementById("hh_cross" + id).style.color = constant_note_off_color_hex;
+			document.getElementById("hh_cross" + id).style.color = constant_hihat_note_off_color_hex;
 			break;
 		case "normal":
 			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
@@ -1997,7 +2007,8 @@ function GrooveWriter() { "use strict";
 				SecondMeasureButton.innerHTML = "Show 2nd Measure";
 		}
 
-		
+		root.expandAuthoringViewWhenNecessary(class_notes_per_measure, isSecondMeasureVisable());
+
 		create_ABC();
 		return false;  // don't follow the link
 	}
@@ -2641,6 +2652,16 @@ function GrooveWriter() { "use strict";
 		myGrooveUtils.swingUpdate();
 	}
 	
+	
+	root.expandAuthoringViewWhenNecessary = function(numNotesPerMeasure, moreThanOneMeasure) {
+		// set the size of the musicalInput authoring element based on the number of notes
+		if(numNotesPerMeasure > 16 || (numNotesPerMeasure > 8 && moreThanOneMeasure)) {
+			document.getElementById("musicalInput").style.maxWidth = "10000px";
+		} else {
+			document.getElementById("musicalInput").style.maxWidth = null;
+		}
+	}
+	
 	// change the base division to something else.
 	// eg  16th to 8ths or   32nds to 8th note triplets
 	// need to re-layout the html notes, change any globals and then reinitialize
@@ -2680,6 +2701,8 @@ function GrooveWriter() { "use strict";
 			uiKick = myGrooveUtils.GetDefaultKickGroove(newDivision, 2);
 		}
 		
+		root.expandAuthoringViewWhenNecessary(newDivision, isSecondMeasureVisable());
+
 		changeDivisionWithNotes(newDivision, uiStickings, uiHH, uiSnare, uiKick);
 		
 		create_ABC();

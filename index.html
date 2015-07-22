@@ -3,7 +3,7 @@
     <head>
 		<title>Groove Writer</title>
 		
-		<meta name="viewport" content="width=810, initial-scale=1.25">
+		<meta name="viewport" content="width=1024, initial-scale=1.0">
 		
 		<!--   Other peoples JS libraries    -->
 		<!--   midi.js package for sound   -->
@@ -43,93 +43,109 @@
    
     </head>
     <body>
-	    <div class="nonPrintable">
-			<!-- use css to position this to the upper right -->
+	    	<!-- use css to position this to the upper right -->
+		<div id="TopNav">	
+			<span id="upperLeft">
+				<span id="timeLabel">TIME</span>
+				<span id="metornomeContainer"></span>
+			</span>
 			<span id="upperRight">
 				<span class="rightButtons" id="permutationAnchor" onClick="myGrooveWriter.permutationAnchorClick(event)">Permutations</span>
 				<span class="rightButtons" id="groovesAnchor" onClick="myGrooveWriter.groovesAnchorClick(event)">Grooves</span>
 				<span class="rightButtons" id="helpAnchor" onClick="myGrooveWriter.helpAnchorClick(event)">Help</span>
 			</span>
-		
-			<div id="divisionButtonContainer">
-				<span class="subdivision" id="4ths"  onClick="myGrooveWriter.changeDivision(4)"><sup>1</sup>/<sub>4</sub> &#9834;</span>
-				<span class="subdivision" id="8ths"  onClick="myGrooveWriter.changeDivision(8)"><sup>1</sup>/<sub>8</sub> &#9834;&#9834;</span>
-				<span class="subdivision" id="16ths" onClick="myGrooveWriter.changeDivision(16)"><sup>1</sup>/<sub>16</sub> &#9835;</span>
-				<span class="subdivision" id="32ths" onClick="myGrooveWriter.changeDivision(32)"><sup>1</sup>/<sub>32</sub> &#9835;&#9835;</span>
-				<span class="subdivision" id="12ths" onClick="myGrooveWriter.changeDivision(12)"><sup>1</sup>/<sub>8 triplets</sub> &#9834;&#9834;</span>
-				<span class="subdivision" id="24ths" onClick="myGrooveWriter.changeDivision(24)"><sup>1</sup>/<sub>16 triplets</sub> &#9835;</span>
-			</div>
+		</div>
+		<div id="LeftHandNav">
+			<span id="divisionButtonContainer">
+				<span class="subdivision" id="4ths"  onClick="myGrooveWriter.changeDivision(4)"><span class="buttonText"><sup>1</sup>/<sub>4</sub></span></span>
+				<span class="subdivision" id="8ths"  onClick="myGrooveWriter.changeDivision(8)"><span class="buttonText"><sup>1</sup>/<sub>8</sub></span></span>
+				<span class="subdivision" id="16ths" onClick="myGrooveWriter.changeDivision(16)"><span class="buttonText"><sup>1</sup>/<sub>16</sub></span></span>
+				<span class="subdivision" id="32ths" onClick="myGrooveWriter.changeDivision(32)"><span class="buttonText"><sup>1</sup>/<sub>32</sub></span></span>
+				<span class="subdivision" id="12ths" onClick="myGrooveWriter.changeDivision(12)"><span class="buttonText"><sup>1</sup>/<sub>8</sub><br>triplets</span></span>
+				<span class="subdivision" id="24ths" onClick="myGrooveWriter.changeDivision(24)"><span class="buttonText"><sup>1</sup>/<sub>16</sub><br>triplets</span></span>
+			</span>
 			
 			<script>
 				if(myGrooveWriter.is_touch_device()) {
 					document.write('<div id="advancedEditAnchor" onClick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">Advanced Edit</div>');
 				}
 			</script>
-			
-			<div id="musicalInput">
-				<script>
-					var genHTML = "";
-					for(var cur_measure=1; cur_measure <= myGrooveWriter.numberOfMeasures(); cur_measure++) {
-						genHTML += myGrooveWriter.HTMLforStaffContainer(cur_measure, (cur_measure-1) * myGrooveWriter.notesPerMeasure());
-					}
-					document.write(genHTML);
-				</script>
-			</div>
-			<div id="buttonsAboveSheetMusic">
-				<span class="myButton" id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideSecondMeasure(false, false);">Show 2nd Measure</span>
-				<span class="myButton" id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);">Show Stickings</span>
-				<span class="myButton" type="button" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()">Export MIDI</span>
-				<span class="myButton" id="printButton" type="button" onclick="myGrooveWriter.printMusic()">Print</span>
-				<span class="myButton" id="shareSaveButton" href="#" onClick="event.preventDefault(); myGrooveWriter.show_FullURLPopup()">Share</span>
-			</div>
-		</div>  
-		<div class="Printable">
-			<!-- rendering area -->
-			<div id="svgTarget" class="svgTarget">
-			<!-- space for the SVG music go display -->
-			</div>
 		</div>
-		<div class="nonPrintable">
-				  
-			<!-- errors -->
-			
-			<p class="warnings">Warnings:</p>
-			<div class="warnings" id="diverr"></div>
-			
-			<div id="midiPlayer"><!-- space for the midiplayer to be attached by the javascript --></div>
-			
-			<div id="sheetMusicTextFields">
-				<b>Title:</b> <input id="tuneTitle" onChange="myGrooveWriter.refresh_ABC()" type="text"> &nbsp;
-				<b>Author:</b> <input id="tuneAuthor" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
-				<b>Comment:</b> <input id="tuneComments" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
-				<label><b>Legend:</b><input type="checkbox" id="showLegend" onChange="myGrooveWriter.refresh_ABC()"></label>
-			</div>
-			
-			<div id="midiTextOutput">
-			</div>
-			
-			<span id="hiddenDescription">
-				Groove Writer allows drummers to create and share interesting grooves with  
-				WYSIWYG authoring, sheet music creation, and audio playback all in one place.
-				Use the Groove Writer to write out new grooves, figure out the groove to your favorite songs,
-				or write down the groove to your latest tune.
+		
+		
+		<div id="RightHandContent">
+			<span class="nonPrintable">
+				<div id="midiPlayer"><!-- space for the midiplayer to be attached by the javascript --></div>
+				<div id="musicalInput">
+					<div id="musicalCenter">
+						<script>
+							var genHTML = "";
+							for(var cur_measure=1; cur_measure <= myGrooveWriter.numberOfMeasures(); cur_measure++) {
+								genHTML += myGrooveWriter.HTMLforStaffContainer(cur_measure, (cur_measure-1) * myGrooveWriter.notesPerMeasure());
+							}
+							document.write(genHTML);
+						</script>
+					</div>
+				</div>
+				<div id="NotationLine">
+					<span id='NotationLabel'>Notation</span>
+					<span id='KeyButton'><label><b>Legend:</b><input type="checkbox" id="showLegend" onChange="myGrooveWriter.refresh_ABC()"></label></span>
+				</div>
+			</span>  
+			<span class="Printable">
+				<!-- rendering area -->
+				<div id="svgTarget" class="svgTarget">
+				<!-- space for the SVG music go display -->
+				</div>
 			</span>
-			<br>
-			<!-- ABC notation -->
-			<A href="" onClick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a>
-			<div id="ABC_Results">
-				ABC Notation is used for rendering the music.  You can see what is being generated below.   
-				You can even edit it.  <br>
-				NOTE: whenever the page is modified, the ABC Notation below will be overwritten automatically. <br>
-				For more information about ABC Notation go here: <a href="http://abcnotation.com/">http://abcnotation.com/</a>
-				<p>
-				<textarea id="ABCsource" rows="10" cols="72" ></textarea>
+			<span class="nonPrintable">
+				<!-- errors -->
+				
+				<p class="warnings">Warnings:</p>
+				<div class="warnings" id="diverr"></div>
+				
+				
+				<div id="sheetMusicTextFields">
+					&nbsp;
+					<b>Title:</b> <input id="tuneTitle" onChange="myGrooveWriter.refresh_ABC()" type="text"> &nbsp;
+					<b>Author:</b> <input id="tuneAuthor" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
+					<b>Comment:</b> <input id="tuneComments" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
+				</div>
+				
+				<div id="buttonsAboveSheetMusic">
+					<span class="myButton" id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideSecondMeasure(false, false);">Show 2nd Measure</span>
+					<span class="myButton" id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);">Show Stickings</span>
+					<span class="myButton" type="button" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()">Export MIDI</span>
+					<span class="myButton" id="printButton" type="button" onclick="myGrooveWriter.printMusic()">Print</span>
+					<span class="myButton" id="shareSaveButton" href="#" onClick="event.preventDefault(); myGrooveWriter.show_FullURLPopup()">Share</span>
+				</div>	  
+				
+				<div id="midiTextOutput">
+				</div>
+				
+				<span id="hiddenDescription">
+					Groove Writer allows drummers to create and share interesting grooves with  
+					WYSIWYG authoring, sheet music creation, and audio playback all in one place.
+					Use the Groove Writer to write out new grooves, figure out the groove to your favorite songs,
+					or write down the groove to your latest tune.
+				</span>
 				<br>
-				<button type="button" onclick="myGrooveWriter.displayNewSVG()">Re-render the music</button>
-				<button type="button" onclick="myGrooveWriter.saveABCtoFile()">Save ABC to file</button>
-			</div>
-			<div id="totalPlayTime">
-			</div>
+				<!-- ABC notation -->
+				<!-- <A href="" onClick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a> -->
+				<div id="ABC_Results">
+					ABC Notation is used for rendering the music.  You can see what is being generated below.   
+					You can even edit it.  <br>
+					NOTE: whenever the page is modified, the ABC Notation below will be overwritten automatically. <br>
+					For more information about ABC Notation go here: <a href="http://abcnotation.com/">http://abcnotation.com/</a>
+					<p>
+					<textarea id="ABCsource" rows="10" cols="72" ></textarea>
+					<br>
+					<button type="button" onclick="myGrooveWriter.displayNewSVG()">Re-render the music</button>
+					<button type="button" onclick="myGrooveWriter.saveABCtoFile()">Save ABC to file</button>
+				</div>
+				<div id="totalPlayTime">
+				</div>
+			</span>
 		</div>
 
 		
