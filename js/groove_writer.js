@@ -14,7 +14,7 @@ function GrooveWriter() { "use strict";
 	// public class vars
 	var class_number_of_measures = 2;  // only 2 for now (future expansion to more possible)
 	var class_notes_per_measure = parseInt(myGrooveUtils.getQueryVariableFromURL("Div", "8"));	// default to 8ths
-
+	var class_metronome_interval = 0;
 
 
 	// private vars in the scope of the class
@@ -519,7 +519,50 @@ function GrooveWriter() { "use strict";
 		
 	}
 	
+	// the user has clicked on the permutation menu
+	root.metronomeButtonClick = function(event, metronomeInterval) {
+		
+		var button = document.getElementById(event.target.id);
+		
+		// clear other buttons
+		var myElements = document.querySelectorAll(".metronomeButton");
+		for (var i = 0; i < myElements.length; i++) {
+			var thisButton = myElements[i];
+			thisButton.style.background = null;
+		}
+		
+		class_metronome_interval = metronomeInterval;
+		
+		// set this button
+		button.style.background = '#69c1ff';
+		
+		myGrooveUtils.midiNoteHasChanged(); // pretty likely the case
+	}
 	
+	root.setDefaultMetronomeButton = function(metronomeInterval) {
+		
+		class_metronome_interval = metronomeInterval;
+		var id="";
+		switch(metronomeInterval) {
+				default:
+				case 0:
+					id = "metronomeOff";
+					break;
+				case 4:
+					id = "metronome4ths";
+					break;
+				case 8:
+					id = "metronome4ths";
+					break;
+				case 16:
+					id = "metronome4ths";
+					break;
+		}
+		
+		var button = document.getElementById(id);
+		if(button)
+			button.style.background = '#69c1ff';	
+	}
 	
 	
 	// the user has clicked on the permutation menu
@@ -1573,7 +1616,9 @@ function GrooveWriter() { "use strict";
 		var Snare_Array = class_empty_note_array.slice(0);  // copy by value
 		var Kick_Array = class_empty_note_array.slice(0);  // copy by value
 		
-		var metronomeFrequency = myGrooveUtils.getMetronomeFrequency(); 
+		// comes locally from this class
+		//var metronomeFrequency = myGrooveUtils.getMetronomeFrequency(); 
+		var metronomeFrequency = class_metronome_interval;
 		
 		// just the first measure
 		var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, 0);
@@ -2131,6 +2176,8 @@ function GrooveWriter() { "use strict";
 		gapi.client.load('urlshortener', 'v1',function(){});
 		
 		//setupHotKeys();  Runs on midi load now
+		
+		root.setDefaultMetronomeButton(0);
 		
 		setupPermutationMenu();
 						
