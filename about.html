@@ -5,43 +5,45 @@ body {
 
 </style>
 
-<h1>About the Groove Writer</h2>
+<h1>About the Groove Scribe</h2>
 
-The Groove Writer was built to help drummers work out their grooves and turn them into printable sheet music.   
-It is also a good tool to share a groove via email or message board because it can generate a web link that is easy to share.
+The Groove Scribe was built to help drummers create, practice and share grooves.
+	<ul>
+    <li>A simple interface allows easy groove creation that automatically creates printable sheet music for printing and sharing.
+    <li>Midi playback with tempo and a metronome makes it easy to hear and practice difficult grooves.
+    <li>Sharing is simple with a web URL and the recipient can view the groove in any web browser.  
+	</ul>
+	
 <p>
 <b>How it works:</b> 
 <p>
 The Groove Writer is written in HTML and Javascript and runs entirely in the browser.   
 <a href="http://abcnotation.com/">ABC Notation</a> is used to create the printable sheet music.
 When notes are changed on the screen, new ABC Notation is generated which creates the sheet music.
-To play the music, Groove Writer generates a <a href="http://en.wikipedia.org/wiki/MIDI">MIDI</a> file from the notes and plays them using the 
+To play the music, Groove Writer generates a <a href="http://en.wikipedia.org/wiki/MIDI">MIDI</a> file and plays it using the 
 browser audio interface.
 <p>
 <b>How it swings:</b>
 <p>
 The swing slider controls the amount of "swing" that is added to the playback.   
-It does not effect the printable sheet music.   To generate swing a delay is added to the upbeat notes in the measure.  
+It does not effect the printable sheet music.   To generate swing, a delay is added to the upbeat notes in the measure.  
 The upbeat notes are the "a" and the "e" in a 16th note groove. (1e&a), and are the "&" notes in a 8th note groove.  (1&2&3&4&).    
 During MIDI generation, the program extends the duration of the downbeat notes and shortens the duration of the upbeat notes.
 The percentage of the swing controls the percentage of the note duration that the upbeat is delayed. 
 (NewDelay = NormalDelay + (NormalDelay * SwingPercentage)
 <p>
 
-<b>Author:</b> <A Href="http://www.montulli.org/lou/">Lou Montulli</a>
-<p>
-<b>Inspiration:</b> I was inspired to write this app after spending lots of time trying to use ABC notation to create good looking printable sheet music.    
-ABC is an awesome invention, but it can be very challenging to create percussion music using it.
+<h3>People: </h3>
+<ul>
+<li><b>Author:</b> <A Href="http://www.montulli.org/lou/">Lou Montulli</a>
+<li><A Href="http://mikeslessons.com/">Mike Johnston</a>  -- The inpiration for this app.  Feature and design contributor.     
+</ul>
+
 
 <h3>Thanks and attribution:</h3>
-
-<b>People: </b>
 <ul>
-<li><A Href="http://mikeslessons.com/">Mike Johnston</a>  -- Who taught me about permutations which led me to try to use ABC Notation to create new ones.  
-Mike also was the first to see the app and gave me great suggestions and improvements.   
-
-<li><A href="http://www.bkdrummer.com/">Brad Kaiser</a> -- My first drum instructer, who taught me how to read percussion sheet music.
 <li>My Family -- I made them do beta testing.  :)
+<li><A href="http://www.bkdrummer.com/">Brad Kaiser</a> -- My first drum instructer, who taught me how to read percussion sheet music.
 </ul>
 <p>
 

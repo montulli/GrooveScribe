@@ -28,32 +28,33 @@
 		width: 70px;
 		height: 100%;
 		position: fixed;
-		border-right: 1px solid #000;
+		border-right: 2px solid #000;
 		background: #3b5166;
+		z-index: 999;
 	}
 	#TopNav {
 		position: fixed;
 		z-index: 999;
-		left: 71px;
-		width: 100%;
+		left: 72px;
+		width: calc(100% - 72px);
 		height: 40px;
 		border-bottom: 1px solid #00C;
 		background: #009ffa;
 		max-width: 954px;
 	}
 	#midiPlayer {  /* more #midiPlayer css in groove_display.css */
-		width: 100%;
+		width: calc(100% - 72px);
 		height: 65px;
 		max-width: 954px;
 		position: fixed;
 		z-index: 999;
-		left: 71px;
+		left: 72px;
 		top: 41px;
 		border-bottom: 1px solid #00C;
 		
 	}
 	#RightHandContent {
-		margin-left: 70px;
+		margin-left: 72px;
 		padding-top: 104px;
 	}
 	#upperRight {
@@ -62,17 +63,7 @@
 	#divisionButtonContainer {
 		
 	}
-	#timeLabel {
-		display: inline-block;
-		width: 50px;
-		height: 30px;
-		border-right: 1px solid #000;
-		border-bottom: 1px solid #000;
-		text-align: center;
-		padding: 10px 10px 0px 10px;
-		background: #3b5166;
-		color: #EEF;
-	}
+	
 	#metronomeLabel {
 		display: inline-block;
 		height: 20px;
@@ -102,20 +93,25 @@
 		padding: 3px 6px 3px 6px;
 		color: #EEF;
 	}
-	.subdivision, #advancedEditAnchor {
+	
+	#timeLabel, .subdivision, #advancedEditAnchor {
 		display: block;
 		font-size: 18px;
+		font-weight: bold;
 		height: 65px;
 		border-bottom: 1px solid #000;
 		text-align: center;
 		vertical-align: middle;
-		color: #EEE;
+		color: #85a3bb;
 		display: -webkit-flex;
 		display: flex;
 		align-items: center;
 		-webkit-align-items: center;
 		justify-content: center;
 		-webkit-justify-content: space-around;
+	}
+	#timeLabel {
+		height: 40px;  /* Override from above */
 	}
 	#advancedEditAnchor {
 		background: #FFFFCC;
@@ -130,8 +126,7 @@
 		height: 30px;
 		text-align: center;
 		padding-top: 35px;
-		border-top: 1px solid #000;
-		border-bottom: 1px solid #000;
+		border-top: 1px solid #999;
 	}
 	#NotationLabel {
 		display: inline-block;
@@ -456,8 +451,10 @@
 	.svgTarget {
 		width: 100%;
 		max-width: 954px;
+		min-width: 800px;
 		background: #FFF;
-		border-bottom:1px solid #000;
+		border-top:1px solid #999;
+		border-bottom:1px solid #999;
 	}
 	#sheetMusicTextFields {
 		margin-top: 5px;
@@ -541,6 +538,8 @@
 	#buttonsAboveSheetMusic {
 		margin-top: 10px;
 		margin-bottom: 5px;
+		margin-left: 5px;
+		margin-right: 5px;
 		width: 795px;
 		padding-right: 10px;
 		-webkit-justify-content: space-between;
@@ -559,7 +558,7 @@
 	   vertical-align: middle;
 	 }
 	
-	.myButton:hover, .subdivision:hover, .rightButtons:hover  {
+	.myButton:hover, .subdivision:hover, .rightButtons:hover , .metronomeButton:hover {
 	   border-top-color: #28597a;
 	   background: #28597a;
 	   color: #ccc;
@@ -592,8 +591,8 @@
 		cursor: pointer;
 	}  
 	#totalPlayTime {
-		z-index: 9999999999999;
-		position: absolute;
+		z-index: 999;
+		position: fixed;
 		bottom: 3px;
 		right: 3px;
 	}
