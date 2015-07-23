@@ -383,7 +383,8 @@
 		height:22px;
 		width: 22px;
 		background: #FFF;
-		border: 2px solid #999;
+		border: 2px solid;
+		border-color: #999;
 		border-radius: 30px;
 		cursor: pointer;
 	}
