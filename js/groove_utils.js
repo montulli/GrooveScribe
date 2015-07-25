@@ -1574,9 +1574,11 @@ function GrooveUtils() { "use strict";
 			return;
 		} else if(root.isMIDIPaused && false == root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot) ) {
 			root.current_midi_start_time = new Date();
+			root.last_midi_update_time = 0;
 			MIDI.Player.resume();
 		} else {
 			root.current_midi_start_time = new Date();
+			root.last_midi_update_time = 0;
 			root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot);
 			MIDI.Player.stop();
 			MIDI.Player.loop(root.shouldMIDIRepeat);   // set the loop parameter
@@ -1758,9 +1760,32 @@ function GrooveUtils() { "use strict";
         return tempo;
     }
 
+	// we need code to make the range slider colors update properly
+	function updateRangeSlider(sliderID) {
+		
+		var slider = document.getElementById(sliderID);
+        var programaticCSSRules = document.getElementById(sliderID + "CSSRules");
+		if(!programaticCSSRules) {
+			// create a new one.
+			programaticCSSRules = document.createElement('style');
+			programaticCSSRules.id = sliderID + "CSSRules";
+			document.body.appendChild(programaticCSSRules);
+		}
+		
+	    // change the before and after colors of the slider using a gradiant
+	    var percent = Math.ceil(((slider.value - slider.min) / (slider.max - slider.min)) * 100);
+        
+		var new_style_str = '#' + sliderID + '::-moz-range-track' + '{ background: -moz-linear-gradient(left, #49b4f8 ' + percent + '%, #005789 ' + percent + '%)}\n';
+		new_style_str += '#' + sliderID + '::-webkit-slider-runnable-track' + '{ background: -webkit-linear-gradient(left, #49b4f8 0%, #49b4f8 ' + percent + '%, #005789 ' + percent + '%)}\n';
+		programaticCSSRules.textContent = new_style_str;
+
+	}
+	
 	// update the tempo string display
 	function tempoUpdate(tempo) {
 		document.getElementById('tempoOutput' + root.grooveUtilsUniqueIndex).innerHTML = "" + tempo;
+		
+		updateRangeSlider('tempoInput' + root.grooveUtilsUniqueIndex);
 		root.midiNoteHasChanged();
 	}
 	
@@ -1817,10 +1842,12 @@ function GrooveUtils() { "use strict";
 			root.swingPercent = swingAmount;
 			root.midiNoteHasChanged();
 		}
+		
 	}
 	
 	root.swingUpdateEvent = function(event) {
 		root.swingUpdate(event.target.value);
+		updateRangeSlider('swingInput' + root.grooveUtilsUniqueIndex);
 	}
 	
 	

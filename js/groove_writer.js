@@ -1,5 +1,5 @@
-	// Javascript for the Groove Writer HTML application
-	// Groove Writer is for drummers and helps create sheet music with an easy to use WYSIWYG groove editor.
+	// Javascript for the Groove Scribe HTML application
+	// Groove Scribe is for drummers and helps create sheet music with an easy to use WYSIWYG groove editor.
 	//
 	// Author: Lou Montulli   
 	// Original Creation date: Feb 2015.
@@ -14,11 +14,11 @@ function GrooveWriter() { "use strict";
 	// public class vars
 	var class_number_of_measures = 2;  // only 2 for now (future expansion to more possible)
 	var class_notes_per_measure = parseInt(myGrooveUtils.getQueryVariableFromURL("Div", "8"));	// default to 8ths
-
+	var class_metronome_interval = 0;
 
 
 	// private vars in the scope of the class
-	var class_app_title = "Groove Writer";
+	var class_app_title = "Groove Scribe";
 	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
 	var class_permutationType = "none";
 	var class_advancedEditIsOn = false;
@@ -30,14 +30,17 @@ function GrooveWriter() { "use strict";
 	var constant_note_stem_off_color = "transparent";
 	var constant_subdivision_selected_background_color = "#53758e";
 	var constant_subdivision_selected_text_color = "#FFF";
+	var constant_permutation_unselected_background_color = "transparent";
+	var constant_permutation_unselected_text_color = "#EEF";
 	var constant_permutation_selected_background_color = "#FFFFCC";
 	var constant_permutation_selected_text_color = "black";
 	var constant_note_on_color_hex  = "#000000";  // black
 	var constant_note_on_color_rgb  = 'rgb(0, 0, 0)';  // black
 	var constant_note_off_color_hex = "#FFF"; 
 	var constant_note_off_color_rgb = 'rgb(255, 255, 255)';  // white
+	var constant_note_border_color_hex = "#999"; 
 	var constant_hihat_note_off_color_hex = "#CCC"; 
-	var constant_hihat_note_off_color_rgb = 'rgb(204, 204, 204)';  // white
+	var constant_hihat_note_off_color_rgb = 'rgb(204, 204, 204)';  // grey
 	var constant_note_hidden_color_rgb = "transparent";
 	var constant_ABC_STICK_R=  '"R"x';
 	var constant_ABC_STICK_L=  '"L"x';
@@ -209,11 +212,11 @@ function GrooveWriter() { "use strict";
 		switch(mode) {
 		case "off":
 			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_off_color_hex;
-			document.getElementById("kick_circle" + id).style.borderColor = null;
+			document.getElementById("kick_circle" + id).style.borderColor = constant_note_border_color_hex;
 			break;
 		case "normal":
 			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_on_color_hex;
-			document.getElementById("kick_circle" + id).style.borderColor = null;
+			document.getElementById("kick_circle" + id).style.borderColor = constant_note_border_color_hex;
 			break;
 		case "splash":
 			document.getElementById("kick_splash" + id).style.color = constant_note_on_color_hex;
@@ -243,11 +246,11 @@ function GrooveWriter() { "use strict";
 		switch(mode) {
 		case "off":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_off_color_hex;
-			document.getElementById("snare_circle" + id).style.borderColor = null;
+			document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
 			break;
 		case "normal":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
-			document.getElementById("snare_circle" + id).style.borderColor = null;
+			document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
 			break;
 		case "ghost":
 			document.getElementById("snare_ghost" + id).style.color = constant_note_on_color_hex;
@@ -255,7 +258,7 @@ function GrooveWriter() { "use strict";
 		case "accent":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
 			document.getElementById("snare_accent" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("snare_circle" + id).style.borderColor = null;
+			document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
 			break;
 		case "xstick":
 			document.getElementById("snare_xstick" + id).style.color = constant_note_on_color_hex;
@@ -519,7 +522,50 @@ function GrooveWriter() { "use strict";
 		
 	}
 	
+	// the user has clicked on the permutation menu
+	root.metronomeButtonClick = function(event, metronomeInterval) {
+		
+		var button = document.getElementById(event.target.id);
+		
+		// clear other buttons
+		var myElements = document.querySelectorAll(".metronomeButton");
+		for (var i = 0; i < myElements.length; i++) {
+			var thisButton = myElements[i];
+			thisButton.style.background = '#0071ad';
+		}
+		
+		class_metronome_interval = metronomeInterval;
+		
+		// set this button
+		button.style.background = '#69c1ff';
+		
+		myGrooveUtils.midiNoteHasChanged(); // pretty likely the case
+	}
 	
+	root.setDefaultMetronomeButton = function(metronomeInterval) {
+		
+		class_metronome_interval = metronomeInterval;
+		var id="";
+		switch(metronomeInterval) {
+				default:
+				case 0:
+					id = "metronomeOff";
+					break;
+				case 4:
+					id = "metronome4ths";
+					break;
+				case 8:
+					id = "metronome4ths";
+					break;
+				case 16:
+					id = "metronome4ths";
+					break;
+		}
+		
+		var button = document.getElementById(id);
+		if(button)
+			button.style.background = '#69c1ff';	
+	}
 	
 	
 	// the user has clicked on the permutation menu
@@ -612,8 +658,8 @@ function GrooveWriter() { "use strict";
 			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
 			// document.getElementById("staff-container2").style.display = "block";
 			class_permutationType = "none";
-			document.getElementById("permutationAnchor").style.background = null;
-			document.getElementById("permutationAnchor").style.color = null;
+			document.getElementById("permutationAnchor").style.background = constant_permutation_unselected_background_color;
+			document.getElementById("permutationAnchor").style.color = constant_permutation_unselected_text_color;
 			break;
 		}
 		
@@ -1573,7 +1619,9 @@ function GrooveWriter() { "use strict";
 		var Snare_Array = class_empty_note_array.slice(0);  // copy by value
 		var Kick_Array = class_empty_note_array.slice(0);  // copy by value
 		
-		var metronomeFrequency = myGrooveUtils.getMetronomeFrequency(); 
+		// comes locally from this class
+		//var metronomeFrequency = myGrooveUtils.getMetronomeFrequency(); 
+		var metronomeFrequency = class_metronome_interval;
 		
 		// just the first measure
 		var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, 0);
@@ -1798,7 +1846,7 @@ function GrooveWriter() { "use strict";
 		}
 		
 		if(!newTitle) 
-			newTitle = "Groove Writer";
+			newTitle = class_app_title;
 		
 		document.title = newTitle
 		window.history.replaceState(null, newTitle, newURL);
@@ -2123,7 +2171,7 @@ function GrooveWriter() { "use strict";
 
 		
 	// public function.
-	// This function initializes the data for the groove writer web page
+	// This function initializes the data for the groove Scribe web page
 	root.runsOnPageLoad = function() {
 		
 		// setup for URL shortener
@@ -2131,6 +2179,8 @@ function GrooveWriter() { "use strict";
 		gapi.client.load('urlshortener', 'v1',function(){});
 		
 		//setupHotKeys();  Runs on midi load now
+		
+		root.setDefaultMetronomeButton(0);
 		
 		setupPermutationMenu();
 						
