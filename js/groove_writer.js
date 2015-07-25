@@ -614,16 +614,7 @@ function GrooveWriter() { "use strict";
 	}
 	
 	function setupPermutationMenu() {
-		// disable for triplets
-		if(!document.getElementById("permutationAnchor"))
-			return;
-		
-		if(usingTriplets) {
-			document.getElementById("permutationAnchor").style.fontColor = "gray";
-		} else {
-			document.getElementById("permutationAnchor").style.fontColor = "blue";
-		}
-		
+		// do nothing for now
 	}
 	
 	root.permutationPopupClick = function(perm_type) {
@@ -631,25 +622,23 @@ function GrooveWriter() { "use strict";
 		
 		switch (perm_type) {
 		case "kick_16ths":
-		case "kick_16ths_with_upbeats":
 			showHideCSS_ClassVisibility(".kick-container", true, false);  // hide it
 			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
 			document.getElementById("staff-container2").style.display = "none";
 			document.getElementById("permutationAnchor").style.background = constant_permutation_selected_background_color;
 			document.getElementById("permutationAnchor").style.color = constant_permutation_selected_text_color;
+			document.getElementById("PermutationOptions").style.display = "block";
 			break;
 			
 		case "snare_16ths":
-		case "snare_16ths_with_upbeats":
 		case "snare_accent_16ths":
-		case "snare_accent_16ths_with_upbeats":
 		case "snare_accented_and_diddled_16ths":
-		case "snare_accented_and_diddled_16ths_with_upbeats":
 			showHideCSS_ClassVisibility(".kick-container", true, true);  // show it
 			showHideCSS_ClassVisibility(".snare-container", true, false);  // hide it
 			document.getElementById("staff-container2").style.display = "none";
 			document.getElementById("permutationAnchor").style.background = constant_permutation_selected_background_color;
 			document.getElementById("permutationAnchor").style.color = constant_permutation_selected_text_color;
+			document.getElementById("PermutationOptions").style.display = "block";
 			break;
 
 		case "none":
@@ -660,6 +649,7 @@ function GrooveWriter() { "use strict";
 			class_permutationType = "none";
 			document.getElementById("permutationAnchor").style.background = constant_permutation_unselected_background_color;
 			document.getElementById("permutationAnchor").style.color = constant_permutation_unselected_text_color;
+			document.getElementById("PermutationOptions").style.display = "none";
 			break;
 		}
 		
@@ -911,12 +901,8 @@ function GrooveWriter() { "use strict";
 	
 	
 
-	function get_permutation_pre_ABC(section, includeUpbeatsAndDownbeats) {
+	function get_permutation_pre_ABC(section) {
 		var abc = "";
-		
-		if(!includeUpbeatsAndDownbeats && section > 8)
-			section += 2;  // skip past the upbeats & downbeats
-		
 		
 		if(usingTriplets()) {
 			// skip every fourth one
@@ -983,11 +969,8 @@ function GrooveWriter() { "use strict";
 		return abc;
 	}
 	
-	function get_permutation_post_ABC(section, includeUpbeatsAndDownbeats) {
+	function get_permutation_post_ABC(section) {
 		var abc = "";
-		
-		if(!includeUpbeatsAndDownbeats && section > 8)
-			section += 2;  // skip past the upbeats & downbeats
 		
 		if(usingTriplets()) {
 			// skip every third one
@@ -1054,11 +1037,9 @@ function GrooveWriter() { "use strict";
 	// 16th note permutation array expressed in 32nd notes
 	// some kicks are excluded at the beginning of the measure to make the groupings
 	// easier to play through continuously
-	function get_kick16th_minus_some_strait_permutation_array(section, includeUpbeatsAndDownbeats) {
+	function get_kick16th_minus_some_strait_permutation_array(section) {
 		var kick_array;
 		
-		if(!includeUpbeatsAndDownbeats && section > 8)
-			section += 2;  // skip past the upbeats & downbeats
 		
 		switch(section) {
 		case 0:
@@ -1165,11 +1146,9 @@ function GrooveWriter() { "use strict";
 	
 	// 16th note permutation array expressed in 32nd notes
 	// all kicks are included, including the ones that start the measure
-	function get_kick16th_strait_permutation_array(section, includeUpbeatsAndDownbeats) {
+	function get_kick16th_strait_permutation_array(section) {
 		var kick_array;
 		
-		if(!includeUpbeatsAndDownbeats && section > 8)
-			section += 2;  // skip past the upbeats & downbeats
 		
 		switch(section) {
 		case 0:
@@ -1451,7 +1430,7 @@ function GrooveWriter() { "use strict";
 		return kick_array;
 	}
 	
-	function get_kick16th_permutation_array(section, includeUpbeatsAndDownbeats) {
+	function get_kick16th_permutation_array(section) {
 		if(usingTriplets()) {
 			if(class_notes_per_measure == 6)
 				return get_kick16th_triplets_permutation_array_for_4ths(section);
@@ -1462,15 +1441,15 @@ function GrooveWriter() { "use strict";
 			else
 				return class_empty_note_array.slice(0);  // copy by value;
 		} else	{
-			return get_kick16th_strait_permutation_array(section, includeUpbeatsAndDownbeats);
+			return get_kick16th_strait_permutation_array(section);
 		}
 	}
 	
 	// snare permutation 
-	function get_snare_permutation_array(section, includeUpbeatsAndDownbeats) {
+	function get_snare_permutation_array(section) {
 
 		// its the same as the 16th kick permutation, but with different notes
-		var snare_array = get_kick16th_permutation_array(section, includeUpbeatsAndDownbeats);
+		var snare_array = get_kick16th_permutation_array(section);
 		
 		// turn the kicks into snares
 		for(var i=0; i < snare_array.length; i++)
@@ -1483,10 +1462,10 @@ function GrooveWriter() { "use strict";
 	}
 	
 	// Snare permutation, with Accented permutation.   Snare hits every 16th note, accent moves
-	function get_snare_accent_permutation_array(section, includeUpbeatsAndDownbeats) {
+	function get_snare_accent_permutation_array(section) {
 
 		// its the same as the 16th kick permutation, but with different notes
-		var snare_array = get_kick16th_permutation_array(section, includeUpbeatsAndDownbeats);
+		var snare_array = get_kick16th_permutation_array(section);
 		
 		if(section > 0) {   // Don't convert notes for the first measure since it is the ostinado
 			for(var i=0; i < snare_array.length; i++)
@@ -1502,10 +1481,10 @@ function GrooveWriter() { "use strict";
 	}
 	
 	// Snare permutation, with Accented and diddled permutation.   Accented notes are singles, non accents are diddled
-	function get_snare_accent_with_diddle_permutation_array(section, includeUpbeatsAndDownbeats) {
+	function get_snare_accent_with_diddle_permutation_array(section) {
 
 		// its the same as the 16th kick permutation, but with different notes
-		var snare_array = get_kick16th_permutation_array(section, includeUpbeatsAndDownbeats);
+		var snare_array = get_kick16th_permutation_array(section);
 		
 		if(section > 0) {   // Don't convert notes for the first measure since it is the ostinado
 			for(var i=0; i < snare_array.length; i++)
@@ -1522,17 +1501,16 @@ function GrooveWriter() { "use strict";
 		return snare_array;
 	}
 	
-	function get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats) {
-		var numSections = 0;
+	function get_numSectionsFor_permutation_array() {
+		var numSections = 16;
 		
+		/*)
 		if(usingTriplets()) {
 			numSections = 8;
 		} else {
-			if(includeUpbeatsAndDownbeats)
-				numSections = 16;
-			else
-				numSections = 14;
+			numSections = 16;
 		}
+		*/
 		
 		return numSections;
 	}
@@ -1581,6 +1559,107 @@ function GrooveWriter() { "use strict";
 						  "F", false, false, false, "^D", false, "F", false,  
 						  false, false, false, false, "[F^D]", false, false, false];
 		return kick_array;
+	}
+	
+	// use the Permutation options to figure out if we should display a particular section
+	function shouldDisplayPermutationForSection(sectionNum) {
+		var ret_val = false;
+		
+		switch(sectionNum) {
+			case 0:
+				if(document.getElementById("PermuationOptionsOstinato").checked
+					&& document.getElementById("PermuationSubOptionsOstinato1").checked)
+					ret_val = true;
+				break;
+			case 1:
+				if(document.getElementById("PermuationOptionsSingles").checked
+					&& document.getElementById("PermuationSubOptionsSingles1").checked)
+					ret_val = true;
+				break;
+			case 2:
+				if(document.getElementById("PermuationOptionsSingles").checked
+					&& document.getElementById("PermuationSubOptionsSingles2").checked)
+					ret_val = true;
+				break;
+			case 3:
+				if(document.getElementById("PermuationOptionsSingles").checked
+					&& document.getElementById("PermuationSubOptionsSingles3").checked)
+					ret_val = true;
+				break;
+			case 4:
+				if(!usingTriplets()
+					&& document.getElementById("PermuationOptionsSingles").checked
+					&& document.getElementById("PermuationSubOptionsSingles4").checked)
+					ret_val = true;
+				break;
+			case 5:
+				if(document.getElementById("PermuationOptionsDoubles").checked
+					&& document.getElementById("PermuationSubOptionsDoubles1").checked)
+					ret_val = true;
+				break;
+			case 6:
+				if(document.getElementById("PermuationOptionsDoubles").checked
+					&& document.getElementById("PermuationSubOptionsDoubles2").checked)
+					ret_val = true;
+				break;
+			case 7:
+				if(document.getElementById("PermuationOptionsDoubles").checked
+					&& document.getElementById("PermuationSubOptionsDoubles3").checked)
+					ret_val = true;
+				break;
+			case 8:
+				if(!usingTriplets()
+					&& document.getElementById("PermuationOptionsDoubles").checked
+					&& document.getElementById("PermuationSubOptionsDoubles4").checked)
+					ret_val = true;
+				break;
+			case 9:
+				if(!usingTriplets()
+					&& document.getElementById("PermuationOptionsUpsDowns").checked
+					&& document.getElementById("PermuationSubOptionsUpsDowns1").checked)
+					ret_val = true;
+				break;
+			case 10:
+				if(!usingTriplets()
+					&& document.getElementById("PermuationOptionsUpsDowns").checked
+					&& document.getElementById("PermuationSubOptionsUpsDowns2").checked)
+					ret_val = true;
+				break;
+			case 11:
+				if(document.getElementById("PermuationOptionsTriples").checked
+					&& document.getElementById("PermuationSubOptionsTriples1").checked)
+					ret_val = true;
+				break;
+			case 12:
+				if(!usingTriplets()
+					&& document.getElementById("PermuationOptionsTriples").checked
+					&& document.getElementById("PermuationSubOptionsTriples2").checked)
+					ret_val = true;
+				break;
+			case 13:
+				if(!usingTriplets()
+					&& document.getElementById("PermuationOptionsTriples").checked
+					&& document.getElementById("PermuationSubOptionsTriples3").checked)
+					ret_val = true;
+				break;
+			case 14:
+				if(!usingTriplets()
+					&& document.getElementById("PermuationOptionsTriples").checked
+					&& document.getElementById("PermuationSubOptionsTriples4").checked)
+					ret_val = true;
+				break;
+			case 15:
+				if(!usingTriplets()
+					&& document.getElementById("PermuationOptionsQuads").checked
+					&& document.getElementById("PermuationSubOptionsQuads1").checked)
+					ret_val = true;
+				break;
+			default:
+				alert("bad case in groove_writer.js:shouldDisplayPermutationForSection()")
+				return false;
+		}
+		
+			return ret_val;
 	}
 	
 	// query the clickable UI and generate a 32 element array representing the notes of one measure
@@ -1638,73 +1717,74 @@ function GrooveWriter() { "use strict";
 		// all of the permutations use just the first measure
 		switch (class_permutationType) {
 		case "kick_16ths":
-		case "kick_16ths_with_upbeats":
-			var includeUpbeatsAndDownbeats = (class_permutationType == "kick_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
+			var numSections = get_numSectionsFor_permutation_array();
 			
 			// compute sections with different kick patterns
 			for(var i=0; i < numSections; i++) {
-				var new_kick_array;
 				
-				new_kick_array = get_kick16th_permutation_array(i, includeUpbeatsAndDownbeats);
+				if(shouldDisplayPermutationForSection(i)) {
+					var new_kick_array;
+					
+					new_kick_array = get_kick16th_permutation_array(i);
 
-				var num_notes_for_swing = 16;
-				if(class_notes_per_measure > 16)
-					num_notes_for_swing = class_notes_per_measure;
-			
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+					var num_notes_for_swing = 16;
+					if(class_notes_per_measure > 16)
+						num_notes_for_swing = class_notes_per_measure;
+				
+					myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+				}
 			}
 			break;
 			
 		
 		case "snare_16ths":  // use the hh & snare from the user
-		case "snare_16ths_with_upbeats":
-			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
+			var numSections = get_numSectionsFor_permutation_array()
 			
 			//compute sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
-				var new_snare_array = get_snare_permutation_array(i, includeUpbeatsAndDownbeats);
+				if(shouldDisplayPermutationForSection(i)) {
+					var new_snare_array = get_snare_permutation_array(i);
+					
+					var num_notes_for_swing = 16;
+					if(class_notes_per_measure > 16)
+						num_notes_for_swing = class_notes_per_measure;
 				
-				var num_notes_for_swing = 16;
-				if(class_notes_per_measure > 16)
-					num_notes_for_swing = class_notes_per_measure;
-			
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+					myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+				}
 			}
 			break;
 			
 		case "snare_accent_16ths":  // use the hh & snare from the user
-		case "snare_accent_16ths_with_upbeats": 
-			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_accent_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
+			var numSections = get_numSectionsFor_permutation_array()
 			
 			//compute sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
-				var new_snare_array = get_snare_accent_permutation_array(i, includeUpbeatsAndDownbeats);
+				if(shouldDisplayPermutationForSection(i)) {
+					var new_snare_array = get_snare_accent_permutation_array(i);
+					
+					var num_notes_for_swing = 16;
+					if(class_notes_per_measure > 16)
+						num_notes_for_swing = class_notes_per_measure;
 				
-				var num_notes_for_swing = 16;
-				if(class_notes_per_measure > 16)
-					num_notes_for_swing = class_notes_per_measure;
-			
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+					myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+				}
 			}
 			break;
 			
 		case "snare_accented_and_diddled_16ths":  // use the hh & snare from the user
-		case "snare_accented_and_diddled_16ths_with_upbeats": 
-			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_accented_and_diddled_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
+			var numSections = get_numSectionsFor_permutation_array()
 			
 			//compute sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
-				var new_snare_array = get_snare_accent_with_diddle_permutation_array(i, includeUpbeatsAndDownbeats);
+				if(shouldDisplayPermutationForSection(i)) {
+					var new_snare_array = get_snare_accent_with_diddle_permutation_array(i);
+					
+					var num_notes_for_swing = 16;
+					if(class_notes_per_measure > 16)
+						num_notes_for_swing = class_notes_per_measure;
 				
-				var num_notes_for_swing = 16;
-				if(class_notes_per_measure > 16)
-					num_notes_for_swing = class_notes_per_measure;
-			
-				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+					myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+				}
 			}
 			break;
 			
@@ -1862,8 +1942,7 @@ function GrooveWriter() { "use strict";
 		var HH_Array = class_empty_note_array.slice(0);  // copy by value
 		var Snare_Array = class_empty_note_array.slice(0);  // copy by value
 		var Kick_Array = class_empty_note_array.slice(0);  // copy by value
-		var includeUpbeatsAndDownbeats = false;
-		var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
+		var numSections = get_numSectionsFor_permutation_array()
 		
 		var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, 0);
 		
@@ -1876,72 +1955,72 @@ function GrooveWriter() { "use strict";
 		
 		switch (class_permutationType) {
 		case "kick_16ths":  // use the hh & snare from the user
-		case "kick_16ths_with_upbeats":
-			var includeUpbeatsAndDownbeats = (class_permutationType == "kick_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
+			var numSections = get_numSectionsFor_permutation_array()
 		
 			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
 		
 			// compute sections with different kick patterns
 			for(var i=0; i < numSections; i++) {
-				var new_kick_array;
-				
-				new_kick_array = get_kick16th_permutation_array(i, includeUpbeatsAndDownbeats);
-				var post_abc = get_permutation_post_ABC(i, includeUpbeatsAndDownbeats);
-								
-				fullABC += get_permutation_pre_ABC(i, includeUpbeatsAndDownbeats);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
+				if(shouldDisplayPermutationForSection(i)) {
+					var new_kick_array;
+					
+					new_kick_array = get_kick16th_permutation_array(i);
+					var post_abc = get_permutation_post_ABC(i);
+									
+					fullABC += get_permutation_pre_ABC(i);
+					fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
+				}
 			}
 			break;
 			
 		case "snare_16ths":  // use the hh & kick from the user
-		case "snare_16ths_with_upbeats":
-			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
+			var numSections = get_numSectionsFor_permutation_array()
 		
 			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
 		
 			//compute 16 sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
-				var new_snare_array = get_snare_permutation_array(i, includeUpbeatsAndDownbeats);
-				var post_abc = get_permutation_post_ABC(i, includeUpbeatsAndDownbeats);
-				
-				fullABC += get_permutation_pre_ABC(i, includeUpbeatsAndDownbeats);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
+				if(shouldDisplayPermutationForSection(i)) {
+					var new_snare_array = get_snare_permutation_array(i);
+					var post_abc = get_permutation_post_ABC(i);
+					
+					fullABC += get_permutation_pre_ABC(i);
+					fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
+				}	
 			}
 			break;
 			
 		case "snare_accent_16ths":  // use the hh & snare from the user
-		case "snare_accent_16ths_with_upbeats":
-			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_accent_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
+			var numSections = get_numSectionsFor_permutation_array()
 		
 			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
 		
 			//compute 16 sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
-				var new_snare_array = get_snare_accent_permutation_array(i, includeUpbeatsAndDownbeats);
-				var post_abc = get_permutation_post_ABC(i, includeUpbeatsAndDownbeats);
-				
-				fullABC += get_permutation_pre_ABC(i, includeUpbeatsAndDownbeats);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
+				if(shouldDisplayPermutationForSection(i)) {
+					var new_snare_array = get_snare_accent_permutation_array(i);
+					var post_abc = get_permutation_post_ABC(i);
+					
+					fullABC += get_permutation_pre_ABC(i);
+					fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
+				}
 			}
 			break;
 		
 		case "snare_accented_and_diddled_16ths":  // use the hh & snare from the user
-		case "snare_accented_and_diddled_16ths_with_upbeats":
-			var includeUpbeatsAndDownbeats = (class_permutationType == "snare_accented_and_diddled_16ths_with_upbeats" ? true : false);
-			var numSections = get_numSectionsFor_permutation_array(includeUpbeatsAndDownbeats)
+			var numSections = get_numSectionsFor_permutation_array()
 		
 			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
 		
 			//compute 16 sections with different snare patterns		
 			for(var i=0; i < numSections; i++) {
-				var new_snare_array = get_snare_accent_with_diddle_permutation_array(i, includeUpbeatsAndDownbeats);
-				var post_abc = get_permutation_post_ABC(i, includeUpbeatsAndDownbeats);
-				
-				fullABC += get_permutation_pre_ABC(i, includeUpbeatsAndDownbeats);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
+				if(shouldDisplayPermutationForSection(i)) {
+					var new_snare_array = get_snare_accent_with_diddle_permutation_array(i);
+					var post_abc = get_permutation_post_ABC(i);
+					
+					fullABC += get_permutation_pre_ABC(i);
+					fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
+				}
 			}
 			break;
 			
@@ -2670,6 +2749,10 @@ function GrooveWriter() { "use strict";
 		// rewrite the HTML for the HTML note grid
 		document.getElementById("musicalInput").innerHTML = newHTML;
 		
+		// change the Permutation options too
+		newHTML = root.HTMLforPermutationOptions();
+		document.getElementById("PermutationOptions").innerHTML = newHTML;
+		
 		if(wasSecondMeasureVisabile)
 			root.showHideSecondMeasure(true, true);
 		
@@ -2880,6 +2963,76 @@ function GrooveWriter() { "use strict";
 		
 		return newHTML;
 	}  // end function HTMLforStaffContainer
+	
+	// public function
+	// function to create HTML for the music staff and notes.   We usually want more than one of these
+	// baseIndex is the index for the css labels "staff-container1, staff-container2"
+	// indexStartForNotes is the index for the note ids.  
+	root.HTMLforPermutationOptions = function() {
+		var optionTypeArray = [
+			{id: "PermuationOptionsOstinato",
+			 subid:  "PermuationSubOptionsOstinato",
+			 name: "Ostinato",
+			 maxSubOptions: 1
+			},
+			{id: "PermuationOptionsSingles",
+			 subid:  "PermuationSubOptionsSingles",
+			 name: "Singles",
+			 maxSubOptions: 3
+			},
+			{id: "PermuationOptionsDoubles",
+			 subid:  "PermuationSubOptionsDoubles",
+			 name: "Doubles",
+			 maxSubOptions: 3
+			},
+			{id: "PermuationOptionsTriples",
+			 subid:  "PermuationSubOptionsTriples",
+			 name: "Triples",
+			 maxSubOptions: 1
+			}];
+		
+		// change and add other options for non triplet based ostinatos
+		// Most of the types have 4 sub options
+		// add up beats and down beats
+		// add quads
+		if(!myGrooveUtils.isTripletDivision(class_notes_per_measure, 4, 4)) {
+			optionTypeArray[1].maxSubOptions = 4;  // singles
+			optionTypeArray[2].maxSubOptions = 4;  // doubles
+			optionTypeArray[3].maxSubOptions = 4;  // triples
+			optionTypeArray.splice(3, 0, {id: "PermuationOptionsUpsDowns", subid:  "PermuationSubOptionsUpsDowns", name: "Upbeats/Downbeats", maxSubOptions: 2});
+			optionTypeArray.splice(5, 0, {id: "PermuationOptionsQuads", subid:  "PermuationSubOptionsQuads", name: "Quads", maxSubOptions: 1});
+		}
+		
+		var newHTML = '<span id="PermutationOptionsHeader">Permutation Options</span>\n';
+		
+		newHTML += '<span class="PermutationOptionWrapper">';
+		
+		for(var optionType in optionTypeArray) {
+			
+			newHTML += '' +
+				'<div class="PermutationOptionGroup" id="' + optionTypeArray[optionType].id + 'Group">\n' +
+					'<div class="PermutationOption">\n' +
+						'<label><input checked type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].id + '" onChange="myGrooveWriter.refresh_ABC()">' + optionTypeArray[optionType].name + '</label>\n' +
+					'</div>'
+					'<span class="permutationSubOptionContainer" id="' + optionTypeArray[optionType].subid  +'">\n';
+						
+			for(var i = 0; i < optionTypeArray[optionType].maxSubOptions; i++) {
+				newHTML += '' +
+						'<span class="PermutationSubOption">\n' +
+						'	<label><input checked type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].subid + (i+1) + '" onChange="myGrooveWriter.refresh_ABC()">' + (i+1) + 
+						'</label>' +
+						'</span>';	
+			}
+
+			newHTML += '' +
+				'	</span>\n' +
+				'</div>\n';
+		}
+		
+		newHTML += '</span>\n';
+		return newHTML;
+	}		
+		
 };  // end of class
 		
 		

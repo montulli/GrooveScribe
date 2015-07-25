@@ -126,7 +126,6 @@
 		height: 30px;
 		text-align: center;
 		padding-top: 35px;
-		border-top: 1px solid #999;
 	}
 	#NotationLabel {
 		display: inline-block;
@@ -150,6 +149,7 @@
 		overflow-x: auto;
 		overflow-y: hidden;
 		white-space: nowrap;
+		border-bottom: 1px solid #999;
 	}
 	#musicalCenter {
 		margin-bottom: -5px;
@@ -161,6 +161,7 @@
 		display: inline-block;
 		font-family:  Times New Roman;
 		background: #FFFFFF;
+	
 	}
 	#staff-container2 {
 		display: none;
@@ -433,8 +434,31 @@
 		height:1px;
 		background: transparent;
 	}
-	
-	
+	#PermutationOptions {
+		display:none;
+	}
+	#PermutationOptionsHeader {
+		margin-left: 27px;
+		font-size: 18px;
+		font-weight:bold;
+	}
+	.PermutationOptionWrapper {
+		display: table;
+		border-collapse: collapse;
+	}
+	.PermutationOptionGroup{
+		display: table-row;
+	}
+	.PermutationOption {
+		font-weight: bold;
+		border-right: 1px solid #999;
+	}
+	.PermutationOption, .PermutationSubOption{
+		display: table-cell;
+		padding-right: 15px;
+		border-top: 1px solid #999;
+		border-bottom: 1px solid #999;
+	}
 	#permutationType {
 		margin-top: 10px;
 	}

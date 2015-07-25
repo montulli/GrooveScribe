@@ -93,6 +93,13 @@
 						</script>
 					</div>
 				</div>
+				<div id="PermutationOptions">
+					<script>
+							var genHTML = "";
+							genHTML += myGrooveWriter.HTMLforPermutationOptions();
+							document.write(genHTML);
+					</script>
+				</div>
 				<div id="NotationLine">
 					<span id='NotationLabel'>Notation</span>
 					<span id='KeyButton'><label>Key:<input type="checkbox" class="myCheckbox" id="showLegend" onChange="myGrooveWriter.refresh_ABC()"></label></span>
@@ -233,14 +240,10 @@
 			<ul id="permutationContextMenu" class="list">
 				<li onClick='myGrooveWriter.permutationPopupClick("none")'><b>None</b></li>
 				<li onClick='myGrooveWriter.permutationPopupClick("kick_16ths")'><b>Kick</b> Permutation</li>
-				<li onClick='myGrooveWriter.permutationPopupClick("kick_16ths_with_upbeats")'><b>Kick</b> Permutation extended</li>
 				<li onClick='myGrooveWriter.permutationPopupClick("snare_16ths")'><b>Snare</b> Permutation</li>
-				<li onClick='myGrooveWriter.permutationPopupClick("snare_16ths_with_upbeats")'><b>Snare</b> Permutation extended</li>
 				<!-- >
 				<li onClick='myGrooveWriter.permutationPopupClick("snare_accent_16ths")'>Accented <b>Snare</b> Permutation</li>
-				<li onClick='myGrooveWriter.permutationPopupClick("snare_accent_16ths_with_upbeats")'>Accented <b>Snare</b> Permutation extended</li>
 				<li onClick='myGrooveWriter.permutationPopupClick("snare_accented_and_diddled_16ths")'>Accented <b>Snare</b> Permutation w/ Diddles</li>
-				<li onClick='myGrooveWriter.permutationPopupClick("snare_accented_and_diddled_16ths_with_upbeats")'>Accented <b>Snare</b> Permutation w/ Diddles extended</li>
 				< -->
 			</ul>
 		</div>
