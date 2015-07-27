@@ -126,6 +126,7 @@
 		height: 30px;
 		text-align: center;
 		padding-top: 35px;
+		border-bottom:1px solid #999;
 	}
 	#NotationLabel {
 		display: inline-block;
@@ -133,6 +134,7 @@
 		font-size: 20px;
 		font-weight: bold;
 		text-align: center;
+		padding-left: 50px;
 	}
 	#KeyButton {
 		float: right;
@@ -451,7 +453,7 @@
 	}
 	.PermutationOption {
 		font-weight: bold;
-		border-right: 1px solid #999;
+		/border-right: 1px solid #999;
 	}
 	.PermutationOption, .PermutationSubOption{
 		display: table-cell;
@@ -478,11 +480,10 @@
 		max-width: 954px;
 		min-width: 800px;
 		background: #FFF;
-		border-top:1px solid #999;
-		border-bottom:1px solid #999;
 	}
 	#sheetMusicTextFields {
 		margin-top: 5px;
+		padding-top:1px solid #999;
 	}
 	// Context Menu
 	.noteContextMenu { 
@@ -614,7 +615,13 @@
 		width: 20px;
 		height: 20px;
 		cursor: pointer;
-	}  
+	} 
+	input[type=checkbox] + label {
+		color: #888;
+	}	
+	input[type=checkbox]:checked + label {
+		color: #000;
+	}
 	#totalPlayTime {
 		z-index: 999;
 		position: fixed;

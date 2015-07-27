@@ -904,14 +904,6 @@ function GrooveWriter() { "use strict";
 	function get_permutation_pre_ABC(section) {
 		var abc = "";
 		
-		if(usingTriplets()) {
-			// skip every fourth one
-			section += Math.floor(section/4);
-			
-			if(section == 8)
-				section = 9;
-		}
-		
 		switch(section) {
 		case 0:
 			abc += "P:Ostinato\n%\n%\n%Just the Ositnato\n"
@@ -941,7 +933,7 @@ function GrooveWriter() { "use strict";
 			abc += "%\n%\n% doubles on the \"a\"\n%\n";		
 			break;
 		case 9:
-			abc += "T: \nP: Up/Down Beats\n%\n%\n% upbeats on the \"1\"\n%\n"
+			abc += "T: \nP: Down/Up Beats\n%\n%\n% upbeats on the \"1\"\n%\n"
 			break;
 		case 10:
 			abc += "%\n%\n% downbeats on the \"e\"\n%\n"
@@ -972,10 +964,6 @@ function GrooveWriter() { "use strict";
 	function get_permutation_post_ABC(section) {
 		var abc = "";
 		
-		if(usingTriplets()) {
-			// skip every third one
-			section += Math.floor(section/3);
-		}
 		
 		switch(section) {
 		case 0:
@@ -988,7 +976,10 @@ function GrooveWriter() { "use strict";
 			abc += "\n";
 			break;
 		case 3:
-			abc += "\\\n";
+			if(usingTriplets())
+				abc += "|\n";
+			else
+				abc += "\\\n";
 			break;
 		case 4:
 			abc += "|\n";	
@@ -1000,7 +991,10 @@ function GrooveWriter() { "use strict";
 			abc += "\n";
 			break;
 		case 7:
-			abc += "\\\n";
+			if(usingTriplets())
+				abc += "|\n";
+			else
+				abc += "\\\n";
 			break;
 		case 8:
 			abc += "|\n";		
@@ -1012,7 +1006,11 @@ function GrooveWriter() { "use strict";
 			abc += "|\n";
 			break;
 		case 11:
-			abc += "\\\n";
+			if(usingTriplets())
+				abc += "|\n";
+			else
+				abc += "\\\n";
+			break;
 			break;
 		case 12:
 			abc += "\n";		
@@ -1282,25 +1280,37 @@ function GrooveWriter() { "use strict";
 						  false, false, false, false, "F", false, 
 						  false, false, false, false, "F", false]
 			break;
-		case 4:
+		case 5:
 			kick_array = ["F", false, "F", false, false, false, 
 						  "F", false, "F", false, false, false, 
 						  "F", false, "F", false, false, false, 
 						  "F", false, "F", false, false, false];
 			break;
-		case 5:
+		case 6:
 			kick_array = [false, false, "F", false, "F", false, 
 						  false, false, "F", false, "F", false, 
 						  false, false, "F", false, "F", false, 
 						  false, false, "F", false, "F", false];
 			break;
-		case 6:
+		case 7:
 			kick_array = [false, false, false, false, "F", false,
 						  "F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false];
 			break;
-		case 7:
+		
+		// these cases should not be called
+		case 4:   // 4th single
+		case 8:   // 4th double
+		case 9:   // 1st up/down
+		case 10:  // 2nd up/down
+		case 12:  // 2nd triplet
+		case 13:  // 3nd triplet
+		case 14:  // 4nd triplet
+		case 15:  // 1st Quad
+			alert("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
+			
+		case 11:  // first triplet
 		default:
 			kick_array = ["F", false, "F", false, "F", false, 
 						  "F", false, "F", false, "F", false, 
@@ -1341,25 +1351,37 @@ function GrooveWriter() { "use strict";
 						  false, false, false, false, "F", false, 
 						  false, false, false, false, "F", false]
 			break;
-		case 4:
+		case 5:
 			kick_array = ["F", false, "F", false, false, false, 
 						  "F", false, "F", false, false, false, 
 						  "F", false, "F", false, false, false, 
 						  "F", false, "F", false, false, false];
 			break;
-		case 5:
+		case 6:
 			kick_array = [false, false, "F", false, "F", false, 
 						  false, false, "F", false, "F", false, 
 						  false, false, "F", false, "F", false, 
 						  false, false, "F", false, "F", false];
 			break;
-		case 6:
+		case 7:
 			kick_array = [false, false, false, false, "F", false,
 						  "F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false];
 			break;
-		case 7:
+		
+		// these cases should not be called
+		case 4:   // 4th single
+		case 8:   // 4th double
+		case 9:   // 1st up/down
+		case 10:  // 2nd up/down
+		case 12:  // 2nd triplet
+		case 13:  // 3nd triplet
+		case 14:  // 4nd triplet
+		case 15:  // 1st Quad
+			alert("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
+			
+		case 11:   // first triplet
 		default:
 			kick_array = ["F", false, "F", false, "F", false, 
 						  "F", false, "F", false, "F", false, 
@@ -1400,25 +1422,37 @@ function GrooveWriter() { "use strict";
 						  false, false, false, false, false, false, 
 						  false, false, "F", false, false, false]
 			break;
-		case 4:
+		case 5:
 			kick_array = ["F", false, false, false, "F", false, 
 						  false, false, false, false, false, false, 
 						  "F", false, false, false, "F", false, 
 						  false, false, false, false, false, false];
 			break;
-		case 5:
+		case 6:
 			kick_array = [false, false, false, false, "F", false, 
 						  false, false, "F", false, false, false,
 						  false, false, false, false, "F", false,
 						  false, false, "F", false, false, false];
 			break;
-		case 6:
+		case 7:
 			kick_array = ["F", false, false, false, false, false, 
 						  false, false, "F", false, false, false, 
 						  "F", false, false, false, false, false, 
 						  false, false, "F", false, false, false]
 			break;
-		case 7:
+		
+		// these cases should not be called
+		case 4:   // 4th single
+		case 8:   // 4th double
+		case 9:   // 1st up/down
+		case 10:  // 2nd up/down
+		case 12:  // 2nd triplet
+		case 13:  // 3nd triplet
+		case 14:  // 4nd triplet
+		case 15:  // 1st Quad
+			alert("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
+			
+		case 11:   // first triplet
 		default:
 			kick_array = ["F", false, false, false, "F", false, 
 						  false, false, "F", false, false, false, 
@@ -1568,90 +1602,93 @@ function GrooveWriter() { "use strict";
 		switch(sectionNum) {
 			case 0:
 				if(document.getElementById("PermuationOptionsOstinato").checked
-					&& document.getElementById("PermuationSubOptionsOstinato1").checked)
+					&& (!document.getElementById("PermuationOptionsOstinato_sub1")
+						|| document.getElementById("PermuationOptionsOstinato_sub1").checked) )
 					ret_val = true;
 				break;
 			case 1:
 				if(document.getElementById("PermuationOptionsSingles").checked
-					&& document.getElementById("PermuationSubOptionsSingles1").checked)
+					&& document.getElementById("PermuationOptionsSingles_sub1").checked)
 					ret_val = true;
 				break;
 			case 2:
 				if(document.getElementById("PermuationOptionsSingles").checked
-					&& document.getElementById("PermuationSubOptionsSingles2").checked)
+					&& document.getElementById("PermuationOptionsSingles_sub2").checked)
 					ret_val = true;
 				break;
 			case 3:
 				if(document.getElementById("PermuationOptionsSingles").checked
-					&& document.getElementById("PermuationSubOptionsSingles3").checked)
+					&& document.getElementById("PermuationOptionsSingles_sub3").checked)
 					ret_val = true;
 				break;
 			case 4:
 				if(!usingTriplets()
 					&& document.getElementById("PermuationOptionsSingles").checked
-					&& document.getElementById("PermuationSubOptionsSingles4").checked)
+					&& document.getElementById("PermuationOptionsSingles_sub4").checked)
 					ret_val = true;
 				break;
 			case 5:
 				if(document.getElementById("PermuationOptionsDoubles").checked
-					&& document.getElementById("PermuationSubOptionsDoubles1").checked)
+					&& document.getElementById("PermuationOptionsDoubles_sub1").checked)
 					ret_val = true;
 				break;
 			case 6:
 				if(document.getElementById("PermuationOptionsDoubles").checked
-					&& document.getElementById("PermuationSubOptionsDoubles2").checked)
+					&& document.getElementById("PermuationOptionsDoubles_sub2").checked)
 					ret_val = true;
 				break;
 			case 7:
 				if(document.getElementById("PermuationOptionsDoubles").checked
-					&& document.getElementById("PermuationSubOptionsDoubles3").checked)
+					&& document.getElementById("PermuationOptionsDoubles_sub3").checked)
 					ret_val = true;
 				break;
 			case 8:
 				if(!usingTriplets()
 					&& document.getElementById("PermuationOptionsDoubles").checked
-					&& document.getElementById("PermuationSubOptionsDoubles4").checked)
+					&& document.getElementById("PermuationOptionsDoubles_sub4").checked)
 					ret_val = true;
 				break;
 			case 9:
 				if(!usingTriplets()
 					&& document.getElementById("PermuationOptionsUpsDowns").checked
-					&& document.getElementById("PermuationSubOptionsUpsDowns1").checked)
+					&& document.getElementById("PermuationOptionsUpsDowns_sub1").checked)
 					ret_val = true;
 				break;
 			case 10:
 				if(!usingTriplets()
 					&& document.getElementById("PermuationOptionsUpsDowns").checked
-					&& document.getElementById("PermuationSubOptionsUpsDowns2").checked)
+					&& document.getElementById("PermuationOptionsUpsDowns_sub2").checked)
 					ret_val = true;
 				break;
 			case 11:
 				if(document.getElementById("PermuationOptionsTriples").checked
-					&& document.getElementById("PermuationSubOptionsTriples1").checked)
+					&& (!document.getElementById("PermuationSubOptionsTriples1")
+						|| document.getElementById("PermuationOptionsTriples_sub1").checked) )
 					ret_val = true;
 				break;
 			case 12:
 				if(!usingTriplets()
 					&& document.getElementById("PermuationOptionsTriples").checked
-					&& document.getElementById("PermuationSubOptionsTriples2").checked)
+					&& document.getElementById("PermuationOptionsTriples_sub2").checked)
 					ret_val = true;
 				break;
 			case 13:
 				if(!usingTriplets()
 					&& document.getElementById("PermuationOptionsTriples").checked
-					&& document.getElementById("PermuationSubOptionsTriples3").checked)
+					&& document.getElementById("PermuationOptionsTriples_sub3").checked)
 					ret_val = true;
 				break;
 			case 14:
 				if(!usingTriplets()
 					&& document.getElementById("PermuationOptionsTriples").checked
-					&& document.getElementById("PermuationSubOptionsTriples4").checked)
+					&& document.getElementById("PermuationOptionsTriples_sub4").checked)
 					ret_val = true;
 				break;
 			case 15:
 				if(!usingTriplets()
 					&& document.getElementById("PermuationOptionsQuads").checked
-					&& document.getElementById("PermuationSubOptionsQuads1").checked)
+					&& (!document.getElementById("PermuationOptionsQuads_sub1")
+						|| document.getElementById("PermuationOptionsQuads_sub1").checked) )
 					ret_val = true;
 				break;
 			default:
@@ -2964,6 +3001,22 @@ function GrooveWriter() { "use strict";
 		return newHTML;
 	}  // end function HTMLforStaffContainer
 	
+	
+	root.permutationOptionClick = function(event) {
+
+		var optionId = event.target.id;
+		var checkbox = document.getElementById(optionId);
+		var OnElseOff = checkbox.checked;	
+			
+		for(var i=1; i < 5; i++) {
+			var subOption = optionId + "_sub" + i;
+			
+			checkbox = document.getElementById(subOption);
+			if(checkbox)
+				checkbox.checked = OnElseOff;
+		}
+	}
+	
 	// public function
 	// function to create HTML for the music staff and notes.   We usually want more than one of these
 	// baseIndex is the index for the css labels "staff-container1, staff-container2"
@@ -2971,24 +3024,24 @@ function GrooveWriter() { "use strict";
 	root.HTMLforPermutationOptions = function() {
 		var optionTypeArray = [
 			{id: "PermuationOptionsOstinato",
-			 subid:  "PermuationSubOptionsOstinato",
+			 subid:  "PermuationOptionsOstinato_sub",
 			 name: "Ostinato",
-			 maxSubOptions: 1
+			 SubOptions: []
 			},
 			{id: "PermuationOptionsSingles",
-			 subid:  "PermuationSubOptionsSingles",
+			 subid:  "PermuationOptionsSingles_sub",
 			 name: "Singles",
-			 maxSubOptions: 3
+			 SubOptions: ["1", "ti", "ta"]
 			},
 			{id: "PermuationOptionsDoubles",
-			 subid:  "PermuationSubOptionsDoubles",
+			 subid:  "PermuationOptionsDoubles_sub",
 			 name: "Doubles",
-			 maxSubOptions: 3
+			 SubOptions: ["1", "ti", "ta"]
 			},
 			{id: "PermuationOptionsTriples",
-			 subid:  "PermuationSubOptionsTriples",
+			 subid:  "PermuationOptionsTriples_sub",
 			 name: "Triples",
-			 maxSubOptions: 1
+			 SubOptions: []
 			}];
 		
 		// change and add other options for non triplet based ostinatos
@@ -2996,11 +3049,11 @@ function GrooveWriter() { "use strict";
 		// add up beats and down beats
 		// add quads
 		if(!myGrooveUtils.isTripletDivision(class_notes_per_measure, 4, 4)) {
-			optionTypeArray[1].maxSubOptions = 4;  // singles
-			optionTypeArray[2].maxSubOptions = 4;  // doubles
-			optionTypeArray[3].maxSubOptions = 4;  // triples
-			optionTypeArray.splice(3, 0, {id: "PermuationOptionsUpsDowns", subid:  "PermuationSubOptionsUpsDowns", name: "Upbeats/Downbeats", maxSubOptions: 2});
-			optionTypeArray.splice(5, 0, {id: "PermuationOptionsQuads", subid:  "PermuationSubOptionsQuads", name: "Quads", maxSubOptions: 1});
+			optionTypeArray[1].SubOptions = ["1", "e&nbsp;&nbsp;&nbsp;&nbsp;", "&&nbsp;&nbsp;&nbsp;&nbsp;", "a&nbsp;&nbsp;&nbsp;&nbsp;"];  // singles
+			optionTypeArray[2].SubOptions = ["1", "e", "&", "a"];  // doubles
+			optionTypeArray[3].SubOptions = ["1", "e", "&", "a"];  // triples
+			optionTypeArray.splice(3, 0, {id: "PermuationOptionsUpsDowns", subid:  "PermuationOptionsUpsDowns_sub", name: "Downbeats/Upbeats", SubOptions: ["downs", "ups"]});
+			optionTypeArray.splice(5, 0, {id: "PermuationOptionsQuads", subid:  "PermuationOptionsQuads_sub", name: "Quads", SubOptions: []});
 		}
 		
 		var newHTML = '<span id="PermutationOptionsHeader">Permutation Options</span>\n';
@@ -3012,15 +3065,18 @@ function GrooveWriter() { "use strict";
 			newHTML += '' +
 				'<div class="PermutationOptionGroup" id="' + optionTypeArray[optionType].id + 'Group">\n' +
 					'<div class="PermutationOption">\n' +
-						'<label><input checked type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].id + '" onChange="myGrooveWriter.refresh_ABC()">' + optionTypeArray[optionType].name + '</label>\n' +
+						'<input checked type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].id + '" onClick="myGrooveWriter.permutationOptionClick(event)" onChange="myGrooveWriter.refresh_ABC()">' +
+						'<label for="' + optionTypeArray[optionType].id + '">' + optionTypeArray[optionType].name + '</label>\n' +
 					'</div>'
 					'<span class="permutationSubOptionContainer" id="' + optionTypeArray[optionType].subid  +'">\n';
-						
-			for(var i = 0; i < optionTypeArray[optionType].maxSubOptions; i++) {
+					
+			var count = 0;		
+			for(var optionName in optionTypeArray[optionType].SubOptions) {
+				count++;
 				newHTML += '' +
 						'<span class="PermutationSubOption">\n' +
-						'	<label><input checked type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].subid + (i+1) + '" onChange="myGrooveWriter.refresh_ABC()">' + (i+1) + 
-						'</label>' +
+						'	<input checked type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].subid + count + '" onChange="myGrooveWriter.refresh_ABC()">' + 
+						'	<label for="' + optionTypeArray[optionType].subid + count + '">' + optionTypeArray[optionType].SubOptions[optionName] + '</label>' +
 						'</span>';	
 			}
 

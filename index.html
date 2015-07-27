@@ -44,40 +44,41 @@
     </head>
     <body>
 	    	<!-- use css to position this to the upper right -->
-		
-		<div id="LeftHandNav">
-			<span id="divisionButtonContainer">
-				<span id="timeLabel">TIME</span>
-				<span class="subdivision" id="4ths"  onClick="myGrooveWriter.changeDivision(4)"><span class="buttonText"><sup>1</sup>/<sub>4</sub></span></span>
-				<span class="subdivision" id="8ths"  onClick="myGrooveWriter.changeDivision(8)"><span class="buttonText"><sup>1</sup>/<sub>8</sub></span></span>
-				<span class="subdivision" id="16ths" onClick="myGrooveWriter.changeDivision(16)"><span class="buttonText"><sup>1</sup>/<sub>16</sub></span></span>
-				<span class="subdivision" id="32ths" onClick="myGrooveWriter.changeDivision(32)"><span class="buttonText"><sup>1</sup>/<sub>32</sub></span></span>
-				<span class="subdivision" id="12ths" onClick="myGrooveWriter.changeDivision(12)"><span class="buttonText"><sup>1</sup>/<sub>8</sub><br>triplets</span></span>
-				<span class="subdivision" id="24ths" onClick="myGrooveWriter.changeDivision(24)"><span class="buttonText"><sup>1</sup>/<sub>16</sub><br>triplets</span></span>
-			</span>
-			
-			<script>
-				if(myGrooveWriter.is_touch_device()) {
-					document.write('<div id="advancedEditAnchor" onClick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">Advanced Edit</div>');
-				}
-			</script>
-		</div>
-		<div id="TopNav">	
-			<span id="upperLeft">
-				<span id="metornomeContainer">
-					<span id="metronomeLabel">METRONOME:</span>
-					<span class="metronomeButton" id="metronomeOff" onClick="myGrooveWriter.metronomeButtonClick(event, '0')">OFF</span>
-					<span class="metronomeButton" id="metronome4ths" onClick="myGrooveWriter.metronomeButtonClick(event, '4')">4th</span>
-					<span class="metronomeButton" id="metronome8ths" onClick="myGrooveWriter.metronomeButtonClick(event, '8')">8th</span>
-					<span class="metronomeButton" id="metronome16ths" onClick="myGrooveWriter.metronomeButtonClick(event, '16')">16th</span>
+		<span class="nonPrintable">
+			<div id="LeftHandNav">
+				<span id="divisionButtonContainer">
+					<span id="timeLabel">TIME</span>
+					<span class="subdivision" id="4ths"  onClick="myGrooveWriter.changeDivision(4)"><span class="buttonText"><sup>1</sup>/<sub>4</sub></span></span>
+					<span class="subdivision" id="8ths"  onClick="myGrooveWriter.changeDivision(8)"><span class="buttonText"><sup>1</sup>/<sub>8</sub></span></span>
+					<span class="subdivision" id="16ths" onClick="myGrooveWriter.changeDivision(16)"><span class="buttonText"><sup>1</sup>/<sub>16</sub></span></span>
+					<span class="subdivision" id="32ths" onClick="myGrooveWriter.changeDivision(32)"><span class="buttonText"><sup>1</sup>/<sub>32</sub></span></span>
+					<span class="subdivision" id="12ths" onClick="myGrooveWriter.changeDivision(12)"><span class="buttonText"><sup>1</sup>/<sub>8</sub><br>triplets</span></span>
+					<span class="subdivision" id="24ths" onClick="myGrooveWriter.changeDivision(24)"><span class="buttonText"><sup>1</sup>/<sub>16</sub><br>triplets</span></span>
 				</span>
-			</span>
-			<span id="upperRight">
-				<span class="rightButtons" id="permutationAnchor" onClick="myGrooveWriter.permutationAnchorClick(event)">Permutations</span>
-				<span class="rightButtons" id="groovesAnchor" onClick="myGrooveWriter.groovesAnchorClick(event)">Grooves</span>
-				<span class="rightButtons" id="helpAnchor" onClick="myGrooveWriter.helpAnchorClick(event)">Help</span>
-			</span>
-		</div>
+				
+				<script>
+					if(myGrooveWriter.is_touch_device()) {
+						document.write('<div id="advancedEditAnchor" onClick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">Advanced Edit</div>');
+					}
+				</script>
+			</div>
+			<div id="TopNav">	
+				<span id="upperLeft">
+					<span id="metornomeContainer">
+						<span id="metronomeLabel">METRONOME:</span>
+						<span class="metronomeButton" id="metronomeOff" onClick="myGrooveWriter.metronomeButtonClick(event, '0')">OFF</span>
+						<span class="metronomeButton" id="metronome4ths" onClick="myGrooveWriter.metronomeButtonClick(event, '4')">4th</span>
+						<span class="metronomeButton" id="metronome8ths" onClick="myGrooveWriter.metronomeButtonClick(event, '8')">8th</span>
+						<span class="metronomeButton" id="metronome16ths" onClick="myGrooveWriter.metronomeButtonClick(event, '16')">16th</span>
+					</span>
+				</span>
+				<span id="upperRight">
+					<span class="rightButtons" id="permutationAnchor" onClick="myGrooveWriter.permutationAnchorClick(event)">Permutations</span>
+					<span class="rightButtons" id="groovesAnchor" onClick="myGrooveWriter.groovesAnchorClick(event)">Grooves</span>
+					<span class="rightButtons" id="helpAnchor" onClick="myGrooveWriter.helpAnchorClick(event)">Help</span>
+				</span>
+			</div>
+		</span>  
 		
 		<div id="RightHandContent">
 			<span class="nonPrintable">
@@ -102,7 +103,7 @@
 				</div>
 				<div id="NotationLine">
 					<span id='NotationLabel'>Notation</span>
-					<span id='KeyButton'><label>Key:<input type="checkbox" class="myCheckbox" id="showLegend" onChange="myGrooveWriter.refresh_ABC()"></label></span>
+					<span id='KeyButton'><input type="checkbox" class="myCheckbox" id="showLegend" onChange="myGrooveWriter.refresh_ABC()"><label for="showLegend">Key</label></span>
 				</div>
 			</span>  
 			<span class="Printable">
@@ -144,7 +145,9 @@
 				</span>
 				<br>
 				<!-- ABC notation -->
-				<!-- <A href="" onClick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a> -->
+				<!-- -->
+				<A href="" onClick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a> 
+				-->
 				<div id="ABC_Results">
 					ABC Notation is used for rendering the music.  You can see what is being generated below.   
 					You can even edit it.  <br>

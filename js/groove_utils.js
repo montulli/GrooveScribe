@@ -629,15 +629,24 @@ function GrooveUtils() { "use strict";
 		else 
 			fullABC += "L:1/" + (timeSigBottom * 8) + "\n";   // 4/4 = 32,  6/8 = 64
 		
-		if(!isPermutation)
+		if(isPermutation)
+			fullABC += "%%stretchlast 0\n" +
+						"%%stretchstaff 0\n";
+		else
 			fullABC += "%%stretchlast 1\n";
 		
-		fullABC +=  "%%flatbeams 1\n" +
-					"%%ornament up\n" +
-					"%%pagewidth 595px\n" +
-					"%%leftmargin 10px\n" +
-					"%%rightmargin 10px\n" +
-					"%%topspace 0px\n" +
+		fullABC +=  '%%flatbeams 1\n' +
+					'%%ornament up\n' +
+					'%%pagewidth 710px\n' +
+					'%%leftmargin 1cm\n' +
+					'%%rightmargin 1cm\n' +
+					'%%topspace 10px\n' +
+					'%%titlefont calibri 20\n' + 
+					'%%partsfont calibri 16\n' +
+					'%%gchordfont calibri 16\n' +
+					'%%annotationfont calibri 16\n' +
+					'%%infofont calibri 16\n' + 
+					'%%textfont calibri 16\n' + 
 					'%%deco (. 0 a 5 1 1 "@-8,-3("\n' +
 					'%%deco ). 0 a 5 1 1 "@4,-3)"\n' +
 					'%%beginsvg\n' +
@@ -651,9 +660,9 @@ function GrooveUtils() { "use strict";
 					'%%map drum ^c heads=VoidWithX print=c  % Cross Stick\n' +
 					'%%map drum ^d, heads=VoidWithX print=d,  % Foot Splash\n';
 					
-		if(kick_stems_up)
-			fullABC += "%%staves (Stickings Hands)\n";
-		else
+		//if(kick_stems_up)
+			//fullABC += "%%staves (Stickings Hands)\n";
+		//else
 			fullABC += "%%staves (Stickings Hands Feet)\n";
 									
 		// print comments below the legend if there is one, otherwise in the header section
@@ -671,10 +680,10 @@ function GrooveUtils() { "use strict";
 						'V:Hands stem=up \n' +
 						'%%voicemap drum\n' +
 						'"^Hi-Hat"^g4 "^Open"!open!^g4 "^Close"!plus!^g4 "^Accent"!accent!^g4 ' +
-						'"^Crash"^A\'4 "^Ride"^f4 "^Snare"c4 "^Accent"!accent!c4 "^Cross"^c4 "^Ghost"!(.!!).!c4 x8 x8 x8 ||\n' +
+						'"^Crash"^A\'4 "^Ride"^f4 x4 "^Snare"c4 "^Accent"!accent!c4 "^Cross"^c4 "^Ghost"!(.!!).!c4 x20 ||\n' +
 						'V:Feet stem=down \n' +
 						'%%voicemap drum\n' +
-						'z8 z8 z8 z8 z8 "^Kick"F4 "^Hi-Hat w/ foot"^d,4 x4 "^Kick & Hi-Hat"[F^d,]8  ||\n' +
+						'x48 "^Kick"F4 "^Hi-Hat w/ foot"^d,4 "^Kick & Hi-Hat"[F^d,]4 x4 ||\n' +
 						'T:\n';
 		}
 		
