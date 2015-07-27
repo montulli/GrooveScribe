@@ -1318,7 +1318,7 @@ function GrooveUtils() { "use strict";
 			var prev_kick_note = false;
 			var prev_kick_splash_note = false;
 			var midi_channel = 0;   
-			
+				
 			if(swing_percentage < 0 || swing_percentage > .99)
 			{
 				alert("Swing percentage out of range in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
@@ -1329,7 +1329,12 @@ function GrooveUtils() { "use strict";
 				midi_channel = 9; // for external midi player
 			else
 				midi_channel = 0; // for our internal midi player
-				
+			
+			// Some sort of bug in the midi player makes it skip the first note without a blank
+			// TODO: Find and fix midi bug
+			if(midiTrack.events.length < 4)
+				midiTrack.addNoteOff(midi_channel, 60, 1);  // add a blank note for spacing
+					
 			var isTriplets = root.isTripletDivision(num_notes_for_swing, timeSigTop, timeSigBottom);
 			
 			for(var i=0; i < num_notes; i++)  {
@@ -1559,6 +1564,7 @@ function GrooveUtils() { "use strict";
 	root.loadMIDIFromURL = function(midiURL) {
 		
 		MIDI.Player.timeWarp = 1; // speed the song is played back
+		MIDI.Player.BPM = root.getTempo();
 		MIDI.Player.loadFile(midiURL, MIDILoaderCallback());
 	}
 	
@@ -1649,7 +1655,7 @@ function GrooveUtils() { "use strict";
 		MIDI.loadPlugin({
 			soundfontUrl: root.getMidiSoundFontLocation(),
 			instruments: ["gunshot" ],
-			callback: function() {
+			onsuccess: function() {
 				MIDI.programChange(0, 127);   // use "Gunshot" instrument because I don't know how to create new ones
 				root.midiEventCallbacks.midiInitialized(root.midiEventCallbacks.classRoot);
 		
@@ -1669,6 +1675,7 @@ function GrooveUtils() { "use strict";
         if(MidiPlayTime)
             MidiPlayTime.innerHTML = time_string;
 			
+		/* 	
 		var TotalPlayTime = document.getElementById("totalPlayTime");
 		if(TotalPlayTime) {
 			if(root.last_midi_update_time == 0)
@@ -1682,6 +1689,7 @@ function GrooveUtils() { "use strict";
 			time_string += totalTime.getUTCMinutes() + ":" + (totalTime.getSeconds() < 10 ? "0" : "") + totalTime.getSeconds();
 			TotalPlayTime.innerHTML = "Total Time: " + time_string;
 		}
+		*/
 		
 		root.last_midi_update_time = time_now;
 	}
@@ -1692,13 +1700,19 @@ function GrooveUtils() { "use strict";
 	// This is different from the callbacks that we use for the midi code in this library to
 	// do events.   (Double chaining)
 	function ourMIDICallback(data) {
+		
 		root.midiEventCallbacks.percentProgress(root.midiEventCallbacks.classRoot, (data.now/data.end)*100);
 		
-		root.updateMidiPlayTime();
+		if(root.lastMidiTimeUpdate && root.lastMidiTimeUpdate < (data.now+800)) {
+			root.updateMidiPlayTime();
+			root.lastMidiTimeUpdate = data.now;
+		}
 		
-		if(data.now < 1) {
-			// this is considered the start.   It usually comes in at .5 for some reason?
+		if(data.now < 16) {
+			// this is considered the start.   It doesn't come in at zero for some reason
+			// The second note should always be at least 16 ms behind the first
 			class_midi_note_num = 0;
+			root.lastMidiTimeUpdate = -1;
 		}
 		if(data.now == data.end) {
 			
@@ -1708,6 +1722,9 @@ function GrooveUtils() { "use strict";
 					MIDI.Player.stop();
 					root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot);
 					MIDI.Player.start();
+				} else {
+					//MIDI.Player.stop();
+					//MIDI.Player.start();
 				}
 			} else {
 				// not repeating, so stopping
