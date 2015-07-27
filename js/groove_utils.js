@@ -1676,7 +1676,7 @@ function GrooveUtils() { "use strict";
 		MIDI.loadPlugin({
 			soundfontUrl: root.getMidiSoundFontLocation(),
 			instruments: ["gunshot", "acoustic_grand_piano" ],
-			onsuccess: function() {
+			callback: function() {
 				MIDI.programChange(9, 127);   // use "Gunshot" instrument because I don't know how to create new ones
 				root.midiEventCallbacks.midiInitialized(root.midiEventCallbacks.classRoot);
 			}

@@ -6,11 +6,9 @@ var clone = function (o) {
 	return ret;
 };
 
-function Replayer(midiFile, timeWarp, eventProcessor, bpm) {
+function Replayer(midiFile, timeWarp, eventProcessor) {
 	var trackStates = [];
-	var beatsPerMinute = bpm ? bpm : 120;
-	var bpmOverride = bpm ? true : false;
-
+	var beatsPerMinute = 120;
 	var ticksPerBeat = midiFile.header.ticksPerBeat;
 	
 	for (var i = 0; i < midiFile.tracks.length; i++) {
@@ -72,23 +70,19 @@ function Replayer(midiFile, timeWarp, eventProcessor, bpm) {
 	//
 	function processEvents() {
 		function processNext() {
-		    if (!bpmOverride && midiEvent.event.type == "meta" && midiEvent.event.subtype == "setTempo" ) {
+			if ( midiEvent.event.type == "meta" && midiEvent.event.subtype == "setTempo" ) {
 				// tempo change events can occur anywhere in the middle and affect events that follow
 				beatsPerMinute = 60000000 / midiEvent.event.microsecondsPerBeat;
-			}
-			///
-			var beatsToGenerate = 0;
-			var secondsToGenerate = 0;
+			} 
 			if (midiEvent.ticksToEvent > 0) {
-				beatsToGenerate = midiEvent.ticksToEvent / ticksPerBeat;
-				secondsToGenerate = beatsToGenerate / (beatsPerMinute / 60);
+				var beatsToGenerate = midiEvent.ticksToEvent / ticksPerBeat;
+				var secondsToGenerate = beatsToGenerate / (beatsPerMinute / 60);
 			}
-			///
 			var time = (secondsToGenerate * 1000 * timeWarp) || 0;
 			temporal.push([ midiEvent, time]);
 			midiEvent = getNextEvent();
 		};
-		///
+		//
 		if (midiEvent = getNextEvent()) {
 			while(midiEvent) processNext(true);
 		}
