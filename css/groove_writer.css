@@ -55,7 +55,7 @@
 	}
 	#RightHandContent {
 		margin-left: 72px;
-		padding-top: 104px;
+		padding-top: 106px;
 	}
 	#upperRight {
 		float: right;
@@ -146,6 +146,7 @@
 	}
 	#musicalInput {
 		width: 100%;
+		margin-bottom: -5px;
 		max-width: 954px;
 		background: #FFF;
 		overflow-x: auto;
@@ -153,13 +154,9 @@
 		white-space: nowrap;
 		border-bottom: 1px solid #999;
 	}
-	#musicalCenter {
-		margin-bottom: -5px;
-	
-	}
 	.staff-container {
-		margin-left: 2px;
-		margin-top: 2px;
+		/margin-left: 2px;
+		/margin-top: 2px;
 		display: inline-block;
 		font-family:  Times New Roman;
 		background: #FFFFFF;
@@ -182,11 +179,11 @@
 	}
 	.stickings-label {
 		display: none;
+		height: 30px;
 		background: #f7f1cf;
-		padding-top: 7px;
-		padding-bottom: 4px;
-		padding-left: 8px;
-		font-size: 16px;
+		padding-top: 2px;
+		padding-left: 1px;
+		font-size: 22px;
 		cursor: pointer;
 		text-align: center;
 	}
@@ -222,6 +219,7 @@
 	}
 	.stickings-container {
 		display: none;
+		height: 32px;
 		background: #f7f1cf;
 		margin-top: 0px;
 		white-space:nowrap;
@@ -230,23 +228,29 @@
 		-ms-user-select: none;
 	}
 	.hi-hat-container {
-		height: 62px;
 		/border: 1px solid red;
+		/background: #CCF;
+		height: 47px;
 		white-space:nowrap;
 		-moz-user-select: none;
 		-webkit-user-select: none;
 		-ms-user-select: none;
 	}
 	.snare-container {
-		height: 52px;
+		/border: 1px solid red;
+		/background: #FCC;
+		height: 58px;
+		margin-top: 2px;
+		margin-bottom: 2px;
 		white-space:nowrap;
 		-moz-user-select: none;
 		-webkit-user-select: none;
 		-ms-user-select: none;
 	}
 	.kick-container {
-		padding-top: 24px;
-		height: 60px;
+		/border: 1px solid red;
+		/background: #CFC;
+		height: 84px;
 		white-space:nowrap;
 		-moz-user-select: none;
 		-webkit-user-select: none;
@@ -293,17 +297,17 @@
 		border: 1px solid;
 		border-color: transparent;
 		width: 29px;
-		height: 24px;
+		height: 100%;
 		margin-right: 2px;
 		margin-left: 2px;
-	}
+		}
 	.hi-hat {
 		display: inline-block;
 		position: relative;
 		border: 1px solid;
 		border-color: transparent;
 		width: 29px;
-		height: 46px;
+		height: 100%;
 		margin-right: 2px;
 		margin-left: 2px;
 	}
@@ -313,7 +317,7 @@
 		border: 1px solid;
 		border-color: transparent;
 		width: 29px;
-		height: 46px;
+		height: 100%;
 		margin-right: 2px;
 		margin-left: 2px;
 	}
@@ -323,7 +327,7 @@
 		border: 1px solid;
 		border-color: transparent;
 		width: 29px;
-		height: 54px;
+		height: 100%;
 		margin-right: 2px;
 		margin-left: 2px;
 	}
@@ -375,13 +379,13 @@
 		float:left;
 	}
 	.snare_ghost {
-		position: absolute; top: 13px; left: 0px;
+		position: absolute; top: 25px; left: 1px;
 		font-size: 26px;
 		color: transparent;
 		cursor: pointer;
 	}
 	.snare_circle {
-		position: absolute; bottom: 3px; left: 0px;
+		position: absolute; top: 30px; left: 2px;
 		width:90%;
 		height:22px;
 		width: 22px;
@@ -392,18 +396,18 @@
 		cursor: pointer;
 	}
 	.snare_xstick {
-		position: absolute; top: 13px; left: 3px;
+		position: absolute; top: 26px; left: 3px;
 		font-size: 30px;
 		color: transparent;
 		cursor: pointer;
 	}
 	.snare_accent {
-		position: absolute; top: -13px; left: 5px;
+		position: absolute; top: 0px; left: 6px;
 		font-size: 30px;
 		color: transparent;
 	}
 	.kick_circle {
-		position: absolute; top: 1px; left: 0px;
+		position: absolute; top: 30px; left: 2px;
 		height: 22px;
 		width: 22px;
 		background: #FFF;
@@ -413,7 +417,7 @@
 	}
 	
 	.kick_splash {
-		position: absolute; top: 26px; left: 3px;
+		position: absolute; top: 54px; left: 3px;
 		font-size: 30px;
 		color: transparent;
 		cursor: pointer;

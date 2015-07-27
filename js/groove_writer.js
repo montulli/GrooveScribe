@@ -462,7 +462,8 @@ function GrooveWriter() { "use strict";
 	var class_cur_hh_highlight_id = false;
 	var class_cur_snare_highlight_id = false;
 	var class_cur_kick_highlight_id = false;
-	function hilight_note(instrument, id) {
+	function hilight_individual_note(instrument, id) {
+		var hilight_all_notes = true;   // on by default
 		
 		id = Math.floor(id);
 		if(id < 0 || id >= class_notes_per_measure*class_number_of_measures)
@@ -487,7 +488,7 @@ function GrooveWriter() { "use strict";
 					document.getElementById("kick" + class_cur_kick_highlight_id).style.borderColor = "transparent";
 				class_cur_kick_highlight_id = false;
 		}
-			
+		
 		switch(instrument) {
 			case "hi-hat":
 				class_cur_hh_highlight_id = id;
@@ -502,6 +503,43 @@ function GrooveWriter() { "use strict";
 				alert("bad case in hilight_note");
 				break;
 		}
+
+	}
+	
+	var class_cur_all_notes_highlight_id = false;
+	function hilight_all_notes_on_same_beat(instrument, id) {
+	
+		id = Math.floor(id);
+		if(id < 0 || id >= class_notes_per_measure*class_number_of_measures)
+			return;
+		
+		if(class_cur_all_notes_highlight_id == id)
+			return; // already highligted
+		
+		if(class_cur_all_notes_highlight_id !== false) {
+			// turn off old highlighting
+			document.getElementById("sticking" + class_cur_all_notes_highlight_id).style.background = "transparent";
+			document.getElementById("hi-hat" + class_cur_all_notes_highlight_id).style.background = "transparent";
+			document.getElementById("snare" + class_cur_all_notes_highlight_id).style.background = "transparent";
+			document.getElementById("kick" + class_cur_all_notes_highlight_id).style.background = "transparent";			
+		}
+		
+		// turn this one on;
+		class_cur_all_notes_highlight_id = id;
+		document.getElementById("sticking" + class_cur_all_notes_highlight_id).style.background = "rgba(255,0,0,0.2)";
+		document.getElementById("hi-hat" + class_cur_all_notes_highlight_id).style.background = "rgba(255,0,0,0.2)";
+		document.getElementById("snare" + class_cur_all_notes_highlight_id).style.background = "rgba(255,0,0,0.2)";
+		document.getElementById("kick" + class_cur_all_notes_highlight_id).style.background = "rgba(255,0,0,0.2)";
+		
+	}
+	
+	
+	function hilight_note(instrument, percent_complete) {
+		
+		var note_id_in_32 = Math.floor(percent_complete * (usingTriplets() ? 24 : 32) * (isSecondMeasureVisable() ? 2 : 1));
+		var real_note_id = (note_id_in_32/myGrooveUtils.getNoteScaler(class_notes_per_measure, 4, 4));
+		//hilight_individual_note(instrument, id);
+		hilight_all_notes_on_same_beat(instrument, real_note_id);
 	}
 	
 	function clear_all_highlights(instrument) {
@@ -518,6 +556,15 @@ function GrooveWriter() { "use strict";
 		if(class_cur_kick_highlight_id !== false) {
 				document.getElementById("kick" + class_cur_kick_highlight_id).style.borderColor = "transparent";
 				class_cur_kick_highlight_id = false;
+		}
+		
+		if(class_cur_all_notes_highlight_id !== false) {
+			// turn off old highlighting
+			document.getElementById("sticking" + class_cur_all_notes_highlight_id).style.background = "transparent";
+			document.getElementById("hi-hat" + class_cur_all_notes_highlight_id).style.background = "transparent";
+			document.getElementById("snare" + class_cur_all_notes_highlight_id).style.background = "transparent";
+			document.getElementById("kick" + class_cur_all_notes_highlight_id).style.background = "transparent";
+			class_cur_all_notes_highlight_id = false;			
 		}
 		
 	}
@@ -2319,8 +2366,8 @@ function GrooveWriter() { "use strict";
 			root.updateGrooveDBSource();
 		}
 		
-		myGrooveUtils.midiEventCallbacks.notePlaying = function(myroot, note_type, note_position) {
-			hilight_note(note_type, (note_position/myGrooveUtils.getNoteScaler(class_notes_per_measure, 4, 4)));
+		myGrooveUtils.midiEventCallbacks.notePlaying = function(myroot, note_type, percent_complete) {
+			hilight_note(note_type, percent_complete);
 		}
 		
 		myGrooveUtils.oneTimeInitializeMidi();

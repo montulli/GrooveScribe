@@ -1336,6 +1336,7 @@ function GrooveUtils() { "use strict";
 				midiTrack.addNoteOff(midi_channel, 60, 1);  // add a blank note for spacing
 					
 			var isTriplets = root.isTripletDivision(num_notes_for_swing, timeSigTop, timeSigBottom);
+			var delay_for_next_note = 0;
 			
 			for(var i=0; i < num_notes; i++)  {
 	
@@ -1405,10 +1406,11 @@ function GrooveUtils() { "use strict";
 					}	
 					
 					if(metronome_note != false) {
-						if(prev_metronome_note != false)
-							midiTrack.addNoteOff(midi_channel, prev_metronome_note, 0);
-						midiTrack.addNoteOn(midi_channel, metronome_note, 0, metronome_velocity);
-						prev_metronome_note = metronome_note;
+						//if(prev_metronome_note != false)
+						//	midiTrack.addNoteOff(midi_channel, prev_metronome_note, 0);
+						midiTrack.addNoteOn(midi_channel, metronome_note, delay_for_next_note, metronome_velocity);
+						delay_for_next_note = 0;   // zero the delay
+						//prev_metronome_note = metronome_note;
 					}
 				}
 				
@@ -1443,9 +1445,12 @@ function GrooveUtils() { "use strict";
 				}
 				
 				if(hh_note != false) {
-					if(prev_hh_note != false)
-						midiTrack.addNoteOff(midi_channel, prev_hh_note, 0);
-					midiTrack.addNoteOn(midi_channel, hh_note, 0, hh_velocity);
+					if(0 && prev_hh_note != false) {
+						midiTrack.addNoteOff(midi_channel, prev_hh_note, delay_for_next_note);
+						delay_for_next_note = 0;   // zero the delay
+					}
+					midiTrack.addNoteOn(midi_channel, hh_note, delay_for_next_note, hh_velocity);
+					delay_for_next_note = 0;   // zero the delay
 					prev_hh_note = hh_note;
 				}
 				
@@ -1482,10 +1487,11 @@ function GrooveUtils() { "use strict";
 				}
 				
 				if(snare_note != false) {
-					if(prev_snare_note != false)
-						midiTrack.addNoteOff(midi_channel, prev_snare_note, 0);
-					midiTrack.addNoteOn(midi_channel, snare_note, 0, snare_velocity);
-					prev_snare_note = snare_note;
+					//if(prev_snare_note != false)
+					//	midiTrack.addNoteOff(midi_channel, prev_snare_note, 0);
+					midiTrack.addNoteOn(midi_channel, snare_note, delay_for_next_note, snare_velocity);
+					delay_for_next_note = 0;   // zero the delay
+					//prev_snare_note = snare_note;
 				}
 			
 				var kick_velocity = velocity_normal;
@@ -1514,14 +1520,19 @@ function GrooveUtils() { "use strict";
 					prev_kick_note = kick_note;
 				}
 				if(kick_splash_note != false) {
-					if(prev_kick_splash_note != false)
-						midiTrack.addNoteOff(midi_channel, prev_kick_splash_note, 0);
-					midiTrack.addNoteOn(midi_channel, kick_splash_note, 0, kick_velocity);
-					prev_kick_splash_note = kick_splash_note;
+					//if(prev_kick_splash_note != false)
+					//	midiTrack.addNoteOff(midi_channel, prev_kick_splash_note, 0);
+					midiTrack.addNoteOn(midi_channel, kick_splash_note, delay_for_next_note, kick_velocity);
+					delay_for_next_note = 0;   // zero the delay
+					//prev_kick_splash_note = kick_splash_note;
 				}
 				
-				midiTrack.addNoteOff(0, 60, duration);  // add a blank note for spacing
+				delay_for_next_note += duration;
 			}
+			
+			if(delay_for_next_note)
+				midiTrack.addNoteOff(0, 60, delay_for_next_note-1);  // add a blank note for spacing
+			
 	} // end of function
 	
 	// returns a URL that is a MIDI track
@@ -1695,13 +1706,13 @@ function GrooveUtils() { "use strict";
 	}
 	
 	var debug_note_count = 0;
-	var class_midi_note_num = 0;  // global, but only used in this function
+	//var class_midi_note_num = 0;  // global, but only used in this function
 	// This is the function that the 3rd party midi library calls to give us events.
 	// This is different from the callbacks that we use for the midi code in this library to
 	// do events.   (Double chaining)
 	function ourMIDICallback(data) {
-		
-		root.midiEventCallbacks.percentProgress(root.midiEventCallbacks.classRoot, (data.now/data.end)*100);
+		var percentComplete = (data.now/data.end);
+		root.midiEventCallbacks.percentProgress(root.midiEventCallbacks.classRoot, percentComplete*100);
 		
 		if(root.lastMidiTimeUpdate && root.lastMidiTimeUpdate < (data.now+800)) {
 			root.updateMidiPlayTime();
@@ -1711,7 +1722,7 @@ function GrooveUtils() { "use strict";
 		if(data.now < 16) {
 			// this is considered the start.   It doesn't come in at zero for some reason
 			// The second note should always be at least 16 ms behind the first
-			class_midi_note_num = 0;
+			//class_midi_note_num = 0;
 			root.lastMidiTimeUpdate = -1;
 		}
 		if(data.now == data.end) {
@@ -1745,11 +1756,12 @@ function GrooveUtils() { "use strict";
 				note_type = "kick";
 			}
 			if(note_type)
-				root.midiEventCallbacks.notePlaying(root.midiEventCallbacks.classRoot, note_type, class_midi_note_num);
+				root.midiEventCallbacks.notePlaying(root.midiEventCallbacks.classRoot, note_type, percentComplete);
 		}
 		
-		if(data.note == 60)
-			class_midi_note_num++;
+		// this used to work when we used note 60 as a spacer between chords
+		//if(data.note == 60)
+		//	class_midi_note_num++;
 	
 		if(0 && data.message == 144) {
 			debug_note_count++;
@@ -1758,7 +1770,7 @@ function GrooveUtils() { "use strict";
 			if(data.note != 60)
 				newHTML += "<b>";
 				
-			newHTML += note_type + " total notes: " + note_count + " - count#: " + class_midi_note_num + 
+			newHTML += note_type + " total notes: " + debug_note_count + " - count#: " + class_midi_note_num + 
 											" now: " + data.now + 
 											" note: " + data.note + 
 											" message: " + data.message + 
