@@ -68,10 +68,9 @@ function GrooveUtils() { "use strict";
 		this.tempo              = constant_DEFAULT_TEMPO;
 		this.kickStemsUp        = true;
 		this.metronomeFrequency = 0;   // 0, 4, 8, 16
-	}
+	};
 			
-	root.getQueryVariableFromString = function(variable, def_value, my_string)
-	{
+	root.getQueryVariableFromString = function(variable, def_value, my_string) {
 		   var query = my_string.substring(1);
 		   var vars = query.split("&");
 		   for (var i=0;i<vars.length;i++) {
@@ -79,13 +78,12 @@ function GrooveUtils() { "use strict";
 				   if(pair[0].toLowerCase() == variable.toLowerCase()){return pair[1];}
 		   }
 		   return(def_value);
-	}	
+	};
 	
 	// Get the "?query" values from the page URL
-	root.getQueryVariableFromURL = function(variable, def_value)
-	{
+	root.getQueryVariableFromURL = function(variable, def_value) {
 		   return(root.getQueryVariableFromString(variable, def_value, window.location.search));
-	}	
+	}	;
 	
 	// every document click passes through here.
 	// close a popup if one is up and we click off of it.
@@ -93,7 +91,7 @@ function GrooveUtils() { "use strict";
 		if(root.visible_context_menu ) {
 			root.hideContextMenu( root.visible_context_menu );
 		}
-	}
+	};
 	
 	root.showContextMenu = function(contextMenu) {
 		
@@ -111,7 +109,7 @@ function GrooveUtils() { "use strict";
 		setTimeout(function(){
 			document.onclick = root.documentOnClickHanderCloseContextMenu;
 			},100);
-	}
+	};
 	
 	root.hideContextMenu = function(contextMenu) {
 		document.onclick = false;
@@ -120,7 +118,7 @@ function GrooveUtils() { "use strict";
 			contextMenu.style.display = "none";
 		}
 		root.visible_context_menu = false;
-	}
+	};
 	
 	// figure it out from the division  Division is number of notes per measure 4, 6, 8, 12, 16, 24, 32, etc...
 	root.isTripletDivision = function(division, timeSigTop, timeSigBottom) {
@@ -128,7 +126,7 @@ function GrooveUtils() { "use strict";
 			return true;
 			
 		return false;
-	}
+	};
 	
 	root.GetDefaultStickingsGroove = function(division, numMeasures) {
 		var retString = "";
@@ -137,12 +135,12 @@ function GrooveUtils() { "use strict";
 				retString += "|------------------------";
 			retString += "|";
 		} else { 
-			for(var i=0; i<numMeasures; i++)
+			for(var j=0; j<numMeasures; j++)
 				retString += "|--------------------------------";
 			retString += "|";
 		}
 		return retString;
-	}
+	};
 	
 	root.GetDefaultHHGroove = function(division, numMeasures) {
 		var retString = "";
@@ -151,12 +149,12 @@ function GrooveUtils() { "use strict";
 				retString += "|xxxxxxxxxxxxxxxxxxxxxxxx";
 			retString += "|";
 		} else { 
-			for(var i=0; i<numMeasures; i++)
+			for(var j=0; j<numMeasures; j++)
 				retString += "|x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-";
 			retString += "|";
 		}
 		return retString;
-	}
+	};
 	
 	root.GetDefaultSnareGroove = function(division, numMeasures) {
 		var retString = "";
@@ -165,12 +163,12 @@ function GrooveUtils() { "use strict";
 				retString += "|---O-----O--";
 			retString += "|";
 		} else { 
-			for(var i=0; i<numMeasures; i++)
+			for(var j=0; j<numMeasures; j++)
 				retString += "|--------O---------------O-------";
 			retString += "|";
 		}
 		return retString;
-	}
+	};
 	
 	root.GetDefaultKickGroove = function(division, numMeasures) {
 		var retString = "";
@@ -179,12 +177,12 @@ function GrooveUtils() { "use strict";
 				retString += "|o-----o-----";
 			retString += "|";
 		} else { 
-			for(var i=0; i<numMeasures; i++)
+			for(var j=0; j<numMeasures; j++)
 				retString += "|o---------------o---------------";
 			retString += "|";
 		}
 		return retString;
-	}
+	};
 	
 	
 	// takes a character from tablature form and converts it to our ABC Notation form.
@@ -255,7 +253,8 @@ function GrooveUtils() { "use strict";
 					case "K":
 						return constant_ABC_KI_Normal;
 						break;
-					}
+					default:
+						break;					}
 				break;
 			case "r":
 			case "R":
@@ -266,7 +265,8 @@ function GrooveUtils() { "use strict";
 					case "Stickings":
 						return constant_ABC_STICK_R;
 						break;
-					}
+					default:
+						break;					}
 				break;
 			case "x":
 				switch(drumType) {
@@ -279,6 +279,8 @@ function GrooveUtils() { "use strict";
 					case "H":
 						return constant_ABC_HH_Normal;
 						break;
+					default:
+						break;
 					}
 				break;
 			case "X":
@@ -289,7 +291,8 @@ function GrooveUtils() { "use strict";
 					case "H":
 						return constant_ABC_HH_Accent;
 						break;
-					}
+					default:
+						break;				}
 				break;
 			case "+":
 				if(drumType == "H") {
@@ -298,6 +301,8 @@ function GrooveUtils() { "use strict";
 				break;
 			case "-":
 				return false;
+				break;
+			default:
 				break;
 		}	
 		
@@ -387,7 +392,7 @@ function GrooveUtils() { "use strict";
 		}
 		
 		return newLine;
-	}
+	};
 	
 	// takes a string of notes encoded in a serialized string and convert it to an array that represents the notes
 	// uses drum tab format adapted from wikipedia: http://en.wikipedia.org/wiki/Drum_tablature
@@ -409,7 +414,7 @@ function GrooveUtils() { "use strict";
 		// decode the %7C url encoding types
 		noteString = decodeURIComponent(noteString);
 		
-		var retArraySize = notesPerMeasure * numberOfMeasures
+		var retArraySize = notesPerMeasure * numberOfMeasures;
 		
 		// ignore "|" by removing them
 		//var notes = noteString.replace(/\|/g, '');
@@ -432,12 +437,12 @@ function GrooveUtils() { "use strict";
 		}
 			
 		var retArrayIndex = 0;
-		for(var i=0; i < notes.length && retArrayIndex < retArraySize; i += noteStringScaler, retArrayIndex += displayScaler) {
-			retArray[retArrayIndex] = tablatureToABCNotationPerNote(drumType, notes[i]);
+		for(var j=0; j < notes.length && retArrayIndex < retArraySize; j += noteStringScaler, retArrayIndex += displayScaler) {
+			retArray[retArrayIndex] = tablatureToABCNotationPerNote(drumType, notes[j]);
 		}
 		
 		return retArray;
-	}
+	};
 	
 	// take an array of notes in ABC format and convert it into a drum tab String
 	// drumType - H, S, K, or Stickings
@@ -488,7 +493,7 @@ function GrooveUtils() { "use strict";
 		}	
 
 		return returnTabLine;
-	}
+	};
 	
 	root.getGrooveDataFromUrlString = function(encodedURLData) {
 		var Stickings_string;
@@ -498,9 +503,9 @@ function GrooveUtils() { "use strict";
 		var stickings_set_from_URL = false;
 		var myGrooveData = new root.grooveData();
 		
-		myGrooveData.notesPerMeasure = parseInt(root.getQueryVariableFromString("Div", 8, encodedURLData));
+		myGrooveData.notesPerMeasure = parseInt(root.getQueryVariableFromString("Div", 8, encodedURLData), 10);
 				
-		myGrooveData.numberOfMeasures = parseInt(root.getQueryVariableFromString("measures", 2, encodedURLData));
+		myGrooveData.numberOfMeasures = parseInt(root.getQueryVariableFromString("measures", 2, encodedURLData), 10);
 		if(myGrooveData.numberOfMeasures < 1 || isNaN(myGrooveData.numberOfMeasures))
 			myGrooveData.numberOfMeasures = 1;
 		else if(myGrooveData.numberOfMeasures > constant_MAX_MEASURES)
@@ -517,7 +522,7 @@ function GrooveUtils() { "use strict";
 		
 		HH_string = root.getQueryVariableFromString("H", false, encodedURLData);
 		if(!HH_string) {
-			root.getQueryVariableFromString("HH", false, encodedURLData)
+			root.getQueryVariableFromString("HH", false, encodedURLData);
 			if(!HH_string) {
 				HH_string = root.GetDefaultHHGroove(myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
 			}
@@ -530,7 +535,7 @@ function GrooveUtils() { "use strict";
 		
 		Kick_string = root.getQueryVariableFromString("K", false, encodedURLData);
 		if(!Kick_string) {
-			root.getQueryVariableFromString("B", false, encodedURLData)
+			root.getQueryVariableFromString("B", false, encodedURLData);
 			if(!Kick_string) {
 				Kick_string = root.GetDefaultKickGroove(myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
 			}
@@ -542,7 +547,7 @@ function GrooveUtils() { "use strict";
 		myGrooveData.snare_array    = root.noteArraysFromURLData("S", Snare_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
 		myGrooveData.kick_array     = root.noteArraysFromURLData("K", Kick_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
 			
-		myGrooveData.showMeasures = parseInt(root.getQueryVariableFromString("showMeasures", 1, encodedURLData));
+		myGrooveData.showMeasures = parseInt(root.getQueryVariableFromString("showMeasures", 1, encodedURLData), 10);
 		if(myGrooveData.showMeasures < 1 || isNaN(myGrooveData.showMeasures))
 			myGrooveData.showMeasures = 1;
 		else if(myGrooveData.showMeasures > myGrooveData.numberOfMeasures)
@@ -561,16 +566,16 @@ function GrooveUtils() { "use strict";
 		myGrooveData.comments = decodeURI(myGrooveData.comments);
 		myGrooveData.comments = myGrooveData.comments.replace(/\+/g, " ");
 		
-		myGrooveData.tempo = parseInt(root.getQueryVariableFromString("tempo", constant_DEFAULT_TEMPO, encodedURLData));
+		myGrooveData.tempo = parseInt(root.getQueryVariableFromString("tempo", constant_DEFAULT_TEMPO, encodedURLData), 10);
 		if(isNaN(myGrooveData.tempo) || myGrooveData.tempo < 20 || myGrooveData.tempo > 400)
 			myGrooveData.tempo = constant_DEFAULT_TEMPO;
 				
-		myGrooveData.swingPercent = parseInt(root.getQueryVariableFromString("swing", 0, encodedURLData));
+		myGrooveData.swingPercent = parseInt(root.getQueryVariableFromString("swing", 0, encodedURLData), 10);
 		if(isNaN(myGrooveData.swingPercent) || myGrooveData.swingPercent < 0 || myGrooveData.swingPercent > 100)
 			myGrooveData.swingPercent = 0;
 		
 		return myGrooveData;
-	}
+	};
 	
 	function setupHotKeys() {
 		
@@ -578,7 +583,7 @@ function GrooveUtils() { "use strict";
 		document.onkeyup=function(e) {
 				if(e.which == 17) 
 					isCtrl=false;
-		}
+		};
 			
 		document.onkeydown=function(e){
 			if(e.which == 17) 
@@ -602,16 +607,18 @@ function GrooveUtils() { "use strict";
 			}
 			if(e.which == 178) {
 				// Stop button
-				root.stopMIDI_playback()
+				root.stopMIDI_playback();
 			}
-		}
+			
+			return true;
+		};
 	}
 	
 	
 	// the top stuff in the ABC that doesn't depend on the notes
 	root.get_top_ABC_BoilerPlate = function(isPermutation, tuneTitle, tuneAuthor, tuneComments, showLegend, isTriplets, kick_stems_up, timeSigTop, timeSigBottom) {
 		// boiler plate
-		var fullABC = "%abc\n\X:6\n"
+		var fullABC = "%abc\n\X:6\n";
 		
 		fullABC += "M:" + timeSigTop + "/" + timeSigBottom + "\n";
 		
@@ -691,7 +698,7 @@ function GrooveUtils() { "use strict";
 		//fullABC += "Q: 1/4=" + getTempo() + "\n";	
 		
 		return fullABC;
-	}
+	};
 	
 	// looks for modifiers like !accent! or !plus! and moves them outside of the group abc array.
 	// Most modifiers (but not all) will not render correctly if they are inside the abc group.
@@ -704,12 +711,12 @@ function GrooveUtils() { "use strict";
 			found_modifier = true;
 			abcNoteStrings.notes1 = abcNoteStrings.notes1.replace(modifier_to_look_for, "");
 		}
-		rindex = abcNoteStrings.notes2.lastIndexOf(modifier_to_look_for)
+		rindex = abcNoteStrings.notes2.lastIndexOf(modifier_to_look_for);
 		if(rindex > -1) {
 			found_modifier = true;
 			abcNoteStrings.notes2 = abcNoteStrings.notes2.replace(modifier_to_look_for, "");
 		}
-		rindex = abcNoteStrings.notes3.lastIndexOf(modifier_to_look_for)
+		rindex = abcNoteStrings.notes3.lastIndexOf(modifier_to_look_for);
 		if(rindex > -1) {
 			found_modifier = true;
 			abcNoteStrings.notes3 = abcNoteStrings.notes3.replace(modifier_to_look_for, "");
@@ -730,12 +737,13 @@ function GrooveUtils() { "use strict";
 							      notes2 : "",
 							      notes3 : ""};
 			var num_notes_on = 0;
+			var nextCount;
 			
 			if(note1_array[0] != false) {
 				// look ahead and see when the next note is
-				var nextCount = 1;
-				for(var indexB = 1; indexB < end_of_group; indexB++) {
-					if(note1_array[indexB] != false || note2_array[indexB] != false || note3_array[indexB] != false)
+				nextCount = 1;
+				for(var indexA= 1; indexA < end_of_group; indexA++) {
+					if(note1_array[indexA] != false || note2_array[indexA] != false || note3_array[indexA] != false)
 						break;
 					else
 						nextCount++;
@@ -747,7 +755,7 @@ function GrooveUtils() { "use strict";
 			
 			if(note2_array[0] != false) {
 				// look ahead and see when the next note is
-				var nextCount = 1;
+				nextCount = 1;
 				for(var indexB = 1; indexB < end_of_group; indexB++) {
 					if(note1_array[indexB] != false || note2_array[indexB] != false || note3_array[indexB] != false)
 						break;
@@ -761,9 +769,9 @@ function GrooveUtils() { "use strict";
 			
 			if(note3_array[0] != false) {
 				// look ahead and see when the next note is
-				var nextCount = 1;
-				for(var indexB = 1; indexB < end_of_group; indexB++) {
-					if(note1_array[indexB] != false || note2_array[indexB] != false || note3_array[indexB] != false)
+				nextCount = 1;
+				for(var indexC = 1; indexC < end_of_group; indexC++) {
+					if(note1_array[indexC] != false || note2_array[indexC] != false || note3_array[indexC] != false)
 						break;
 					else
 						nextCount++;
@@ -818,7 +826,7 @@ function GrooveUtils() { "use strict";
 				ABC_String += "z" + (scaler * restCount);
 		}
 		
-		return ABC_String
+		return ABC_String;
 	}
 	
 	// the note grouping size is how groups of notes within a measure group
@@ -854,6 +862,7 @@ function GrooveUtils() { "use strict";
 			default:
 				alert("bad switch in GrooveUtils.noteGroupingSize()");
 				note_grouping = Math.ceil(notes_per_measure/4);
+				break;
 			}
 		} else if((timeSigTop % 3) == 0) {
 			// 3/4, 6/8, 12/8, etc
@@ -865,7 +874,7 @@ function GrooveUtils() { "use strict";
 			note_grouping = notes_per_measure/timeSigTop;
 		}
 		return note_grouping;
-	}
+	};
 	
 	
 	// when we generate ABC we use a default larger note array and transpose it
@@ -924,7 +933,7 @@ function GrooveUtils() { "use strict";
 		}
 		
 		return scaler;
-	}
+	};
 	
 	// take any size array and make it larger by padding it with rests in the spaces between
 	// For triplets, expands to 24 notes per measure
@@ -943,12 +952,12 @@ function GrooveUtils() { "use strict";
 			for(var i=0; i < num_measures * 24; i++) 
 				retArray[i] = false;
 		}
-		for(var i=0; i < num_measures * notes_per_measure * scaler ; i++) 
-			retArray[i] = false;
+		for(var k=0; i < num_measures * notes_per_measure * scaler ; k++) 
+			retArray[k] = false;
 		
 		// sparsely fill in the return array with data from passed in array
-		for(var i=0; i < num_measures * notes_per_measure; i++) {
-			var ret_array_index = (i)*scaler;
+		for(var j=0; j < num_measures * notes_per_measure; j++) {
+			var ret_array_index = (j)*scaler;
 			
 			retArray[ret_array_index] = note_array[i];
 		}
@@ -978,9 +987,9 @@ function GrooveUtils() { "use strict";
 			if(i % ABC_gen_note_grouping_size(true, timeSigTop, timeSigBottom) == 0) {
 				// creates the 3 or the 6 over the note grouping
 				// looks like (3:3:3 or (6:6:6
-				hh_snare_voice_string += "(" + root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom)
-										+ ":" + root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom) 
-										+ ":" + root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom);
+				hh_snare_voice_string += "(" + root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom) +
+										":" + root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom) +
+										":" + root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom);
 			} 
 			 
 			if( i % grouping_size_for_rests == 0 ) {
@@ -1039,7 +1048,7 @@ function GrooveUtils() { "use strict";
 	
 		var scaler = 1;  // we are always in 32ths notes here
 		var ABC_String = "";
-		var stickings_voice_string = "V:Stickings\n"    // for stickings.  they are all rests with text comments added
+		var stickings_voice_string = "V:Stickings\n";    // for stickings.  they are all rests with text comments added
 		var hh_snare_voice_string = "V:Hands stem=up\n%%voicemap drum\n";     // for hh and snare
 		var kick_voice_string = "V:Feet stem=down\n%%voicemap drum\n";   // for kick drum
 		
@@ -1110,7 +1119,7 @@ function GrooveUtils() { "use strict";
 		} else {
 			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);
 		}
-	}
+	};
 	
 	// create ABC notation from a GrooveData class
 	// returns a string of ABC Notation data
@@ -1144,7 +1153,7 @@ function GrooveUtils() { "use strict";
 																	  myGrooveData.noteValue);
 			
 		return fullABC;
-	}
+	};
 	
 	// callback class for abc generator library
 	function SVGLibCallback() {
@@ -1155,11 +1164,11 @@ function GrooveUtils() { "use strict";
 		// include a file (%%abc-include)
 		this.read_file = function(fn) {
 			return "";
-		}
+		};
 		// insert the errors
 		this.errmsg = function(msg, l, c) {
-			this.abc_error_output += msg + "<br/>\n"
-		}
+			this.abc_error_output += msg + "<br/>\n";
+		};
 		
 		// for possible playback or linkage
 		this.get_abcmodel = function(tsfirst, voice_tb, music_types) {
@@ -1171,17 +1180,17 @@ function GrooveUtils() { "use strict";
 			//	console.log(next);
 			//	next = next.next;	
 			//}	
-		}
+		};
 		
 		// image output
 		this.img_out = function(str) {
-			this.abc_svg_output += str	// + '\n'
-		}
+			this.abc_svg_output += str;	// + '\n'
+		};
 		
 		// -- optional attributes
-		this.page_format = true		// define the non-page-breakable blocks
+		this.page_format = true;		// define the non-page-breakable blocks
 	}
-	var abcToSVGCallback = new SVGLibCallback()   // singleton
+	var abcToSVGCallback = new SVGLibCallback();   // singleton
 	
 	
 	// converts incoming ABC notation source into an svg image.
@@ -1197,7 +1206,7 @@ function GrooveUtils() { "use strict";
 			svg: abcToSVGCallback.abc_svg_output,
 			error_html: abcToSVGCallback.abc_error_output
 		};	
-	}
+	};
 		
 	
 	// ******************************************************************************************************************
@@ -1225,14 +1234,14 @@ function GrooveUtils() { "use strict";
 		}
 		
 		return baseLocation;
-	}
+	};
 	
 	root.getMidiSoundFontLocation = function() {			
 		return root.getGrooveUtilsBaseLocation() + "soundfont/";
-	}
+	};
 	root.getMidiImageLocation = function() {
 		return root.getGrooveUtilsBaseLocation() + "images/";
-	}
+	};
 	
 	root.midiEventCallbackClass = function(classRoot) {
 		this.classRoot = classRoot;
@@ -1282,24 +1291,24 @@ function GrooveUtils() { "use strict";
 				document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src=root.getMidiImageLocation() + "play.png";
 				document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).onclick = function (event){ root.startOrStopMIDI_playback();};  // enable play button
 				setupHotKeys();  // spacebar to play
-		}
-	}
+		};
+	};
 	root.midiEventCallbacks = new root.midiEventCallbackClass(root);
 	
 	// set a URL for midi playback.
 	// usefull for static content, so you don't have to override the loadMidiDataEvent callback
 	root.setGrooveData = function(grooveData) {
 		root.myGrooveData = grooveData;
-	}
+	};
 	
 	// This is called so that the MIDI player will reload the groove
 	// at repeat time.   If not set then the midi player just repeats what is already loaded.
 	root.midiNoteHasChanged = function() {
 		root.midiEventCallbacks.noteHasChangedSinceLastDataLoad = true;
-	}
+	};
 	root.midiResetNoteHasChanged = function() {
 		root.midiEventCallbacks.noteHasChangedSinceLastDataLoad = false;
-	}
+	};
 	
 	/* 
 	 * midi_output_type:  "general_MIDI" or "Custom"
@@ -1319,16 +1328,13 @@ function GrooveUtils() { "use strict";
 			var prev_kick_splash_note = false;
 			var midi_channel = 0;   
 				
-			if(swing_percentage < 0 || swing_percentage > .99)
+			if(swing_percentage < 0 || swing_percentage > 0.99)
 			{
 				alert("Swing percentage out of range in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
 				swing_percentage = 0;
 			}
 			
-			if(midi_output_type == "general_MIDI")
-				midi_channel = 9; // for external midi player
-			else
-				midi_channel = 0; // for our internal midi player
+			midi_channel = 9; // Percussion
 			
 			// Some sort of bug in the midi player makes it skip the first note without a blank
 			// TODO: Find and fix midi bug
@@ -1380,7 +1386,7 @@ function GrooveUtils() { "use strict";
 				var metronome_velocity = velocity_accent;
 				if(metronome_frequency > 0) {
 					var quarterNoteFrequency = (isTriplets ? 6 : 8);
-					var eighthNoteFrequency = (isTriplets ? 2 : 4)
+					var eighthNoteFrequency = (isTriplets ? 2 : 4);
 					var sixteenthNoteFrequency = (isTriplets ? 1 : 2);
 				
 					// Special sound on the one
@@ -1442,6 +1448,7 @@ function GrooveUtils() { "use strict";
 						break;
 					default:
 						alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+						break;
 				}
 				
 				if(hh_note != false) {
@@ -1484,6 +1491,7 @@ function GrooveUtils() { "use strict";
 						break;
 					default:
 						alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+						break;
 				}
 				
 				if(snare_note != false) {
@@ -1512,12 +1520,14 @@ function GrooveUtils() { "use strict";
 					break;
 				default:
 					alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+					break;
 				}
 				if(kick_note != false) {
-					if(prev_kick_note != false)
-						midiTrack.addNoteOff(midi_channel, prev_kick_note, 0);
-					midiTrack.addNoteOn(midi_channel, kick_note, 0, kick_velocity);
-					prev_kick_note = kick_note;
+					//if(prev_kick_note != false)
+					//	midiTrack.addNoteOff(midi_channel, prev_kick_note, 0);
+					midiTrack.addNoteOn(midi_channel, kick_note, delay_for_next_note, kick_velocity);
+					delay_for_next_note = 0;   // zero the delay
+					//prev_kick_note = kick_note;
 				}
 				if(kick_splash_note != false) {
 					//if(prev_kick_splash_note != false)
@@ -1533,7 +1543,7 @@ function GrooveUtils() { "use strict";
 			if(delay_for_next_note)
 				midiTrack.addNoteOff(0, 60, delay_for_next_note-1);  // add a blank note for spacing
 			
-	} // end of function
+	}; // end of function
 	
 	// returns a URL that is a MIDI track
 	root.create_MIDIURLFromGrooveData = function(myGrooveData, MIDI_type) {
@@ -1570,29 +1580,29 @@ function GrooveUtils() { "use strict";
 		var midi_url = "data:audio/midi;base64," + btoa(midiFile.toBytes());
 		
 		return midi_url;
-	}
+	};
 	
 	root.loadMIDIFromURL = function(midiURL) {
 		
 		MIDI.Player.timeWarp = 1; // speed the song is played back
 		MIDI.Player.BPM = root.getTempo();
 		MIDI.Player.loadFile(midiURL, MIDILoaderCallback());
-	}
+	};
 	
 	root.MIDI_save_as = function(midiURL) {
 		
 		// save as 
 		document.location = midiURL;
-	}
+	};
 	
 	root.pauseMIDI_playback = function() {
 		if(root.isMIDIPaused == false) {
 			root.isMIDIPaused = true;
 			root.midiEventCallbacks.pauseEvent(root.midiEventCallbacks.classRoot);
 			MIDI.Player.pause();
-			clear_all_highlights()
+			clear_all_highlights();
 		}
-	}
+	};
 	
 	// play button or keypress
 	root.startMIDI_playback = function() {
@@ -1612,7 +1622,7 @@ function GrooveUtils() { "use strict";
 		}
 		root.midiEventCallbacks.playEvent(root.midiEventCallbacks.classRoot);
 		root.isMIDIPaused = false;
-	}
+	};
 	
 	// stop button or keypress
 	root.stopMIDI_playback = function() {
@@ -1621,7 +1631,7 @@ function GrooveUtils() { "use strict";
 			MIDI.Player.stop();
 			root.midiEventCallbacks.stopEvent(root.midiEventCallbacks.classRoot);
 		} 
-	}
+	};
 	
 	// modal play/stop button
 	root.startOrStopMIDI_playback = function() {
@@ -1631,7 +1641,7 @@ function GrooveUtils() { "use strict";
 		} else {
 			root.startMIDI_playback();
 		}			
-	}
+	};
 	
 	// modal play/pause button
 	root.startOrPauseMIDI_playback = function() {
@@ -1641,7 +1651,7 @@ function GrooveUtils() { "use strict";
 		} else {
 			root.startMIDI_playback();
 		}			
-	}
+	};
 	
 	root.repeatMIDI_playback = function() {
 		if(root.shouldMIDIRepeat == false) {
@@ -1653,7 +1663,7 @@ function GrooveUtils() { "use strict";
 		}
 		root.midiEventCallbacks.repeatChangeEvent(root.midiEventCallbacks.classRoot, root.shouldMIDIRepeat);
 			
-	}
+	};
 	
 	root.oneTimeInitializeMidi = function() {
 		
@@ -1665,14 +1675,13 @@ function GrooveUtils() { "use strict";
 		root.midiInitialized = true;
 		MIDI.loadPlugin({
 			soundfontUrl: root.getMidiSoundFontLocation(),
-			instruments: ["gunshot" ],
+			instruments: ["gunshot", "acoustic_grand_piano" ],
 			onsuccess: function() {
-				MIDI.programChange(0, 127);   // use "Gunshot" instrument because I don't know how to create new ones
+				MIDI.programChange(9, 127);   // use "Gunshot" instrument because I don't know how to create new ones
 				root.midiEventCallbacks.midiInitialized(root.midiEventCallbacks.classRoot);
-		
 			}
 		});
-	}
+	};
 	
 	// update the midi play timer on the player. 
 	// Keeps track of how long we have been playing.
@@ -1703,7 +1712,7 @@ function GrooveUtils() { "use strict";
 		*/
 		
 		root.last_midi_update_time = time_now;
-	}
+	};
 	
 	var debug_note_count = 0;
 	//var class_midi_note_num = 0;  // global, but only used in this function
@@ -1791,12 +1800,12 @@ function GrooveUtils() { "use strict";
 	}
 	
     root.getTempo = function() {
-        var tempo = parseInt(document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex).value);
+        var tempo = parseInt(document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex).value, 10);
         if(tempo < 19 && tempo > 281)
             tempo = constant_default_tempo;
         
         return tempo;
-    }
+    };
 
 	// we need code to make the range slider colors update properly
 	function updateRangeSlider(sliderID) {
@@ -1833,28 +1842,28 @@ function GrooveUtils() { "use strict";
         
 		document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex).value = newTempo;
         tempoUpdate(newTempo);
-	}
+	};
 
 	// update the tempo string display
 	root.tempoUpdateEvent = function(event) {
 		tempoUpdate(event.target.value);
-	}
+	};
 	
 	root.doesDivisionSupportSwing = function(division) {
 	
 		if(root.isTripletDivision(division, 4, 4) || division == 4)
 			return false;
-	}
+	};
 	
 	root.swingEnabled = function(trueElseFalse) {
 		if(root.swingIsEnabled != trueElseFalse)
 			root.swingUpdate(false);
 	
 		root.swingIsEnabled = trueElseFalse;
-	}
+	};
 	
 	root.getSwing = function() {
-        var swing = parseInt(document.getElementById("swingInput" + root.grooveUtilsUniqueIndex).value);
+        var swing = parseInt(document.getElementById("swingInput" + root.grooveUtilsUniqueIndex).value, 10);
         if(swing < 0 || swing > 60)
             swing = 0;
         
@@ -1863,14 +1872,14 @@ function GrooveUtils() { "use strict";
         
         // our real swing value only goes to 60%. 
         return (swing);
-    }
+    };
 
 	// used to update the on screen swing display
 	// also the onClick handler for the swing slider
 	root.swingUpdate = function(swingAmount) {
 		if(!swingAmount) {
 			// grab the actual amount from the slider
-			swingAmount = parseInt(document.getElementById("swingInput" + root.grooveUtilsUniqueIndex).value);
+			swingAmount = parseInt(document.getElementById("swingInput" + root.grooveUtilsUniqueIndex).value, 10);
 		}
 		
 		if(root.swingIsEnabled == false) {
@@ -1881,12 +1890,12 @@ function GrooveUtils() { "use strict";
 			root.midiNoteHasChanged();
 		}
 		
-	}
+	};
 	
 	root.swingUpdateEvent = function(event) {
 		root.swingUpdate(event.target.value);
 		updateRangeSlider('swingInput' + root.grooveUtilsUniqueIndex);
-	}
+	};
 	
 	
 	root.expandOrRetractMIDI_playback = function(force, expandElseContract) {
@@ -1914,7 +1923,7 @@ function GrooveUtils() { "use strict";
 			midiMetronomeSelector.style.display = 'none';
 		
 		}
-	}
+	};
 	
 	// handle a click on the metronome (click) text that is part of the midi player
 	root.metronomeSelectorClick = function(event) {	
@@ -1930,7 +1939,7 @@ function GrooveUtils() { "use strict";
 			}
 			root.showContextMenu(contextMenu);
 		}
-	}
+	};
 	
 	
 	var CONSTANT_Metronome_text_OFF = "No Click";
@@ -1942,10 +1951,7 @@ function GrooveUtils() { "use strict";
 		
 		if(metronomeDisplay) {
 			switch(newValue) {
-				default:
-				case 0:
-					metronomeDisplay.innerHTML = CONSTANT_Metronome_text_OFF;
-					break;
+				
 				case 4:
 					metronomeDisplay.innerHTML = CONSTANT_Metronome_text_4;
 					break;
@@ -1955,11 +1961,15 @@ function GrooveUtils() { "use strict";
 				case 16:
 					metronomeDisplay.innerHTML = CONSTANT_Metronome_text_16;
 					break;
+				case 0:
+				default:
+					metronomeDisplay.innerHTML = CONSTANT_Metronome_text_OFF;
+					break;
 			}
 			
-			root.midiNoteHasChanged()
+			root.midiNoteHasChanged();
 		}
-	}
+	};
 	
 	root.getMetronomeFrequency = function(newValue) {
 		var metronomeDisplay = document.getElementById("metronomeSelector" + root.grooveUtilsUniqueIndex); 
@@ -1977,7 +1987,7 @@ function GrooveUtils() { "use strict";
 		}
 		
 		return returnValue;
-	}
+	};
 	
 	root.HTMLForMidiPlayer = function(expandable) {
 		var newHTML = '' +
@@ -2021,10 +2031,10 @@ function GrooveUtils() { "use strict";
 			'		<li id="metronomeSelect8' + root.grooveUtilsUniqueIndex + '" ><b>8th</b> note click</li>' +
 			'		<li id="metronomeSelect16' + root.grooveUtilsUniqueIndex + '"><b>16th</b> note click</li>' +
 			'	</ul>' +
-			'</div>'
+			'</div>';
 			
 		return newHTML;
-	}
+	};
 	
 	// pass in a tag ID.  (not a class)
 	// HTML will be put within the tag replacing whatever else was there
@@ -2061,27 +2071,27 @@ function GrooveUtils() { "use strict";
 		
 		html_element = document.getElementById("metronomeSelectOff" + root.grooveUtilsUniqueIndex); 
 		if(html_element) {
-			html_element.addEventListener("click", function(){root.metronomePopupClick(0)}, false);
+			html_element.addEventListener("click", function(){root.metronomePopupClick(0);}, false);
 		}
 		
 		html_element = document.getElementById("metronomeSelect4" + root.grooveUtilsUniqueIndex); 
 		if(html_element) {
-			html_element.addEventListener("click", function(){root.metronomePopupClick(4)}, false);
+			html_element.addEventListener("click", function(){root.metronomePopupClick(4);}, false);
 		}
 		
 		html_element = document.getElementById("metronomeSelect8" + root.grooveUtilsUniqueIndex); 
 		if(html_element) {
-			html_element.addEventListener("click", function(){root.metronomePopupClick(8)}, false);
+			html_element.addEventListener("click", function(){root.metronomePopupClick(8);}, false);
 		}
 		
 		html_element = document.getElementById("metronomeSelect16" + root.grooveUtilsUniqueIndex); 
 		if(html_element) {
-			html_element.addEventListener("click", function(){root.metronomePopupClick(16)}, false);
+			html_element.addEventListener("click", function(){root.metronomePopupClick(16);}, false);
 		}
 				
 		// enable or disable swing
 		root.swingEnabled( root.doesDivisionSupportSwing(division) );
-	}
+	};
 
 } // end of class
 	
