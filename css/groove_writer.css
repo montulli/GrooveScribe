@@ -37,25 +37,25 @@
 		z-index: 999;
 		left: 72px;
 		width: calc(100% - 72px);
-		height: 40px;
+		height: 48px;
 		border-bottom: 1px solid #00C;
 		background: #009ffa;
 		max-width: 954px;
 	}
 	#midiPlayer {  /* more #midiPlayer css in groove_display.css */
 		width: calc(100% - 72px);
-		height: 65px;
+		height: 48px;
 		max-width: 954px;
 		position: fixed;
 		z-index: 999;
 		left: 72px;
-		top: 41px;
+		top: 49px;
 		border-bottom: 1px solid #00C;
 		
 	}
 	#RightHandContent {
 		margin-left: 72px;
-		padding-top: 106px;
+		padding-top: 98px;
 	}
 	#upperRight {
 		float: right;
@@ -63,10 +63,14 @@
 	#divisionButtonContainer {
 		
 	}
-	
+	#upperLeft  {
+	}
+	#metronomeContainer {
+	}
 	#metronomeLabel {
 		display: inline-block;
 		height: 20px;
+		margin-top: 10px;
 		text-align: center;
 		padding: 5px 5px 5px 5px;
 		margin-left: 10px;
@@ -74,7 +78,7 @@
 		color: #EEF;
 	}
 	.metronomeButton {
-		margin-top: 10px;
+		/margin-top: 15px;
 		display: inline-block;
 		background: #0071ad;
 		color: #EEF;
@@ -89,16 +93,16 @@
 	    display: inline-block;
 		font-size: 18px;
 		/font-weight: bold;
-		margin: 6px 3px 3px 3px;
+		margin: 8px 3px 3px 3px;
 		padding: 3px 6px 3px 6px;
 		color: #EEF;
 	}
 	
 	#timeLabel, .subdivision, #advancedEditAnchor {
 		display: block;
-		font-size: 18px;
+		font-size: 16px;
 		font-weight: bold;
-		height: 65px;
+		height: 48px;
 		border-bottom: 1px solid #000;
 		text-align: center;
 		vertical-align: middle;
@@ -111,7 +115,7 @@
 		-webkit-justify-content: space-around;
 	}
 	#timeLabel {
-		height: 40px;  /* Override from above */
+		height: 48px;  /* Override from above */
 	}
 	#advancedEditAnchor {
 		background: #FFFFCC;
@@ -146,7 +150,7 @@
 	}
 	#musicalInput {
 		width: 100%;
-		margin-bottom: -5px;
+		padding-bottom: 2px;
 		max-width: 954px;
 		background: #FFF;
 		overflow-x: auto;
@@ -444,7 +448,7 @@
 		display:none;
 	}
 	#PermutationOptionsHeader {
-		margin-left: 27px;
+		margin-left: 22px;
 		font-size: 18px;
 		font-weight:bold;
 	}
@@ -454,16 +458,23 @@
 	}
 	.PermutationOptionGroup{
 		display: table-row;
+		border-bottom: 1px solid #999;
 	}
-	.PermutationOption {
-		font-weight: bold;
-		/border-right: 1px solid #999;
+	.PermutationOptionGroup:last-child{
+		border-bottom: 0px solid #999;
 	}
-	.PermutationOption, .PermutationSubOption{
+	.PermutationOption{
+		height: 20px;
 		display: table-cell;
 		padding-right: 15px;
-		border-top: 1px solid #999;
-		border-bottom: 1px solid #999;
+		/border-top: 1px solid #999;
+		/border-bottom: 1px solid #999;
+	}
+	.PermutationSubOption{
+		display: table-cell;
+		padding-right: 15px;
+		/border-top: 1px solid #999;
+		/border-bottom: 1px solid #999;
 	}
 	#permutationType {
 		margin-top: 10px;
@@ -616,8 +627,8 @@
 	}
 	input[type=checkbox] {  
 		vertical-align: middle;
-		width: 20px;
-		height: 20px;
+		width: 15px;
+		height: 15px;
 		cursor: pointer;
 	} 
 	input[type=checkbox] + label {

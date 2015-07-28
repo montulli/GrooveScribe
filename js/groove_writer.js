@@ -3126,7 +3126,7 @@ function GrooveWriter() { "use strict";
 		// add up beats and down beats
 		// add quads
 		if(!myGrooveUtils.isTripletDivision(class_notes_per_measure, 4, 4)) {
-			optionTypeArray[1].SubOptions = ["1", "e&nbsp;&nbsp;&nbsp;&nbsp;", "&&nbsp;&nbsp;&nbsp;&nbsp;", "a&nbsp;&nbsp;&nbsp;&nbsp;"];  // singles
+			optionTypeArray[1].SubOptions = ["1", "e", "&", "a"];  // singles
 			optionTypeArray[2].SubOptions = ["1", "e", "&", "a"];  // doubles
 			optionTypeArray[3].SubOptions = ["1", "e", "&", "a"];  // triples
 			optionTypeArray.splice(3, 0, {id: "PermuationOptionsUpsDowns", subid:  "PermuationOptionsUpsDowns_sub", name: "Downbeats/Upbeats", SubOptions: ["downs", "ups"]});
