@@ -42,6 +42,8 @@ function GrooveWriter() { "use strict";
 	var constant_hihat_note_off_color_hex = "#CCC"; 
 	var constant_hihat_note_off_color_rgb = 'rgb(204, 204, 204)';  // grey
 	var constant_note_hidden_color_rgb = "transparent";
+	var constant_sticking_right_off_color_rgb = "rgb(204, 204, 204)";
+	var constant_sticking_left_off_color_rgb = "rgb(204, 204, 204)";
 	var constant_ABC_STICK_R=  '"R"x';
 	var constant_ABC_STICK_L=  '"L"x';
 	var constant_ABC_STICK_OFF=  '""x';
@@ -386,8 +388,8 @@ function GrooveWriter() { "use strict";
 		switch(new_state) {
 		case "off":
 			// show them both greyed out.
-			document.getElementById("sticking_right" + id).style.color = constant_note_off_color_hex;
-			document.getElementById("sticking_left" + id).style.color = constant_note_off_color_hex;
+			document.getElementById("sticking_right" + id).style.color = constant_sticking_right_off_color_rgb;
+			document.getElementById("sticking_left" + id).style.color = constant_sticking_left_off_color_rgb;
 			break;
 		case "right":
 			document.getElementById("sticking_right" + id).style.color = constant_note_on_color_hex;
@@ -414,7 +416,7 @@ function GrooveWriter() { "use strict";
 		// since colors are inherited, if we have not set a color it will be blank in the ID'd element
 		// we set all colors to off in the stylesheet, so it must be off.
 		if( (document.getElementById("sticking_right" + id).style.color == "" && document.getElementById("sticking_left" + id).style.color == "") 
-			|| (document.getElementById("sticking_right" + id).style.color == constant_note_off_color_rgb && document.getElementById("sticking_left" + id).style.color == constant_note_off_color_rgb)) {
+			|| (document.getElementById("sticking_right" + id).style.color == constant_sticking_right_off_color_rgb && document.getElementById("sticking_left" + id).style.color == constant_sticking_left_off_color_rgb)) {
 			
 			// both are off.   Call it off
 			if(returnType == "ABC")
@@ -3018,12 +3020,12 @@ function GrooveWriter() { "use strict";
 								
 									newHTML += ('\
 										<div id="hi-hat' + i + '" class="hi-hat" onClick="myGrooveWriter.noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'hh\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'hh\', ' + i + ')">\
-											<div class="hh_crash"  id="hh_crash'  + i + '">*</div>\
+											<div class="hh_crash"  id="hh_crash'  + i + '"><i class="fa fa-asterisk"></i></div>\
 											<div class="hh_ride"   id="hh_ride'   + i + '">R</div>\
-											<div class="hh_cross"  id="hh_cross'  + i + '">X</div>\
-											<div class="hh_open"   id="hh_open'   + i + '">o</div>\
-											<div class="hh_close"  id="hh_close'  + i + '">+</div>\
-											<div class="hh_accent" id="hh_accent' + i + '">&gt;</div>\
+											<div class="hh_cross"  id="hh_cross'  + i + '"><i class="fa fa-times"></i></div>\
+											<div class="hh_open"   id="hh_open'   + i + '"><i class="fa fa-circle-o"></i></div>\
+											<div class="hh_close"  id="hh_close'  + i + '"><i class="fa fa-plus"></i></div>\
+											<div class="hh_accent" id="hh_accent' + i + '"><i class="fa fa-angle-right"></i></div>\
 										</div>\
 									');
 									
@@ -3039,10 +3041,10 @@ function GrooveWriter() { "use strict";
 								for(i = indexStartForNotes; i < class_notes_per_measure+indexStartForNotes; i++) {
 									newHTML += ('\
 										<div id="snare' + i + '" class="snare" onClick="myGrooveWriter.noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'snare\', ' + i + ')">\
-										<div class="snare_ghost"  id="snare_ghost'  + i + '">(&bull;)</div>\
+										<div class="snare_ghost"  id="snare_ghost'  + i + '">(<i class="fa fa-circle dot_in_snare_ghost_note"></i>)</div>\
 										<div class="snare_circle" id="snare_circle' + i + '"></div>\
-										<div class="snare_xstick" id="snare_xstick' + i + '">X</div>\
-										<div class="snare_accent" id="snare_accent' + i + '">&gt;</div>\
+										<div class="snare_xstick" id="snare_xstick' + i + '"><i class="fa fa-times"></i></div>\
+										<div class="snare_accent" id="snare_accent' + i + '"><i class="fa fa-angle-right"></i></div>\
 										</div> \
 										');
 										
@@ -3058,7 +3060,7 @@ function GrooveWriter() { "use strict";
 								for(var j = indexStartForNotes; j < class_notes_per_measure+indexStartForNotes; j++) {
 									newHTML += ('\
 										<div id="kick' + j + '" class="kick" onClick="myGrooveWriter.noteLeftClick(event, \'kick\', ' + j + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'kick\', ' + j + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'kick\', ' + j + ')">\
-										<div class="kick_splash" id="kick_splash' + j + '">X</div></a>\
+										<div class="kick_splash" id="kick_splash' + j + '"><i class="fa fa-times"></i></div></a>\
 										<div class="kick_circle" id="kick_circle' + j + '"></div></a>\
 										</div> \
 									');
@@ -3092,6 +3094,8 @@ function GrooveWriter() { "use strict";
 			if(checkbox)
 				checkbox.checked = OnElseOff;
 		}
+		
+		myGrooveWriter.refresh_ABC();
 	};
 	
 	// public function
@@ -3142,7 +3146,7 @@ function GrooveWriter() { "use strict";
 			newHTML += '' +
 				'<div class="PermutationOptionGroup" id="' + optionTypeArray[optionType].id + 'Group">\n' +
 					'<div class="PermutationOption">\n' +
-						'<input checked type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].id + '" onClick="myGrooveWriter.permutationOptionClick(event)" onChange="myGrooveWriter.refresh_ABC()">' +
+						'<input checked type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].id + '" onClick="myGrooveWriter.permutationOptionClick(event)">' +
 						'<label for="' + optionTypeArray[optionType].id + '">' + optionTypeArray[optionType].name + '</label>\n' +
 					'</div>' +
 					'<span class="permutationSubOptionContainer" id="' + optionTypeArray[optionType].subid  +'">\n';
@@ -3152,7 +3156,7 @@ function GrooveWriter() { "use strict";
 				count++;
 				newHTML += '' +
 						'<span class="PermutationSubOption">\n' +
-						'	<input checked type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].subid + count + '" onChange="myGrooveWriter.refresh_ABC()">' + 
+						'	<input checked type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].subid + count + '" onClick="myGrooveWriter.refresh_ABC()">' + 
 						'	<label for="' + optionTypeArray[optionType].subid + count + '">' + optionTypeArray[optionType].SubOptions[optionName] + '</label>' +
 						'</span>';	
 			}

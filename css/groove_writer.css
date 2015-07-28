@@ -6,8 +6,9 @@
 	}
 	body {
 		margin: 0px;
-		background: #CCC;
-		font-family: Calibri;
+		background: #DDD;
+		/font-family: Calibri;
+		font-family: 'Lato', sans-serif;
 	}
 	.warnings {
 		font-family: monospace;
@@ -127,10 +128,10 @@
 	
 	#NotationLine {
 		max-width: 954px;
-		height: 30px;
+		height: 35px;
 		text-align: center;
-		padding-top: 35px;
-		border-bottom:1px solid #999;
+		padding-top: 13px;
+		border-bottom:1px solid #AAA;
 	}
 	#NotationLabel {
 		display: inline-block;
@@ -156,7 +157,7 @@
 		overflow-x: auto;
 		overflow-y: hidden;
 		white-space: nowrap;
-		border-bottom: 1px solid #999;
+		border-bottom: 1px solid #AAA;
 	}
 	.staff-container {
 		/margin-left: 2px;
@@ -348,31 +349,31 @@
 		cursor: pointer;
 	}
 	.hh_crash {
-		position: absolute; top: 10px; left: 2px;
-		font-size: 52px;
+		position: absolute; top: 21px; left: 2px;
+		font-size: 22px;
 		color: transparent;
 		cursor: pointer;
 	}
 	.hh_ride {
-		position: absolute; top: 16px; left: 3px;
-		font-size: 30px;
+		position: absolute; top: 17px; left: 5px;
+		font-size: 26px;
 		color: transparent;
 		cursor: pointer;
 	}
 	.hh_cross {
-		position: absolute; top: 16px; left: 3px;
-		font-size: 30px;
+		position: absolute; top: 20px; left: 3px;
+		font-size: 24px;
 		color: #CCCCCC;
 		cursor: pointer;
 	}
 	.hh_open {
-		position: absolute; top: 1px; left: 9px;
-		font-size: 20px;
+		position: absolute; top: 7px; left: 7px;
+		font-size: 13px;
 		color: transparent;
 	}
 	.hh_close {
-		position: absolute; top: 2px; left: 9px;
-		font-size: 20px;
+		position: absolute; top: 7px; left: 7px;
+		font-size: 13px;
 		color: transparent;
 		float:left;
 	}
@@ -382,8 +383,12 @@
 		color: transparent;
 		float:left;
 	}
+	.dot_in_snare_ghost_note {
+		font-size: 14px;
+		position: relative; top: -1px; left: 0px;
+	}
 	.snare_ghost {
-		position: absolute; top: 25px; left: 1px;
+		position: absolute; top: 26px; left: 1px;
 		font-size: 26px;
 		color: transparent;
 		cursor: pointer;
@@ -400,14 +405,14 @@
 		cursor: pointer;
 	}
 	.snare_xstick {
-		position: absolute; top: 26px; left: 3px;
+		position: absolute; top: 27px; left: 3px;
 		font-size: 30px;
 		color: transparent;
 		cursor: pointer;
 	}
 	.snare_accent {
-		position: absolute; top: 0px; left: 6px;
-		font-size: 30px;
+		position: absolute; top: 0px; left: 10px;
+		font-size: 26px;
 		color: transparent;
 	}
 	.kick_circle {
@@ -446,9 +451,10 @@
 	}
 	#PermutationOptions {
 		display:none;
+		margin: 3px 0px -20px 10px;
 	}
 	#PermutationOptionsHeader {
-		margin-left: 22px;
+		/margin-left: 22px;
 		font-size: 18px;
 		font-weight:bold;
 	}
@@ -497,8 +503,17 @@
 		background: #FFF;
 	}
 	#sheetMusicTextFields {
-		margin-top: 5px;
-		padding-top:1px solid #999;
+		max-width: 954px;
+		border-top: 1px solid #999;
+		padding-top: 8px;
+		text-align: center;
+		-webkit-justify-content: space-between;
+		display: -webkit-flex;
+		display: flex;
+		justify-content: space-between;
+	}
+	.sheetMusicInputField {
+	
 	}
 	// Context Menu
 	.noteContextMenu { 
@@ -576,18 +591,7 @@
 	#fullURLLink {
 		float: right;
 	}
-	#buttonsAboveSheetMusic {
-		margin-top: 10px;
-		margin-bottom: 5px;
-		margin-left: 5px;
-		margin-right: 5px;
-		width: 795px;
-		padding-right: 10px;
-		-webkit-justify-content: space-between;
-		display: -webkit-flex;
-		display: flex;
-		justify-content: space-between;
-	}
+	
 	.myButton {
 	   border-top: 1px solid #96d1f8;
 	   background: #65a9d7;
@@ -625,17 +629,15 @@
 	button {
 		cursor: pointer;
 	}
-	input[type=checkbox] {  
-		vertical-align: middle;
-		width: 15px;
-		height: 15px;
-		cursor: pointer;
-	} 
-	input[type=checkbox] + label {
-		color: #888;
-	}	
-	input[type=checkbox]:checked + label {
+	
+		
+	input[type=checkbox]:checked  + label {
 		color: #000;
+		cursor: pointer;
+	}
+	input[type=checkbox]:not(:checked) + label {
+		color: #888;
+		cursor: pointer;
 	}
 	#totalPlayTime {
 		z-index: 999;
@@ -643,5 +645,56 @@
 		bottom: 3px;
 		right: 3px;
 	}
-
-
+	.myCheckbox { display:none; } /* to hide the checkbox itself */
+	.myCheckbox + label:before {
+	  font-family: FontAwesome;
+	  display: inline-block;
+	}
+	.myCheckbox + label:before 
+	{ 
+		/* content: "\f096";  /* uncheck box */
+		content: "\00a0";
+		letter-spacing: 17px; 
+	} /* unchecked icon */
+	.myCheckbox:checked + label:before 
+	{ 
+		content: "\f00c"; 
+		letter-spacing: 5px; 
+	} /* checked icon */
+	
+	.hiddenCheckbox {
+		/* checkbox for the key (legend) */
+		visibility: hidden;	
+	}
+	#LegendLabel {
+		border: 1px solid #CCC;
+		padding: 3px 7px 5px 7px;
+		border-radius: 7px;
+		background: #CCC;
+		margin-right: 8px;
+	}
+	#bottomButtonRow {
+		margin-top: 10px;
+		padding-top: 30px;
+		padding-left: 50px;
+		padding-right: 50px;
+		max-width: 854px;
+		height: 70px;
+		background: #1f363a;
+		color: #6e90a9;
+		-webkit-justify-content: space-between;
+		display: -webkit-flex;
+		display: flex;
+		justify-content: space-between;
+	}
+	.pageBottomButton {
+		display: inline-block;
+	}
+	.bottomButtonIcon {
+		display:block;
+		text-align: center;
+		margin-bottom: 2px;
+	}
+	.bottomButtonLabel {
+		display: block;
+	}
