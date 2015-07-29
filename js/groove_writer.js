@@ -546,8 +546,13 @@ function GrooveWriter() { "use strict";
 	
 	function hilight_note(instrument, percent_complete) {
 		
+		// if we are in a permutation, hightlight each measure as it goes
+		if(class_permutationType != "none")
+			percent_complete = (percent_complete * get_numberOfActivePermutationSections()) % 1.0;
+		
 		var note_id_in_32 = Math.floor(percent_complete * (usingTriplets() ? 24 : 32) * (isSecondMeasureVisable() ? 2 : 1));
 		var real_note_id = (note_id_in_32/myGrooveUtils.getNoteScaler(class_notes_per_measure, 4, 4));
+			
 		//hilight_individual_note(instrument, id);
 		hilight_all_notes_on_same_beat(instrument, real_note_id);
 	}
@@ -1775,6 +1780,19 @@ function GrooveWriter() { "use strict";
 		}
 		
 			return ret_val;
+	}
+	
+	// use the permutation options to count the number of active permutation sections
+	function get_numberOfActivePermutationSections() {
+		var max_num = get_numSectionsFor_permutation_array();
+		var total_on = 0;
+		
+		for(var i=0; i < max_num; i++) {
+			if(shouldDisplayPermutationForSection(i))
+				total_on++;
+		}
+		
+		return total_on;
 	}
 	
 	// query the clickable UI and generate a 32 element array representing the notes of one measure
@@ -3175,22 +3193,26 @@ function GrooveWriter() { "use strict";
 			{id: "PermuationOptionsOstinato",
 			 subid:  "PermuationOptionsOstinato_sub",
 			 name: "Ostinato",
-			 SubOptions: []
+			 SubOptions: [],
+			 defaultOn: false
 			},
 			{id: "PermuationOptionsSingles",
 			 subid:  "PermuationOptionsSingles_sub",
 			 name: "Singles",
-			 SubOptions: ["1", "ti", "ta"]
+			 SubOptions: ["1", "ti", "ta"],
+			 defaultOn: true
 			},
 			{id: "PermuationOptionsDoubles",
 			 subid:  "PermuationOptionsDoubles_sub",
 			 name: "Doubles",
-			 SubOptions: ["1", "ti", "ta"]
+			 SubOptions: ["1", "ti", "ta"],
+			 defaultOn: true
 			},
 			{id: "PermuationOptionsTriples",
 			 subid:  "PermuationOptionsTriples_sub",
 			 name: "Triples",
-			 SubOptions: []
+			 SubOptions: [],
+			 defaultOn: true
 			}];
 		
 		// change and add other options for non triplet based ostinatos
@@ -3201,8 +3223,8 @@ function GrooveWriter() { "use strict";
 			optionTypeArray[1].SubOptions = ["1", "e", "&", "a"];  // singles
 			optionTypeArray[2].SubOptions = ["1", "e", "&", "a"];  // doubles
 			optionTypeArray[3].SubOptions = ["1", "e", "&", "a"];  // triples
-			optionTypeArray.splice(3, 0, {id: "PermuationOptionsUpsDowns", subid:  "PermuationOptionsUpsDowns_sub", name: "Downbeats/Upbeats", SubOptions: ["downs", "ups"]});
-			optionTypeArray.splice(5, 0, {id: "PermuationOptionsQuads", subid:  "PermuationOptionsQuads_sub", name: "Quads", SubOptions: []});
+			optionTypeArray.splice(3, 0, {id: "PermuationOptionsUpsDowns", subid:  "PermuationOptionsUpsDowns_sub", name: "Downbeats/Upbeats", SubOptions: ["downs", "ups"], defaultOn: false});
+			optionTypeArray.splice(5, 0, {id: "PermuationOptionsQuads", subid:  "PermuationOptionsQuads_sub", name: "Quads", SubOptions: [], defaultOn: false});
 		}
 		
 		var newHTML = '<span id="PermutationOptionsHeader">Permutation Options</span>\n';
@@ -3214,7 +3236,7 @@ function GrooveWriter() { "use strict";
 			newHTML += '' +
 				'<div class="PermutationOptionGroup" id="' + optionTypeArray[optionType].id + 'Group">\n' +
 					'<div class="PermutationOption">\n' +
-						'<input checked type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].id + '" onClick="myGrooveWriter.permutationOptionClick(event)">' +
+						'<input ' + (optionTypeArray[optionType].defaultOn ? "checked" : "") + ' type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].id + '" onClick="myGrooveWriter.permutationOptionClick(event)">' +
 						'<label for="' + optionTypeArray[optionType].id + '">' + optionTypeArray[optionType].name + '</label>\n' +
 					'</div>' +
 					'<span class="permutationSubOptionContainer" id="' + optionTypeArray[optionType].subid  +'">\n';
@@ -3224,7 +3246,7 @@ function GrooveWriter() { "use strict";
 				count++;
 				newHTML += '' +
 						'<span class="PermutationSubOption">\n' +
-						'	<input checked type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].subid + count + '" onClick="myGrooveWriter.refresh_ABC()">' + 
+						'	<input ' + (optionTypeArray[optionType].defaultOn ? "checked" : "") + ' type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].subid + count + '" onClick="myGrooveWriter.refresh_ABC()">' + 
 						'	<label for="' + optionTypeArray[optionType].subid + count + '">' + optionTypeArray[optionType].SubOptions[optionName] + '</label>' +
 						'</span>';	
 			}
