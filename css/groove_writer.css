@@ -102,9 +102,9 @@
 	.rightButtons  {
 	    display: inline-block;
 		cursor: pointer;
-		font-size: 18px;
-		/font-weight: bold;
-		margin: 10px 3px 3px 3px;
+		height: 20px;
+		font-weight: 700;
+		margin: 13px 3px 3px 3px;
 		padding: 1px 9px 3px 9px;
 		border: 0px solid #00B;
 		border-radius: 20px;
@@ -146,9 +146,9 @@
 		font-weight: 700;
 		height: 48px;  /* Override from above */
 	}
-	#advancedEditAnchor {
-		background: #FFFFCC;
-		color: #3b5166;
+	#advancedEditAnchor.buttonSelected {
+		background: #009ffa;
+		color: #FFF;
 		font-size: 14px;
 	}
 	.buttonText {
@@ -167,7 +167,7 @@
 		font-size: 20px;
 		font-weight: bold;
 		text-align: center;
-		padding-left: 50px;
+		padding-left: 54px;
 	}
 	#KeyButton {
 		float: right;
@@ -190,6 +190,8 @@
 	.staff-container {
 		/margin-left: 2px;
 		/margin-top: 2px;
+		margin-right: -3px;
+		margin-bottom: -6px;
 		display: inline-block;
 		background: #FFFFFF;
 	
@@ -206,15 +208,17 @@
 		display: inline-block;
 		vertical-align: top;
 		width: 80px;
+		font-size: 20px;
 		display: table-cell;
 	}
 	.stickings-label {
 		display: none;
-		height: 30px;
+		height: 23px;
 		background: #f7f1cf;
-		padding-top: 2px;
+		color: #2484C0;
+		padding-top: 9px;
 		padding-left: 1px;
-		font-size: 22px;
+		font-size: 12px;
 		cursor: pointer;
 		text-align: center;
 	}
@@ -223,21 +227,18 @@
 		white-space:nowrap;
 		margin-top: 20px;
 		margin-left: 8px;
-		font-size: 22px;
 		cursor: pointer;
 		text-align: center;
 	}
 	.snare-label {
 		margin-top: 35px;
 		margin-left: 8px;
-		font-size: 22px;
 		cursor: pointer;
 		text-align: center;
 	}
 	.kick-label {
 		margin-top: 35px;
 		margin-left: 8px;
-		font-size: 22px;
 		cursor: pointer;
 		text-align: center;
 	}
@@ -251,7 +252,6 @@
 		font-family:  Times New Roman;  /* parens around snare ghost note, R for Ride */
 		position: relative; 
 		z-index: 4;
-		margin-right: 5px;
 	}
 	.stickings-container {
 		display: none;
