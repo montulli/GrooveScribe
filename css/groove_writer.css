@@ -191,7 +191,7 @@
 		/margin-left: 2px;
 		/margin-top: 2px;
 		margin-right: -3px;
-		margin-bottom: -2px;
+		margin-bottom: 0px;
 		display: inline-block;
 		background: #FFFFFF;
 	
@@ -452,7 +452,7 @@
 	}
 	
 	.kick_splash {
-		position: absolute; top: 54px; left: 3px;
+		position: absolute; top: 56px; left: 3px;
 		font-size: 30px;
 		color: transparent;
 		cursor: pointer;
