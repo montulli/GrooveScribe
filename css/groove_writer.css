@@ -71,6 +71,7 @@
 	#metronomeLabel {
 		display: inline-block;
 		height: 20px;
+		font-weight: 700;
 		margin-top: 10px;
 		text-align: center;
 		padding: 5px 5px 5px 5px;
@@ -109,13 +110,14 @@
 		border-radius: 20px;
 		color: #EEF;
 	}
-	#permutationAnchor.buttonSelected {
+	.rightButtons.buttonSelected {
 		background: #68c2ff;
+		color: #FFF;
 	}
 	#timeLabel, .subdivision, #advancedEditAnchor {
 		display: block;
 		cursor: pointer;
-		font-size: 14px;
+		font-size: 12px;
 		font-weight: bold;
 		height: 48px;
 		border-bottom: 1px solid #000;
@@ -140,6 +142,8 @@
 	}
 	#timeLabel {
 		cursor: auto;
+		font-size: 16px;
+		font-weight: 700;
 		height: 48px;  /* Override from above */
 	}
 	#advancedEditAnchor {
@@ -702,6 +706,7 @@
 		max-width: 854px;
 		height: 70px;
 		background: #1f363a;
+		text-align: center;
 		color: #6e90a9;
 		-webkit-justify-content: space-between;
 		display: -webkit-flex;
@@ -717,7 +722,6 @@
 	}
 	.bottomButtonIcon {
 		display:block;
-		text-align: center;
 		margin-bottom: 2px;
 	}
 	

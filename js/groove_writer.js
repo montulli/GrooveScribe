@@ -706,9 +706,6 @@ function GrooveWriter() { "use strict";
 			class_permutationType = "none";
 			
 			unselectButton(document.getElementById("permutationAnchor"));
-		
-			document.getElementById("permutationAnchor").style.background = constant_permutation_unselected_background_color;
-			document.getElementById("permutationAnchor").style.color = constant_permutation_unselected_text_color;
 			document.getElementById("PermutationOptions").style.display = "none";
 			break;
 		}
@@ -1810,6 +1807,67 @@ function GrooveWriter() { "use strict";
 	}
 	
 	
+	function filter_kick_array_for_permutation(old_kick_array) {
+		var new_kick_array = [];
+		
+		for(var i in old_kick_array) {
+			if(old_kick_array[i] == constant_ABC_KI_Splash ||
+				old_kick_array[i] == constant_ABC_KI_SandK)
+				new_kick_array.push(constant_ABC_KI_Splash);
+			else
+				new_kick_array.push(false);
+		}
+		
+		return new_kick_array;
+	}
+	
+	// merge 2 kick arrays
+	//  4 possible states
+	//  false   (off)
+	//  constant_ABC_KI_Normal
+	//  constant_ABC_KI_SandK
+	//  constant_ABC_KI_Splash
+	function merge_kick_arrays(primary_kick_array, secondary_kick_array) {
+		var new_kick_array = [];
+		
+		for(var i in primary_kick_array) {
+		
+			switch(primary_kick_array[i]) {
+				case false:
+					new_kick_array.push(secondary_kick_array[i]);
+					break;
+				
+				case constant_ABC_KI_SandK:
+					new_kick_array.push(constant_ABC_KI_SandK);
+					break;
+				
+				case constant_ABC_KI_Normal:
+					if(secondary_kick_array[i] == constant_ABC_KI_SandK ||
+						secondary_kick_array[i] == constant_ABC_KI_Splash)
+						new_kick_array.push(constant_ABC_KI_SandK);
+					else
+						new_kick_array.push(constant_ABC_KI_Normal);
+					break;
+					
+				case constant_ABC_KI_Splash:
+					if(secondary_kick_array[i] == constant_ABC_KI_Normal ||
+						secondary_kick_array[i] == constant_ABC_KI_SandK)
+						new_kick_array.push(constant_ABC_KI_SandK);
+					else
+						new_kick_array.push(constant_ABC_KI_Splash);
+					break;
+						
+				default:
+					alert("bad case in merge_kick_arrays()");
+					new_kick_array.push(primary_kick_array[i]);
+					break;
+			}
+		}
+		
+		return new_kick_array;
+	}
+
+	
 	function createMidiUrlFromClickableUI(MIDI_type) {
 		var Sticking_Array = class_empty_note_array.slice(0);  // copy by value
 		var HH_Array = class_empty_note_array.slice(0);  // copy by value
@@ -1845,6 +1903,10 @@ function GrooveWriter() { "use strict";
 					var new_kick_array;
 					
 					new_kick_array = get_kick16th_permutation_array(i);
+					
+					// grab hi-hat foots from existing kick array and merge it in.
+					Kick_Array = filter_kick_array_for_permutation(Kick_Array);
+					new_kick_array = merge_kick_arrays(new_kick_array, Kick_Array);
 
 					num_notes_for_swing = 16;
 					if(class_notes_per_measure > 16)
@@ -2085,6 +2147,12 @@ function GrooveWriter() { "use strict";
 					var new_kick_array;
 					
 					new_kick_array = get_kick16th_permutation_array(i);
+					
+					// grab hi-hat foots from existing kick array and merge it in.
+					Kick_Array = filter_kick_array_for_permutation(Kick_Array);
+					new_kick_array = merge_kick_arrays(new_kick_array, Kick_Array);
+
+					
 					post_abc = get_permutation_post_ABC(i);
 									
 					fullABC += get_permutation_pre_ABC(i);
@@ -2249,9 +2317,9 @@ function GrooveWriter() { "use strict";
 		var SecondMeasureButton = document.getElementById("showHideSecondMeasureButton");
 		if(SecondMeasureButton) {
 			if(setToOn)
-				SecondMeasureButton.innerHTML = "Hide 2nd Measure";
+				SecondMeasureButton.innerHTML = "HIDE<br>2<sup>nd</sup> measure";
 			else
-				SecondMeasureButton.innerHTML = "Show 2nd Measure";
+				SecondMeasureButton.innerHTML = "SHOW<br>2<sup>nd</sup> measure";
 		}
 
 		root.expandAuthoringViewWhenNecessary(class_notes_per_measure, isSecondMeasureVisable());
@@ -2324,9 +2392,9 @@ function GrooveWriter() { "use strict";
 		var stickingsButton = document.getElementById("showHideStickingsButton");
 		if(stickingsButton) {
 			if(OnElseOff)
-				stickingsButton.innerHTML = "Hide Stickings";
+				stickingsButton.innerHTML = "HIDE<br>stickings";
 			else
-				stickingsButton.innerHTML = "Show Stickings";
+				stickingsButton.innerHTML = "SHOW<br>stickings";
 		}
 			
 		create_ABC();
