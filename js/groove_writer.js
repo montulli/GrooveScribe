@@ -28,12 +28,6 @@ function GrooveWriter() { "use strict";
 	// constants
 	var constant_default_tempo = 80;
 	var constant_note_stem_off_color = "transparent";
-	var constant_subdivision_selected_background_color = "#53758e";
-	var constant_subdivision_selected_text_color = "#FFF";
-	var constant_permutation_unselected_background_color = "transparent";
-	var constant_permutation_unselected_text_color = "#EEF";
-	var constant_permutation_selected_background_color = "#FFFFCC";
-	var constant_permutation_selected_text_color = "black";
 	var constant_note_on_color_hex  = "#000000";  // black
 	var constant_note_on_color_rgb  = 'rgb(0, 0, 0)';  // black
 	var constant_note_off_color_hex = "#FFF"; 
@@ -96,7 +90,17 @@ function GrooveWriter() { "use strict";
 		 return (('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
 	};
 
+	function selectButton(element) {
+		// highlight the new div by adding selected css class
+		if(element) 
+			element.className += " buttonSelected";
+	}
 	
+	function unselectButton(element) {
+		// remove selected class if it exists
+		if(element)
+			element.className = element.className.replace(" buttonSelected","");
+	}
 	
 	function is_snare_on(id) {
 		var state = get_snare_state(id, "ABC");
@@ -584,14 +588,15 @@ function GrooveWriter() { "use strict";
 		var myElements = document.querySelectorAll(".metronomeButton");
 		for (var i = 0; i < myElements.length; i++) {
 			var thisButton = myElements[i];
-			thisButton.style.background = '#0071ad';
+			// remove active status
+			unselectButton(thisButton);
 		}
 		
 		class_metronome_interval = metronomeInterval;
 		
-		// set this button
-		button.style.background = '#69c1ff';
-		
+		// add active status
+		selectButton(button);
+				
 		myGrooveUtils.midiNoteHasChanged(); // pretty likely the case
 	};
 	
@@ -615,9 +620,7 @@ function GrooveWriter() { "use strict";
 					break;
 		}
 		
-		var button = document.getElementById(id);
-		if(button)
-			button.style.background = '#69c1ff';	
+		selectButton(document.getElementById(id));
 	};
 	
 	
@@ -681,8 +684,7 @@ function GrooveWriter() { "use strict";
 			showHideCSS_ClassVisibility(".kick-container", true, false);  // hide it
 			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
 			document.getElementById("staff-container2").style.display = "none";
-			document.getElementById("permutationAnchor").style.background = constant_permutation_selected_background_color;
-			document.getElementById("permutationAnchor").style.color = constant_permutation_selected_text_color;
+			selectButton(document.getElementById("permutationAnchor"));
 			document.getElementById("PermutationOptions").style.display = "block";
 			break;
 			
@@ -692,8 +694,7 @@ function GrooveWriter() { "use strict";
 			showHideCSS_ClassVisibility(".kick-container", true, true);  // show it
 			showHideCSS_ClassVisibility(".snare-container", true, false);  // hide it
 			document.getElementById("staff-container2").style.display = "none";
-			document.getElementById("permutationAnchor").style.background = constant_permutation_selected_background_color;
-			document.getElementById("permutationAnchor").style.color = constant_permutation_selected_text_color;
+			selectButton(document.getElementById("permutationAnchor"));
 			document.getElementById("PermutationOptions").style.display = "block";
 			break;
 
@@ -703,6 +704,9 @@ function GrooveWriter() { "use strict";
 			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
 			// document.getElementById("staff-container2").style.display = "block";
 			class_permutationType = "none";
+			
+			unselectButton(document.getElementById("permutationAnchor"));
+		
 			document.getElementById("permutationAnchor").style.background = constant_permutation_unselected_background_color;
 			document.getElementById("permutationAnchor").style.color = constant_permutation_unselected_text_color;
 			document.getElementById("PermutationOptions").style.display = "none";
@@ -717,10 +721,10 @@ function GrooveWriter() { "use strict";
 		if(class_advancedEditIsOn) {
 			// turn it off
 			class_advancedEditIsOn = false;
-			document.getElementById("advancedEditAnchor").style.backgroundColor = "#FFFFCC";
+			unselectButton(document.getElementById("advancedEditAnchor"));
 		} else {
 			class_advancedEditIsOn = true;
-			document.getElementById("advancedEditAnchor").style.backgroundColor = "orange";
+			selectButton(document.getElementById("advancedEditAnchor"));
 		}
 	};
 	
@@ -2380,9 +2384,7 @@ function GrooveWriter() { "use strict";
 		setupPermutationMenu();
 						
 		// set the background and text color of the current subdivision
-		document.getElementById(class_notes_per_measure + "ths").style.background = constant_subdivision_selected_background_color;
-		document.getElementById(class_notes_per_measure + "ths").style.color = constant_subdivision_selected_text_color;
-		
+		selectButton(document.getElementById(class_notes_per_measure + "ths"));
 		
 		// add html for the midi player
 		myGrooveUtils.AddMidiPlayerToPage("midiPlayer");
@@ -2884,12 +2886,10 @@ function GrooveWriter() { "use strict";
 		}
 		
 		// un-highlight the old div 
-		document.getElementById(oldDivision + "ths").style.background = null;
-		document.getElementById(oldDivision + "ths").style.color = null;
+		unselectButton(document.getElementById(oldDivision + "ths"));
 		
 		// highlight the new div
-		document.getElementById(class_notes_per_measure + "ths").style.background = constant_subdivision_selected_background_color;
-		document.getElementById(class_notes_per_measure + "ths").style.color = constant_subdivision_selected_text_color;
+		selectButton(document.getElementById(class_notes_per_measure + "ths"));
 		
 		// if the permutation menu is not "none" this will change the layout
 		// otherwise it should do nothing

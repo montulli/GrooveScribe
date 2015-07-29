@@ -79,35 +79,49 @@
 		color: #EEF;
 	}
 	.metronomeButton {
-		/margin-top: 15px;
+		padding: 2px;
+		cursor: pointer;
 		display: inline-block;
 		background: #0071ad;
-		color: #EEF;
+		color: #89bee5;
 		border: 0px solid #00B;
 		text-align: center;
-		
-		border-radius: 10px;
+		border-radius: 20px;
 		width: 50px;
 		height: 20px;
 	}
-	.rightButtons  {
-	    display: inline-block;
-		font-size: 18px;
-		/font-weight: bold;
-		margin: 8px 3px 3px 3px;
-		padding: 3px 6px 3px 6px;
+	.metronomeButton:active {
 		color: #EEF;
 	}
-	
+	.metronomeButton.buttonSelected, .metronomeButton.buttonSelected:hover {  /* is a button and is selected */
+		color: #FFF;
+		background: #68c2ff;
+		cursor: auto;
+	}
+	.rightButtons  {
+	    display: inline-block;
+		cursor: pointer;
+		font-size: 18px;
+		/font-weight: bold;
+		margin: 10px 3px 3px 3px;
+		padding: 1px 9px 3px 9px;
+		border: 0px solid #00B;
+		border-radius: 20px;
+		color: #EEF;
+	}
+	#permutationAnchor.buttonSelected {
+		background: #68c2ff;
+	}
 	#timeLabel, .subdivision, #advancedEditAnchor {
 		display: block;
-		font-size: 16px;
+		cursor: pointer;
+		font-size: 14px;
 		font-weight: bold;
 		height: 48px;
 		border-bottom: 1px solid #000;
 		text-align: center;
 		vertical-align: middle;
-		color: #85a3bb;
+		color: #89bee5;
 		display: -webkit-flex;
 		display: flex;
 		align-items: center;
@@ -115,7 +129,17 @@
 		justify-content: center;
 		-webkit-justify-content: space-around;
 	}
+	.subdivision.buttonSelected, .subdivision.buttonSelected:hover {  /* is subdivision and is selected */
+		background: #53758e;
+		color: #FFF;
+		cursor: auto;
+	}
+	.buttonFraction {  /* The number above "triplet" in the .subdivision 1/4, 1/8, etc */
+		display: block;
+		font-size: 18px;
+	}
 	#timeLabel {
+		cursor: auto;
 		height: 48px;  /* Override from above */
 	}
 	#advancedEditAnchor {
@@ -163,7 +187,6 @@
 		/margin-left: 2px;
 		/margin-top: 2px;
 		display: inline-block;
-		font-family:  Times New Roman;
 		background: #FFFFFF;
 	
 	}
@@ -179,7 +202,6 @@
 		display: inline-block;
 		vertical-align: top;
 		width: 80px;
-		font-family: Calibri;
 		display: table-cell;
 	}
 	.stickings-label {
@@ -215,12 +237,17 @@
 		cursor: pointer;
 		text-align: center;
 	}
-	
 	.music-line-container {
 		display: inline-block; 
 		/top: 30px; 
 		z-index: 3;
 		display: table-cell;
+	}
+	.notes-container {
+		font-family:  Times New Roman;  /* parens around snare ghost note, R for Ride */
+		position: relative; 
+		z-index: 4;
+		margin-right: 5px;
 	}
 	.stickings-container {
 		display: none;
@@ -290,11 +317,6 @@
 		width:100%; 
 		height:0px; 
 		border-top:3px solid #cacaca; 
-	}
-	.notes-container {
-		position: relative; 
-		z-index: 4;
-		margin-right: 5px;
 	}
 	.sticking {
 		display: inline-block;
@@ -598,7 +620,6 @@
 	   padding: 5px 10px;
 	   color: white;
 	   font-size: 14px;
-	   font-family: Georgia, serif;
 	   text-decoration: none;
 	   vertical-align: middle;
 	 }
@@ -690,11 +711,16 @@
 	.pageBottomButton {
 		display: inline-block;
 	}
+	.pageBottomButton:hover {
+		cursor: pointer;
+		color: #FFF;
+	}
 	.bottomButtonIcon {
 		display:block;
 		text-align: center;
 		margin-bottom: 2px;
 	}
+	
 	.bottomButtonLabel {
 		display: block;
 	}
