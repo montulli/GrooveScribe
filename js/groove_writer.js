@@ -50,6 +50,7 @@ function GrooveWriter() { "use strict";
 	var constant_ABC_SN_Ghost=  "!(.!!).!c";  
 	var constant_ABC_SN_Accent= "!accent!c";   
 	var constant_ABC_SN_Normal= "c";   
+	var constant_ABC_SN_Flam=   "{/c}c"; 
 	var constant_ABC_SN_XStick= "^c"; 
 	var constant_ABC_KI_SandK=  "[F^d,]";  // kick & splash
 	var constant_ABC_KI_Splash= "^d,";     // splash only
@@ -125,7 +126,13 @@ function GrooveWriter() { "use strict";
 			alert("bad returnType in get_snare_state()");
 			returnType = "ABC";
 		}	
-								
+		
+		if(document.getElementById("snare_flam" + id).style.color == constant_note_on_color_rgb) {
+			if(returnType == "ABC")
+				return constant_ABC_SN_Flam;   // snare flam
+			else if(returnType == "URL")
+				return "f";   // snare flam
+		}		
 		if(document.getElementById("snare_ghost" + id).style.color == constant_note_on_color_rgb) {
 			if(returnType == "ABC")
 				return constant_ABC_SN_Ghost;   // ghost note
@@ -146,12 +153,11 @@ function GrooveWriter() { "use strict";
 		}
 		if(document.getElementById("snare_xstick" + id).style.color == constant_note_on_color_rgb) {
 			if(returnType == "ABC")
-				return constant_ABC_SN_XStick;   // snare normal
+				return constant_ABC_SN_XStick;   // snare Xstick
 			else if(returnType == "URL")
 				return "x";   // snare xstick
 		}
-		
-		
+				
 		if(returnType == "ABC")
 				return false;  // off (rest)
 			else if(returnType == "URL")
@@ -249,6 +255,7 @@ function GrooveWriter() { "use strict";
 		document.getElementById("snare_ghost" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("snare_accent" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("snare_xstick" + id).style.color = constant_note_hidden_color_rgb;
+		document.getElementById("snare_flam" + id).style.color = constant_note_hidden_color_rgb;
 						
 		// turn stuff on conditionally
 		switch(mode) {
@@ -259,6 +266,11 @@ function GrooveWriter() { "use strict";
 		case "normal":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
 			document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
+			break;
+		case "flam":
+			//document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
+			//document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
+			document.getElementById("snare_flam" + id).style.color = constant_note_on_color_hex;
 			break;
 		case "ghost":
 			document.getElementById("snare_ghost" + id).style.color = constant_note_on_color_hex;
@@ -2510,6 +2522,7 @@ function GrooveWriter() { "use strict";
 	//   Snare support:
 	//     	o: normal
 	//     	O: accent
+	//      f: flam
 	//     	g: ghost
 	//      x: cross stick
 	//     	-: off
@@ -2574,6 +2587,9 @@ function GrooveWriter() { "use strict";
 				break;
 			case "g":
 				setFunction(displayIndex, "ghost");
+				break;
+			case "f":
+				setFunction(displayIndex, "flam");
 				break;
 			case "l":
 			case "L":
@@ -2690,6 +2706,9 @@ function GrooveWriter() { "use strict";
 				break;
 			case constant_ABC_SN_Normal:
 				setFunction(displayIndex, "normal");
+				break;
+			case constant_ABC_SN_Flam:
+				setFunction(displayIndex, "flam");
 				break;
 			case constant_ABC_SN_XStick:
 				setFunction(displayIndex, "xstick");
@@ -3130,6 +3149,7 @@ function GrooveWriter() { "use strict";
 										<div class="snare_ghost"  id="snare_ghost'  + i + '">(<i class="fa fa-circle dot_in_snare_ghost_note"></i>)</div>\
 										<div class="snare_circle" id="snare_circle' + i + '"></div>\
 										<div class="snare_xstick" id="snare_xstick' + i + '"><i class="fa fa-times"></i></div>\
+										<div class="snare_flam" id="snare_flam' + i + '"><i class="fa ">&#9835;</i></div>\
 										<div class="snare_accent" id="snare_accent' + i + '"><i class="fa fa-angle-right"></i></div>\
 										</div> \
 										');

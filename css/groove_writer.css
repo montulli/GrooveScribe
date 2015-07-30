@@ -436,6 +436,12 @@
 		color: transparent;
 		cursor: pointer;
 	}
+	.snare_flam {
+		position: absolute; top: 30px; left: 3px;
+		font-size: 25px;
+		color: transparent;
+		cursor: pointer;
+	}
 	.snare_accent {
 		position: absolute; top: 0px; left: 10px;
 		font-size: 26px;
