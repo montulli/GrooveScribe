@@ -187,6 +187,9 @@
 		white-space: nowrap;
 		border-bottom: 1px solid #AAA;
 	}
+	#musicalInput.expanded {
+		max-width: 5000px;
+	}
 	.staff-container {
 		/margin-left: 2px;
 		/margin-top: 2px;
@@ -551,21 +554,24 @@
 	.noteContextMenu { 
 		
 	}
-	.noteContextMenu>ul.list { 
+	.noteContextMenu>ul.list  { 
 		display: none;
 		position:absolute; left:30px; top:-30px; z-index:999;
 		width:150px;
-		margin:0; padding:10px; list-style:none;
-		background:#fff; color:#333;
-		border-radius:5px;
-		box-shadow:0 0 5px #999
+		margin:0; padding:5px; list-style:none;
+		background: #c6e1f7;
+		color: #000;
+		border: 1px solid #1765a7;
+		list-style:none;
 	}
 	.noteContextMenu>ul.list li {
 		padding:10px;
-		border-bottom: solid 1px #CCCCCC;
+		border-bottom: solid 1px #1765a7;
+		text-decoration: none;
 	}
-	.noteContextMenu>ul.list li:hover {
-		background:#EC6603; color:#fff;
+	.noteContextMenu>ul.list li:hover, ul.list a:hover {
+		background: #004781;
+		color: #FFF;
 	}
 	.noteContextMenu>ul.list li:last-child { 
 		border:none;
@@ -576,25 +582,27 @@
 		width: 300px;
 		height: 300px;
 		overflow: auto;
-		background: #FFFFCC;
+		background: #c6e1f7;
+		border: 1px solid #1765a7;
 	}
-	.gooveListUL {
+	.grooveListUL {
 		margin:0; padding:10px; list-style:none;
-		background:#fff; color:#333;
+		background:#c6e1f7;
+		color: #000;
 	}
-	.gooveListHeaderLI {
+	.grooveListHeaderLI {
 		padding:10px;
-		border-bottom: solid 1px #CCCCCC;
-		background: #FFFFCC;
+		background: #009FFA;
 		font-weight: bold;
 	}
-	.gooveListLI {
+	.grooveListLI {
 		padding:5px;
 		padding-left: 15px;
-		border-bottom: solid 1px #CCCCCC;
+		border-bottom: solid 1px #1765a7;
 	}
-	.gooveListLI:hover {
-		background:#EC6603; color:#fff;
+	.grooveListLI:hover {
+		background: #004781;
+		color: #FFF;
 	}
 	hr {
 		width: 795px;
@@ -636,7 +644,8 @@
 	
 	.myButton:hover, .subdivision:hover, .rightButtons:hover , .metronomeButton:hover {
 	   border-top-color: #28597a;
-	   background: #28597a;
+	   /background: #28597a;
+	   background: #004781;
 	   color: #ccc;
 	 }
 	.myButton:active, .subdivision:active, .rightButtons:active  {
@@ -676,14 +685,14 @@
 		bottom: 3px;
 		right: 3px;
 	}
-	.myCheckbox { display:none; } /* to hide the checkbox itself */
-	.myCheckbox + label:before {
-	  font-family: FontAwesome;
-	  display: inline-block;
-	}
+	.myCheckbox { 
+		display:none; 
+	} /* to hide the checkbox itself */
 	.myCheckbox + label:before 
 	{ 
-		/* content: "\f096";  /* uncheck box */
+		 font-family: FontAwesome;
+		display: inline-block;
+	 /* content: "\f096";  /* uncheck box */
 		content: "\00a0";
 		letter-spacing: 17px; 
 	} /* unchecked icon */

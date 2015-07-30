@@ -25,13 +25,11 @@ if (typeof (grooves) === "undefined") var grooves = {};
 		'Purdie Shuffle':    '?Div=12&Title=Purdie%20Shuffle&Swing=0&measures=2&showMeasures=1&H=|x-xx-xx-xx-x|x-xx-xx-xx-x|&S=|-g--g-Og--g-|-g--g-Og--g-|&K=|o----o-----o|o----o-----o|',
 		'Bonham Shuffle':    '?Div=12&Title=Fool%20in%20The%20Rain%20Shuffle&Author=John%20Bonham&Tempo=105&Swing=0&Measures=2&showMeasures=1&H=|x-o+-xx-xx-x|x-xx-xx-xx-x|&S=|-g--g-O---g-|-g--g-Og--g-|&K=|o-o--o-----o|------------|',
 		
-		'Rosanna Shuffle':   '?Div=12&Title=Rosanna Shuffle&Author=Jeff Porcaro&Tempo=170&Measures=2&showMeasures=2&H=|x-xx-xx-xx-x|x-xx-xx-xx-x|&S=|-g--g-Og--g-|-g--g-Og--g-|&K=|o----o---o--|--o---o----o|'
+		'Rosanna Shuffle':   '?Div=12&Title=Rosanna Shuffle&Author=Jeff Porcaro&Tempo=170&Measures=2&showMeasures=2&H=|x-xx-xx-xx-x|x-xx-xx-xx-x|&S=|-g--g-Og--g-|-g--g-Og--g-|&K=|o----o---o--|--o---o----o|',
 		//'Rosanna Shuffle in 16ths':   '?Div=24&Title=Rosanna%20Shuffle&Author=Jeff%20Porcaro&Tempo=85&Measures=2&showMeasures=1&H=|x-xx-xx-xx-xx-xx-xx-xx-x|x-xx-xx-xx-xx-xx-xx-xx-x|&S=|-g--g-Og--g--g--g-Og--g-|-g--g-Og--g--g--g-Og--g-|&K=|o----o---o----o---o----o|o----o---o----o---o----o|'
+		'Jazz Ride': '?Div=12&Tempo=60&Measures=2&showMeasures=1&H=|r--r-rr--r-r|xxxxxxxxxxxx|&S=|------------|--O---------|&K=|---x-----x--|o-----------|'	
 	};
 
-	root.Jazz = {
-		'Jazz Ride': '?Div=12&Tempo=60&Measures=2&showMeasures=1&H=|r--r-rr--r-r|xxxxxxxxxxxx|&S=|------------|--O---------|&K=|---x-----x--|o-----------|'
-	};
 
 	root.Latin = {
 		'Bossa Nova':  '?Div=8&Title=Bossa%20Nova&Swing=0&measures=2&showMeasures=2&Tempo=130&H=|xxxxxxxx|xxxxxxxx|&S=|--x--x--|x--x--x-|&K=|o-xoo-xo|o-xoo-xo|',
@@ -44,7 +42,6 @@ if (typeof (grooves) === "undefined") var grooves = {};
 	
 	root.FullArray = {"Rock grooves":     root.Rock_Grooves,
 					 "Triplet grooves":  root.Triplet_Grooves,
-					 "Jazz grooves":     root.Jazz,
 					 "Latin grooves":	 root.Latin
 					};
 	
@@ -54,13 +51,13 @@ if (typeof (grooves) === "undefined") var grooves = {};
 	};
 	
 	root.arrayAsHTMLList = function (arrayToPrint) {
-		var HTML = '<ul class="gooveListUL">\n';
+		var HTML = '<ul class="grooveListUL">\n';
 		for(var key in arrayToPrint) {
 			if(root.isArray(arrayToPrint[key])) {
-				HTML += '<li class="gooveListHeaderLI">' + key + "</li>\n";
+				HTML += '<li class="grooveListHeaderLI">' + key + "</li>\n";
 				HTML += root.arrayAsHTMLList(arrayToPrint[key]);
 			} else {
-				HTML += '<li class="gooveListLI" onClick="myGrooveWriter.loadNewGroove(\'' + arrayToPrint[key] + '\')">' + key + '</li>\n';
+				HTML += '<li class="grooveListLI" onClick="myGrooveWriter.loadNewGroove(\'' + arrayToPrint[key] + '\')">' + key + '</li>\n';
 			}
 		}
 		HTML += "</ul>\n";
