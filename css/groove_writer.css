@@ -142,6 +142,7 @@
 	}
 	#KeyButton {
 		float: right;
+		padding-right: 5px;
 		font-size: 18px;
 		text-align: right;
 	}
@@ -155,12 +156,21 @@
 		background: #FFF;
 		overflow-x: auto;
 		overflow-y: hidden;
-		white-space: nowrap;
 		border-bottom: 1px solid #999;
+	}
+	@media only screen and (orientation: landscape) {
+		#musicalInput {
+			white-space: nowrap;
+			/* don't wrap on portait mode displays */
+		}
+		#staff-container2>.row-container:last-child{
+			border-left: 2px solid #000;
+		}
 	}
 	.staff-container {
 		/margin-left: 2px;
 		/margin-top: 2px;
+		margin-right: -5px;
 		display: inline-block;
 		font-family:  Times New Roman;
 		background: #FFFFFF;
@@ -168,7 +178,6 @@
 	}
 	#staff-container2 {
 		display: none;
-		border-left: 1px solid #000;
 	}
 	.heading1 {
 		font-size: 30px;
