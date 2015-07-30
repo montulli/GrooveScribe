@@ -558,7 +558,7 @@
 		display: none;
 		position:absolute; left:30px; top:-30px; z-index:999;
 		width:150px;
-		margin:0; padding:5px; list-style:none;
+		margin:0; padding:0px; list-style:none;
 		background: #c6e1f7;
 		color: #000;
 		border: 1px solid #1765a7;
@@ -586,17 +586,18 @@
 		border: 1px solid #1765a7;
 	}
 	.grooveListUL {
-		margin:0; padding:10px; list-style:none;
+		margin:0; padding:0px; list-style:none;
 		background:#c6e1f7;
 		color: #000;
 	}
 	.grooveListHeaderLI {
-		padding:10px;
+		padding:15px;
 		background: #009FFA;
+		font-size: 18px;
 		font-weight: bold;
 	}
 	.grooveListLI {
-		padding:5px;
+		padding: 10px;
 		padding-left: 15px;
 		border-bottom: solid 1px #1765a7;
 	}
