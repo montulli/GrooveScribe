@@ -695,7 +695,7 @@ function GrooveUtils() { "use strict";
 						'V:Hands stem=up \n' +
 						'%%voicemap drum\n' +
 						'"^Hi-Hat"^g4 "^Open"!open!^g4 "^Close"!plus!^g4 "^Accent"!accent!^g4 ' +
-						'"^Crash"^A\'4 "^Ride"^f4 x4 "^Snare"c4 "^Accent"!accent!c4 "^Cross"^c4 "^Ghost"!(.!!).!c4 x20 ||\n' +
+						'"^Crash"^A\'4 "^Ride"^f4 x2 "^Snare"c4 "^Accent"!accent!c4 "^Cross"^c4 "^Ghost"!(.!!).!c4 "^Flam"{/c}c4  x18 ||\n' +
 						'V:Feet stem=down \n' +
 						'%%voicemap drum\n' +
 						'x48 "^Kick"F4 "^Hi-Hat w/ foot"^d,4 "^Kick & Hi-Hat"[F^d,]4 x4 ||\n' +
