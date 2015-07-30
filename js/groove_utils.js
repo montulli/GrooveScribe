@@ -43,7 +43,8 @@ function GrooveUtils() { "use strict";
 	var constant_ABC_SN_Ghost=  "!(.!!).!c";  
 	var constant_ABC_SN_Accent= "!accent!c";   
 	var constant_ABC_SN_Normal= "c";   
-	var constant_ABC_SN_XStick= "^c"; 
+	var constant_ABC_SN_XStick= "^c";
+	var constant_ABC_SN_Flam=   "{/c}c"; 
 	var constant_ABC_KI_SandK=  "[F^d,]";  // kick & splash
 	var constant_ABC_KI_Splash= "^d,";     // splash only
 	var constant_ABC_KI_Normal= "F";   
@@ -229,6 +230,10 @@ function GrooveUtils() { "use strict";
 				if(drumType == "H") 
 					return constant_ABC_HH_Crash;
 				break;
+			case "f":
+				if(drumType == "S") 
+					return constant_ABC_SN_Flam;
+				break;
 			case "g":
 				if(drumType == "S") 
 					return constant_ABC_SN_Ghost;
@@ -349,6 +354,9 @@ function GrooveUtils() { "use strict";
 			case constant_ABC_SN_Normal:
 			case constant_ABC_KI_Normal:
 				tabChar = "o";
+				break;
+			case constant_ABC_SN_Flam:
+				tabChar = "f";
 				break;
 			case constant_ABC_HH_Accent:
 			case constant_ABC_KI_SandK:
@@ -555,15 +563,15 @@ function GrooveUtils() { "use strict";
 		
 			
 		myGrooveData.title = root.getQueryVariableFromString("title", "", encodedURLData);
-		myGrooveData.title = decodeURI(myGrooveData.title);
+		myGrooveData.title = decodeURIComponent(myGrooveData.title);
 		myGrooveData.title = myGrooveData.title.replace(/\+/g, " ");
 						
 		myGrooveData.author = root.getQueryVariableFromString("author", "", encodedURLData);
-		myGrooveData.author = decodeURI(myGrooveData.author);
+		myGrooveData.author = decodeURIComponent(myGrooveData.author);
 		myGrooveData.author = myGrooveData.author.replace(/\+/g, " ");
 		
 		myGrooveData.comments = root.getQueryVariableFromString("comments", "", encodedURLData);
-		myGrooveData.comments = decodeURI(myGrooveData.comments);
+		myGrooveData.comments = decodeURIComponent(myGrooveData.comments);
 		myGrooveData.comments = myGrooveData.comments.replace(/\+/g, " ");
 		
 		myGrooveData.tempo = parseInt(root.getQueryVariableFromString("tempo", constant_DEFAULT_TEMPO, encodedURLData), 10);
@@ -796,7 +804,10 @@ function GrooveUtils() { "use strict";
 				// resulting ABC will be invalid
 				moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "[");
 				moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "]");
-								
+						
+				// this is the flam notation, it can't be in a sub grouping
+				ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "{/c}");
+				
 				ABC_String += "[" + abcNoteStrings.notes1 + abcNoteStrings.notes2 + abcNoteStrings.notes3 + "]";  // [^gc]
 			} else {
 				ABC_String += abcNoteStrings.notes1 + abcNoteStrings.notes2 + abcNoteStrings.notes3;  // note this could be a noOp if all strings are blank
@@ -1467,6 +1478,15 @@ function GrooveUtils() { "use strict";
 					case constant_ABC_SN_Normal:  // normal
 							snare_note = 38;
 						break;
+					case constant_ABC_SN_Flam: // flam
+						if(midi_output_type == "general_MIDI") {
+							snare_note = 38;
+							snare_velocity = velocity_accent;
+						} else {
+							snare_note = 107;
+							snare_velocity = velocity_normal;
+						}
+						break;
 					case constant_ABC_SN_Accent:  // accent
 						if(midi_output_type == "general_MIDI") {
 							snare_note = 38;
@@ -1759,7 +1779,7 @@ function GrooveUtils() { "use strict";
 		if(data.message == 144) {
 			if(data.note == 108 || data.note == 42 || data.note == 46 || data.note == 49 || data.note == 51)  {
 				note_type = "hi-hat";
-			} else if(data.note == 21 || data.note == 22 || data.note == 37 || data.note == 38) {
+			} else if(data.note == 21 || data.note == 22 || data.note == 37 || data.note == 38 || data.note == 107) {
 				note_type = "snare";
 			} else if(data.note == 35 || data.note == 44) {
 				note_type = "kick";

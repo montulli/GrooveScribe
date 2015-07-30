@@ -60,6 +60,8 @@
 			myGrooveWriter = new GrooveWriter();
 		</script>
 		
+		<link href='https://fonts.googleapis.com/css?family=Lato:400,700,300' rel='stylesheet' type='text/css'>
+		<link rel="stylesheet" type="text/css" href="font-awesome/4.3.0/css/font-awesome.min.css">
 	    <link rel="stylesheet" type="text/css" href="css/groove_writer.css">
 		<link rel="stylesheet" type="text/css" href="css/groove_display.css">
 
@@ -70,12 +72,12 @@
 			<div id="LeftHandNav">
 				<span id="divisionButtonContainer">
 					<span id="timeLabel">TIME</span>
-					<span class="subdivision" id="4ths"  onClick="myGrooveWriter.changeDivision(4)"><span class="buttonText"><sup>1</sup>/<sub>4</sub></span></span>
-					<span class="subdivision" id="8ths"  onClick="myGrooveWriter.changeDivision(8)"><span class="buttonText"><sup>1</sup>/<sub>8</sub></span></span>
-					<span class="subdivision" id="16ths" onClick="myGrooveWriter.changeDivision(16)"><span class="buttonText"><sup>1</sup>/<sub>16</sub></span></span>
-					<span class="subdivision" id="32ths" onClick="myGrooveWriter.changeDivision(32)"><span class="buttonText"><sup>1</sup>/<sub>32</sub></span></span>
-					<span class="subdivision" id="12ths" onClick="myGrooveWriter.changeDivision(12)"><span class="buttonText"><sup>1</sup>/<sub>8</sub><br>triplets</span></span>
-					<span class="subdivision" id="24ths" onClick="myGrooveWriter.changeDivision(24)"><span class="buttonText"><sup>1</sup>/<sub>16</sub><br>triplets</span></span>
+					<span class="subdivision" id="4ths"  onClick="myGrooveWriter.changeDivision(4)"><span class="buttonFraction"><sup>1</sup>/<sub>4</sub></span></span>
+					<span class="subdivision" id="8ths"  onClick="myGrooveWriter.changeDivision(8)"><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span></span>
+					<span class="subdivision" id="16ths" onClick="myGrooveWriter.changeDivision(16)"><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span></span>
+					<span class="subdivision" id="32ths" onClick="myGrooveWriter.changeDivision(32)"><span class="buttonFraction"><sup>1</sup>/<sub>32</sub></span></span>
+					<span class="subdivision" id="12ths" onClick="myGrooveWriter.changeDivision(12)"><div><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>TRIPLETS</div></span>
+					<span class="subdivision" id="24ths" onClick="myGrooveWriter.changeDivision(24)"><div><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>TRIPLETS</div></span>
 				</span>
 				
 				<script>
@@ -95,9 +97,9 @@
 					</span>
 				</span>
 				<span id="upperRight">
-					<span class="rightButtons" id="permutationAnchor" onClick="myGrooveWriter.permutationAnchorClick(event)">Permutations</span>
-					<span class="rightButtons" id="groovesAnchor" onClick="myGrooveWriter.groovesAnchorClick(event)">Grooves</span>
-					<span class="rightButtons" id="helpAnchor" onClick="myGrooveWriter.helpAnchorClick(event)">Help</span>
+					<span class="rightButtons" id="permutationAnchor" onClick="myGrooveWriter.permutationAnchorClick(event)"><i class="fa fa-bars"></i> Permutations</span>
+					<span class="rightButtons" id="groovesAnchor" onClick="myGrooveWriter.groovesAnchorClick(event)"><i class="fa fa-bars"></i> Grooves</span>
+					<span class="rightButtons" id="helpAnchor" onClick="myGrooveWriter.helpAnchorClick(event)"><i class="fa fa-bars"></i> Help</span>
 				</span>
 			</div>
 		</span>  
@@ -123,7 +125,7 @@
 				</div>
 				<div id="NotationLine">
 					<span id='NotationLabel'>Notation</span>
-					<span id='KeyButton'><input type="checkbox" class="myCheckbox" id="showLegend" onChange="myGrooveWriter.refresh_ABC()"><label for="showLegend">Key</label></span>
+					<span id='KeyButton'><input type="checkbox" class="hiddenCheckbox" id="showLegend" onClick="myGrooveWriter.refresh_ABC()"><label id="LegendLabel" for="showLegend"><i class="fa fa-key"></i></label></span>
 				</div>
 			</span>  
 			<span class="Printable">
@@ -141,17 +143,17 @@
 				
 				<div id="sheetMusicTextFields">
 					&nbsp;
-					<b>Title:</b> <input id="tuneTitle" onChange="myGrooveWriter.refresh_ABC()" type="text"> &nbsp;
-					<b>Author:</b> <input id="tuneAuthor" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
-					<b>Comment:</b> <input id="tuneComments" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
+					<b>Title:</b> <input class="sheetMusicInputField" id="tuneTitle" onChange="myGrooveWriter.refresh_ABC()" type="text"> &nbsp;
+					<b>Author:</b> <input class="sheetMusicInputField" id="tuneAuthor" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
+					<b>Comment:</b> <input class="sheetMusicInputField" id="tuneComments" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
 				</div>
 				
-				<div id="buttonsAboveSheetMusic">
-					<span class="myButton" id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideSecondMeasure(false, false);">Show 2nd Measure</span>
-					<span class="myButton" id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);">Show Stickings</span>
-					<span class="myButton" type="button" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()">Export MIDI</span>
-					<span class="myButton" id="printButton" type="button" onclick="myGrooveWriter.printMusic()">Print</span>
-					<span class="myButton" id="shareSaveButton" href="#" onClick="event.preventDefault(); myGrooveWriter.show_FullURLPopup()">Share</span>
+				<div id="bottomButtonRow">
+					<span class="pageBottomButton" id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideSecondMeasure(false, false);">SHOW<br>2<sup>nd</sup> measure</span>
+					<span class="pageBottomButton" id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);">SHOW<br>stickings</span>
+					<span class="pageBottomButton" type="button" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></span></i><span class="bottomButtonLabel">MIDI</span></span>
+					<span class="pageBottomButton" id="printButton" type="button" onclick="myGrooveWriter.printMusic()"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
+					<span class="pageBottomButton" id="shareSaveButton" href="#" onClick="event.preventDefault(); myGrooveWriter.show_FullURLPopup()"><span class="bottomButtonIcon"><i class="fa fa-share fa-2x"></i></span><span class="bottomButtonLabel">SHARE</span></span>
 				</div>	  
 				
 				<div id="midiTextOutput">
@@ -211,6 +213,7 @@
 				<li onClick='myGrooveWriter.notePopupClick("snare", "accent")'>Snare Accent</li>
 				<li onClick='myGrooveWriter.notePopupClick("snare", "ghost")'>Ghost Note</li>
 				<li onClick='myGrooveWriter.notePopupClick("snare", "xstick")'>Cross Stick</li>
+				<li onClick='myGrooveWriter.notePopupClick("snare", "flam")'>Flam</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
@@ -254,12 +257,6 @@
 			</ul>
 		</div>
 		<div class="noteContextMenu">
-			<ul id="helpContextMenu" class="list">
-				<li><a href="help.html" target="_blank">Help</a></li>
-				<li><a href="about.html" target="_blank">About</a></li>
-			</ul>
-		</div>	
-		<div class="noteContextMenu">
 			<ul id="permutationContextMenu" class="list">
 				<li onClick='myGrooveWriter.permutationPopupClick("none")'><b>None</b></li>
 				<li onClick='myGrooveWriter.permutationPopupClick("kick_16ths")'><b>Kick</b> Permutation</li>
@@ -270,6 +267,12 @@
 				< -->
 			</ul>
 		</div>
+		<div class="noteContextMenu">
+			<ul id="helpContextMenu" class="list">
+				<li><a href="help.html" target="_blank">Help</a></li>
+				<li><a href="about.html" target="_blank">About</a></li>
+			</ul>
+		</div>	
 		<div id="grooveListWrapper">
 			<script>
 				document.write(grooves.getGroovesAsHTML());

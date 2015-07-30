@@ -133,6 +133,8 @@ if (window.AudioContext || window.webkitAudioContext) (function () {
 	var sources = {};
 	var masterVolume = 127;
 	var audioBuffers = {};
+	var totalNumberOfAudioDataDecoding = 0;
+	var totalNumberOfAudioDataDecoded = 0;
 	var audioLoader = function (instrument, urlList, index, bufferList, callback) {
 		var synth = MIDI.GeneralMIDI.byName[instrument];
 		var instrumentId = synth.number;
@@ -148,6 +150,7 @@ if (window.AudioContext || window.webkitAudioContext) (function () {
 		var base64 = MIDI.Soundfont[instrument][url].split(",")[1];
 		var buffer = Base64Binary.decodeArrayBuffer(base64);
 		try {
+			totalNumberOfAudioDataDecoding++;
 			ctx.decodeAudioData(buffer, function (buffer) {
 				var msg = url;
 				while (msg.length < 3) msg += "&nbsp;";
@@ -156,8 +159,8 @@ if (window.AudioContext || window.webkitAudioContext) (function () {
 				}
 				buffer.id = url;
 				bufferList[index] = buffer;
-				//
-				if (bufferList.length === urlList.length) {
+				totalNumberOfAudioDataDecoded++;
+				if (bufferList.length === urlList.length && totalNumberOfAudioDataDecoding == totalNumberOfAudioDataDecoded) {
 					while (bufferList.length) {
 						buffer = bufferList.pop();
 						if (!buffer) continue;
