@@ -563,15 +563,15 @@ function GrooveUtils() { "use strict";
 		
 			
 		myGrooveData.title = root.getQueryVariableFromString("title", "", encodedURLData);
-		myGrooveData.title = decodeURI(myGrooveData.title);
+		myGrooveData.title = decodeURIComponent(myGrooveData.title);
 		myGrooveData.title = myGrooveData.title.replace(/\+/g, " ");
 						
 		myGrooveData.author = root.getQueryVariableFromString("author", "", encodedURLData);
-		myGrooveData.author = decodeURI(myGrooveData.author);
+		myGrooveData.author = decodeURIComponent(myGrooveData.author);
 		myGrooveData.author = myGrooveData.author.replace(/\+/g, " ");
 		
 		myGrooveData.comments = root.getQueryVariableFromString("comments", "", encodedURLData);
-		myGrooveData.comments = decodeURI(myGrooveData.comments);
+		myGrooveData.comments = decodeURIComponent(myGrooveData.comments);
 		myGrooveData.comments = myGrooveData.comments.replace(/\+/g, " ");
 		
 		myGrooveData.tempo = parseInt(root.getQueryVariableFromString("tempo", constant_DEFAULT_TEMPO, encodedURLData), 10);

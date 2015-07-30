@@ -2744,15 +2744,15 @@ function GrooveWriter() { "use strict";
 		
 		var title = document.getElementById("tuneTitle").value.trim();
 		if(title != "")
-			fullURL += "&Title=" + encodeURI(title);
+			fullURL += "&Title=" + encodeURIComponent(title);
 			
 		var author = document.getElementById("tuneAuthor").value.trim();
 		if(author != "")
-			fullURL += "&Author=" + encodeURI(author);
+			fullURL += "&Author=" + encodeURIComponent(author);
 		
 		var comments = document.getElementById("tuneComments").value.trim();
 		if(comments != "")
-			fullURL += "&Comments=" + encodeURI(comments);
+			fullURL += "&Comments=" + encodeURIComponent(comments);
 		
 		fullURL += "&Tempo=" + myGrooveUtils.getTempo();
 		
