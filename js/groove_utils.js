@@ -953,22 +953,22 @@ function GrooveUtils() { "use strict";
 		var scaler = root.getNoteScaler(notes_per_measure, timeSigTop, timeSigBottom);  // fill proportionally
 		var retArray = [];
 		var isTriplets = root.isTripletDivision(notes_per_measure, timeSigTop, timeSigBottom);
-													
+		var i;											
 		
 		if(scaler == 1)
 			return note_array;   // no need to expand
 		
 		// preset to false (rest) all entries in the expanded array
 		if(isTriplets) {
-			for(var i=0; i < num_measures * 24; i++) 
+			for(i=0; i < num_measures * 24; i++) 
 				retArray[i] = false;
 		}
-		for(var k=0; i < num_measures * notes_per_measure * scaler ; k++) 
-			retArray[k] = false;
+		for(i=0; i < num_measures * notes_per_measure * scaler ; i++) 
+			retArray[i] = false;
 		
 		// sparsely fill in the return array with data from passed in array
-		for(var j=0; j < num_measures * notes_per_measure; j++) {
-			var ret_array_index = (j)*scaler;
+		for(i=0; i < num_measures * notes_per_measure; i++) {
+			var ret_array_index = (i)*scaler;
 			
 			retArray[ret_array_index] = note_array[i];
 		}

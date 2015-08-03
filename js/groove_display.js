@@ -54,22 +54,22 @@
 				if (typeof fileref!="undefined")
 					document.getElementsByTagName("head")[0].appendChild(fileref)
 			}
-
+			
 				//	<!--   midi.js package for sound   -->
-			root.loadjscssfile("./MIDI/AudioDetect.js", "js");
-			root.loadjscssfile("./MIDI/LoadPlugin.js", "js");
-			root.loadjscssfile("./MIDI/Plugin.js", "js");
-			root.loadjscssfile("./MIDI/Player.js", "js");
-			root.loadjscssfile("./Window/DOMLoader.XMLHttp.js", "js");
+			root.loadjscssfile("../MIDI.js/js/midi/AudioDetect.js", "js");
+			root.loadjscssfile("../MIDI.js/js/midi/LoadPlugin.js", "js");
+			root.loadjscssfile("../MIDI.js/js/midi/Plugin.js", "js");
+			root.loadjscssfile("../MIDI.js/js/midi/Player.js", "js");
+			root.loadjscssfile("../MIDI.js/inc/DOMLoader.XMLHttp.js", "js");
 				//	<!-- jasmid package midi package required by midi.js above -->
-			root.loadjscssfile("../inc/jasmid/stream.js", "js");
-			root.loadjscssfile("../inc/jasmid/midifile.js", "js");
-			root.loadjscssfile("../inc/jasmid/replayer.js", "js");
+			root.loadjscssfile("../MIDI.js/inc/jasmid/stream.js", "js");
+			root.loadjscssfile("../MIDI.js/inc/jasmid/midifile.js", "js");
+			root.loadjscssfile("../MIDI.js/inc/jasmid/replayer.js", "js");
+				//	<!-- extras -->
+			root.loadjscssfile("../MIDI.js/inc/Base64.js", "js");
+			root.loadjscssfile("../MIDI.js/inc/base64binary.js", "js");
 				//	<!-- jsmidgen -->
 			root.loadjscssfile("./jsmidgen.js", "js");
-				//	<!-- extras -->
-			root.loadjscssfile("../inc/Base64.js", "js");
-			root.loadjscssfile("../inc/base64binary.js", "js");
 				//	<!-- script to render ABC to an SVG image -->
 			root.loadjscssfile("./abc2svg-1.js", "js");
 					
