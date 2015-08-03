@@ -600,6 +600,17 @@ function GrooveWriter() { "use strict";
 		
 	}
 	
+	function getTagPosition(tag) {
+		var xVal = 0, yVal = 0;
+	  
+		while(tag) {
+			xVal += (tag.offsetLeft - tag.scrollLeft + tag.clientLeft);
+			yVal += (tag.offsetTop - tag.scrollTop + tag.clientTop);
+			tag = tag.offsetParent;
+		}
+    return { x: xVal, y: yVal };
+}
+	
 	// the user has clicked on the permutation menu
 	root.metronomeButtonClick = function(event, metronomeInterval) {
 		
@@ -650,12 +661,15 @@ function GrooveWriter() { "use strict";
 		
 		var contextMenu = document.getElementById("permutationContextMenu");
 		if(contextMenu) {
+			var anchorPoint = document.getElementById("permutationAnchor");
+			var anchorPos = getTagPosition(anchorPoint);
+			
 			if (!event) 
 				event = window.event;
 			if (event.pageX || event.pageY)
 			{
-				contextMenu.style.top = event.pageY + "px";
-				contextMenu.style.left = event.pageX-75 + "px";
+				contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + "px";
+				contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + "px";
 			}
 			myGrooveUtils.showContextMenu(contextMenu);
 		}
@@ -666,12 +680,15 @@ function GrooveWriter() { "use strict";
 		
 		var contextMenu = document.getElementById("grooveListWrapper");
 		if(contextMenu) {
+			var anchorPoint = document.getElementById("groovesAnchor");
+			var anchorPos = getTagPosition(anchorPoint);
+			
 			if (!event) 
 				event = window.event;
 			if (event.pageX || event.pageY)
 			{
-				contextMenu.style.top = event.pageY + "px";
-				contextMenu.style.left = event.pageX-240 + "px";
+				contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + "px";
+				contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 283 + "px";
 			}
 			myGrooveUtils.showContextMenu(contextMenu);
 		}
@@ -682,12 +699,15 @@ function GrooveWriter() { "use strict";
 		
 		var contextMenu = document.getElementById("helpContextMenu");
 		if(contextMenu) {
+			var anchorPoint = document.getElementById("helpAnchor");
+			var anchorPos = getTagPosition(anchorPoint);
+			
 			if (!event) 
 				event = window.event;
 			if (event.pageX || event.pageY)
 			{
-				contextMenu.style.top = event.pageY + "px";
-				contextMenu.style.left = event.pageX-60 + "px";
+				contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + "px";
+				contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + "px";
 			}
 			myGrooveUtils.showContextMenu(contextMenu);
 		}

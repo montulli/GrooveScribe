@@ -562,6 +562,11 @@
 	.noteContextMenu { 
 		
 	}
+	#permutationContextMenu {
+		position: fixed;
+		top: 0px;
+		right: 0px;
+	}
 	.noteContextMenu>ul.list  { 
 		display: none;
 		position:absolute; left:30px; top:-30px; z-index:999;
