@@ -117,7 +117,6 @@
 				
 				myGrooveData.tempo = GrooveDBTabIn.tempo;
 				myGrooveData.numberOfMeasures = GrooveDBTabIn.measures;
-				myGrooveData.showMeasures = GrooveDBTabIn.measures;
 				myGrooveData.notesPerMeasure = GrooveDBTabIn.notesPerTabMeasure;
 				myGrooveData.sticking_array = myGrooveUtils.noteArraysFromURLData("Stickings", "", GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
 				myGrooveData.hh_array = myGrooveUtils.noteArraysFromURLData("H", GrooveDBTabIn.hihatTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
@@ -183,7 +182,7 @@
 					var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 					
 					if(linkToEditor)
-						document.getElementById(svgTargetId).innerHTML = '<a style="text-decoration: none" href="' + linkToEditor + GrooveDefinition + '">' + svgReturn.svg + '</a>';
+						document.getElementById(svgTargetId).innerHTML = '<a style="text-decoration: none" href="index.html' + GrooveDefinition + '">' + svgReturn.svg + '</a>';
 					else
 						document.getElementById(svgTargetId).innerHTML = svgReturn.svg;
 					

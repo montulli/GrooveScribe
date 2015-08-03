@@ -5,6 +5,7 @@ if(document.currentScript)
 	global_grooveUtilsScriptSrc = document.currentScript.src;
 else
 	global_grooveUtilsScriptSrc = "";
+global_midiInitialized = false;
 
 // GrooveUtils class.   The only one in this file. 
 function GrooveUtils() { "use strict";
@@ -553,13 +554,6 @@ function GrooveUtils() { "use strict";
 		myGrooveData.hh_array       = root.noteArraysFromURLData("H", HH_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
 		myGrooveData.snare_array    = root.noteArraysFromURLData("S", Snare_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
 		myGrooveData.kick_array     = root.noteArraysFromURLData("K", Kick_string, myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
-			
-		myGrooveData.showMeasures = parseInt(root.getQueryVariableFromString("showMeasures", 1, encodedURLData), 10);
-		if(myGrooveData.showMeasures < 1 || isNaN(myGrooveData.showMeasures))
-			myGrooveData.showMeasures = 1;
-		else if(myGrooveData.showMeasures > myGrooveData.numberOfMeasures)
-			myGrooveData.showMeasures = myGrooveData.numberOfMeasures;
-		
 			
 		myGrooveData.title = root.getQueryVariableFromString("title", "", encodedURLData);
 		myGrooveData.title = decodeURIComponent(myGrooveData.title);
@@ -1136,10 +1130,10 @@ function GrooveUtils() { "use strict";
 	
 	root.createABCFromGrooveData = function(myGrooveData) {
 	
-		var FullNoteStickingArray = scaleNoteArrayToFullSize(myGrooveData.sticking_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		var FullNoteHHArray       = scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		var FullNoteSnareArray    = scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		var FullNoteKickArray     = scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteStickingArray = scaleNoteArrayToFullSize(myGrooveData.sticking_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteHHArray       = scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteSnareArray    = scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteKickArray     = scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 	
 		var fullABC = root.get_top_ABC_BoilerPlate(false, 
 													myGrooveData.title, 
@@ -1587,9 +1581,9 @@ function GrooveUtils() { "use strict";
 		
 		// the midi converter expects all the arrays to be 32 or 24 notes long.  
 		// Expand them
-		var FullNoteHHArray       = scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		var FullNoteSnareArray    = scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		var FullNoteKickArray     = scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.showMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteHHArray       = scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteSnareArray    = scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteKickArray     = scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 	
 		var total_notes = FullNoteHHArray.length;
 		root.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, 
@@ -1696,12 +1690,12 @@ function GrooveUtils() { "use strict";
 	
 	root.oneTimeInitializeMidi = function() {
 		
-		if(root.midiInitialized) {
+		if(global_midiInitialized) {
 			root.midiEventCallbacks.midiInitialized(root.midiEventCallbacks.classRoot);
 			return;
 		}
 		
-		root.midiInitialized = true;
+		global_midiInitialized = true;
 		MIDI.loadPlugin({
 			soundfontUrl: root.getMidiSoundFontLocation(),
 			instruments: ["gunshot" ],

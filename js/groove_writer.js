@@ -2097,7 +2097,6 @@ function GrooveWriter() { "use strict";
 		
 		myGrooveData.notesPerMeasure   = class_notes_per_measure;
 		myGrooveData.numberOfMeasures  = class_number_of_measures;
-		myGrooveData.showMeasures      = class_number_of_measures;
 		myGrooveData.showStickings     = isStickingsVisible();
 		myGrooveData.title             = document.getElementById("tuneTitle").value;
 		myGrooveData.author            = document.getElementById("tuneAuthor").value;
@@ -2159,13 +2158,13 @@ function GrooveWriter() { "use strict";
 		var myGrooveData = root.grooveDataFromClickableUI();	
 		
 		var notesPerMeasureInTab = (myGrooveUtils.isTripletDivision(myGrooveData.notesPerMeasure, 4, 4) ? 24 : 32);
-		var maxNotesInTab = myGrooveData.showMeasures * notesPerMeasureInTab;
+		var maxNotesInTab = myGrooveData.numberOfMeasures * notesPerMeasureInTab;
 		
 		var DBString = "{{GrooveTab";
 		
 		DBString += "\n|HasTempo=" + myGrooveData.tempo;
 		DBString += "\n|HasDivision=" + myGrooveData.notesPerMeasure;
-		DBString += "\n|HasMeasures=" + myGrooveData.showMeasures;
+		DBString += "\n|HasMeasures=" + myGrooveData.numberOfMeasures;
 		DBString += "\n|HasNotesPerMeasure=" + notesPerMeasureInTab;
 		DBString += "\n|HasTimeSignature=4/4";
 		DBString += "\n|HasHiHatTab=" + myGrooveUtils.tabLineFromAbcNoteArray("H", myGrooveData.hh_array, true, true, maxNotesInTab, 0);
