@@ -2229,7 +2229,7 @@ function GrooveWriter() { "use strict";
 		ourStack.push(newURL);
 		
 		while(ourStack.length > constant_undo_stack_max_size)
-			shift();
+			ourStack.shift();
 		
 		//debugPrintUndoRedoStack();
 		
@@ -2480,9 +2480,9 @@ function GrooveWriter() { "use strict";
 		var SecondMeasureButton = document.getElementById("showHideSecondMeasureButton");
 		if(SecondMeasureButton) {
 			if(setToOn)
-				SecondMeasureButton.innerHTML = "HIDE<br>2<sup>nd</sup> measure";
+				SecondMeasureButton.className += " ClickToHide";
 			else
-				SecondMeasureButton.innerHTML = "SHOW<br>2<sup>nd</sup> measure";
+				SecondMeasureButton.className = SecondMeasureButton.className.replace(" ClickToHide","");
 		}
 
 		root.expandAuthoringViewWhenNecessary(class_notes_per_measure, isSecondMeasureVisable());
@@ -2557,9 +2557,9 @@ function GrooveWriter() { "use strict";
 		var stickingsButton = document.getElementById("showHideStickingsButton");
 		if(stickingsButton) {
 			if(OnElseOff)
-				stickingsButton.innerHTML = "HIDE<br>stickings";
+				stickingsButton.className += " ClickToHide";
 			else
-				stickingsButton.innerHTML = "SHOW<br>stickings";
+				stickingsButton.className = stickingsButton.className.replace(" ClickToHide","");
 		}
 		
 		if(!dontRefreshScreen)
@@ -3134,7 +3134,7 @@ function GrooveWriter() { "use strict";
 		}
 		
 		// rewrite the HTML for the HTML note grid
-		document.getElementById("musicalInput").innerHTML = newHTML;
+		document.getElementById("measureContainer").innerHTML = newHTML;
 		
 		// change the Permutation options too
 		newHTML = root.HTMLforPermutationOptions();
@@ -3349,7 +3349,9 @@ function GrooveWriter() { "use strict";
 					</div>\
 				</div>\
 			</div>\
-		</div>');
+		</div>\n');
+		
+		newHTML += '<span id="closeMeasureButton' + baseindex + '" class="closeMeasureButton"><i class="fa fa-times-circle"></i></span>\n';
 		
 		return newHTML;
 	};  // end function HTMLforStaffContainer

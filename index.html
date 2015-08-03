@@ -108,6 +108,7 @@
 			<span class="nonPrintable">
 				<div id="midiPlayer"><!-- space for the midiplayer to be attached by the javascript --></div>
 				<div id="musicalInput">
+					<span id="measureContainer">
 						<script>
 							var genHTML = "";
 							for(var cur_measure=1; cur_measure <= myGrooveWriter.numberOfMeasures(); cur_measure++) {
@@ -115,6 +116,8 @@
 							}
 							document.write(genHTML);
 						</script>
+					</span>
+					<span id="addMeasureButton" onClick="addMeasureClick(event)"></span>
 				</div>
 				<div id="PermutationOptions">
 					<script>
@@ -149,8 +152,8 @@
 				</div>
 				
 				<div id="bottomButtonRow">
-					<span class="pageBottomButton" id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideSecondMeasure(false, false);">SHOW<br>2<sup>nd</sup> measure</span>
-					<span class="pageBottomButton" id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);">SHOW<br>stickings</span>
+					<span class="pageBottomButton" id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideSecondMeasure(false, false);"><span class="bottomButtonLabel">2<sup>nd</sup> MEASURE</span></span>
+					<span class="pageBottomButton" id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);"><span class="bottomButtonLabel">STICKINGS</span></span>
 					<span class="pageBottomButton" type="button" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></span></i><span class="bottomButtonLabel">MIDI</span></span>
 					<span class="pageBottomButton" id="printButton" type="button" onclick="myGrooveWriter.printMusic()"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
 					<span class="pageBottomButton" id="shareSaveButton" href="#" onClick="event.preventDefault(); myGrooveWriter.show_FullURLPopup()"><span class="bottomButtonIcon"><i class="fa fa-share fa-2x"></i></span><span class="bottomButtonLabel">SHARE</span></span>

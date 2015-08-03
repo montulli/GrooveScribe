@@ -179,8 +179,9 @@
 		display: none;
 	}
 	#musicalInput {
+		display: block;
 		width: 100%;
-		padding-bottom: 2px;
+		/padding-bottom: 2px;
 		max-width: 954px;
 		background: #FFF;
 		overflow-x: auto;
@@ -199,6 +200,8 @@
 	}
 	#musicalInput.expanded {
 		max-width: 5000px;
+	}
+	#measureContainer {
 	}
 	.staff-container {
 		/margin-left: 2px;
@@ -492,6 +495,22 @@
 		height:1px;
 		background: transparent;
 	}
+	#addMeasureButton {
+		position:relative;
+		top: -68px;
+		left: 10px;
+	}
+	#addMeasureButton:before {
+		font-family: FontAwesome;
+		font-size: 40px;
+		content:  "\f067";
+	}
+	.closeMeasureButton {
+		vertical-align: top;
+		display: inline-block;
+		height: 40px;
+		margin-top: 3px;
+	}
 	#PermutationOptions {
 		display:none;
 		margin: 3px 0px -20px 10px;
@@ -669,6 +688,18 @@
 	#showHideSecondMeasureButton {
 	}
 	#showHideStickingsButton {
+	}
+	#showHideSecondMeasureButton:before, #showHideStickingsButton:before  { 
+		font-family: FontAwesome;
+		font-size: 30px;
+		letter-spacing: -3px; 
+		content: "\f065";
+	}
+	#showHideSecondMeasureButton.ClickToHide:before, #showHideStickingsButton.ClickToHide:before {
+		font-family: FontAwesome;
+		font-size: 30px;
+		letter-spacing: -3px; 
+		content: "\f066";
 	}
 	#printButton {
 	}
