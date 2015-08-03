@@ -604,7 +604,7 @@ function GrooveUtils() { "use strict";
 			*/
 			// only accept the event if it not going to an INPUT field
 			// otherwise we can't use spacebar in text fields :(
-			if(e.which == 32 && e.target.tagName != "INPUT" && e.target.tagName != "TEXTAREA") {
+			if(e.which == 32 && e.target.type != "text" && e.target.tagName != "TEXTAREA") {
 				// spacebar
 				root.startOrStopMIDI_playback();
 				return false;
@@ -1884,11 +1884,21 @@ function GrooveUtils() { "use strict";
 			return false;
 	};
 	
-	root.swingEnabled = function(trueElseFalse) {
-		if(root.swingIsEnabled != trueElseFalse)
-			root.swingUpdate(false);
+	root.setSwingSlider = function(newSetting) {
+		document.getElementById("swingInput" + root.grooveUtilsUniqueIndex).value = newSetting;
+		updateRangeSlider('swingInput' + root.grooveUtilsUniqueIndex);
+	};
 	
+	root.swingEnabled = function(trueElseFalse) {
+		
 		root.swingIsEnabled = trueElseFalse;
+		
+		if(root.swingIsEnabled == false) {
+			root.setSwingSlider(0);
+		}
+	
+		root.swingUpdate(0);  // update N/A label
+		
 	};
 	
 	root.getSwing = function() {
@@ -1922,8 +1932,13 @@ function GrooveUtils() { "use strict";
 	};
 	
 	root.swingUpdateEvent = function(event) {
-		root.swingUpdate(event.target.value);
-		updateRangeSlider('swingInput' + root.grooveUtilsUniqueIndex);
+		
+		if(root.swingIsEnabled == false) {
+			root.setSwingSlider(0);
+		} else {
+			root.swingUpdate(event.target.value);
+			updateRangeSlider('swingInput' + root.grooveUtilsUniqueIndex);
+		}
 	};
 	
 	

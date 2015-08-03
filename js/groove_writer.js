@@ -2661,6 +2661,8 @@ function GrooveWriter() { "use strict";
 		
 		myGrooveUtils.oneTimeInitializeMidi();
 		
+		// enable or disable swing
+		myGrooveUtils.swingEnabled( myGrooveUtils.doesDivisionSupportSwing(class_notes_per_measure) );
 	};
 	
 	// takes a string of notes encoded in a serialized string and sets the notes on or off
