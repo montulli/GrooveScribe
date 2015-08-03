@@ -562,6 +562,11 @@ function GrooveWriter() { "use strict";
 	
 	function hilight_note(instrument, percent_complete) {
 		
+		if(percent_complete < 0) {
+			clear_all_highlights("clear")
+			return;
+		}
+		
 		// if we are in a permutation, hightlight each measure as it goes
 		if(class_permutationType != "none")
 			percent_complete = (percent_complete * get_numberOfActivePermutationSections()) % 1.0;

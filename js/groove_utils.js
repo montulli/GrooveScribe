@@ -1629,7 +1629,7 @@ function GrooveUtils() { "use strict";
 			root.isMIDIPaused = true;
 			root.midiEventCallbacks.pauseEvent(root.midiEventCallbacks.classRoot);
 			MIDI.Player.pause();
-			clear_all_highlights();
+			root.midiEventCallbacks.notePlaying(root.midiEventCallbacks.classRoot, "clear", -1);
 		}
 	};
 	
@@ -1646,7 +1646,7 @@ function GrooveUtils() { "use strict";
 			root.last_midi_update_time = 0;
 			root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot);
 			MIDI.Player.stop();
-			//MIDI.Player.loop(root.shouldMIDIRepeat);   // set the loop parameter
+			MIDI.Player.loop(root.shouldMIDIRepeat);   // set the loop parameter
 			MIDI.Player.start();
 		}
 		root.midiEventCallbacks.playEvent(root.midiEventCallbacks.classRoot);
@@ -1659,6 +1659,7 @@ function GrooveUtils() { "use strict";
 			root.isMIDIPaused = false;
 			MIDI.Player.stop();
 			root.midiEventCallbacks.stopEvent(root.midiEventCallbacks.classRoot);
+			root.midiEventCallbacks.notePlaying(root.midiEventCallbacks.classRoot, "clear", -1);
 		} 
 	};
 	
@@ -1685,10 +1686,10 @@ function GrooveUtils() { "use strict";
 	root.repeatMIDI_playback = function() {
 		if(root.shouldMIDIRepeat == false) {
 			root.shouldMIDIRepeat = true;
-			//MIDI.Player.loop(true);
+			MIDI.Player.loop(true);
 		} else {
 			root.shouldMIDIRepeat = false;
-			//MIDI.Player.loop(false);
+			MIDI.Player.loop(false);
 		}
 		root.midiEventCallbacks.repeatChangeEvent(root.midiEventCallbacks.classRoot, root.shouldMIDIRepeat);
 			
@@ -1772,8 +1773,9 @@ function GrooveUtils() { "use strict";
 					root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot);
 					MIDI.Player.start();
 				} else {
-					MIDI.Player.stop();
-					MIDI.Player.start();
+					// let midi.loop handle the repeat for us
+					//MIDI.Player.stop();
+					//MIDI.Player.start();
 				}
 			} else {
 				// not repeating, so stopping
