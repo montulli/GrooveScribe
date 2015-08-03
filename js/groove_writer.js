@@ -16,7 +16,7 @@ function GrooveWriter() { "use strict";
 	var constant_undo_stack_max_size = 40;
 	
 	// public class vars
-	var class_number_of_measures = 2;  // only 2 for now (future expansion to more possible)
+	var class_number_of_measures = 1;  
 	var class_notes_per_measure = parseInt(myGrooveUtils.getQueryVariableFromURL("Div", "8"), 10);	// default to 8ths
 	var class_metronome_interval = 0;
 
@@ -544,10 +544,12 @@ function GrooveWriter() { "use strict";
 		
 		if(class_cur_all_notes_highlight_id !== false) {
 			// turn off old highlighting
-			document.getElementById("sticking" + class_cur_all_notes_highlight_id).style.background = "transparent";
-			document.getElementById("hi-hat" + class_cur_all_notes_highlight_id).style.background = "transparent";
-			document.getElementById("snare" + class_cur_all_notes_highlight_id).style.background = "transparent";
-			document.getElementById("kick" + class_cur_all_notes_highlight_id).style.background = "transparent";			
+			if(document.getElementById("sticking" + class_cur_all_notes_highlight_id)) {
+				document.getElementById("sticking" + class_cur_all_notes_highlight_id).style.background = "transparent";
+				document.getElementById("hi-hat" + class_cur_all_notes_highlight_id).style.background = "transparent";
+				document.getElementById("snare" + class_cur_all_notes_highlight_id).style.background = "transparent";
+				document.getElementById("kick" + class_cur_all_notes_highlight_id).style.background = "transparent";			
+			}
 		}
 		
 		// turn this one on;
@@ -571,7 +573,7 @@ function GrooveWriter() { "use strict";
 		if(class_permutationType != "none")
 			percent_complete = (percent_complete * get_numberOfActivePermutationSections()) % 1.0;
 		
-		var note_id_in_32 = Math.floor(percent_complete * (usingTriplets() ? 24 : 32) * (isSecondMeasureVisable() ? 2 : 1));
+		var note_id_in_32 = Math.floor(percent_complete * (usingTriplets() ? 24 : 32) * class_number_of_measures);
 		var real_note_id = (note_id_in_32/myGrooveUtils.getNoteScaler(class_notes_per_measure, 4, 4));
 			
 		//hilight_individual_note(instrument, id);
@@ -2060,15 +2062,15 @@ function GrooveWriter() { "use strict";
 		default:
 			myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
 			
-			if(isSecondMeasureVisable()) {
+			for(var i=1; i < class_number_of_measures; i++) {
 				// reset arrays
 				Sticking_Array = class_empty_note_array.slice(0);  // copy by value
 				HH_Array = class_empty_note_array.slice(0);  // copy by value
 				Snare_Array = class_empty_note_array.slice(0);  // copy by value
 				Kick_Array = class_empty_note_array.slice(0);  // copy by value
 		
-				// get second measure
-				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, class_notes_per_measure);
+				// get another measure
+				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, class_notes_per_measure*i);
 				
 				myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
 			}
@@ -2095,7 +2097,7 @@ function GrooveWriter() { "use strict";
 		
 		myGrooveData.notesPerMeasure   = class_notes_per_measure;
 		myGrooveData.numberOfMeasures  = class_number_of_measures;
-		myGrooveData.showMeasures      = (isSecondMeasureVisable() ? 2 : 1);
+		myGrooveData.showMeasures      = class_number_of_measures;
 		myGrooveData.showStickings     = isStickingsVisible();
 		myGrooveData.title             = document.getElementById("tuneTitle").value;
 		myGrooveData.author            = document.getElementById("tuneAuthor").value;
@@ -2379,17 +2381,29 @@ function GrooveWriter() { "use strict";
 		default:
 			fullABC = myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), true, 4, 4);
 		
-			fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "\\\n", num_notes, class_notes_per_measure, true, 4, 4);
+			var addon_abc;
 			
-			if(isSecondMeasureVisable()) {
+			for(var i=0; i < class_number_of_measures; i++) {
 				// reset arrays
 				Sticking_Array = class_empty_note_array.slice(0);  // copy by value
 				HH_Array = class_empty_note_array.slice(0);  // copy by value
 				Snare_Array = class_empty_note_array.slice(0);  // copy by value
 				Kick_Array = class_empty_note_array.slice(0);  // copy by value
 		
-				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, class_notes_per_measure);
-				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, "|\n", num_notes, class_notes_per_measure, true, 4, 4);
+				// retrieving 1st measure for the second time from above.   Slightly bad efficiency, but cleaner code  :)
+				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, class_notes_per_measure*i);
+				
+				if(i == class_number_of_measures-1) { 
+					// last measure
+					addon_abc = "|\n";
+				} else if(i % 2 == 0) {
+					// even measure
+					addon_abc = "\\\n";
+				} else {
+					// odd measure
+					addon_abc = "\n";
+				}
+				fullABC += myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, addon_abc, num_notes, class_notes_per_measure, true, 4, 4);
 			}
 			
 			break;
@@ -2444,53 +2458,72 @@ function GrooveWriter() { "use strict";
 		return false;  // don't follow the link
 	};
 
-	function isSecondMeasureVisable() {
-		var secondMeasure = document.getElementById("staff-container2");
+	// remove a measure from the page
+	// measureNum is indexed starting at 1, not 0
+	root.closeMeasureButtonClick = function(measureNum) {
+		var uiStickings="";
+		var uiHH="";
+		var uiSnare="";
+		var uiKick=""; 
 		
-		if(secondMeasure.style.display == "inline-block")
-			return true;
-						
-		return false;  // don't follow the link
-	}
+		// get the encoded notes out of the UI.
+		// run through all the measure, but don't include the one that we are deleting
+		var topIndex = class_notes_per_measure*class_number_of_measures;
+		for(var i=0; i < topIndex; i++) {
+			
+			// skip the range we are deleting
+			if(i < (measureNum-1)*class_notes_per_measure || i >= measureNum*class_notes_per_measure) {
+				uiStickings += get_sticking_state(i, "URL"); 
+				uiHH += get_hh_state(i, "URL"); 
+				uiSnare += get_snare_state(i, "URL");
+				uiKick += get_kick_state(i, "URL");
+			}
+		}
+		
+		class_number_of_measures--;
+		
+		root.expandAuthoringViewWhenNecessary(class_notes_per_measure, class_number_of_measures);
+
+		changeDivisionWithNotes(class_notes_per_measure, uiStickings, uiHH, uiSnare, uiKick);
+		
+		create_ABC();
+	};
 	
-	root.showHideSecondMeasure = function(force, showElseHide, dontRefreshScreen) {
-		var secondMeasure = document.getElementById("staff-container2");
+	// add a measure to the page
+	// currently always at the end of the measures
+	// copy the notes from the last measure to the new measure
+	root.addMeasureButtonClick = function(event) {
+		var uiStickings="";
+		var uiHH="";
+		var uiSnare="";
+		var uiKick=""; 
+		var i;
 		
-		// figure out if we are turning it on or off
-		var setToOn = true;
-		if(force) {
-			if(showElseHide)
-				setToOn = true;
-			else
-				setToOn = false;
-		} else {
-			// no-force means to swap on each call
-			if(secondMeasure.style.display == "inline-block")
-				setToOn = false;
-			else
-				setToOn = true;
+		// get the encoded notes out of the UI.
+		var topIndex = class_notes_per_measure*class_number_of_measures;
+		for(i=0; i < topIndex; i++) {
+			
+			uiStickings += get_sticking_state(i, "URL"); 
+			uiHH += get_hh_state(i, "URL"); 
+			uiSnare += get_snare_state(i, "URL");
+			uiKick += get_kick_state(i, "URL");
 		}
 		
-		if(setToOn)
-			secondMeasure.style.display = "inline-block";
-		else
-			secondMeasure.style.display = "none";
-
-		// change button text
-		var SecondMeasureButton = document.getElementById("showHideSecondMeasureButton");
-		if(SecondMeasureButton) {
-			if(setToOn)
-				SecondMeasureButton.className += " ClickToHide";
-			else
-				SecondMeasureButton.className = SecondMeasureButton.className.replace(" ClickToHide","");
+		// run the the last measure twice to default in some notes
+		for(i=topIndex-class_notes_per_measure; i < topIndex; i++) {
+			uiStickings += get_sticking_state(i, "URL"); 
+			uiHH += get_hh_state(i, "URL"); 
+			uiSnare += get_snare_state(i, "URL");
+			uiKick += get_kick_state(i, "URL");
 		}
-
-		root.expandAuthoringViewWhenNecessary(class_notes_per_measure, isSecondMeasureVisable());
-
-		if(!dontRefreshScreen)
-			create_ABC();
 		
-		return false;  // don't follow the link
+		class_number_of_measures++;
+		
+		root.expandAuthoringViewWhenNecessary(class_notes_per_measure, class_number_of_measures);
+
+		changeDivisionWithNotes(class_notes_per_measure, uiStickings, uiHH, uiSnare, uiKick);
+		
+		create_ABC();
 	};
 	
 	function showHideCSS_ClassDisplay(className, force, showElseHide, showState) {
@@ -2924,12 +2957,7 @@ function GrooveWriter() { "use strict";
 			fullURL += "&Swing=" + myGrooveUtils.getSwing();
 		
 		// # of measures
-		fullURL += "&Measures=2";
-		
-		if(isSecondMeasureVisable())
-			fullURL += "&showMeasures=2";
-		else	
-			fullURL += "&showMeasures=1";
+		fullURL += "&Measures=" + class_number_of_measures;
 		
 		// notes
 		var HH = "&H=|";
@@ -3061,24 +3089,21 @@ function GrooveWriter() { "use strict";
 		var HH;
 		var Snare;
 		var Kick;
-		var numberOfMeasures = 2;
 		var stickings_set_from_URL = false;
 		
 		var myGrooveData = myGrooveUtils.getGrooveDataFromUrlString(encodedURLData);
 		
-		if(myGrooveData.notesPerMeasure != class_notes_per_measure) {
+		if(myGrooveData.notesPerMeasure != class_notes_per_measure || class_number_of_measures != myGrooveData.numberOfMeasures) {
+			class_number_of_measures = myGrooveData.numberOfMeasures;
 			changeDivisionWithNotes(myGrooveData.notesPerMeasure);
-		}
+		} 
 		
-		setNotesFromABCArray("Stickings", myGrooveData.sticking_array, numberOfMeasures);
-		setNotesFromABCArray("H", myGrooveData.hh_array, numberOfMeasures);
-		setNotesFromABCArray("S", myGrooveData.snare_array, numberOfMeasures);
-		setNotesFromABCArray("K", myGrooveData.kick_array, numberOfMeasures);
+		root.expandAuthoringViewWhenNecessary(class_notes_per_measure, class_number_of_measures);
 		
-		if(myGrooveData.showMeasures == 2)
-			root.showHideSecondMeasure(true, true, true);
-		else
-			root.showHideSecondMeasure(true, false, true);
+		setNotesFromABCArray("Stickings", myGrooveData.sticking_array, class_number_of_measures);
+		setNotesFromABCArray("H", myGrooveData.hh_array, class_number_of_measures);
+		setNotesFromABCArray("S", myGrooveData.snare_array, class_number_of_measures);
+		setNotesFromABCArray("K", myGrooveData.kick_array, class_number_of_measures);
 		
 		if(myGrooveData.showStickings) 
 			root.showHideStickings(true, true, true);
@@ -3124,7 +3149,6 @@ function GrooveWriter() { "use strict";
 	// need to re-layout the html notes, change any globals and then reinitialize
 	function changeDivisionWithNotes (newDivision, Stickings, HH, Snare, Kick) {
 		var oldDivision = class_notes_per_measure;
-		var wasSecondMeasureVisabile = isSecondMeasureVisable();
 		var wasStickingsVisable = isStickingsVisible();
 		class_notes_per_measure = newDivision;
 		
@@ -3140,18 +3164,15 @@ function GrooveWriter() { "use strict";
 		newHTML = root.HTMLforPermutationOptions();
 		document.getElementById("PermutationOptions").innerHTML = newHTML;
 		
-		if(wasSecondMeasureVisabile)
-			root.showHideSecondMeasure(true, true, true);
-		
 		if(wasStickingsVisable)
 			root.showHideStickings(true, true, true);
 		
 		// now set the right notes on and off
 		if(Stickings && HH && Snare && Kick) {
-			setNotesFromURLData("Stickings", Stickings, 2);
-			setNotesFromURLData("H", HH, 2);
-			setNotesFromURLData("S", Snare, 2);
-			setNotesFromURLData("K", Kick, 2);
+			setNotesFromURLData("Stickings", Stickings, class_number_of_measures);
+			setNotesFromURLData("H", HH, class_number_of_measures);
+			setNotesFromURLData("S", Snare, class_number_of_measures);
+			setNotesFromURLData("K", Kick, class_number_of_measures);
 		}
 		
 		// un-highlight the old div 
@@ -3171,11 +3192,13 @@ function GrooveWriter() { "use strict";
 	}
 	
 	
-	root.expandAuthoringViewWhenNecessary = function(numNotesPerMeasure, moreThanOneMeasure) {
+	root.expandAuthoringViewWhenNecessary = function(numNotesPerMeasure, numberOfMeasures) {
 		var musicalInput = document.getElementById("musicalInput");
 		
 		// set the size of the musicalInput authoring element based on the number of notes
-		if(numNotesPerMeasure > 16 || (numNotesPerMeasure > 8 && moreThanOneMeasure)) {
+		if(numNotesPerMeasure > 16 || 
+			(numNotesPerMeasure > 8 && class_number_of_measures > 1) || 
+			(class_number_of_measures > 2)) {
 			if(musicalInput)
 				musicalInput.className += " expanded";
 		} else {
@@ -3198,32 +3221,25 @@ function GrooveWriter() { "use strict";
 			// run through both measures.
 			var topIndex = class_notes_per_measure*class_number_of_measures;
 			for(var i=0; i < topIndex; i++) {
-					uiStickings += get_sticking_state(i, "URL"); 
-					uiHH += get_hh_state(i, "URL"); 
-					uiSnare += get_snare_state(i, "URL");
-					uiKick += get_kick_state(i, "URL");
-				
-				if(i == class_notes_per_measure-1) {
-					uiStickings += "|";
-					uiHH += "|";
-					uiSnare += "|";
-					uiKick += "|";
-				}
+				uiStickings += get_sticking_state(i, "URL"); 
+				uiHH += get_hh_state(i, "URL"); 
+				uiSnare += get_snare_state(i, "URL");
+				uiKick += get_kick_state(i, "URL");
 			}
 			
 			// override the hi-hat if we are going to a higher division.
 			// otherwise the notes get lost in translation (not enough)
 			if(newDivision > class_notes_per_measure)
-				uiHH = myGrooveUtils.GetDefaultHHGroove(newDivision, 2);
+				uiHH = myGrooveUtils.GetDefaultHHGroove(newDivision, class_number_of_measures);
 		} else {
 			// triplets don't scale well, so use defaults when we change
-			uiStickings = myGrooveUtils.GetDefaultStickingsGroove(newDivision, 2);
-			uiHH = myGrooveUtils.GetDefaultHHGroove(newDivision, 2);
-			uiSnare = myGrooveUtils.GetDefaultSnareGroove(newDivision, 2);
-			uiKick = myGrooveUtils.GetDefaultKickGroove(newDivision, 2);
+			uiStickings = myGrooveUtils.GetDefaultStickingsGroove(newDivision, class_number_of_measures);
+			uiHH = myGrooveUtils.GetDefaultHHGroove(newDivision, class_number_of_measures);
+			uiSnare = myGrooveUtils.GetDefaultSnareGroove(newDivision, class_number_of_measures);
+			uiKick = myGrooveUtils.GetDefaultKickGroove(newDivision, class_number_of_measures);
 		}
 		
-		root.expandAuthoringViewWhenNecessary(newDivision, isSecondMeasureVisable());
+		root.expandAuthoringViewWhenNecessary(newDivision, class_number_of_measures);
 
 		changeDivisionWithNotes(newDivision, uiStickings, uiHH, uiSnare, uiKick);
 		
@@ -3351,7 +3367,8 @@ function GrooveWriter() { "use strict";
 			</div>\
 		</div>\n');
 		
-		newHTML += '<span id="closeMeasureButton' + baseindex + '" class="closeMeasureButton"><i class="fa fa-times-circle"></i></span>\n';
+		if(class_number_of_measures > 1)
+			newHTML += '<span title="Remove Measure" id="closeMeasureButton' + baseindex + '" onClick="myGrooveWriter.closeMeasureButtonClick(' + baseindex + ')" class="closeMeasureButton"><i class="fa fa-times-circle"></i></span>\n';
 		
 		return newHTML;
 	};  // end function HTMLforStaffContainer

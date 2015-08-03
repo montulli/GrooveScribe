@@ -117,7 +117,7 @@
 							document.write(genHTML);
 						</script>
 					</span>
-					<span id="addMeasureButton" onClick="addMeasureClick(event)"></span>
+					<span id="addMeasureButton" title="Add measure"onClick="myGrooveWriter.addMeasureButtonClick(event)"><i class="fa fa-plus"></i></span>
 				</div>
 				<div id="PermutationOptions">
 					<script>
@@ -152,7 +152,6 @@
 				</div>
 				
 				<div id="bottomButtonRow">
-					<span class="pageBottomButton" id="showHideSecondMeasureButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideSecondMeasure(false, false);"><span class="bottomButtonLabel">2<sup>nd</sup> MEASURE</span></span>
 					<span class="pageBottomButton" id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);"><span class="bottomButtonLabel">STICKINGS</span></span>
 					<span class="pageBottomButton" type="button" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></span></i><span class="bottomButtonLabel">MIDI</span></span>
 					<span class="pageBottomButton" id="printButton" type="button" onclick="myGrooveWriter.printMusic()"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>

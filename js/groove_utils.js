@@ -52,8 +52,7 @@ function GrooveUtils() { "use strict";
 	
 	root.grooveData = function() {
 		this.notesPerMeasure    = 8;
-		this.numberOfMeasures   = 2;
-		this.showMeasures       = 1;
+		this.numberOfMeasures   = 1;
 		this.numBeats		    = 4;   // Top part of Time Signture 3/4, 4/4, 5/4, 6/8, etc...
 		this.noteValue		    = 4;   // Bottom part of Time Sig   4 = quarter notes, 8 = 8th notes, 16ths, etc..
 		this.sticking_array     = class_empty_note_array.slice(0);  // copy by value
