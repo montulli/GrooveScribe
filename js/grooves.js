@@ -33,11 +33,11 @@ if (typeof (grooves) === "undefined") var grooves = {};
 
 	root.Latin = {
 		'Bossa Nova':  '?Div=8&Title=Bossa%20Nova&Swing=0&measures=2&showMeasures=2&Tempo=130&H=|xxxxxxxx|xxxxxxxx|&S=|--x--x--|x--x--x-|&K=|o-xoo-xo|o-xoo-xo|',
-		'Samba Slow':  '?Div=16&Title=Samba&Tempo=80&Swing=0&measures=2&showMeasures=1&H=|xxXxxxXxxxXxxxXx|xxXxxxXxxxXxxxXx|&S=|o-o--o-o-o-o-oo-|o-o--o-o-o-o-oo-|&K=|o--oo--oo--oo--o|o--oo--oo--oo--o|',
-		'Samba Fast':  '?Div=16&Title=Samba&Tempo=120&Swing=0&measures=2&showMeasures=1&H=|x-xxx-xxx-xxx-xx|x-xxx-xxx-xxx-xx|&S=|--o--o---o--o-o-|--o--o---o--o-o-|&K=|o-xoo-xoo-xoo-xo|o-xoo-xoo-xoo-xo|',
+		'Samba Slow':  '?Div=16&Title=Samba&Tempo=80&Swing=0&measures=2&showMeasures=1&H=|xxXxxxXxxxXxxxXx|xxXxxxXxxxXxxxXx|&S=|x-x--x-x-x-x-xx-|x-x--x-x-x-x-xx-|&K=|o--oo--oo--oo--o|o--oo--oo--oo--o|',
+		'Samba Fast':  '?Div=16&Title=Samba&Tempo=120&Swing=0&measures=2&showMeasures=1&H=|x-xxx-xxx-xxx-xx|x-xxx-xxx-xxx-xx|&S=|--x--x---x--x-x-|--x--x---x--x-x-|&K=|o-xoo-xoo-xoo-xo|o-xoo-xoo-xoo-xo|',
 		'Tumbao':      '?Div=16&Title=Tumbao&Swing=0&measures=2&showMeasures=1&H=|x-xxx-xxx-xxx-xx|x-xxx-xxx-xxx-xx|&S=|----------------|----------------|&K=|o-xo--X-o-xo--X-|o-xo--X-o-xo--X-|',
 		'Baiao':       '?Div=16&Title=baiao&Swing=0&measures=2&showMeasures=1&H=|xxX-xxX-xxX-xxX-|xxX-xxX-xxX-xxX-|&S=|------o-------o-|------o-------o-|&K=|o--o----o--o---o|o--o----o--o---o|',
-		'Songo':       '?Div=16&Title=Songo&Tempo=80&Measures=2&showMeasures=1&H=|x---x---x---x---|x---x---x---x---|&S=|--O--g-O-gg--g-g|--o--o-o-oo--o-o|&K=|---o--o----o--o-|---o--o----o--o-|'
+		'Songo':       '?Div=16&Title=Songo&Tempo=80&Measures=2&showMeasures=1&H=|x---x---x---x---|x---x---x---x---|&S=|--O--g-O-gg--g-g|--O--g-O-gg--g-g|&K=|---o--o----o--o-|---o--o----o--o-|'
 	};
 	
 	root.FullArray = {"Rock grooves":     root.Rock_Grooves,
