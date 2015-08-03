@@ -734,6 +734,34 @@ function GrooveWriter() { "use strict";
 		create_ABC();
 	};
 	
+	root.helpMenuPopupClick = function(help_type) {
+		
+		switch (help_type) {
+		case "help":
+			var win = window.open("help.html",'_blank');
+			win.focus();
+			break;
+			
+		case "about":
+			var win = window.open("about.html",'_blank');
+			win.focus();
+			break;
+
+		case "undo":
+			root.undoCommand();
+			break;
+			
+		case "redo":
+			root.redoCommand();
+			break;
+			
+		default:
+			alert("bad case in helpMenuPopupClick()");
+			break;
+		}
+		
+	}
+	
 	// user has clicked on the advanced edit button
 	this.toggleAdvancedEdit = function() {
 		if(class_advancedEditIsOn) {
@@ -2549,6 +2577,32 @@ function GrooveWriter() { "use strict";
 		
 	};
 
+	root.setupWriterHotKeys = function() {
+		
+					
+		document.addEventListener("keydown", function(e){
+			
+			// only accept the event if it not going to an INPUT field
+			// e.target.tagName != "INPUT" 
+			if(e.ctrlKey && e.which == 90  && e.target.tagName != "TEXTAREA") {
+				// ctrl-z
+				root.undoCommand();
+				return false;
+			}
+			else if(e.ctrlKey && e.which == 89 && e.target.tagName != "TEXTAREA") {
+				// ctrl-y
+				root.redoCommand();
+				return false;
+			}
+			/* DEBUG
+			else if(e.ctrlKey && e.which !=17 && e.target.type != "text" && e.target.tagName != "TEXTAREA") {
+				alert("Key is: " + e.which);
+			}
+			*/
+			return true;
+		});
+		
+	}
 		
 	// public function.
 	// This function initializes the data for the groove Scribe web page
@@ -2558,7 +2612,7 @@ function GrooveWriter() { "use strict";
 		gapi.client.setApiKey('AIzaSyBnjOal_AHASONxMQSZPk6E5w9M04CGLcA'); 
 		gapi.client.load('urlshortener', 'v1',function(){});
 		
-		//setupHotKeys();  Runs on midi load now
+		root.setupWriterHotKeys(); // there are other hot keys in GrooveUtils for the midi player
 		
 		root.setDefaultMetronomeButton(0);
 		
