@@ -1407,7 +1407,7 @@ function GrooveWriter() { "use strict";
 						  false, false, "F", false, "F", false];
 			break;
 		case 7:
-			kick_array = [false, false, false, false, "F", false,
+			kick_array = ["F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false];
@@ -1482,7 +1482,7 @@ function GrooveWriter() { "use strict";
 						  false, false, "F", false, "F", false];
 			break;
 		case 7:
-			kick_array = [false, false, false, false, "F", false,
+			kick_array = ["F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false,
 						  "F", false, false, false, "F", false];
@@ -3145,11 +3145,15 @@ function GrooveWriter() { "use strict";
 	
 	
 	root.expandAuthoringViewWhenNecessary = function(numNotesPerMeasure, moreThanOneMeasure) {
+		var musicalInput = document.getElementById("musicalInput");
+		
 		// set the size of the musicalInput authoring element based on the number of notes
 		if(numNotesPerMeasure > 16 || (numNotesPerMeasure > 8 && moreThanOneMeasure)) {
-			document.getElementById("musicalInput").style.maxWidth = "10000px";
+			if(musicalInput)
+				musicalInput.className += " expanded";
 		} else {
-			document.getElementById("musicalInput").style.maxWidth = null;
+			if(musicalInput)
+				musicalInput.className = musicalInput.className.replace(" expanded","");
 		}
 	};
 	

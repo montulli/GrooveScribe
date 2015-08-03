@@ -2,9 +2,9 @@
 
 global_num_GrooveUtilsCreated = 0;
 if(document.currentScript)
-	global_gooveUtilsScriptSrc = document.currentScript.src;
+	global_grooveUtilsScriptSrc = document.currentScript.src;
 else
-	global_gooveUtilsScriptSrc = "";
+	global_grooveUtilsScriptSrc = "";
 
 // GrooveUtils class.   The only one in this file. 
 function GrooveUtils() { "use strict";
@@ -1233,11 +1233,11 @@ function GrooveUtils() { "use strict";
 		if(baseLocation.length > 0)
 			return baseLocation;
 		
-		if (global_gooveUtilsScriptSrc != "") {
-			var lastSlash = global_gooveUtilsScriptSrc.lastIndexOf("/");
+		if (global_grooveUtilsScriptSrc != "") {
+			var lastSlash = global_grooveUtilsScriptSrc.lastIndexOf("/");
 			// lets find the slash before it since we need to go up a directory
-			lastSlash = global_gooveUtilsScriptSrc.lastIndexOf("/", lastSlash-1);
-			baseLocation = global_gooveUtilsScriptSrc.slice(0,lastSlash+1);
+			lastSlash = global_grooveUtilsScriptSrc.lastIndexOf("/", lastSlash-1);
+			baseLocation = global_grooveUtilsScriptSrc.slice(0,lastSlash+1);
 		} 
 
 		if(baseLocation.length < 1) {
@@ -1259,7 +1259,10 @@ function GrooveUtils() { "use strict";
 		this.noteHasChangedSinceLastDataLoad = false;
 		
 		this.playEvent = function(root){
-			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src = root.getMidiImageLocation() + "pause.png";
+			var icon = document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex);
+			if(icon) 
+				icon.className = "midiPlayImage Playing";
+			
 		}; 
 		// default loadMIDIDataEvent.  You probably want to override this
 		// it will only make changes to the tempo and swing
@@ -1279,12 +1282,16 @@ function GrooveUtils() { "use strict";
 			return root.midiEventCallbacks.noteHasChangedSinceLastDataLoad;
 		};
 		this.pauseEvent = function(root){
-			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src = root.getMidiImageLocation() + "play.png";
+			var icon = document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex);
+			if(icon) 
+				icon.className = "midiPlayImage Paused";
 		};  
 		
 		this.resumeEvent = function(root){};
 		this.stopEvent = function(root){
-			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src = root.getMidiImageLocation() + "play.png";
+			var icon = document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex);
+			if(icon) 
+				icon.className = "midiPlayImage Stopped";
 			document.getElementById("MIDIProgress" + root.grooveUtilsUniqueIndex).value = 0;
 		};
 		this.repeatChangeEvent = function(root, newValue){
@@ -1299,7 +1306,9 @@ function GrooveUtils() { "use strict";
 		this.notePlaying = function(root, note_type, note_position){};
 		
 		this.midiInitialized = function(root) {
-				document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).src=root.getMidiImageLocation() + "play.png";
+				var icon = document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex);
+				if(icon) 
+					icon.className = "midiPlayImage Stopped";
 				document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).onclick = function (event){ root.startOrStopMIDI_playback();};  // enable play button
 				setupHotKeys();  // spacebar to play
 		};
@@ -2013,7 +2022,7 @@ function GrooveUtils() { "use strict";
 		var newHTML = '' +
 			'<span id="playerControl' + root.grooveUtilsUniqueIndex + '" class="playerControl">' +
 			'	<div class="playerControlsRow">' +
-			'		<img alt="Play" title="Play" class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'grey_play.png">' +
+			'		<span class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '"></span>' +
 			'       <span class="MIDIPlayTime" id="MIDIPlayTime' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Midi_play_time_zero + '</span>' +
 			'		<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
 			'			<div class="tempoRow">' +

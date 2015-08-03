@@ -36,13 +36,13 @@ if (typeof (grooves) === "undefined") var grooves = {};
 	};
 	
 	root.arrayAsHTMLList = function (arrayToPrint) {
-		var HTML = '<ul class="gooveListUL">\n';
+		var HTML = '<ul class="grooveListUL">\n';
 		for(var key in arrayToPrint) {
 			if(root.isArray(arrayToPrint[key])) {
-				HTML += '<li class="gooveListHeaderLI">' + key + "</li>\n";
+				HTML += '<li class="grooveListHeaderLI">' + key + "</li>\n";
 				HTML += root.arrayAsHTMLList(arrayToPrint[key]);
 			} else {
-				HTML += '<li class="gooveListLI" onClick="myGrooveWriter.loadNewGroove(\'' + arrayToPrint[key] + '\')">' + key + '</li>\n';
+				HTML += '<li class="grooveListLI" onClick="myGrooveWriter.loadNewGroove(\'' + arrayToPrint[key] + '\')">' + key + '</li>\n';
 			}
 		}
 		HTML += "</ul>\n";

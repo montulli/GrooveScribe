@@ -41,12 +41,28 @@
 		flex-wrap: nowrap;
 	}
 	.midiPlayImage, .midiRepeatImage{
-		width: 48px;
-		height: 48px;
+		width: 40px;
+		height: 40px;
 		cursor: pointer;
 		flex: none;
-		margin: 0px 10px 0px 10px;
+		margin: 4px 10px 0px 10px;
+		border: 0px solid #000;
+		background: #68c2ff;
+		color: #005483;
+		font-size: 20px;
+		font-family: FontAwesome;
+		border-radius: 50%;
+		text-align: center;
+		line-height: 40px;
+		vertical-align: middle;
 	}
+	.midiPlayImage.Stopped:before ,  .midiPlayImage.Paused:before   { 
+	 	letter-spacing: -3px; 
+		content: "\f04b";
+	} 
+	.midiPlayImage.Playing:before  { 
+		content: "\f04c"; 
+	} 
 	.midiExpandImage {
 		color:#fff;
 		margin-top: 8px;  
