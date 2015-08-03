@@ -2174,18 +2174,18 @@ function GrooveWriter() { "use strict";
 	// debug print the stack
 	function debugPrintUndoRedoStack() {
 		
-		var newHTML = "<ol>";
+		var newHTML = "<h3>Undo Stack</h3><ol>";
 		for(var i in class_undo_stack) {
 			newHTML += "<li>" + class_undo_stack[i];
 		}
-		newHTML += "</ol>";
+		newHTML += "</ol><br>";
 		document.getElementById("undoStack").innerHTML = newHTML;
 		
-		newHTML = "<ol>";
+		newHTML = "<h3>Redo Stack</h3><ol>";
 		for(var i in class_redo_stack) {
 			newHTML += "<li>" + class_redo_stack[i];
 		}
-		newHTML += "</ol>";
+		newHTML += "</ol><br>";
 		document.getElementById("redoStack").innerHTML = newHTML;
 	}
 	
@@ -2197,7 +2197,7 @@ function GrooveWriter() { "use strict";
 			return;
 		
 		if(newURL == class_undo_stack[class_undo_stack.length-1]) {
-			debugPrintUndoRedoStack();
+			//debugPrintUndoRedoStack();
 			return false;   // no change, so don't push
 		}
 		
@@ -2206,7 +2206,7 @@ function GrooveWriter() { "use strict";
 		while(ourStack.length > constant_undo_stack_max_size)
 			shift();
 		
-		debugPrintUndoRedoStack();
+		//debugPrintUndoRedoStack();
 		
 		return true;
 	};
