@@ -11,6 +11,10 @@ function GrooveWriter() { "use strict";
 
 	var myGrooveUtils = new GrooveUtils();
 	
+	var class_undo_stack = [];
+	var class_redo_stack = [];
+	var constant_undo_stack_max_size = 40;
+	
 	// public class vars
 	var class_number_of_measures = 2;  // only 2 for now (future expansion to more possible)
 	var class_notes_per_measure = parseInt(myGrooveUtils.getQueryVariableFromURL("Div", "8"), 10);	// default to 8ths
@@ -2120,10 +2124,86 @@ function GrooveWriter() { "use strict";
 		document.getElementById("GrooveDB_source").value = DBString;
 	};
 	
+	root.undoCommand = function() {
+		if(class_undo_stack.length > 1) {
+			var undoURL = class_undo_stack.pop();
+			root.AddItemToUndoOrRedoStack(undoURL, class_redo_stack);  // add to redo stack
+			// the one we want to load is behind the head, since all changes go on the undo stack immediately
+			// no need to pop, since it would just get added right back on anyways
+			undoURL = class_undo_stack[class_undo_stack.length-1];
+			set_Default_notes(undoURL);
+		}
+	};
+	
+	root.redoCommand = function() {
+		if(class_redo_stack.length > 0) {
+			var redoURL = class_redo_stack.pop();
+			root.AddItemToUndoOrRedoStack(redoURL, class_undo_stack);  // add to undo stack
+			set_Default_notes(redoURL);
+		}
+	};
+	
+	// debug print the stack
+	function debugPrintUndoRedoStack() {
+		
+		var newHTML = "<ol>";
+		for(var i in class_undo_stack) {
+			newHTML += "<li>" + class_undo_stack[i];
+		}
+		newHTML += "</ol>";
+		document.getElementById("undoStack").innerHTML = newHTML;
+		
+		newHTML = "<ol>";
+		for(var i in class_redo_stack) {
+			newHTML += "<li>" + class_redo_stack[i];
+		}
+		newHTML += "</ol>";
+		document.getElementById("redoStack").innerHTML = newHTML;
+	}
+	
+	// push the new URL on the undo or redo stack
+	// keep the stacks at a managable size
+	root.AddItemToUndoOrRedoStack = function(newURL, ourStack, noClear) {
+		
+		if(!ourStack)
+			return;
+		
+		if(newURL == class_undo_stack[class_undo_stack.length-1]) {
+			debugPrintUndoRedoStack();
+			return false;   // no change, so don't push
+		}
+		
+		ourStack.push(newURL);
+		
+		while(ourStack.length > constant_undo_stack_max_size)
+			shift();
+		
+		debugPrintUndoRedoStack();
+		
+		return true;
+	};
+	
+	root.AddFullURLToUndoStack = function(fullURL) {
+		var urlFragment;
+		
+		var searchData = fullURL.indexOf("?");
+
+		urlFragment = fullURL.slice(searchData);
+
+		// clear redo array whenever we add a new valid element to the stack
+		// when we undo, we end up with a null push that returns false here
+		if(root.AddItemToUndoOrRedoStack(urlFragment, class_undo_stack)) {
+			class_redo_stack = [];   
+		}
+	}
+	
+	
 	// update the current URL so that reloads and history traversal and link shares and bookmarks work correctly
 	root.updateCurrentURL = function() {
 		var newURL = get_FullURLForPage();
 		var newTitle = false;
+		
+		root.AddFullURLToUndoStack(newURL);
 		
 		var title = document.getElementById("tuneTitle").value.trim();
 		if(title != "")
@@ -2320,7 +2400,7 @@ function GrooveWriter() { "use strict";
 		return false;  // don't follow the link
 	}
 	
-	root.showHideSecondMeasure = function(force, showElseHide) {
+	root.showHideSecondMeasure = function(force, showElseHide, dontRefreshScreen) {
 		var secondMeasure = document.getElementById("staff-container2");
 		
 		// figure out if we are turning it on or off
@@ -2354,7 +2434,9 @@ function GrooveWriter() { "use strict";
 
 		root.expandAuthoringViewWhenNecessary(class_notes_per_measure, isSecondMeasureVisable());
 
-		create_ABC();
+		if(!dontRefreshScreen)
+			create_ABC();
+		
 		return false;  // don't follow the link
 	};
 	
@@ -2415,7 +2497,7 @@ function GrooveWriter() { "use strict";
 		return false;
 	}
 	
-	root.showHideStickings = function(force, showElseHide) {
+	root.showHideStickings = function(force, showElseHide, dontRefreshScreen) {
 	
 		var OnElseOff = showHideCSS_ClassDisplay(".stickings-container", force, showElseHide, "block");
 		showHideCSS_ClassDisplay(".stickings-label", force, showElseHide, "block");
@@ -2426,8 +2508,9 @@ function GrooveWriter() { "use strict";
 			else
 				stickingsButton.innerHTML = "SHOW<br>stickings";
 		}
-			
-		create_ABC();
+		
+		if(!dontRefreshScreen)
+			create_ABC();
 		
 		return false;  // don't follow the link
 	};
@@ -2912,12 +2995,12 @@ function GrooveWriter() { "use strict";
 		setNotesFromABCArray("K", myGrooveData.kick_array, numberOfMeasures);
 		
 		if(myGrooveData.showMeasures == 2)
-			root.showHideSecondMeasure(true, true);
+			root.showHideSecondMeasure(true, true, true);
 		else
-			root.showHideSecondMeasure(true, false);
+			root.showHideSecondMeasure(true, false, true);
 		
 		if(myGrooveData.showStickings) 
-			root.showHideStickings(true, true);
+			root.showHideStickings(true, true, true);
 		
 		document.getElementById("tuneTitle").value = myGrooveData.title;
 						
@@ -2977,10 +3060,10 @@ function GrooveWriter() { "use strict";
 		document.getElementById("PermutationOptions").innerHTML = newHTML;
 		
 		if(wasSecondMeasureVisabile)
-			root.showHideSecondMeasure(true, true);
+			root.showHideSecondMeasure(true, true, true);
 		
 		if(wasStickingsVisable)
-			root.showHideStickings(true, true);
+			root.showHideStickings(true, true, true);
 		
 		// now set the right notes on and off
 		if(Stickings && HH && Snare && Kick) {
