@@ -33,6 +33,15 @@
 		background-color: #2484c0;
 		width: 100%;  /* expand to the surounding element */
 	}
+	.playerControl.large {
+		width: 800px;
+		border: 1px solid #009;
+	}
+	.playerControl.small {
+		width: 100px;
+		border: 1px solid #009;
+	}
+
 	.playerControlsRow {
 		/border: 1px solid red;
 		display: flex;
@@ -64,16 +73,33 @@
 		content: "\f04c"; 
 	} 
 	.midiExpandImage {
-		color:#fff;
+		width: 40px;
+		height: 40px;
+		cursor: pointer;
+		color: #005483;;
 		margin-top: 8px;  
-		margin-right: 5px;
+		margin-right: 0px;
 		flex: none;
+		letter-spacing: -3px; 
+		font-size: 30px;
+		font-family: FontAwesome;
 	}
+	.midiExpandImage.small:before   { 
+	 	letter-spacing: -3px; 
+		content: "\f065";
+	} 
+	.midiExpandImage.large:before   { 
+	 	letter-spacing: -3px; 
+		content: "\f066";
+	} 
 	.tempoAndProgress {
 		padding-top: 2px;
 		width: 100%;
 		height: 46px;
 		flex: 4;
+	}
+	.tempoAndProgress.small {
+			display: none;
 	}
 	.tempoRow, .swingRow {
 		/border: 1px solid red;
@@ -85,7 +111,6 @@
 	}
 	.tempoInput, .swingInput {
 		background-color: 3f91e5;
-		/height:20px;
 		padding: 0px;
 		margin-top: 4px;
 		margin-right: 2%;
@@ -119,16 +144,21 @@
 	}
 	.MIDIProgressRow {
 		display: none;
-		//border: 1px solid red;
-		padding-top: 0px;
+	}
+	.MIDIProgressRow.large {
+		display: block;
 		margin-left: 60px;
-		margin-right: 0px;
-		margin-bottom: px;
-		height: 16px;
-		/display: flex;
-		/display: -webkit-flex;
+		display: flex;
+		display: -webkit-flex;
 		flex-flow: flex-start;
 		flex-wrap: nowrap;
+		white-space: nowrap;
+		height: 20px;
+	}
+	.MIDIProgressRow.small {
+		display: block;
+		margin-left: 8px;
+		padding: 0px;
 	}
 	.MIDIPlayTime {
 		display: inline-block;
@@ -139,10 +169,19 @@
 		text-align: left;
 		flex: none;
 	}
+	.MIDIPlayTime.small {
+		display: none;
+	}
 	.MIDIProgress {
-		width: 90%;
+		width: 85%;
 		height: 8px;
-		margin-top: 2px;
+		font-size: 0px;
+	}
+	.MIDIProgress.small {
+		width: 80px;
+	}
+	.MIDIProgress.large {
+		margin-top: 3px;
 	}
 	.metronomeSelector {
 		display: inline-block;
@@ -150,13 +189,15 @@
 		font-size: 16px;
 		color: #FFF;
 		padding: 0px;
-		margin-top: -5px;
+		margin-top: -3px;
 		width: 78px;
 		padding-left: 5px;
 		flex:none;
 		//border: 1px solid red;
 	}
-	
+	.metronomeSelector.small {
+		display: none;
+	}
 	.metronomeContextMenu {
 		position:absolute; left:30px; top:-30px; z-index:999;
 		

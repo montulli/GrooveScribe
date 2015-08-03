@@ -1945,13 +1945,36 @@ function GrooveUtils() { "use strict";
 	
 	
 	root.expandOrRetractMIDI_playback = function(force, expandElseContract) {
-		var tempoAndProgressElement = document.getElementById('tempoAndProgress'+ root.grooveUtilsUniqueIndex);
+		
 		var playerControlElement = document.getElementById('playerControl'+ root.grooveUtilsUniqueIndex);
+		var tempoAndProgressElement = document.getElementById('tempoAndProgress'+ root.grooveUtilsUniqueIndex);
 		var midiExpandImageElement = document.getElementById('midiExpandImage'+ root.grooveUtilsUniqueIndex);
 		var midiPlayTime = document.getElementById('MIDIPlayTime'+ root.grooveUtilsUniqueIndex);
 		var midiProgressRow = document.getElementById('MIDIProgressRow' + root.grooveUtilsUniqueIndex);
 		var midiProgressElement = document.getElementById('MIDIProgress'+ root.grooveUtilsUniqueIndex);
 		var midiMetronomeSelector = document.getElementById('metronomeSelector'+ root.grooveUtilsUniqueIndex);
+		
+		if(playerControlElement.className.indexOf("small") > -1 || (force && expandElseContract) ) {
+			// make large
+			playerControlElement.className   		 = playerControlElement.className.replace(" small","") + " large";
+			tempoAndProgressElement.className		 = tempoAndProgressElement.className.replace(" small","") + " large";
+			midiExpandImageElement.className		 = midiExpandImageElement.className.replace(" small","") + " large";
+			midiPlayTime.className					 = midiPlayTime.className.replace(" small","") + " large";
+			midiProgressRow.className				 = midiProgressRow.className.replace(" small","") + " large";
+			midiProgressElement.className			 = midiProgressElement.className.replace(" small","") + " large";
+			midiMetronomeSelector.className			 = midiMetronomeSelector.className.replace(" small","") + " large";
+		} else {
+			// make small
+			playerControlElement.className 	 		 = playerControlElement.className.replace(" large","") + " small";
+			tempoAndProgressElement.className		 = tempoAndProgressElement.className.replace(" large","") + " small";
+			midiExpandImageElement.className		 = midiExpandImageElement.className.replace(" large","") + " small";
+			midiPlayTime.className					 = midiPlayTime.className.replace(" large","") + " small";
+			midiProgressRow.className			 	 = midiProgressRow.className.replace(" large","") + " small";
+			midiProgressElement.className			 = midiProgressElement.className.replace(" large","") + " small";
+			midiMetronomeSelector.className	 		 = midiMetronomeSelector.className.replace(" large","") + " small";
+		}
+		
+		/*
 		
 		if( tempoAndProgressElement.style.display == "none" || (force && expandElseContract) ) {
 			playerControlElement.style.width = '100%';
@@ -1967,8 +1990,8 @@ function GrooveUtils() { "use strict";
 			midiPlayTime.style.display = 'none';
 			midiProgressElement.style.width = '45px';
 			midiMetronomeSelector.style.display = 'none';
-		
 		}
+		*/
 	};
 	
 	// handle a click on the metronome (click) text that is part of the midi player
@@ -2057,15 +2080,15 @@ function GrooveUtils() { "use strict";
 			//'		<img alt="Repeat" title="Repeat" class="midiRepeatImage" id="midiRepeatImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'repeat.png">'
 		
 		if(expandable)
-			newHTML += 	'       <img alt="expand/contract" class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'shrinkLeft.png" width="32" height="32">';
+			newHTML += 	'       <span class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '"></span>';
 		
 		
 		newHTML += '' + 	
 			'	</div>' +
 			'	<div class="MIDIProgressRow" id="MIDIProgressRow' + root.grooveUtilsUniqueIndex + '">' +
-			'		<progress class="MIDIProgress" id="MIDIProgress' + root.grooveUtilsUniqueIndex + '" value="0" max="100"></progress>' +
-			'		<span class="metronomeSelector" id="metronomeSelector' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Metronome_text_OFF + '</span>' +
-			'	</div>' +
+					'<progress class="MIDIProgress" id="MIDIProgress' + root.grooveUtilsUniqueIndex + '" value="0" max="100"></progress>' +
+					'<span class="metronomeSelector" id="metronomeSelector' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Metronome_text_OFF + '</span>' +
+				'</div>' +
 			'</span>';
 			
 		// context menu for the metronome (Click)

@@ -77,7 +77,9 @@
 			root.loadjscssfile("./groove_utils.js", "js");
 					
 				// stylesheet	
-			root.loadjscssfile("../css/groove_display.css", "css");
+			root.loadjscssfile("https://fonts.googleapis.com/css?family=Lato:400,700,300", "css");
+			root.loadjscssfile("../font-awesome/4.3.0/css/font-awesome.min.css", "css");
+		    root.loadjscssfile("../css/groove_display.css", "css");
 		   
 			root.GrooveDisplayUniqueCounter = 1;
 			
@@ -172,7 +174,7 @@
 				
 					document.getElementById(HtmlTagId).innerHTML = '' +
 							'<div id="' + svgTargetId + '" class="svgTarget" style="display:inline-block"></div>\n' +
-							'<div id="' + midiPlayerTargetId + '" style="width: 260px; display:inline-block; vertical-align: bottom"></div>\n';
+							'<div id="' + midiPlayerTargetId + '"></div>\n';
 							
 					// load the groove from the URL data if it was passed in.
 					var GrooveData = myGrooveUtils.getGrooveDataFromUrlString(GrooveDefinition);
