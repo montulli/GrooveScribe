@@ -103,9 +103,9 @@
 	    display: inline-block;
 		cursor: pointer;
 		height: 20px;
-		font-weight: 700;
+		font-weight: 500;
 		margin: 13px 3px 3px 3px;
-		padding: 1px 9px 3px 9px;
+		padding: 2px 10px;
 		border: 0px solid #00B;
 		border-radius: 20px;
 		color: #EEF;
