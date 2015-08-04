@@ -18,16 +18,12 @@ if (typeof (grooves) === "undefined") var grooves = {};
 	root.Triplet_Grooves = {
 		'Half Time Shuffle in 8th notes': '?Div=12&Title=Half%20Time%20Shuffle&Swing=0&measures=1&H=|x-xx-xx-xx-x|&S=|-g--g-Og--g-|&K=|------------|',
 		'Half Time Shuffle in 16th notes': '?Div=24&Swing=0&Tempo=85&Measures=1&H=|x-xx-xx-xx-xx-xx-xx-xx-x|&S=|-g--g-Og--g--g--g-Og--g-|&K=|------------------------|',
+		'Jazz Ride': '?Div=12&Tempo=80&Measures=1&H=|r--r-rr--r-r|&S=|------------|&K=|---x-----x--|'	
 	};
 
-	root.Jazz = {
-		'Jazz Ride': '?Div=16&Tempo=90&Swing=20&Measures=1&H=|r-rrr-rrr-rrr-rr|&S=|----------------|&K=|--x---x---x---x-|',
-	};
-
-	
+		
 	root.FullArray = {"Rock grooves":     root.Rock_Grooves,
-					 "Triplet grooves":  root.Triplet_Grooves,
-					 "Jazz grooves":     root.Jazz,
+					 "Triplet grooves":  root.Triplet_Grooves
 					};
 	
 	root.isArray = function (myArray) {
