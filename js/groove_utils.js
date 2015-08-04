@@ -14,6 +14,8 @@ function GrooveUtils() { "use strict";
 	
 	var root = this;
 
+	root.debugMode = false;
+	
 	// midi state variables
 	root.isMIDIPaused = false;
 	root.shouldMIDIRepeat = true;
@@ -512,6 +514,8 @@ function GrooveUtils() { "use strict";
 		var myGrooveData = new root.grooveData();
 		
 		myGrooveData.notesPerMeasure = parseInt(root.getQueryVariableFromString("Div", 8, encodedURLData), 10);
+			
+		root.debugMode = parseInt(root.getQueryVariableFromString("Debug", 0, encodedURLData), 10);
 				
 		myGrooveData.numberOfMeasures = parseInt(root.getQueryVariableFromString("measures", 2, encodedURLData), 10);
 		if(myGrooveData.numberOfMeasures < 1 || isNaN(myGrooveData.numberOfMeasures))

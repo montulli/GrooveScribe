@@ -134,8 +134,8 @@
 				
 				// spit out some HTML tags to hold the music and possibly the player
 				document.getElementById(HtmlTagId).innerHTML = '' +
-								'<div id="' + svgTargetId + '" class="svgTarget" style="display:inline-block"></div>\n' +
-								'<div id="' + midiPlayerTargetId + '" style="width: 260px; display:inline-block; vertical-align: bottom"></div>\n';
+								'<span id="' + svgTargetId + '" class="svgTarget"></span>\n' +
+								'<span id="' + midiPlayerTargetId + '" ></span>\n';
 								
 				var abcNotation = myGrooveUtils.createABCFromGrooveData(myGrooveData);
 				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
@@ -158,7 +158,7 @@
 				
 				// add an html Element to hold the grooveDisplay
 				var HTMLElementID = 'GrooveDisplay' + root.GrooveDisplayUniqueCounter;
-				document.write('<div id="' + HTMLElementID + '"></div>');
+				document.write('<span id="' + HTMLElementID + '"></span>');
 				
 				window.addEventListener("load", function() { root.GrooveDBFormatPutGrooveInHTMLElement(HTMLElementID, GrooveDBTabIn);}, false);
 			}

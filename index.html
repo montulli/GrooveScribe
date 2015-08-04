@@ -171,9 +171,11 @@
 				<span id="undoStack"></span>
 				<span id="redoStack"></span>
 				<!-- ABC notation -->
-				<!-- -->
-				<A href="" onClick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a> 
-				-->
+				<script>
+					if(myGrooveWriter.myGrooveUtils.debugMode) {
+						document.write('<A href="" id="showHideABC" onClick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a>');
+					}
+				</script>	
 				<div id="ABC_Results">
 					ABC Notation is used for rendering the music.  You can see what is being generated below.   
 					You can even edit it.  <br>
@@ -185,6 +187,7 @@
 					<button type="button" onclick="myGrooveWriter.displayNewSVG()">Re-render the music</button>
 					<button type="button" onclick="myGrooveWriter.saveABCtoFile()">Save ABC to file</button>
 				</div>
+				
 				<div id="totalPlayTime">
 				</div>
 			</span>
