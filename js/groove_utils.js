@@ -1994,8 +1994,10 @@ function GrooveUtils() { "use strict";
 			
 		if(contextMenu) {
 			if(!event) event = window.event;
-			if (event.pageX || event.pageY)
-			{
+			if (event.layerX || event.layerY) {
+				contextMenu.style.top = event.layerY-30 + "px";
+				contextMenu.style.left = event.layerX-75 + "px";
+			} else if (event.pageX || event.pageY) {
 				contextMenu.style.top = event.pageY-30 + "px";
 				contextMenu.style.left = event.pageX-75 + "px";
 			}
