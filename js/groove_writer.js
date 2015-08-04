@@ -887,6 +887,8 @@ function GrooveWriter() { "use strict";
 				setFunction(i, (i % 2 == 0 ? "off" :"normal") );
 			else if(instrument == "snare" && action == "all_on")
 				setFunction(i, "accent");
+			else if(instrument == "snare" && action == "all_on_normal")
+				setFunction(i, "normal");
 			else if(action == "all_on")
 				setFunction(i, "normal");
 			else if(action == "cancel")
