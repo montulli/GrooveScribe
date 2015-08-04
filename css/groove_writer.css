@@ -551,8 +551,9 @@
 		display: none;
 	}
 	.svgTarget {
+		padding: 0px 40px;
 		width: 100%;
-		max-width: 954px;
+		max-width: 874px;
 		min-width: 800px;
 		background: #FFF;
 	}

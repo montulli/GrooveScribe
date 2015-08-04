@@ -645,9 +645,9 @@ function GrooveUtils() { "use strict";
 		
 		fullABC +=  '%%flatbeams 1\n' +
 					'%%ornament up\n' +
-					'%%pagewidth 710px\n' +
-					'%%leftmargin 1cm\n' +
-					'%%rightmargin 1cm\n' +
+					'%%pagewidth 650px\n' +
+					'%%leftmargin 0cm\n' +
+					'%%rightmargin 0cm\n' +
 					'%%topspace 10px\n' +
 					'%%titlefont calibri 20\n' + 
 					'%%partsfont calibri 16\n' +
