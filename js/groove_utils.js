@@ -1465,13 +1465,18 @@ function GrooveUtils() { "use strict";
 				}
 				
 				if(hh_note != false) {
-					if(0 && prev_hh_note != false) {
+					// need to end hi-hat open notes else the hh open sounds horrible
+					if(prev_hh_note != false) {
 						midiTrack.addNoteOff(midi_channel, prev_hh_note, delay_for_next_note);
+						prev_hh_note = false;
 						delay_for_next_note = 0;   // zero the delay
 					}
 					midiTrack.addNoteOn(midi_channel, hh_note, delay_for_next_note, hh_velocity);
 					delay_for_next_note = 0;   // zero the delay
-					prev_hh_note = hh_note;
+					
+					// this if means that only the open hi-hat will get stopped on the next note
+					if(HH_Array[i] == constant_ABC_HH_Open)
+						prev_hh_note = hh_note;
 				}
 				
 				var snare_velocity = velocity_normal;

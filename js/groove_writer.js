@@ -731,7 +731,8 @@ function GrooveWriter() { "use strict";
 		case "kick_16ths":
 			showHideCSS_ClassVisibility(".kick-container", true, false);  // hide it
 			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
-			document.getElementById("staff-container2").style.display = "none";
+			if(class_number_of_measures > 1)
+				alert("Permutation patterns only use the first measure, the other measures will be ignored.")
 			selectButton(document.getElementById("permutationAnchor"));
 			document.getElementById("PermutationOptions").style.display = "block";
 			break;
@@ -741,7 +742,8 @@ function GrooveWriter() { "use strict";
 		case "snare_accented_and_diddled_16ths":
 			showHideCSS_ClassVisibility(".kick-container", true, true);  // show it
 			showHideCSS_ClassVisibility(".snare-container", true, false);  // hide it
-			document.getElementById("staff-container2").style.display = "none";
+			if(class_number_of_measures > 1)
+				alert("Permutation patterns only use the first measure, the other measures will be ignored.")
 			selectButton(document.getElementById("permutationAnchor"));
 			document.getElementById("PermutationOptions").style.display = "block";
 			break;
@@ -750,7 +752,6 @@ function GrooveWriter() { "use strict";
 		default:
 			showHideCSS_ClassVisibility(".kick-container", true, true);  // show it
 			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
-			// document.getElementById("staff-container2").style.display = "block";
 			class_permutationType = "none";
 			
 			unselectButton(document.getElementById("permutationAnchor"));
