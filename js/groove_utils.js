@@ -1869,6 +1869,26 @@ function GrooveUtils() { "use strict";
 		root.midiNoteHasChanged();
 	}
 	
+	// I love the pun here.  :)
+	// nudge the tempo up by 1
+	root.upTempo = function() {
+		var tempo = root.getTempo();
+        
+		tempo++;
+		
+		root.setTempo(tempo);
+	};
+
+	// nudge the tempo down by 1
+	root.downTempo = function() {
+		var tempo = root.getTempo();
+        
+		tempo--;
+		
+		root.setTempo(tempo);
+	};
+
+	
 	root.setTempo = function(newTempo) {
 		if(newTempo < 19 && newTempo > 281)
             return;
@@ -2072,7 +2092,7 @@ function GrooveUtils() { "use strict";
 			'			<div class="tempoRow">' +
 			'				<span class="tempoLabel"">BPM</span>' +
 			'				<div for="tempo" class="tempoOutput" id="tempoOutput' + root.grooveUtilsUniqueIndex + '">80</div>' +
-			'				<input type=range min=40 max=240 value=90 class="tempoInput" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings" step=5>' +
+			'				<input type=range min=40 max=240 value=90 class="tempoInput" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings">' +
 			'			</div>' +
 			'			<div class="swingRow">' +
 			'				<span class="swingLabel">SWING</span>' +

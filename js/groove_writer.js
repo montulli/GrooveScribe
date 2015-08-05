@@ -731,8 +731,9 @@ function GrooveWriter() { "use strict";
 		case "kick_16ths":
 			showHideCSS_ClassVisibility(".kick-container", true, false);  // hide it
 			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
-			if(class_number_of_measures > 1)
-				alert("Permutation patterns only use the first measure, the other measures will be ignored.")
+			while(class_number_of_measures > 1) {
+				root.closeMeasureButtonClick(2);
+			}
 			selectButton(document.getElementById("permutationAnchor"));
 			document.getElementById("PermutationOptions").innerHTML = root.HTMLforPermutationOptions();
 			document.getElementById("PermutationOptions").className += " displayed";
@@ -2602,26 +2603,48 @@ function GrooveWriter() { "use strict";
 					
 		document.addEventListener("keydown", function(e){
 			
-			// only accept the event if it not going to an INPUT field
-			// e.target.tagName != "INPUT" 
-			if(e.ctrlKey && e.which == 90  && e.target.tagName != "TEXTAREA") {
-				// ctrl-z
-				root.undoCommand();
-				return false;
+			// only accept the event if it not going to an INPUT field	
+			if(e.target.tagName != "TEXTAREA") {
+				switch(e.which) {
+				case 90:   // ctrl-z
+					if(e.ctrlKey) {
+						// ctrl-z
+						root.undoCommand();
+						return false;
+					}
+					break;
+					
+				case 89:  // ctrl-y
+					if(e.ctrlKey) {
+						// ctrl-y
+						root.redoCommand();
+						return false;
+					}
+					break;
+					
+				case 37:  // left arrow
+					// left arrow
+					root.myGrooveUtils.downTempo();
+					return false;
+					break;
+					
+				case 39:  // right arrow
+					// right arrow
+					root.myGrooveUtils.upTempo();
+					return false;
+					break;
+					
+				default:
+					/* DEBUG
+					else if(e.ctrlKey && e.which !=17 && e.target.type != "text") {
+						alert("Key is: " + e.which);
+					}
+					*/
+					break;
+				}
 			}
-			else if(e.ctrlKey && e.which == 89 && e.target.tagName != "TEXTAREA") {
-				// ctrl-y
-				root.redoCommand();
-				return false;
-			}
-			/* DEBUG
-			else if(e.ctrlKey && e.which !=17 && e.target.type != "text" && e.target.tagName != "TEXTAREA") {
-				alert("Key is: " + e.which);
-			}
-			*/
-			return true;
 		});
-		
+		return true;  // let the default handler deal with the keypress
 	}
 		
 	// public function.
