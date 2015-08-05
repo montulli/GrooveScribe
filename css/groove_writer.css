@@ -189,9 +189,11 @@
 		white-space: nowrap;
 	}
 	@media only screen and (orientation: portrait) {
-		#measureContainer {
+		#musicalInput {
 			white-space: normal;
-			/* don't wrap on portait mode displays */
+			/* wrap down on portait mode displays,
+			 *	don't wrap in landscape mode
+			 */
 		}
 	}
 	#musicalInput.expanded {
@@ -206,6 +208,7 @@
 		margin-bottom: 0px;
 		display: inline-block;
 		background: #FFFFFF;
+		white-space: nowrap;
 	}
 	.heading1 {
 		font-size: 30px;
@@ -487,7 +490,7 @@
 		display: inline-block;
 		position:relative;
 		top: -71px;
-		left: 10px;
+		left: 6px;
 		color: #2484C0;
 		cursor: pointer;
 		font-size: 40px;

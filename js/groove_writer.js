@@ -3173,7 +3173,7 @@ function GrooveWriter() { "use strict";
 				musicalInput.className += " expanded";
 		} else {
 			if(musicalInput)
-				musicalInput.className = musicalInput.className.replace(" expanded","");
+				musicalInput.className = musicalInput.className.replace(new RegExp(' expanded', 'g'), "");
 		}
 	};
 	
@@ -3339,7 +3339,12 @@ function GrooveWriter() { "use strict";
 		
 		if(class_number_of_measures > 1)
 			newHTML += '<span title="Remove Measure" id="closeMeasureButton' + baseindex + '" onClick="myGrooveWriter.closeMeasureButtonClick(' + baseindex + ')" class="closeMeasureButton"><i class="fa fa-times-circle"></i></span>\n';
-		
+		else
+			newHTML += '<span class="closeMeasureButton"><i class="fa">&nbsp;&nbsp;&nbsp;</i></span>\n';
+			
+		if(baseindex == class_number_of_measures) // add new measure button
+			newHTML += '<span id="addMeasureButton" title="Add measure"onClick="myGrooveWriter.addMeasureButtonClick(event)"><i class="fa fa-plus"></i></span>';
+				
 		return newHTML;
 	};  // end function HTMLforStaffContainer
 	
