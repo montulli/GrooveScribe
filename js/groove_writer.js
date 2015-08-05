@@ -3223,7 +3223,7 @@ function GrooveWriter() { "use strict";
 	root.HTMLforStaffContainer = function(baseindex, indexStartForNotes) {
 		var newHTML = ('\
 			<div class="staff-container" id="staff-container' + baseindex + '">\
-				<div class="row-container">\
+				<div class="stickings-row-container">\
 					<div class="line-labels">\
 						<div class="stickings-label" onClick="myGrooveWriter.noteLabelClick(event, \'stickings\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'stickings\', ' + baseindex + ')">STICKINGS</div>\
 					</div>\
@@ -3256,7 +3256,7 @@ function GrooveWriter() { "use strict";
 				</div>');
 				
 		newHTML += ('\
-				<div class="row-container">\
+				<span class="notes-row-container">\
 					<div class="line-labels">\
 						<div class="hh-label" onClick="myGrooveWriter.noteLabelClick(event, \'hh\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'hh\', ' + baseindex + ')">Hi-hat</div>\
 						<div class="snare-label" onClick="myGrooveWriter.noteLabelClick(event, \'snare\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'snare\', ' + baseindex + ')">Snare</div>\
@@ -3334,17 +3334,19 @@ function GrooveWriter() { "use strict";
 			newHTML += ('\
 					</div>\
 				</div>\
-			</div>\
-		</div>\n');
+			</span>')
+		
 		
 		if(class_number_of_measures > 1)
-			newHTML += '<span title="Remove Measure" id="closeMeasureButton' + baseindex + '" onClick="myGrooveWriter.closeMeasureButtonClick(' + baseindex + ')" class="closeMeasureButton"><i class="fa fa-times-circle"></i></span>\n';
+			newHTML += '<span title="Remove Measure" id="closeMeasureButton' + baseindex + '" onClick="myGrooveWriter.closeMeasureButtonClick(' + baseindex + ')" class="closeMeasureButton"><i class="fa fa-times-circle"></i></span>';
 		else
-			newHTML += '<span class="closeMeasureButton"><i class="fa">&nbsp;&nbsp;&nbsp;</i></span>\n';
+			newHTML += '<span class="closeMeasureButton"><i class="fa">&nbsp;&nbsp;&nbsp;</i></span>';
 			
 		if(baseindex == class_number_of_measures) // add new measure button
 			newHTML += '<span id="addMeasureButton" title="Add measure"onClick="myGrooveWriter.addMeasureButtonClick(event)"><i class="fa fa-plus"></i></span>';
-				
+			
+		newHTML += ('</div>');
+		
 		return newHTML;
 	};  // end function HTMLforStaffContainer
 	
