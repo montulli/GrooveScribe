@@ -3433,7 +3433,8 @@ function GrooveWriter() { "use strict";
 			optionTypeArray.splice(0, 0, {id: "PermuationOptionsAccentGrid", subid:  "", name: "Use Accent Grid", SubOptions: [], defaultOn: false});
 			break;
 		case "kick_16ths":
-			optionTypeArray.splice(0, 0, {id: "PermuationOptionsSkipSomeFirstNotes", subid:  "", name: "Simplify multiple kicks", SubOptions: [], defaultOn: false});
+			if(!root.myGrooveUtils.isTripletDivision(class_notes_per_measure, 4, 4))
+				optionTypeArray.splice(0, 0, {id: "PermuationOptionsSkipSomeFirstNotes", subid:  "", name: "Simplify multiple kicks", SubOptions: [], defaultOn: false});
 			break;
 		default:
 			alert("Bad case in HTMLforPermutationOptions()");

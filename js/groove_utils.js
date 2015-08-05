@@ -1358,7 +1358,7 @@ function GrooveUtils() { "use strict";
 			if(midiTrack.events.length < 4)
 				midiTrack.addNoteOff(midi_channel, 60, 1);  // add a blank note for spacing
 					
-			var isTriplets = root.isTripletDivision(num_notes_for_swing, timeSigTop, timeSigBottom);
+			var isTriplets = root.isTripletDivision(num_notes, timeSigTop, timeSigBottom);
 			var delay_for_next_note = 0;
 			
 			for(var i=0; i < num_notes; i++)  {
