@@ -3167,7 +3167,7 @@ function GrooveWriter() { "use strict";
 		
 		// set the size of the musicalInput authoring element based on the number of notes
 		if(numNotesPerMeasure > 16 || 
-			(numNotesPerMeasure > 8 && class_number_of_measures > 1) || 
+			(numNotesPerMeasure > 4 && class_number_of_measures > 1) || 
 			(class_number_of_measures > 2)) {
 			if(musicalInput)
 				musicalInput.className += " expanded";

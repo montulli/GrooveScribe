@@ -186,10 +186,11 @@
 		overflow-x: auto;
 		overflow-y: hidden;
 		border-bottom: 1px solid #AAA;
+		white-space: nowrap;
 	}
-	@media only screen and (orientation: landscape) {
-		#musicalInput {
-			white-space: nowrap;
+	@media only screen and (orientation: portrait) {
+		#measureContainer {
+			white-space: normal;
 			/* don't wrap on portait mode displays */
 		}
 	}
@@ -490,7 +491,7 @@
 		color: #2484C0;
 		cursor: pointer;
 		font-size: 40px;
-		padding-top: 2px;
+		padding-top: 2px;			
 	}
 	
 	.closeMeasureButton {
