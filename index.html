@@ -90,10 +90,11 @@
 				<span id="upperLeft">
 					<span id="metronomeContainer">
 						<span id="metronomeLabel">METRONOME:</span>
-						<span class="metronomeButton" id="metronomeOff" onClick="myGrooveWriter.metronomeButtonClick(event, '0')">OFF</span>
-						<span class="metronomeButton" id="metronome4ths" onClick="myGrooveWriter.metronomeButtonClick(event, '4')">4th</span>
-						<span class="metronomeButton" id="metronome8ths" onClick="myGrooveWriter.metronomeButtonClick(event, '8')">8th</span>
-						<span class="metronomeButton" id="metronome16ths" onClick="myGrooveWriter.metronomeButtonClick(event, '16')">16th</span>
+						<span class="metronomeButton" id="metronomeOff" onClick="myGrooveWriter.setMetronomeButton(0)">OFF</span>
+						<span class="metronomeButton" id="metronome4ths" onClick="myGrooveWriter.setMetronomeButton(4)">4th</span>
+						<span class="metronomeButton" id="metronome8ths" onClick="myGrooveWriter.setMetronomeButton(8)">8th</span>
+						<span class="metronomeButton" id="metronome16ths" onClick="myGrooveWriter.setMetronomeButton(16)">16th</span>
+						<span class="metronomeButton Options" id="metronomeOptionsAnchor" onClick="myGrooveWriter.metronomeOptionsAnchorClick(event)">Options</span>
 					</span>
 				</span>
 				<span id="upperRight">
@@ -195,6 +196,31 @@
 		
 		<!-- context menu that will pop up over notes in advaced edit more -->
 		<div class="noteContextMenu">
+			<ul id="metronomeOptionsContextMenu" class="list">
+				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuSolo"      onClick='myGrooveWriter.metronomeOptionsMenuPopupClick("Solo")'     >Solo</li>
+				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuSpeedUp"   onClick='myGrooveWriter.metronomeOptionsMenuPopupClick("SpeedUp")'  >Auto Speed Up</li>
+				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuOffTheOne" onClick='myGrooveWriter.metronomeOptionsMenuPopupClick("OffTheOne")'>Offset click</li>
+				<!--
+				<li id="metronomeOptionsContextMenuDropper"   onClick='myGrooveWriter.metronomeOptionsMenuPopupClick("Dropper")'  >Beat Dropper</li>
+				-->
+			</ul>
+		</div>
+		<div class="noteContextMenu">
+			<ul id="metronomeOptionsOffsetClickContextMenu" class="list">
+				<li class="metronomeOptionsOffsetClickContextMenuItem menuChecked" id="metronomeOptionsOffsetClickContextMenuOnThe1"   onClick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("1")'>Start on "<b>1</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheE"   onClick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("E")'>Start on "<b>E</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheAnd" onClick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("AND")'>Start on "<b>&</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheA"   onClick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("A")'>Start on "<b>A</b>"</li>
+			</ul>
+		</div>
+		<div class="noteContextMenu">
+			<ul id="metronomeOptionsOffsetClickForTripletsContextMenu" class="list">
+				<li class="metronomeOptionsOffsetClickContextMenuItem menuChecked" id="metronomeOptionsOffsetClickContextMenuOnThe1"  onClick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("1")'>Start on the "<b>1</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheTi" onClick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("TI")'>Start on the "<b>TI</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheTa" onClick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("TA")'>Start on the "<b>TA</b>"</li>
+			</ul>
+		</div>
+		<div class="noteContextMenu">
 			<ul id="stickingContextMenu" class="list">
 				<li onClick='myGrooveWriter.notePopupClick("sticking", "off")'>Off</li>
 				<li onClick='myGrooveWriter.notePopupClick("sticking","right")'><b>R</b>ight</li>
@@ -290,18 +316,48 @@
 		
 		
 		<!-- this is used by the share/save button, and is hidden by default -->
-		<div id="fullURLPopupContainer">
-			<div id="fullURLPopup">
-				<button id="fullURLCloseButton" onClick="myGrooveWriter.close_FullURLPopup()">&times;</button>
-				Use this URL to return with all the notes the way you set them.<br>
-				<br>
-				<input type="text" id="fullURLTextField"><br>
-				<label>Generate Short URL:<input type="checkbox" id="shortenerCheckbox" onchange="myGrooveWriter.shortenerCheckboxChanged()"></label>
-				<a href="#" id="fullURLLink">follow link</a>
-				<br>
-				<br>
-				<div id="shareButton"></div>
+		<div id="fullURLPopup">
+			<button id="fullURLCloseButton" onClick="myGrooveWriter.close_FullURLPopup()">&times;</button>
+			Use this URL to return with all the notes the way you set them.<br>
+			<br>
+			<input type="text" id="fullURLTextField"><br>
+			<label>Generate Short URL:<input type="checkbox" id="shortenerCheckbox" onchange="myGrooveWriter.shortenerCheckboxChanged()"></label>
+			<a href="#" id="fullURLLink">follow link</a>
+			<br>
+			<br>
+			<div id="shareButton"></div>
+		</div>
+
+	
+		<!-- this is used by the metronome auto speed up option menu, and is hidden by default -->
+		<div id="metronomeAutoSpeedupConfiguration">
+			<table id="metronomeAutoSpeedupInputTable" >
+			<tr>
+				<td>
+				Amount:
+				</td><td>
+				<input type=range min=1 max=100 value=20 class="metronomeSpeedUpRange" id="tempoIncreaseAmount" oninput="myGrooveWriter.updateRangeLabel(event, 'tempoIncreaseAmountOutput')"> 
+				</td><td>
+				 BPM
+				</td>
+			</tr>	
+			<tr>
+				<td>
+				Interval:
+				</td><td>
+				<input type=range min=30 max=600 value=120 class="metronomeSpeedUpRange" id="tempoIncreaseInterval" step="10" oninput="myGrooveWriter.updateRangeLabel(event, 'tempoIncreaseIntervalOutput')"> 
+				</td><td>
+				  seconds
+				</td>
+			</tr>	
+			</table>
+			<div id="metronomeAutoSpeedupOutputText">
+				Increase <span id="tempoIncreaseAmountOutput">20</span> BPM in 
+				<span id="tempoIncreaseIntervalOutput">120</span> Seconds
 			</div>
+			<br>
+			<br>
+			<button id="metronomeAutoSpeedupConfigurationCloseButton" onClick="myGrooveWriter.close_MetronomeAutoSpeedupConfiguration('ok')">OK</button>
 		</div>
 			
 		

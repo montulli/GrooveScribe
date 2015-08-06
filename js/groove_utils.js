@@ -22,6 +22,10 @@ function GrooveUtils() { "use strict";
 	root.swingIsEnabled = false;
 	root.grooveUtilsUniqueIndex = global_num_GrooveUtilsCreated;
 		
+	// metronome options
+	root.metronomeSolo = false;
+	root.metronomeClickStart = "1";
+		
 	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
 	
 	root.visible_context_menu = false;   // a single context menu can be visible at a time.
@@ -129,6 +133,22 @@ function GrooveUtils() { "use strict";
 			return true;
 			
 		return false;
+	};
+	
+	root.getMetronomeSolo = function () {
+		return root.metronomeSolo;
+	};
+	
+	root.setMetronomeSolo = function (trueElseFalse) {
+		root.metronomeSolo = trueElseFalse;
+	};
+	
+	root.getMetronomeClickStart = function () {
+		return root.metronomeClickStart;
+	};
+	
+	root.setMetronomeClickStart = function (value) {
+		root.metronomeClickStart = value;
 	};
 	
 	root.GetDefaultStickingsGroove = function(division, numMeasures) {
@@ -1405,28 +1425,65 @@ function GrooveUtils() { "use strict";
 					var quarterNoteFrequency = (isTriplets ? 6 : 8);
 					var eighthNoteFrequency = (isTriplets ? 2 : 4);
 					var sixteenthNoteFrequency = (isTriplets ? 1 : 2);
-				
-					// Special sound on the one
-					if(i == 0 || (i % (quarterNoteFrequency * timeSigTop)) == 0) {
-						metronome_note = 76;   // 1 count
-						
-					} else if((i % quarterNoteFrequency) == 0) {
-						metronome_note = 77;   // standard metronome click
+					
+					var metronome_specific_index = i;
+					switch(root.getMetronomeClickStart()) {
+						case "1":
+							// default do nothing
+							break;
+						case "E":
+							if(isTriplets) alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+							// shift by one sixteenth note
+							metronome_specific_index -= sixteenthNoteFrequency;
+							break;
+						case "AND":
+							if(isTriplets) alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+							// shift by two sixteenth notes
+							metronome_specific_index -= (2*sixteenthNoteFrequency);
+							break;
+						case "A":
+							if(isTriplets) alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+							// shift by three sixteenth notes
+							metronome_specific_index -= (3*sixteenthNoteFrequency);
+							break;
+						case "Ti":
+							if(!isTriplets) alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+							// shift by one sixteenth note
+							metronome_specific_index -= sixteenthNoteFrequency;
+							break;
+						case "E":
+							if(!isTriplets) alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+							// shift by two sixteenth notes
+							metronome_specific_index -= (2*sixteenthNoteFrequency);
+							break;
+						default:
+							alert("bad case in MIDI_from_HH_Snare_Kick_Arrays");
+							break;
 					}
-						
-					if(!metronome_note && metronome_frequency == 8) {  // 8th notes requested
-						if((i % eighthNoteFrequency) == 0) {
-							// click every 8th note
+				
+					if(metronome_specific_index >= 0) {  // can go negative due to MetronomeClickStart shift above
+						// Special sound on the one
+						if(metronome_specific_index == 0 || (metronome_specific_index % (quarterNoteFrequency * timeSigTop)) == 0) {
+							metronome_note = 76;   // 1 count
+							
+						} else if((metronome_specific_index % quarterNoteFrequency) == 0) {
 							metronome_note = 77;   // standard metronome click
 						}
 							
-					} else if(!metronome_note && metronome_frequency == 16) {  // 16th notes requested
-						if((i % sixteenthNoteFrequency) == 0) {
-							// click every 16th note
-							metronome_note = 77;   // standard metronome click
-							metronome_velocity = 25;   // not as loud as the normal click
+						if(!metronome_note && metronome_frequency == 8) {  // 8th notes requested
+							if((metronome_specific_index % eighthNoteFrequency) == 0) {
+								// click every 8th note
+								metronome_note = 77;   // standard metronome click
+							}
+								
+						} else if(!metronome_note && metronome_frequency == 16) {  // 16th notes requested
+							if((metronome_specific_index % sixteenthNoteFrequency) == 0) {
+								// click every 16th note
+								metronome_note = 77;   // standard metronome click
+								metronome_velocity = 25;   // not as loud as the normal click
+							}
 						}
-					}	
+					}
 					
 					if(metronome_note != false) {
 						//if(prev_metronome_note != false)
@@ -1437,136 +1494,138 @@ function GrooveUtils() { "use strict";
 					}
 				}
 				
-				var hh_velocity = velocity_normal;
-				var hh_note = false;
-				switch(HH_Array[i]) {
-					case constant_ABC_HH_Normal:  // normal
-					case constant_ABC_HH_Close:  // normal
-							hh_note = 42;
-						break;
-					case constant_ABC_HH_Accent:  // accent
-						if(midi_output_type == "general_MIDI") {
-							hh_note = 42;
-							hh_velocity = velocity_accent;
-						} else {
-							hh_note = 108;
-						}
-						break;
-					case constant_ABC_HH_Open:  // open
-							hh_note = 46;
-						break;
-					case constant_ABC_HH_Ride:  // ride
-							hh_note = 51;
-						break;
-					case constant_ABC_HH_Crash:  // crash
-							hh_note = 49;
-						break;
-					case false:
-						break;
-					default:
-						alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
-						break;
-				}
-				
-				if(hh_note != false) {
-					// need to end hi-hat open notes else the hh open sounds horrible
-					if(prev_hh_note != false) {
-						midiTrack.addNoteOff(midi_channel, prev_hh_note, delay_for_next_note);
-						prev_hh_note = false;
-						delay_for_next_note = 0;   // zero the delay
+				if(!root.metronomeSolo) {  // midiSolo means to play just the metronome
+					var hh_velocity = velocity_normal;
+					var hh_note = false;
+					switch(HH_Array[i]) {
+						case constant_ABC_HH_Normal:  // normal
+						case constant_ABC_HH_Close:  // normal
+								hh_note = 42;
+							break;
+						case constant_ABC_HH_Accent:  // accent
+							if(midi_output_type == "general_MIDI") {
+								hh_note = 42;
+								hh_velocity = velocity_accent;
+							} else {
+								hh_note = 108;
+							}
+							break;
+						case constant_ABC_HH_Open:  // open
+								hh_note = 46;
+							break;
+						case constant_ABC_HH_Ride:  // ride
+								hh_note = 51;
+							break;
+						case constant_ABC_HH_Crash:  // crash
+								hh_note = 49;
+							break;
+						case false:
+							break;
+						default:
+							alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+							break;
 					}
-					midiTrack.addNoteOn(midi_channel, hh_note, delay_for_next_note, hh_velocity);
-					delay_for_next_note = 0;   // zero the delay
 					
-					// this if means that only the open hi-hat will get stopped on the next note
-					if(HH_Array[i] == constant_ABC_HH_Open)
-						prev_hh_note = hh_note;
-				}
+					if(hh_note != false) {
+						// need to end hi-hat open notes else the hh open sounds horrible
+						if(prev_hh_note != false) {
+							midiTrack.addNoteOff(midi_channel, prev_hh_note, delay_for_next_note);
+							prev_hh_note = false;
+							delay_for_next_note = 0;   // zero the delay
+						}
+						midiTrack.addNoteOn(midi_channel, hh_note, delay_for_next_note, hh_velocity);
+						delay_for_next_note = 0;   // zero the delay
+						
+						// this if means that only the open hi-hat will get stopped on the next note
+						if(HH_Array[i] == constant_ABC_HH_Open)
+							prev_hh_note = hh_note;
+					}
+					
+					var snare_velocity = velocity_normal;
+					var snare_note = false;
+					switch(Snare_Array[i]) {
+						case constant_ABC_SN_Normal:  // normal
+								snare_note = 38;
+							break;
+						case constant_ABC_SN_Flam: // flam
+							if(midi_output_type == "general_MIDI") {
+								snare_note = 38;
+								snare_velocity = velocity_accent;
+							} else {
+								snare_note = 107;
+								snare_velocity = velocity_normal;
+							}
+							break;
+						case constant_ABC_SN_Accent:  // accent
+							if(midi_output_type == "general_MIDI") {
+								snare_note = 38;
+								snare_velocity = velocity_accent;
+							} else {
+								snare_note = 22;   // custom note
+							}
+							break;	
+						case constant_ABC_SN_Ghost:  // ghost
+							if(midi_output_type == "general_MIDI") {
+								snare_note = 38;
+								snare_velocity = velocity_ghost;
+							} else {
+								snare_note = 21;
+								snare_velocity = velocity_ghost;
+							}
+							break;	
+						case constant_ABC_SN_XStick:  // xstick
+								snare_note = 37;
+							break;
+						case false:
+							break;
+						default:
+							alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+							break;
+					}
+					
+					if(snare_note != false) {
+						//if(prev_snare_note != false)
+						//	midiTrack.addNoteOff(midi_channel, prev_snare_note, 0);
+						midiTrack.addNoteOn(midi_channel, snare_note, delay_for_next_note, snare_velocity);
+						delay_for_next_note = 0;   // zero the delay
+						//prev_snare_note = snare_note;
+					}
 				
-				var snare_velocity = velocity_normal;
-				var snare_note = false;
-				switch(Snare_Array[i]) {
-					case constant_ABC_SN_Normal:  // normal
-							snare_note = 38;
-						break;
-					case constant_ABC_SN_Flam: // flam
-						if(midi_output_type == "general_MIDI") {
-							snare_note = 38;
-							snare_velocity = velocity_accent;
-						} else {
-							snare_note = 107;
-							snare_velocity = velocity_normal;
-						}
-						break;
-					case constant_ABC_SN_Accent:  // accent
-						if(midi_output_type == "general_MIDI") {
-							snare_note = 38;
-							snare_velocity = velocity_accent;
-						} else {
-							snare_note = 22;   // custom note
-						}
+					var kick_velocity = velocity_normal;
+					var kick_note = false;
+					var kick_splash_note = false;
+					switch(Kick_Array[i]) {
+					case constant_ABC_KI_Splash:  // normal
+							kick_splash_note = 44;
 						break;	
-					case constant_ABC_SN_Ghost:  // ghost
-						if(midi_output_type == "general_MIDI") {
-							snare_note = 38;
-							snare_velocity = velocity_ghost;
-						} else {
-							snare_note = 21;
-							snare_velocity = velocity_ghost;
-						}
+					case constant_ABC_KI_SandK:  // normal
+							kick_splash_note = 44;
+							kick_note = 35;
 						break;	
-					case constant_ABC_SN_XStick:  // xstick
-							snare_note = 37;
-						break;
+					case constant_ABC_KI_Normal:  // normal
+							kick_note = 35;
+						break;	
 					case false:
 						break;
 					default:
 						alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
 						break;
-				}
-				
-				if(snare_note != false) {
-					//if(prev_snare_note != false)
-					//	midiTrack.addNoteOff(midi_channel, prev_snare_note, 0);
-					midiTrack.addNoteOn(midi_channel, snare_note, delay_for_next_note, snare_velocity);
-					delay_for_next_note = 0;   // zero the delay
-					//prev_snare_note = snare_note;
-				}
-			
-				var kick_velocity = velocity_normal;
-				var kick_note = false;
-				var kick_splash_note = false;
-				switch(Kick_Array[i]) {
-				case constant_ABC_KI_Splash:  // normal
-						kick_splash_note = 44;
-					break;	
-				case constant_ABC_KI_SandK:  // normal
-						kick_splash_note = 44;
-						kick_note = 35;
-					break;	
-				case constant_ABC_KI_Normal:  // normal
-						kick_note = 35;
-					break;	
-				case false:
-					break;
-				default:
-					alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
-					break;
-				}
-				if(kick_note != false) {
-					//if(prev_kick_note != false)
-					//	midiTrack.addNoteOff(midi_channel, prev_kick_note, 0);
-					midiTrack.addNoteOn(midi_channel, kick_note, delay_for_next_note, kick_velocity);
-					delay_for_next_note = 0;   // zero the delay
-					//prev_kick_note = kick_note;
-				}
-				if(kick_splash_note != false) {
-					//if(prev_kick_splash_note != false)
-					//	midiTrack.addNoteOff(midi_channel, prev_kick_splash_note, 0);
-					midiTrack.addNoteOn(midi_channel, kick_splash_note, delay_for_next_note, kick_velocity);
-					delay_for_next_note = 0;   // zero the delay
-					//prev_kick_splash_note = kick_splash_note;
-				}
+					}
+					if(kick_note != false) {
+						//if(prev_kick_note != false)
+						//	midiTrack.addNoteOff(midi_channel, prev_kick_note, 0);
+						midiTrack.addNoteOn(midi_channel, kick_note, delay_for_next_note, kick_velocity);
+						delay_for_next_note = 0;   // zero the delay
+						//prev_kick_note = kick_note;
+					}
+					if(kick_splash_note != false) {
+						//if(prev_kick_splash_note != false)
+						//	midiTrack.addNoteOff(midi_channel, prev_kick_splash_note, 0);
+						midiTrack.addNoteOn(midi_channel, kick_splash_note, delay_for_next_note, kick_velocity);
+						delay_for_next_note = 0;   // zero the delay
+						//prev_kick_splash_note = kick_splash_note;
+					}
+				} // end metronomeSolo
 				
 				delay_for_next_note += duration;
 			}
@@ -1715,18 +1774,16 @@ function GrooveUtils() { "use strict";
 		});
 	};
 	
-	// update the midi play timer on the player. 
-	// Keeps track of how long we have been playing.
-	root.updateMidiPlayTime = function() {
+	root.getMidiStartTime = function() {
+		return root.current_midi_start_time;
+	}
 	
+	// calculate how long the midi has been playing total (since the last play/pause press
+	// this is computationally expensive
+	root.getMidiPlayTime = function() {
 		var time_now = new Date();
 		var play_time_diff = new Date(time_now.getTime() - root.current_midi_start_time.getTime());
-		var time_string = play_time_diff.getUTCMinutes() + ":" + (play_time_diff.getSeconds() < 10 ? "0" : "") + play_time_diff.getSeconds();
 		
-		var MidiPlayTime = document.getElementById("MIDIPlayTime" + root.grooveUtilsUniqueIndex);
-        if(MidiPlayTime)
-            MidiPlayTime.innerHTML = time_string;
-			
 		/* 	
 		var TotalPlayTime = document.getElementById("totalPlayTime");
 		if(TotalPlayTime) {
@@ -1744,6 +1801,19 @@ function GrooveUtils() { "use strict";
 		*/
 		
 		root.last_midi_update_time = time_now;
+		
+		return play_time_diff;   // a time struct that represents the total time played so far since the last play button push
+	}
+	
+	// update the midi play timer on the player. 
+	// Keeps track of how long we have been playing.
+	root.updateMidiPlayTime = function() {
+		var totalTime = root.getMidiPlayTime();
+		var time_string = totalTime.getUTCMinutes() + ":" + (totalTime.getSeconds() < 10 ? "0" : "") + totalTime.getSeconds();
+		
+		var MidiPlayTime = document.getElementById("MIDIPlayTime" + root.grooveUtilsUniqueIndex);
+        if(MidiPlayTime)
+            MidiPlayTime.innerHTML = time_string;
 	};
 	
 	var debug_note_count = 0;
@@ -1768,6 +1838,9 @@ function GrooveUtils() { "use strict";
 		}
 		if(data.now == data.end) {
 			
+			// at the end of a song
+			root.midiEventCallbacks.notePlaying(root.midiEventCallbacks.classRoot, "complete", 1);
+
 			if(root.shouldMIDIRepeat) {
 		
 				if(root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot)) {
@@ -1790,7 +1863,9 @@ function GrooveUtils() { "use strict";
 		// note on
 		var note_type = false;
 		if(data.message == 144) {
-			if(data.note == 108 || data.note == 42 || data.note == 46 || data.note == 49 || data.note == 51)  {
+			if(data.note == 76 || data.note == 77) {
+				note_type = "metronome";
+			} else if(data.note == 108 || data.note == 42 || data.note == 46 || data.note == 49 || data.note == 51)  {
 				note_type = "hi-hat";
 			} else if(data.note == 21 || data.note == 22 || data.note == 37 || data.note == 38 || data.note == 107) {
 				note_type = "snare";
@@ -1825,7 +1900,6 @@ function GrooveUtils() { "use strict";
 			
 			document.getElementById("midiTextOutput").innerHTML += newHTML;
 		}
-		
 	}
 	
 	function MIDILoaderCallback() {
@@ -1862,12 +1936,18 @@ function GrooveUtils() { "use strict";
 	}
 	
 	// update the tempo string display
-	function tempoUpdate(tempo) {
+	// called by the oninput handler everytime the range slider changes
+	root.tempoUpdate = function(tempo) {
 		document.getElementById('tempoOutput' + root.grooveUtilsUniqueIndex).innerHTML = "" + tempo;
 		
 		updateRangeSlider('tempoInput' + root.grooveUtilsUniqueIndex);
 		root.midiNoteHasChanged();
-	}
+	};
+	
+	// update the tempo string display
+	root.tempoUpdateEvent = function(event) {
+		root.tempoUpdate(event.target.value);
+	};
 	
 	// I love the pun here.  :)
 	// nudge the tempo up by 1
@@ -1894,13 +1974,9 @@ function GrooveUtils() { "use strict";
             return;
         
 		document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex).value = newTempo;
-        tempoUpdate(newTempo);
+        root.tempoUpdate(newTempo);
 	};
 
-	// update the tempo string display
-	root.tempoUpdateEvent = function(event) {
-		tempoUpdate(event.target.value);
-	};
 	
 	root.doesDivisionSupportSwing = function(division) {
 	

@@ -91,10 +91,13 @@
 		width: 50px;
 		height: 20px;
 	}
+	.metronomeButton.options {
+		width: 75px;
+	}
 	.metronomeButton:active {
 		color: #EEF;
 	}
-	.metronomeButton.buttonSelected, .metronomeButton.buttonSelected:hover {  /* is a button and is selected */
+	.metronomeButton.buttonSelected, .metronomeButton.selected, .metronomeButton.buttonSelected:hover {  /* is a button and is selected */
 		color: #FFF;
 		background: #68c2ff;
 		cursor: auto;
@@ -579,11 +582,21 @@
 	.noteContextMenu { 
 		
 	}
-	#permutationContextMenu, #helpContextMenu {
+	#permutationContextMenu, #helpContextMenu, #metronomeOptionsContextMenu, #metronomeOptionsOffsetClickContextMenu {
 		position: fixed;
 		top: 0px;
 		right: 0px;
 	}
+	.metronomeOptionsContextMenuItem:before, .metronomeOptionsOffsetClickContextMenuItem:before {
+		font-family: FontAwesome;
+		content: "\00a0";  /* blank space */
+		letter-spacing: 17px; 
+	} /* unchecked icon */
+	.menuChecked:before {
+		font-family: FontAwesome;
+		content: "\f00c"; 
+		letter-spacing: 5px; 
+	} /* checked icon */
 	.noteContextMenu>ul.list  { 
 		display: none;
 		position:absolute; left:30px; top:-30px; z-index:999;
@@ -647,8 +660,9 @@
 		font-family: monospace; 
 		font-size: 14px;
 	}
-	#fullURLPopup {
-		visibility: hidden;
+	#fullURLPopup, #metronomeAutoSpeedupConfiguration {
+		/visibility: hidden;
+		display: none;
 		position:absolute; left:250px; top:250px; z-index:999;
 		background-color: #CCCC52;
 		width: 500px;
@@ -663,6 +677,26 @@
 		width: 495px;
 	}
 	#fullURLLink {
+		float: right;
+	}
+	
+	#tempoIncreaseAmount, #tempoIncreaseInterval {
+		background: #CCCC52;
+		width: 300px;
+	}
+	#metronomeAutoSpeedupInputTable {
+		margin-left: 20px;
+	}
+	#metronomeAutoSpeedupOutputText {
+		font-size: 30px;
+		margin-left: 20px;
+		margin-top: 20px;
+	}
+	#tempoIncreaseAmountOutput, #tempoIncreaseIntervalOutput {
+		color: #2484c0;
+		font-weight: 700;
+	}
+	#metronomeAutoSpeedupConfigurationCloseButton {
 		float: right;
 	}
 	
@@ -689,13 +723,13 @@
 	}
 	#showHideStickingsButton {
 	}
-	#showHideSecondMeasureButton:before, #showHideStickingsButton:before  { 
+	#showHideStickingsButton:before  { 
 		font-family: FontAwesome;
 		font-size: 30px;
 		letter-spacing: -3px; 
 		content: "\f065";
 	}
-	#showHideSecondMeasureButton.ClickToHide:before, #showHideStickingsButton.ClickToHide:before {
+	#showHideStickingsButton.ClickToHide:before {
 		font-family: FontAwesome;
 		font-size: 30px;
 		letter-spacing: -3px; 
@@ -735,10 +769,10 @@
 	} /* to hide the checkbox itself */
 	.myCheckbox + label:before 
 	{ 
-		 font-family: FontAwesome;
+		font-family: FontAwesome;
 		display: inline-block;
 	 /* content: "\f096";  /* uncheck box */
-		content: "\00a0";
+		content: "\00a0";  /* blank space */
 		letter-spacing: 17px; 
 	} /* unchecked icon */
 	.myCheckbox:checked + label:before 
@@ -746,7 +780,6 @@
 		content: "\f00c"; 
 		letter-spacing: 5px; 
 	} /* checked icon */
-	
 	.hiddenCheckbox {
 		/* checkbox for the key (legend) */
 		visibility: hidden;	
