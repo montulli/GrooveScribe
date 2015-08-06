@@ -1283,7 +1283,8 @@ function GrooveUtils() { "use strict";
 		}; 
 		// default loadMIDIDataEvent.  You probably want to override this
 		// it will only make changes to the tempo and swing
-		this.loadMidiDataEvent = function(root) {
+		// playStarting: boolean that is true on the first time through the midi playback
+		this.loadMidiDataEvent = function(root, playStarting) {
 			if(root.myGrooveData) {
 				root.myGrooveData.tempo = root.getTempo();
 				root.myGrooveData.swingPercent = root.getSwing();
@@ -1347,6 +1348,31 @@ function GrooveUtils() { "use strict";
 		root.midiEventCallbacks.noteHasChangedSinceLastDataLoad = false;
 	};
 	
+	root.MIDI_build_midi_url_count_in_track = function() {
+		
+		var midiFile = new Midi.File();
+		var midiTrack = new Midi.Track();
+		midiFile.addTrack(midiTrack);
+
+		midiTrack.setTempo(root.getTempo());
+		midiTrack.setInstrument(0, 0x13);
+		
+		// start of midi track
+		// Some sort of bug in the midi player makes it skip the first note without a blank
+		// TODO: Find and fix midi bug
+		midiTrack.addNoteOff(9, 60, 1);  // add a blank note for spacing
+		
+		// add count in
+		for(var i=0; i<4; i++) {
+			midiTrack.addNoteOn(9, 77, 0, 85);
+			midiTrack.addNoteOff(9, 77, 16*4);
+		}
+							
+		var midi_url = "data:audio/midi;base64," + btoa(midiFile.toBytes());
+		
+		return midi_url;
+	}
+	
 	/* 
 	 * midi_output_type:  "general_MIDI" or "Custom"
 	 * num_notes: number of notes in the arrays  (currently expecting 32 notes per measure)
@@ -1373,10 +1399,13 @@ function GrooveUtils() { "use strict";
 			
 			midi_channel = 9; // Percussion
 			
+			// start of midi track
 			// Some sort of bug in the midi player makes it skip the first note without a blank
 			// TODO: Find and fix midi bug
-			if(midiTrack.events.length < 4)
+			if(midiTrack.events.length < 4) {
 				midiTrack.addNoteOff(midi_channel, 60, 1);  // add a blank note for spacing
+			}
+	
 					
 			var isTriplets = root.isTripletDivision(num_notes, timeSigTop, timeSigBottom);
 			var delay_for_next_note = 0;
@@ -1705,7 +1734,7 @@ function GrooveUtils() { "use strict";
 		} else {
 			root.current_midi_start_time = new Date();
 			root.last_midi_update_time = 0;
-			root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot);
+			root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot, true);
 			MIDI.Player.stop();
 			MIDI.Player.loop(root.shouldMIDIRepeat);   // set the loop parameter
 			MIDI.Player.start();
@@ -1742,6 +1771,10 @@ function GrooveUtils() { "use strict";
 		} else {
 			root.startMIDI_playback();
 		}			
+	};
+	
+	root.isPlaying = function() {
+		return MIDI.Player.playing;
 	};
 	
 	root.repeatMIDI_playback = function() {
@@ -1845,7 +1878,7 @@ function GrooveUtils() { "use strict";
 		
 				if(root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot)) {
 					MIDI.Player.stop();
-					root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot);
+					root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot, false);
 					MIDI.Player.start();
 				} else {
 					// let midi.loop handle the repeat for us

@@ -27,7 +27,7 @@ function GrooveWriter() { "use strict";
 	// private vars in the scope of the class
 	var class_app_title = "Groove Scribe";
 	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
-	var class_permutationType = "none";
+	var class_permutation_type = "none";
 	var class_advancedEditIsOn = false;
 	var class_measure_for_note_label_click = 0;
 	var class_which_index_last_clicked = 0;    // which note was last clicked for the context menu
@@ -573,7 +573,7 @@ function GrooveWriter() { "use strict";
 		}
 		
 		// if we are in a permutation, hightlight each measure as it goes
-		if(class_permutationType != "none")
+		if(class_permutation_type != "none")
 			percent_complete = (percent_complete * get_numberOfActivePermutationSections()) % 1.0;
 		
 		var note_id_in_32 = Math.floor(percent_complete * (usingTriplets() ? 24 : 32) * class_number_of_measures);
@@ -847,7 +847,7 @@ function GrooveWriter() { "use strict";
 	}
 	
 	root.permutationPopupClick = function(perm_type) {
-		class_permutationType = perm_type;
+		class_permutation_type = perm_type;
 		
 		switch (perm_type) {
 		case "kick_16ths":
@@ -875,7 +875,7 @@ function GrooveWriter() { "use strict";
 		default:
 			showHideCSS_ClassVisibility(".kick-container", true, true);  // show it
 			showHideCSS_ClassVisibility(".snare-container", true, true);  // show it
-			class_permutationType = "none";
+			class_permutation_type = "none";
 			
 			unselectButton(document.getElementById("permutationAnchor"));
 			document.getElementById("PermutationOptions").innerHTML = root.HTMLforPermutationOptions();
@@ -2117,7 +2117,7 @@ function GrooveWriter() { "use strict";
 		var swing_percentage = root.myGrooveUtils.getSwing()/100;
 		
 		// all of the permutations use just the first measure
-		switch (class_permutationType) {
+		switch (class_permutation_type) {
 		case "kick_16ths":
 			var numSections = get_numSectionsFor_permutation_array();
 			
@@ -2410,11 +2410,11 @@ function GrooveWriter() { "use strict";
 		var showLegend = document.getElementById("showLegend").checked;
 		var fullABC = "";
 		
-		switch (class_permutationType) {
+		switch (class_permutation_type) {
 		case "kick_16ths":  // use the hh & snare from the user
 			numSections = get_numSectionsFor_permutation_array();
 		
-			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
+			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
 		
 			// compute sections with different kick patterns
 			for(i=0; i < numSections; i++) {
@@ -2442,7 +2442,7 @@ function GrooveWriter() { "use strict";
 		case "snare_16ths":  // use the hh & kick from the user
 			numSections = get_numSectionsFor_permutation_array();
 		
-			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
+			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
 		
 			//compute 16 sections with different snare patterns		
 			for(i=0; i < numSections; i++) {
@@ -2465,7 +2465,7 @@ function GrooveWriter() { "use strict";
 			
 		case "none":
 		default:
-			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutationType != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), true, 4, 4);
+			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), true, 4, 4);
 		
 			var addon_abc;
 			
@@ -2792,11 +2792,22 @@ function GrooveWriter() { "use strict";
 		// load the groove from the URL data if it was passed in.
 		set_Default_notes(window.location.search);
 		
-		root.myGrooveUtils.midiEventCallbacks.loadMidiDataEvent = function(myroot) { 
+		
+		root.myGrooveUtils.midiEventCallbacks.loadMidiDataEvent = function(myroot, playStarting) { 
+			var midiURL;
 			
-			var midiURL = createMidiUrlFromClickableUI("our_MIDI");
+			if(playStarting && class_permutation_type != "none" && 
+				(document.getElementById("PermuationOptionsCountIn") &&
+				 document.getElementById("PermuationOptionsCountIn").checked)) {
+				
+				midiURL = root.myGrooveUtils.MIDI_build_midi_url_count_in_track();
+				root.myGrooveUtils.midiNoteHasChanged();  // this track is temporary
+				
+			} else {
+				midiURL = createMidiUrlFromClickableUI("our_MIDI");
+				root.myGrooveUtils.midiResetNoteHasChanged();
+			}
 			root.myGrooveUtils.loadMIDIFromURL(midiURL);
-			root.myGrooveUtils.midiResetNoteHasChanged();
 			root.updateGrooveDBSource();
 		};
 		
@@ -3617,10 +3628,16 @@ function GrooveWriter() { "use strict";
 	// indexStartForNotes is the index for the note ids.  
 	root.HTMLforPermutationOptions = function() {
 	
-		if(class_permutationType == "none")
+		if(class_permutation_type == "none")
 			return "";
 	
 		var optionTypeArray = [
+			{id: "PermuationOptionsCountIn",
+			 subid:  "PermuationOptionsCountIn_sub",
+			 name: "Count In 1 Measure",
+			 SubOptions: [],
+			 defaultOn: true
+			},
 			{id: "PermuationOptionsOstinato",
 			 subid:  "PermuationOptionsOstinato_sub",
 			 name: "Ostinato",
@@ -3651,14 +3668,14 @@ function GrooveWriter() { "use strict";
 		// add up beats and down beats
 		// add quads
 		if(!root.myGrooveUtils.isTripletDivision(class_notes_per_measure, 4, 4)) {
-			optionTypeArray[1].SubOptions = ["1", "e", "&", "a"];  // singles
-			optionTypeArray[2].SubOptions = ["1", "e", "&", "a"];  // doubles
-			optionTypeArray[3].SubOptions = ["1", "e", "&", "a"];  // triples
-			optionTypeArray.splice(3, 0, {id: "PermuationOptionsUpsDowns", subid:  "PermuationOptionsUpsDowns_sub", name: "Downbeats/Upbeats", SubOptions: ["downs", "ups"], defaultOn: false});
-			optionTypeArray.splice(5, 0, {id: "PermuationOptionsQuads", subid:  "PermuationOptionsQuads_sub", name: "Quads", SubOptions: [], defaultOn: false});
+			optionTypeArray[2].SubOptions = ["1", "e", "&", "a"];  // singles
+			optionTypeArray[3].SubOptions = ["1", "e", "&", "a"];  // doubles
+			optionTypeArray[4].SubOptions = ["1", "e", "&", "a"];  // triples
+			optionTypeArray.splice(4, 0, {id: "PermuationOptionsUpsDowns", subid:  "PermuationOptionsUpsDowns_sub", name: "Downbeats/Upbeats", SubOptions: ["downs", "ups"], defaultOn: false});
+			optionTypeArray.splice(6, 0, {id: "PermuationOptionsQuads", subid:  "PermuationOptionsQuads_sub", name: "Quads", SubOptions: [], defaultOn: false});
 		}
 		
-		switch(class_permutationType) {
+		switch(class_permutation_type) {
 		case "snare_16ths":
 			optionTypeArray.splice(0, 0, {id: "PermuationOptionsAccentGrid", subid:  "", name: "Use Accent Grid", SubOptions: [], defaultOn: false});
 			break;
