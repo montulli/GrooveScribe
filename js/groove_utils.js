@@ -1363,9 +1363,11 @@ function GrooveUtils() { "use strict";
 		midiTrack.addNoteOff(9, 60, 1);  // add a blank note for spacing
 		
 		// add count in
-		for(var i=0; i<4; i++) {
+		midiTrack.addNoteOn(9, 76, 0, 85);
+		midiTrack.addNoteOff(9, 76, 16*8);
+		for(var i=0; i<3; i++) {
 			midiTrack.addNoteOn(9, 77, 0, 85);
-			midiTrack.addNoteOff(9, 77, 16*4);
+			midiTrack.addNoteOff(9, 77, 16*8);
 		}
 							
 		var midi_url = "data:audio/midi;base64," + btoa(midiFile.toBytes());
