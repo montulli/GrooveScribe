@@ -2415,7 +2415,8 @@ function GrooveWriter() { "use strict";
 			numSections = get_numSectionsFor_permutation_array();
 		
 			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
-		
+			root.myGrooveUtils.note_mapping_array = [];
+			
 			// compute sections with different kick patterns
 			for(i=0; i < numSections; i++) {
 				if(shouldDisplayPermutationForSection(i)) {
@@ -2435,6 +2436,7 @@ function GrooveWriter() { "use strict";
 									
 					fullABC += get_permutation_pre_ABC(i);
 					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
+					root.myGrooveUtils.note_mapping_array = root.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, new_kick_array, num_notes));											
 				}
 			}
 			break;
@@ -2443,7 +2445,8 @@ function GrooveWriter() { "use strict";
 			numSections = get_numSectionsFor_permutation_array();
 		
 			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
-		
+				root.myGrooveUtils.note_mapping_array = [];
+
 			//compute 16 sections with different snare patterns		
 			for(i=0; i < numSections; i++) {
 				if(shouldDisplayPermutationForSection(i)) {
@@ -2459,6 +2462,7 @@ function GrooveWriter() { "use strict";
 					
 					fullABC += get_permutation_pre_ABC(i);
 					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
+					root.myGrooveUtils.note_mapping_array = root.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, new_kick_array, num_notes));											
 				}	
 			}
 			break;
@@ -2490,6 +2494,7 @@ function GrooveWriter() { "use strict";
 					addon_abc = "\n";
 				}
 				fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, addon_abc, num_notes, class_notes_per_measure, true, 4, 4);
+				root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, new_kick_array, num_notes);											
 			}
 			
 			break;

@@ -230,6 +230,14 @@
 	button {
 		cursor: pointer;
 	}
+	
+	.abcr {  /* rectangles enclosing notes in ABC SVG */
+		fill: transparent; 
+	}
+	.abcr.highlighted {
+		fill:#990000; 
+		fill-opacity: 40%;
+	}
  	
 input[type=range] {
   -webkit-appearance: none;
