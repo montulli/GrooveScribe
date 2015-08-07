@@ -2435,8 +2435,8 @@ function GrooveWriter() { "use strict";
 					post_abc = get_permutation_post_ABC(i);
 									
 					fullABC += get_permutation_pre_ABC(i);
-					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
-					root.myGrooveUtils.note_mapping_array = root.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, new_kick_array, num_notes));											
+					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, post_abc, num_notes, class_notes_per_measure, true, 4, 4);
+					root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, new_kick_array, num_notes));											
 				}
 			}
 			break;
@@ -2461,8 +2461,8 @@ function GrooveWriter() { "use strict";
 					post_abc = get_permutation_post_ABC(i);
 					
 					fullABC += get_permutation_pre_ABC(i);
-					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, false, 4, 4);
-					root.myGrooveUtils.note_mapping_array = root.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, new_kick_array, num_notes));											
+					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, post_abc, num_notes, class_notes_per_measure, true, 4, 4);
+					root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, new_kick_array, num_notes));											
 				}	
 			}
 			break;

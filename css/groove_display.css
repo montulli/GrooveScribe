@@ -233,10 +233,11 @@
 	
 	.abcr {  /* rectangles enclosing notes in ABC SVG */
 		fill: transparent; 
+		fill-opactity: 0.25;
 	}
 	.abcr.highlighted {
 		fill:#990000; 
-		fill-opacity: 40%;
+		fill-opacity: 0.25;
 	}
  	
 input[type=range] {

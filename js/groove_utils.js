@@ -1245,6 +1245,7 @@ function GrooveUtils() { "use strict";
 		this.anno_stop = function(type, start, stop, x, y, w, h) {
 			
 			// create a rectangle
+			// attempt to ignore base drum notes in permutations
 			if(type == "note") {
 				root.abc_obj.out_svg('<rect class="abcr" id="abcNoteNum_' + root.abcNoteNumIndex + '" x="');
 				root.abc_obj.out_sxsy(x, '" y="', y);
@@ -1292,14 +1293,15 @@ function GrooveUtils() { "use strict";
 			var note = document.getElementById("abcNoteNum_" + root.abcNoteNumCurrentlyHighlighted);
 			if(note) {
 				//note.className = note.className.replace(new RegExp(' highlighted', 'g'), "");
-				note2.className = "";
+				var class_name = note.getAttribute("class");
+				note.setAttribute("class", class_name.replace(new RegExp(' highlighted', 'g'), ""));
 			}
 			root.abcNoteNumCurrentlyHighlighted = -1;
 		}
 		
 		var note2 = document.getElementById("abcNoteNum_" + noteToHighlight);
 		if(note2) {
-			note2.className = " highlighted";
+			note2.setAttribute("class", note2.getAttribute("class") + " highlighted");
 			root.abcNoteNumCurrentlyHighlighted = noteToHighlight;
 		}		
 	}
@@ -1314,7 +1316,7 @@ function GrooveUtils() { "use strict";
 			
 			// now count through the array with the possible notes to find the note number as
 			// it correlates to the ABC
-			var real_note_index = 0;
+			var real_note_index = -1;
 			for(var i=0; i<curNoteIndex && i<root.note_mapping_array.length; i++) {
 				if(root.note_mapping_array[i])
 					real_note_index++;
