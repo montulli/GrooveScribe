@@ -1245,7 +1245,6 @@ function GrooveUtils() { "use strict";
 		this.anno_stop = function(type, start, stop, x, y, w, h) {
 			
 			// create a rectangle
-			// attempt to ignore base drum notes in permutations
 			if(type == "note") {
 				root.abc_obj.out_svg('<rect class="abcr" id="abcNoteNum_' + root.abcNoteNumIndex + '" x="');
 				root.abc_obj.out_sxsy(x, '" y="', y);
