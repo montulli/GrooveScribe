@@ -1252,7 +1252,7 @@ function GrooveUtils() { "use strict";
 				root.abc_obj.out_svg('" width="' + w.toFixed(2) +
 					'" height="' + h.toFixed(2) + '"/>\n')
 					
-				console.log("Type:"+type+ "\t abcNoteNumIndex:"+root.abcNoteNumIndex+ "\t X:"+x+ "\t Y:"+y+ "\t W:"+w+ "\t H:"+h);
+				//console.log("Type:"+type+ "\t abcNoteNumIndex:"+root.abcNoteNumIndex+ "\t X:"+x+ "\t Y:"+y+ "\t W:"+w+ "\t H:"+h);
 				
 				root.abcNoteNumIndex++;
 			}
