@@ -1,4 +1,12 @@
+	// Javascript for the Groove Scribe HTML application
+	// Groove Scribe is for drummers and helps create sheet music with an easy to use WYSIWYG groove editor.
+	//
+	// These are functions shared by Groove Scribe and Groove Display
+	//
+	// Author: Lou Montulli   
+	// Original Creation date: Feb 2015.
 
+// GrooveWriter class.   The only one in this file. 
 
 global_num_GrooveUtilsCreated = 0;
 if(document.currentScript)
@@ -1202,7 +1210,7 @@ function GrooveUtils() { "use strict";
 																	  myGrooveData.numBeats,
 																	  myGrooveData.noteValue);
 			
-		root.note_mapping_array = create_note_mapping_array_for_highlighting(FullNoteHHArray, 
+		root.note_mapping_array = root.create_note_mapping_array_for_highlighting(FullNoteHHArray, 
 																	  FullNoteSnareArray, 
 																	  FullNoteKickArray,
 																	  FullNoteHHArray.length);
