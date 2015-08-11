@@ -229,7 +229,7 @@
 	}
 	.stickings-label {
 		display: none;
-		height: 23px;
+		height: 25px;
 		background: #f7f1cf;
 		color: #2484C0;
 		padding-top: 9px;
@@ -273,6 +273,7 @@
 		display: none;
 		height: 32px;
 		background: #f7f1cf;
+		border: 1px solid transparent;
 		margin-top: 0px;
 		white-space:nowrap;
 		-moz-user-select: none;
@@ -342,6 +343,7 @@
 		height: 100%;
 		margin-right: 2px;
 		margin-left: 2px;
+		margin-bottom: -1;
 		}
 	.hi-hat {
 		display: inline-block;
