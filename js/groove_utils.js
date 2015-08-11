@@ -1300,10 +1300,8 @@ function GrooveUtils() { "use strict";
 		};	
 	};
 	
-	
 	root.abcNoteNumCurrentlyHighlighted = -1;
-	// set note to -1 to unhighlight all notes
-	root.highlightNoteInABCSVGByIndex = function(noteToHighlight) {
+	root.clearHighlightNoteInABCSVG = function() {
 	
 		if(root.abcNoteNumCurrentlyHighlighted > -1) {
 			var note = document.getElementById("abcNoteNum_" + root.abcNoteNumCurrentlyHighlighted);
@@ -1314,6 +1312,12 @@ function GrooveUtils() { "use strict";
 			}
 			root.abcNoteNumCurrentlyHighlighted = -1;
 		}
+	}
+		
+	// set note to -1 to unhighlight all notes
+	root.highlightNoteInABCSVGByIndex = function(noteToHighlight) {
+	
+		root.clearHighlightNoteInABCSVG();
 		
 		var note2 = document.getElementById("abcNoteNum_" + noteToHighlight);
 		if(note2) {
@@ -1829,6 +1833,7 @@ function GrooveUtils() { "use strict";
 			root.midiEventCallbacks.pauseEvent(root.midiEventCallbacks.classRoot);
 			MIDI.Player.pause();
 			root.midiEventCallbacks.notePlaying(root.midiEventCallbacks.classRoot, "clear", -1);
+			root.clearHighlightNoteInABCSVG();
 		}
 	};
 	
@@ -1859,6 +1864,7 @@ function GrooveUtils() { "use strict";
 			MIDI.Player.stop();
 			root.midiEventCallbacks.stopEvent(root.midiEventCallbacks.classRoot);
 			root.midiEventCallbacks.notePlaying(root.midiEventCallbacks.classRoot, "clear", -1);
+			root.clearHighlightNoteInABCSVG();
 		} 
 	};
 	
