@@ -1,0 +1,1 @@
+robocopy "E:\Users\montulli\Documents\Groove Writer Working Directory"   "E:\Users\montulli\Google Drive\Drum Stuff\HTML_Music_composer\PublicView"  /e /xd .git

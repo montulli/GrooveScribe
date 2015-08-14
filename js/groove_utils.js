@@ -550,7 +550,7 @@ function GrooveUtils() { "use strict";
 			
 		root.debugMode = parseInt(root.getQueryVariableFromString("Debug", 0, encodedURLData), 10);
 				
-		myGrooveData.numberOfMeasures = parseInt(root.getQueryVariableFromString("measures", 2, encodedURLData), 10);
+		myGrooveData.numberOfMeasures = parseInt(root.getQueryVariableFromString("measures", 1, encodedURLData), 10);
 		if(myGrooveData.numberOfMeasures < 1 || isNaN(myGrooveData.numberOfMeasures))
 			myGrooveData.numberOfMeasures = 1;
 		else if(myGrooveData.numberOfMeasures > constant_MAX_MEASURES)
