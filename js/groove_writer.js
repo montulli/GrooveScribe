@@ -3478,8 +3478,8 @@ function GrooveWriter() { "use strict";
 								
 									newHTML += ('\
 										<div id="sticking' + i + '" class="sticking">\
-											<div class="sticking_right"  id="sticking_right' + i + '"  onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ') onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'sticking\'">R</div>\
-											<div class="sticking_left"  id="sticking_left' + i + '"  onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')", ' + i + ')">L</div>\
+											<div class="sticking_right note_part"  id="sticking_right' + i + '"  onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ') onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'sticking\'">R</div>\
+											<div class="sticking_left note_part"  id="sticking_left' + i + '"  onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')", ' + i + ')">L</div>\
 										</div>\
 									');
 									
@@ -3519,12 +3519,12 @@ function GrooveWriter() { "use strict";
 								
 									newHTML += ('\
 										<div id="hi-hat' + i + '" class="hi-hat" onClick="myGrooveWriter.noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'hh\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'hh\', ' + i + ')">\
-											<div class="hh_crash"  id="hh_crash'  + i + '"><i class="fa fa-asterisk"></i></div>\
-											<div class="hh_ride"   id="hh_ride'   + i + '">R</div>\
-											<div class="hh_cross"  id="hh_cross'  + i + '"><i class="fa fa-times"></i></div>\
-											<div class="hh_open"   id="hh_open'   + i + '"><i class="fa fa-circle-o"></i></div>\
-											<div class="hh_close"  id="hh_close'  + i + '"><i class="fa fa-plus"></i></div>\
-											<div class="hh_accent" id="hh_accent' + i + '"><i class="fa fa-angle-right"></i></div>\
+											<div class="hh_crash note_part"  id="hh_crash'  + i + '"><i class="fa fa-asterisk"></i></div>\
+											<div class="hh_ride note_part"   id="hh_ride'   + i + '">R</div>\
+											<div class="hh_cross note_part"  id="hh_cross'  + i + '"><i class="fa fa-times"></i></div>\
+											<div class="hh_open note_part"   id="hh_open'   + i + '"><i class="fa fa-circle-o"></i></div>\
+											<div class="hh_close note_part"  id="hh_close'  + i + '"><i class="fa fa-plus"></i></div>\
+											<div class="hh_accent note_part" id="hh_accent' + i + '"><i class="fa fa-angle-right"></i></div>\
 										</div>\
 									');
 									
@@ -3540,11 +3540,11 @@ function GrooveWriter() { "use strict";
 								for(i = indexStartForNotes; i < class_notes_per_measure+indexStartForNotes; i++) {
 									newHTML += ('\
 										<div id="snare' + i + '" class="snare" onClick="myGrooveWriter.noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'snare\', ' + i + ')">\
-										<div class="snare_ghost"  id="snare_ghost'  + i + '">(<i class="fa fa-circle dot_in_snare_ghost_note"></i>)</div>\
-										<div class="snare_circle" id="snare_circle' + i + '"></div>\
-										<div class="snare_xstick" id="snare_xstick' + i + '"><i class="fa fa-times"></i></div>\
-										<div class="snare_flam" id="snare_flam' + i + '"><i class="fa ">&#9835;</i></div>\
-										<div class="snare_accent" id="snare_accent' + i + '"><i class="fa fa-angle-right"></i></div>\
+										<div class="snare_ghost note_part"  id="snare_ghost'  + i + '">(<i class="fa fa-circle dot_in_snare_ghost_note"></i>)</div>\
+										<div class="snare_circle note_part" id="snare_circle' + i + '"></div>\
+										<div class="snare_xstick note_part" id="snare_xstick' + i + '"><i class="fa fa-times"></i></div>\
+										<div class="snare_flam note_part" id="snare_flam' + i + '"><i class="fa ">&#9835;</i></div>\
+										<div class="snare_accent note_part" id="snare_accent' + i + '"><i class="fa fa-angle-right"></i></div>\
 										</div> \
 										');
 										
@@ -3560,8 +3560,8 @@ function GrooveWriter() { "use strict";
 								for(var j = indexStartForNotes; j < class_notes_per_measure+indexStartForNotes; j++) {
 									newHTML += ('\
 										<div id="kick' + j + '" class="kick" onClick="myGrooveWriter.noteLeftClick(event, \'kick\', ' + j + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'kick\', ' + j + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'kick\', ' + j + ')">\
-										<div class="kick_splash" id="kick_splash' + j + '"><i class="fa fa-times"></i></div></a>\
-										<div class="kick_circle" id="kick_circle' + j + '"></div></a>\
+										<div class="kick_splash note_part" id="kick_splash' + j + '"><i class="fa fa-times"></i></div></a>\
+										<div class="kick_circle note_part" id="kick_circle' + j + '"></div></a>\
 										</div> \
 									');
 									

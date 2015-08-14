@@ -49,7 +49,7 @@
 		flex-flow: flex-start;
 		flex-wrap: nowrap;
 	}
-	.midiPlayImage, .midiRepeatImage{
+	.midiPlayImage, .midiRepeatImage {
 		width: 40px;
 		height: 40px;
 		cursor: pointer;
@@ -65,6 +65,11 @@
 		line-height: 40px;
 		vertical-align: middle;
 	}
+	.midiPlayImage:hover, .midiRepeatImage:hover {
+		color: #68c2ff;
+		background: #005483;
+		
+	}
 	.midiPlayImage.Stopped:before ,  .midiPlayImage.Paused:before   { 
 	 	letter-spacing: -3px; 
 		content: "\f04b";
@@ -76,13 +81,16 @@
 		width: 40px;
 		height: 40px;
 		cursor: pointer;
-		color: #005483;;
+		color: #68C2FF;
 		margin-top: 8px;  
 		margin-right: 0px;
 		flex: none;
 		letter-spacing: -3px; 
 		font-size: 30px;
 		font-family: FontAwesome;
+	}
+	.midiExpandImage:hover {
+		color: #005483;
 	}
 	.midiExpandImage.small:before   { 
 	 	letter-spacing: -3px; 
@@ -245,7 +253,7 @@ input[type=range] {
   width: 100%;
   background-color: #2484c0;
 }
-input[type=range]:focus{
+input[type=range]:focus {
   outline: none;
 }
 input[type=range]::-webkit-slider-runnable-track {
@@ -311,5 +319,10 @@ input[type=range]::-ms-thumb {
   background: #49b4f8;
   cursor: pointer;
 }
-
+input[type=range]:active::-moz-range-thumb {
+	background: #fff;
+}
+input[type=range]:active::-webkit-slider-thumb {
+	background: #fff;
+}
 

@@ -258,6 +258,12 @@
 		cursor: pointer;
 		text-align: center;
 	}
+	.stickings-label:hover {
+		color: #000;
+	}
+	.hh-label:hover, .snare-label:hover, .kick-label:hover {
+		color: #2484C0;
+	}
 	.music-line-container {
 		display: inline-block; 
 		/top: 30px; 
@@ -374,6 +380,8 @@
 		height: 100%;
 		margin-right: 2px;
 		margin-left: 2px;
+	}
+	.note_part {  /* all the following note segments also share class .note_part */
 	}
 	.sticking_right {
 		position: absolute; top: 0px; left: 6px;
@@ -717,6 +725,9 @@
 	   background: #004781;
 	   color: #ccc;
 	 }
+	.rightButtons:hover  {
+		background: #0071AD;
+	}
 	.myButton:active, .subdivision:active, .rightButtons:active  {
 	   border-top-color: #1b435e;
 	   background: #1b435e;
