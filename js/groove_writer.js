@@ -3102,12 +3102,10 @@ function GrooveWriter() { "use strict";
 	//
 	function get_FullURLForPage() {
 	
-		var fullURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
+		var fullURL = window.location.protocol + "//" + window.location.host + window.location.pathname + "?";
 		
 		if(root.myGrooveUtils.debugMode)
-			fullURL = "?Debug=1&";
-		else
-			fullURL = "?";
+			fullURL += "?Debug=1&";
 
 		// static for now, time signature
 		fullURL += "TimeSig=4/4";
@@ -3286,7 +3284,7 @@ function GrooveWriter() { "use strict";
 		if(document.getElementById("shortenerCheckbox").checked)
 			get_ShortendURL(get_FullURLForPage(), 'fullURLTextField');
 		else	
-			show_FullURLPopup();
+			root.show_FullURLPopup();
 	};
 	
 	function set_Default_notes(encodedURLData) {
