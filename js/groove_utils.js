@@ -1260,17 +1260,19 @@ function GrooveUtils() { "use strict";
 				this.svg_highlight_y = y + 5;
 				this.svg_highlight_h = h + 10;
 			}
-			if(type == "note") {
+			if(type == "note" || type=="grace") {
 				y = this.svg_highlight_y;
 				h = this.svg_highlight_h;
-				root.abc_obj.out_svg('<rect class="abcr" id="abcNoteNum_' + root.abcNoteNumIndex + '" x="');
+				root.abc_obj.out_svg('<rect class="abcr" id="abcNoteNum_' + root.grooveUtilsUniqueIndex + "_" + root.abcNoteNumIndex + '" x="');
 				root.abc_obj.out_sxsy(x, '" y="', y);
 				root.abc_obj.out_svg('" width="' + w.toFixed(2) +
 					'" height="' + h.toFixed(2) + '"/>\n')
 					
 				//console.log("Type:"+type+ "\t abcNoteNumIndex:"+root.abcNoteNumIndex+ "\t X:"+x+ "\t Y:"+y+ "\t W:"+w+ "\t H:"+h);
 				
-				root.abcNoteNumIndex++;
+				// don't increment on the grace note, since it is attached to the real note
+				if(type != "grace")
+					root.abcNoteNumIndex++;
 			}
 		}
 		
@@ -1304,11 +1306,11 @@ function GrooveUtils() { "use strict";
 	root.clearHighlightNoteInABCSVG = function() {
 	
 		if(root.abcNoteNumCurrentlyHighlighted > -1) {
-			var note = document.getElementById("abcNoteNum_" + root.abcNoteNumCurrentlyHighlighted);
-			if(note) {
+			var myElements = document.querySelectorAll("#abcNoteNum_" + root.grooveUtilsUniqueIndex + "_" + root.abcNoteNumCurrentlyHighlighted);
+			for (var i = 0; i < myElements.length; i++) {
 				//note.className = note.className.replace(new RegExp(' highlighted', 'g'), "");
-				var class_name = note.getAttribute("class");
-				note.setAttribute("class", class_name.replace(new RegExp(' highlighted', 'g'), ""));
+				var class_name = myElements[i].getAttribute("class");
+				myElements[i].setAttribute("class", class_name.replace(new RegExp(' highlighted', 'g'), ""));
 			}
 			root.abcNoteNumCurrentlyHighlighted = -1;
 		}
@@ -1319,11 +1321,11 @@ function GrooveUtils() { "use strict";
 	
 		root.clearHighlightNoteInABCSVG();
 		
-		var note2 = document.getElementById("abcNoteNum_" + noteToHighlight);
-		if(note2) {
-			note2.setAttribute("class", note2.getAttribute("class") + " highlighted");
+		var myElements = document.querySelectorAll("#abcNoteNum_" + root.grooveUtilsUniqueIndex + "_" + noteToHighlight);
+		for (var i = 0; i < myElements.length; i++) {
+			myElements[i].setAttribute("class", myElements[i].getAttribute("class") + " highlighted");
 			root.abcNoteNumCurrentlyHighlighted = noteToHighlight;
-		}		
+		}
 	}
 	
 	// cross index the percent complete with the myGrooveData note arrays to find the nth note
