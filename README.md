@@ -8,15 +8,13 @@ Readme for Groove Scribe
 
 ### How do I get set up? ###
 
-* Summary of set up
-Just host all the files on a web server.   The application runs entirely in the browser with Javascript, HTML & CSS.
+* Summary of set up:  Just host all the files on a web server.   The application runs entirely in the browser with Javascript, HTML & CSS.
 
-* Configuration
-None
+* Configuration: None
 
 * Dependencies
-Google's Leto font
-Google's url shortening api
+**Google's Leto font
+**Google's url shortening api
 
 * Deployment instructions
 Deploy the files to an HTTP server.
