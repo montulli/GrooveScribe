@@ -1401,7 +1401,6 @@ function GrooveUtils() { "use strict";
 			if(root.myGrooveData) {
 				root.myGrooveData.tempo = root.getTempo();
 				root.myGrooveData.swingPercent = root.getSwing();
-				root.myGrooveData.metronomeFrequency = root.getMetronomeFrequency();
 				var midiURL = root.create_MIDIURLFromGrooveData(root.myGrooveData);
 				root.loadMIDIFromURL(midiURL);		
 				root.midiEventCallbacks.noteHasChangedSinceLastDataLoad = false;
@@ -1423,7 +1422,6 @@ function GrooveUtils() { "use strict";
 			var icon = document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex);
 			if(icon) 
 				icon.className = "midiPlayImage Stopped";
-			document.getElementById("MIDIProgress" + root.grooveUtilsUniqueIndex).value = 0;
 		};
 		this.repeatChangeEvent = function(root, newValue){
 			if(newValue)
@@ -1432,7 +1430,7 @@ function GrooveUtils() { "use strict";
 				document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex).src=root.getMidiImageLocation() + "grey_repeat.png";
 		};
 		this.percentProgress = function(root, percent){
-			document.getElementById("MIDIProgress" + root.grooveUtilsUniqueIndex).value = percent;
+	
 		};
 		this.notePlaying = function(root, note_type, note_position){};
 		
@@ -2200,9 +2198,6 @@ function GrooveUtils() { "use strict";
 		var tempoAndProgressElement = document.getElementById('tempoAndProgress'+ root.grooveUtilsUniqueIndex);
 		var midiExpandImageElement = document.getElementById('midiExpandImage'+ root.grooveUtilsUniqueIndex);
 		var midiPlayTime = document.getElementById('MIDIPlayTime'+ root.grooveUtilsUniqueIndex);
-		var midiProgressRow = document.getElementById('MIDIProgressRow' + root.grooveUtilsUniqueIndex);
-		var midiProgressElement = document.getElementById('MIDIProgress'+ root.grooveUtilsUniqueIndex);
-		var midiMetronomeSelector = document.getElementById('metronomeSelector'+ root.grooveUtilsUniqueIndex);
 		
 		if(playerControlElement.className.indexOf("small") > -1 || (force && expandElseContract) ) {
 			// make large
@@ -2210,104 +2205,14 @@ function GrooveUtils() { "use strict";
 			tempoAndProgressElement.className		 = tempoAndProgressElement.className.replace(" small","") + " large";
 			midiExpandImageElement.className		 = midiExpandImageElement.className.replace(" small","") + " large";
 			midiPlayTime.className					 = midiPlayTime.className.replace(" small","") + " large";
-			midiProgressRow.className				 = midiProgressRow.className.replace(" small","") + " large";
-			midiProgressElement.className			 = midiProgressElement.className.replace(" small","") + " large";
-			midiMetronomeSelector.className			 = midiMetronomeSelector.className.replace(" small","") + " large";
 		} else {
 			// make small
 			playerControlElement.className 	 		 = playerControlElement.className.replace(" large","") + " small";
 			tempoAndProgressElement.className		 = tempoAndProgressElement.className.replace(" large","") + " small";
 			midiExpandImageElement.className		 = midiExpandImageElement.className.replace(" large","") + " small";
 			midiPlayTime.className					 = midiPlayTime.className.replace(" large","") + " small";
-			midiProgressRow.className			 	 = midiProgressRow.className.replace(" large","") + " small";
-			midiProgressElement.className			 = midiProgressElement.className.replace(" large","") + " small";
-			midiMetronomeSelector.className	 		 = midiMetronomeSelector.className.replace(" large","") + " small";
 		}
 		
-		/*
-		
-		if( tempoAndProgressElement.style.display == "none" || (force && expandElseContract) ) {
-			playerControlElement.style.width = '100%';
-			midiExpandImageElement.src = root.getMidiImageLocation() + "shrinkLeft.png";
-			midiPlayTime.style.display = 'inline-block';
-			midiProgressElement.style.width = midiProgressRow.offsetWidth - 147 + "px";
-			midiMetronomeSelector.style.display = 'inline-block';
-			tempoAndProgressElement.style.display = 'inline-block';
-		} else {
-			tempoAndProgressElement.style.display = 'none';
-			playerControlElement.style.width = '85px';
-			midiExpandImageElement.src = root.getMidiImageLocation() + "expandRight.png";
-			midiPlayTime.style.display = 'none';
-			midiProgressElement.style.width = '45px';
-			midiMetronomeSelector.style.display = 'none';
-		}
-		*/
-	};
-	
-	// handle a click on the metronome (click) text that is part of the midi player
-	root.metronomeSelectorClick = function(event) {	
-		
-		var contextMenu = document.getElementById("metronomeContextMenu" + root.grooveUtilsUniqueIndex); 
-			
-		if(contextMenu) {
-			if(!event) event = window.event;
-			if (event.layerX || event.layerY) {
-				contextMenu.style.top = event.layerY-30 + "px";
-				contextMenu.style.left = event.layerX-75 + "px";
-			} else if (event.pageX || event.pageY) {
-				contextMenu.style.top = event.pageY-30 + "px";
-				contextMenu.style.left = event.pageX-75 + "px";
-			}
-			root.showContextMenu(contextMenu);
-		}
-	};
-	
-	
-	var CONSTANT_Metronome_text_OFF = "No Click";
-	var CONSTANT_Metronome_text_4   = "1/4 note";
-	var CONSTANT_Metronome_text_8   = "1/8 note";
-	var CONSTANT_Metronome_text_16  = "1/16 note";
-	root.metronomePopupClick = function(newValue) {
-		var metronomeDisplay = document.getElementById("metronomeSelector" + root.grooveUtilsUniqueIndex); 
-		
-		if(metronomeDisplay) {
-			switch(newValue) {
-				
-				case 4:
-					metronomeDisplay.innerHTML = CONSTANT_Metronome_text_4;
-					break;
-				case 8:
-					metronomeDisplay.innerHTML = CONSTANT_Metronome_text_8;
-					break;
-				case 16:
-					metronomeDisplay.innerHTML = CONSTANT_Metronome_text_16;
-					break;
-				case 0:
-				default:
-					metronomeDisplay.innerHTML = CONSTANT_Metronome_text_OFF;
-					break;
-			}
-			
-			root.midiNoteHasChanged();
-		}
-	};
-	
-	root.getMetronomeFrequency = function(newValue) {
-		var metronomeDisplay = document.getElementById("metronomeSelector" + root.grooveUtilsUniqueIndex); 
-		var returnValue = 0;
-		
-		if(metronomeDisplay) {
-			if(metronomeDisplay.innerHTML == CONSTANT_Metronome_text_4)
-				returnValue = 4;
-			else if(metronomeDisplay.innerHTML == CONSTANT_Metronome_text_8)
-				returnValue = 8;
-			else if(metronomeDisplay.innerHTML == CONSTANT_Metronome_text_16)
-				returnValue = 16;
-				
-			// default case is 0
-		}
-		
-		return returnValue;
 	};
 	
 	root.HTMLForMidiPlayer = function(expandable) {
@@ -2333,26 +2238,6 @@ function GrooveUtils() { "use strict";
 		
 		if(expandable)
 			newHTML += 	'       <span class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '"></span>';
-		
-		
-		newHTML += '' + 	
-			'	</div>' +
-			'	<div class="MIDIProgressRow" id="MIDIProgressRow' + root.grooveUtilsUniqueIndex + '">' +
-					'<progress class="MIDIProgress" id="MIDIProgress' + root.grooveUtilsUniqueIndex + '" value="0" max="100"></progress>' +
-					'<span class="metronomeSelector" id="metronomeSelector' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Metronome_text_OFF + '</span>' +
-				'</div>' +
-			'</span>';
-			
-		// context menu for the metronome (Click)
-		newHTML += '' +
-			'<div class="metronomeContextMenu">' +
-			'	<ul id="metronomeContextMenu' + root.grooveUtilsUniqueIndex + '" class="list">' +
-			'		<li id="metronomeSelectOff' + root.grooveUtilsUniqueIndex + '">Metronome <b>Off</b></li>' +
-			'		<li id="metronomeSelect4' + root.grooveUtilsUniqueIndex + '" ><b>Quarter</b> note click</li>' +
-			'		<li id="metronomeSelect8' + root.grooveUtilsUniqueIndex + '" ><b>8th</b> note click</li>' +
-			'		<li id="metronomeSelect16' + root.grooveUtilsUniqueIndex + '"><b>16th</b> note click</li>' +
-			'	</ul>' +
-			'</div>';
 			
 		return newHTML;
 	};
@@ -2383,31 +2268,6 @@ function GrooveUtils() { "use strict";
 		html_element = document.getElementById("midiExpandImage" + root.grooveUtilsUniqueIndex); 
 		if(html_element) {
 			html_element.addEventListener("click", root.expandOrRetractMIDI_playback, false);
-		}
-		
-		html_element = document.getElementById("metronomeSelector" + root.grooveUtilsUniqueIndex); 
-		if(html_element) {
-			html_element.addEventListener("click", root.metronomeSelectorClick, false);
-		}
-		
-		html_element = document.getElementById("metronomeSelectOff" + root.grooveUtilsUniqueIndex); 
-		if(html_element) {
-			html_element.addEventListener("click", function(){root.metronomePopupClick(0);}, false);
-		}
-		
-		html_element = document.getElementById("metronomeSelect4" + root.grooveUtilsUniqueIndex); 
-		if(html_element) {
-			html_element.addEventListener("click", function(){root.metronomePopupClick(4);}, false);
-		}
-		
-		html_element = document.getElementById("metronomeSelect8" + root.grooveUtilsUniqueIndex); 
-		if(html_element) {
-			html_element.addEventListener("click", function(){root.metronomePopupClick(8);}, false);
-		}
-		
-		html_element = document.getElementById("metronomeSelect16" + root.grooveUtilsUniqueIndex); 
-		if(html_element) {
-			html_element.addEventListener("click", function(){root.metronomePopupClick(16);}, false);
 		}
 				
 		// enable or disable swing

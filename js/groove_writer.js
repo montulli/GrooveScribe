@@ -2100,8 +2100,6 @@ function GrooveWriter() { "use strict";
 		var Kick_Array = class_empty_note_array.slice(0);  // copy by value
 		var i, new_snare_array, num_notes_for_swing;
 		
-		// comes locally from this class
-		//var metronomeFrequency = root.myGrooveUtils.getMetronomeFrequency(); 
 		var metronomeFrequency = class_metronome_interval;
 		
 		// just the first measure

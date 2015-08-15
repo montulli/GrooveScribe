@@ -34,7 +34,7 @@
 		width: 100%;  /* expand to the surounding element */
 	}
 	.playerControl.large {
-		width: 800px;
+		width: 866px;
 		border: 1px solid #009;
 	}
 	.playerControl.small {
@@ -190,44 +190,6 @@
 	}
 	.MIDIProgress.large {
 		margin-top: 3px;
-	}
-	.metronomeSelector {
-		display: inline-block;
-		cursor: pointer;
-		font-size: 16px;
-		color: #FFF;
-		padding: 0px;
-		margin-top: -3px;
-		width: 78px;
-		padding-left: 5px;
-		flex:none;
-		//border: 1px solid red;
-	}
-	.metronomeSelector.small {
-		display: none;
-	}
-	.metronomeContextMenu {
-		position:absolute; left:30px; top:-30px; z-index:999;
-		
-	}
-	.metronomeContextMenu>ul.list { 
-		display: none;
-		position:absolute; left:30px; top:-30px; z-index:999;
-		width:150px;
-		margin:0; padding:10px; list-style:none;
-		background:#fff; color:#333;
-		border-radius:5px;
-		box-shadow:0 0 5px #999
-	}
-	.metronomeContextMenu>ul.list li {
-		padding:10px;
-		border-bottom: solid 1px #CCCCCC;
-	}
-	.metronomeContextMenu>ul.list li:hover {
-		background:#EC6603; color:#fff;
-	}
-	.metronomeContextMenu>ul.list li:last-child { 
-		border:none;
 	}
 	
 	#ABCSource {
