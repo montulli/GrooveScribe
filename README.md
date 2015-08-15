@@ -5,7 +5,6 @@ Readme for Groove Scribe
 ### What is this repository for? ###
 
 * Groove Scribe is an HTML application for drummers.    Groove Scribe is a point and click authoring system to create drum sheet music as well as a practice tool for learning and practicing grooves and exercises.
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
 
@@ -32,3 +31,6 @@ Deploy the files to an HTTP server.
 
 * Repo owner or admin
 * Other community or team contact
+
+To edit this Readme:
+* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
