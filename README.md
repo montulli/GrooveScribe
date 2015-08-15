@@ -13,8 +13,8 @@ Readme for Groove Scribe
 * Configuration: None
 
 * Dependencies
-** Google's Leto font
-** Google's url shortening api
+ * Google's Leto font
+ * Google's url shortening api
 
 * Deployment instructions
 Deploy the files to an HTTP server.
