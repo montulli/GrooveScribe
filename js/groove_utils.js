@@ -2195,6 +2195,7 @@ function GrooveUtils() { "use strict";
 	root.expandOrRetractMIDI_playback = function(force, expandElseContract) {
 		
 		var playerControlElement = document.getElementById('playerControl'+ root.grooveUtilsUniqueIndex);
+		var playerControlRowElement = document.getElementById('playerControlsRow'+ root.grooveUtilsUniqueIndex);
 		var tempoAndProgressElement = document.getElementById('tempoAndProgress'+ root.grooveUtilsUniqueIndex);
 		var midiExpandImageElement = document.getElementById('midiExpandImage'+ root.grooveUtilsUniqueIndex);
 		var midiPlayTime = document.getElementById('MIDIPlayTime'+ root.grooveUtilsUniqueIndex);
@@ -2202,12 +2203,14 @@ function GrooveUtils() { "use strict";
 		if(playerControlElement.className.indexOf("small") > -1 || (force && expandElseContract) ) {
 			// make large
 			playerControlElement.className   		 = playerControlElement.className.replace(" small","") + " large";
+			playerControlRowElement.className   	 = playerControlRowElement.className.replace(" small","") + " large";
 			tempoAndProgressElement.className		 = tempoAndProgressElement.className.replace(" small","") + " large";
 			midiExpandImageElement.className		 = midiExpandImageElement.className.replace(" small","") + " large";
 			midiPlayTime.className					 = midiPlayTime.className.replace(" small","") + " large";
 		} else {
 			// make small
 			playerControlElement.className 	 		 = playerControlElement.className.replace(" large","") + " small";
+			playerControlRowElement.className 	 	 = playerControlRowElement.className.replace(" large","") + " small";
 			tempoAndProgressElement.className		 = tempoAndProgressElement.className.replace(" large","") + " small";
 			midiExpandImageElement.className		 = midiExpandImageElement.className.replace(" large","") + " small";
 			midiPlayTime.className					 = midiPlayTime.className.replace(" large","") + " small";
@@ -2218,7 +2221,7 @@ function GrooveUtils() { "use strict";
 	root.HTMLForMidiPlayer = function(expandable) {
 		var newHTML = '' +
 			'<span id="playerControl' + root.grooveUtilsUniqueIndex + '" class="playerControl">' +
-			'	<div class="playerControlsRow">' +
+			'	<div class="playerControlsRow" id="playerControlsRow' + root.grooveUtilsUniqueIndex + '">' +
 			'		<span class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '"></span>' +
 			'       <span class="MIDIPlayTime" id="MIDIPlayTime' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Midi_play_time_zero + '</span>' +
 			'		<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +

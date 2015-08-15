@@ -29,7 +29,6 @@
 		background-color: #2484c0;
 		width: 100%;  /* expand to the surounding element */
 		font-family: 'Lato', sans-serif;
-		padding-left: 6px;
 	}
 	.playerControl.large {
 		width: 866px;
@@ -46,8 +45,12 @@
 		/border: 1px solid red;
 		display: flex;
 		display: -webkit-flex;
+		padding-left: 6px;
 		flex-flow: flex-start;
 		flex-wrap: nowrap;
+	}
+	.playerControlsRow.large, .playerControlsRow.small {
+		padding-left: 0px;
 	}
 	.midiPlayImage, .midiRepeatImage, .midiExpandImage {
 		width: 40px;
