@@ -68,6 +68,7 @@
     </head>
     <body>
 	    	<!-- use css to position this to the upper right -->
+	<div id="GrooveWriter">  
 		<span class="nonPrintable">
 			<div id="LeftHandNav">
 				<span id="divisionButtonContainer">
@@ -133,8 +134,10 @@
 			</span>  
 			<span class="Printable">
 				<!-- rendering area -->
-				<div id="svgTarget" class="svgTarget">
+				<div id="sheetMusicDiv"">
+					<div id="svgTarget" class="svgTarget">
 				<!-- space for the SVG music go display -->
+					</div>
 				</div>
 			</span>
 			<span class="nonPrintable">
@@ -331,31 +334,32 @@
 		<!-- this is used by the metronome auto speed up option menu, and is hidden by default -->
 		<div id="metronomeAutoSpeedupConfiguration">
 			<table id="metronomeAutoSpeedupInputTable" >
-			<tr>
+			<tr id="metronomeAutoSpeedupInputRow">
 				<td>
 				Amount:
 				</td><td>
-				<input type=range min=1 max=100 value=20 class="metronomeSpeedUpRange" id="tempoIncreaseAmount" oninput="myGrooveWriter.updateRangeLabel(event, 'tempoIncreaseAmountOutput')"> 
+				<input type=range min=1 max=100 value=5 class="metronomeAutoSpeedUpRange" id="metronomeAutoSpeedupTempoIncreaseAmount" oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseAmountOutput')"> 
 				</td><td>
 				 BPM
 				</td>
 			</tr>	
-			<tr>
+			<tr id="metronomeAutoSpeedupInputRow">
 				<td>
 				Interval:
 				</td><td>
-				<input type=range min=30 max=600 value=120 class="metronomeSpeedUpRange" id="tempoIncreaseInterval" step="10" oninput="myGrooveWriter.updateRangeLabel(event, 'tempoIncreaseIntervalOutput')"> 
+				<input type=range min=1 max=20 value=2 class="metronomeAutoSpeedUpRange" id="metronomeAutoSpeedupTempoIncreaseInterval" step="1" oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseIntervalOutput')"> 
 				</td><td>
-				  seconds
+				  Minutes
 				</td>
 			</tr>	
 			</table>
 			<div id="metronomeAutoSpeedupOutputText">
-				Increase <span id="tempoIncreaseAmountOutput">20</span> BPM in 
-				<span id="tempoIncreaseIntervalOutput">120</span> Seconds
+				Increase <span id="metronomeAutoSpeedupTempoIncreaseAmountOutput">5</span> BPM in 
+				<span id="metronomeAutoSpeedupTempoIncreaseIntervalOutput">2</span> Minutes
 			</div>
 			<br>
 			<br>
+			<input type="checkbox" checked id="metronomeAutoSpeedUpKeepGoingForever"><label for="metronomeAutoSpeedUpKeepGoingForever">Keep increasing after the first interval</label>
 			<button id="metronomeAutoSpeedupConfigurationCloseButton" onClick="myGrooveWriter.close_MetronomeAutoSpeedupConfiguration('ok')">OK</button>
 		</div>
 			
@@ -367,6 +371,6 @@
 			};
 		</script>
 			
-		
+	</div>
     </body>
 </html>

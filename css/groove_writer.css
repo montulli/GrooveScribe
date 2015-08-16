@@ -1,14 +1,18 @@
 
-	/* this is for debugging layout issues - puts a read border around everything */
+	/* this is for debugging layout issues - puts a red border around everything */
 	/* body * { border: 1px solid red; }		 */
 	DEBUG {
 		border: 1px solid red;
 	}
 	body {
+		/* Use GrooveWriter instead of body for easy embedding */
 		margin: 0px;
 		background: #DDD;
 		/font-family: Calibri;
 		font-family: 'Lato', sans-serif;
+	}
+	#GrooveWriter {
+		/* tag surrounds entire app */
 	}
 	.warnings {
 		font-family: monospace;
@@ -41,12 +45,12 @@
 		height: 48px;
 		border-bottom: 1px solid #00C;
 		background: #009ffa;
-		max-width: 954px;
+		max-width: 1208px;
 	}
 	#midiPlayer {  /* more #midiPlayer css in groove_display.css */
 		width: calc(100% - 72px);
 		height: 48px;
-		max-width: 954px;
+		max-width: 1208px;
 		position: fixed;
 		z-index: 999;
 		left: 72px;
@@ -158,7 +162,7 @@
 	}
 	
 	#NotationLine {
-		max-width: 954px;
+		max-width: 1208px;
 		height: 35px;
 		text-align: center;
 		padding-top: 13px;
@@ -184,7 +188,7 @@
 	#musicalInput {
 		display: block;
 		width: 100%;
-		max-width: 954px;
+		max-width: 1208px;
 		background: #FFF;
 		overflow-x: auto;
 		overflow-y: hidden;
@@ -568,17 +572,23 @@
 	#ABC_Results {
 		display: none;
 	}
+	#sheetMusicDiv {
+		max-width: 1208px;
+		text-align: center;
+		background: #FFF;
+	}
 	.svgTarget {
-		padding: 0px 40px;
 		width: 100%;
 		max-width: 874px;
 		min-width: 800px;
 		background: #FFF;
+		margin-left: auto;
+		margin-right: auto;
 	}
 	#sheetMusicTextFields {
-		max-width: 954px;
+		max-width: 1208px;
 		border-top: 1px solid #999;
-		padding-top: 8px;
+		padding: 8px 0px;
 		text-align: center;
 		-webkit-justify-content: space-between;
 		display: -webkit-flex;
@@ -689,8 +699,10 @@
 	#fullURLLink {
 		float: right;
 	}
-	
-	#tempoIncreaseAmount, #tempoIncreaseInterval {
+	#metronomeAutoSpeedupInputRow {
+		vertical-align: text-bottom;
+	}
+	#metronomeAutoSpeedupTempoIncreaseAmount, #metronomeAutoSpeedupTempoIncreaseInterval {
 		background: #CCCC52;
 		width: 300px;
 	}
@@ -702,7 +714,7 @@
 		margin-left: 20px;
 		margin-top: 20px;
 	}
-	#tempoIncreaseAmountOutput, #tempoIncreaseIntervalOutput {
+	#metronomeAutoSpeedupTempoIncreaseAmountOutput, #metronomeAutoSpeedupTempoIncreaseIntervalOutput {
 		color: #2484c0;
 		font-weight: 700;
 	}
@@ -805,19 +817,15 @@
 		margin-right: 8px;
 	}
 	#bottomButtonRow {
-		margin-top: 10px;
-		padding-top: 30px;
-		padding-left: 50px;
-		padding-right: 50px;
-		max-width: 854px;
-		height: 70px;
+		padding: 20px 0px;
+		max-width: 1208px;
 		background: #1f363a;
 		text-align: center;
 		color: #6e90a9;
-		-webkit-justify-content: space-between;
+		-webkit-justify-content: space-around;
 		display: -webkit-flex;
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-around;
 	}
 	.pageBottomButton {
 		display: inline-block;

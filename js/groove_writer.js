@@ -2835,37 +2835,59 @@ function GrooveWriter() { "use strict";
 	// called right before the midi reloads for the next replay
 	// set the new tempo based on the delta required for the time interval
 	var class_our_midi_start_time = null;
+	var class_our_midi_start_tempo = 0;
 	var class_our_last_midi_tempo_increase_time = null;
 	var class_our_last_midi_tempo_increase_remainder = 0;
 	root.metronomeAutoSpeedUpTempoUpdate = function() {
 		
-		var tempoIncreaseAmount = 1;
-		if(document.getElementById("tempoIncreaseAmount"))
-			tempoIncreaseAmount = document.getElementById("tempoIncreaseAmount").value;
+		var totalTempoIncreaseAmount = 1;
+		if(document.getElementById("metronomeAutoSpeedupTempoIncreaseAmount"))
+			totalTempoIncreaseAmount = parseInt(document.getElementById("metronomeAutoSpeedupTempoIncreaseAmount").value, 10);
 		var tempoIncreaseInterval = 60;
-		if(document.getElementById("tempoIncreaseInterval"))
-			tempoIncreaseInterval = document.getElementById("tempoIncreaseInterval").value;
+		if(document.getElementById("metronomeAutoSpeedupTempoIncreaseInterval")) {
+			tempoIncreaseInterval = parseInt(document.getElementById("metronomeAutoSpeedupTempoIncreaseInterval").value, 10);
+			tempoIncreaseInterval = tempoIncreaseInterval * 60;  // turn mins to secs
+		}
+		
+		var keepIncreasingForever = false;
+		if(document.getElementById("metronomeAutoSpeedUpKeepGoingForever"))
+			keepIncreasingForever = document.getElementById("metronomeAutoSpeedUpKeepGoingForever").checked;
+			
+		var curTempo = root.myGrooveUtils.getTempo();;	
 			
 		var midiStartTime = root.myGrooveUtils.getMidiStartTime();
 		if(class_our_midi_start_time != midiStartTime) {
 			class_our_midi_start_time = midiStartTime;
 			class_our_last_midi_tempo_increase_remainder = 0;
 			class_our_last_midi_tempo_increase_time = new Date(0);
+			class_our_midi_start_tempo = curTempo;
+			
+		} else if(!keepIncreasingForever) {
+			if(curTempo >= class_our_midi_start_tempo + totalTempoIncreaseAmount) {
+				return;  // don't increase any more after we have gone up the total amount
+			}
 		}
 		var totalMidiPlayTime = root.myGrooveUtils.getMidiPlayTime();
 		var timeDiffMilliseconds = totalMidiPlayTime.getTime() - class_our_last_midi_tempo_increase_time.getTime();
-		var tempoDiff = (tempoIncreaseAmount) * (timeDiffMilliseconds/(tempoIncreaseInterval*1000))
+		var tempoDiffFloat = (totalTempoIncreaseAmount) * (timeDiffMilliseconds/(tempoIncreaseInterval*1000))
 		
 		// round the number down, but keep track of the remainder so we carry it forward.   Otherwise
 		// rounding errors cause us to be way off.
-		tempoDiff += class_our_last_midi_tempo_increase_remainder;
-		var tempoDiffSeconds = Math.floor(tempoDiff);
-		class_our_last_midi_tempo_increase_remainder = tempoDiff - tempoDiffSeconds;
+		tempoDiffFloat += class_our_last_midi_tempo_increase_remainder;
+		var tempoDiffInt = Math.floor(tempoDiffFloat);
+		class_our_last_midi_tempo_increase_remainder = tempoDiffFloat - tempoDiffInt;
 		
 		class_our_last_midi_tempo_increase_time = totalMidiPlayTime;
 		
-		if(tempoDiffSeconds > 0) 
-			root.myGrooveUtils.setTempo(root.myGrooveUtils.getTempo() + tempoDiffSeconds);
+		if(!keepIncreasingForever) {
+			if(curTempo + tempoDiffInt > class_our_midi_start_tempo + totalTempoIncreaseAmount) {
+				// increase to the total max amount, then we are done
+				tempoDiffInt = (class_our_midi_start_tempo + totalTempoIncreaseAmount) - curTempo;  
+			}
+		}
+		
+		if(tempoDiffInt > 0) 
+			root.myGrooveUtils.setTempo(root.myGrooveUtils.getTempo() + tempoDiffInt);
 	}
 				
 				
@@ -3165,10 +3187,12 @@ function GrooveWriter() { "use strict";
 	root.show_MetronomeAutoSpeedupConfiguration = function() {
 		var popup = document.getElementById("metronomeAutoSpeedupConfiguration");
 		
-		if(popup) {
-						
+		if(popup) {		
 			popup.style.display = "block";	
 		}
+		
+		document.getElementById('metronomeAutoSpeedupTempoIncreaseAmountOutput').innerHTML = document.getElementById('metronomeAutoSpeedupTempoIncreaseAmount').value;
+		document.getElementById('metronomeAutoSpeedupTempoIncreaseIntervalOutput').innerHTML = document.getElementById('metronomeAutoSpeedupTempoIncreaseInterval').value;
 	};
 	
 	root.close_MetronomeAutoSpeedupConfiguration = function(type) {
@@ -3649,13 +3673,13 @@ function GrooveWriter() { "use strict";
 			{id: "PermuationOptionsSingles",
 			 subid:  "PermuationOptionsSingles_sub",
 			 name: "Singles",
-			 SubOptions: ["1", "ti", "ta"],
+			 SubOptions: ["1", "&", "a"],
 			 defaultOn: true
 			},
 			{id: "PermuationOptionsDoubles",
 			 subid:  "PermuationOptionsDoubles_sub",
 			 name: "Doubles",
-			 SubOptions: ["1", "ti", "ta"],
+			 SubOptions: ["1", "&", "a"],
 			 defaultOn: true
 			},
 			{id: "PermuationOptionsTriples",
