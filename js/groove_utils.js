@@ -654,7 +654,8 @@ function GrooveUtils() { "use strict";
 	
 	
 	// the top stuff in the ABC that doesn't depend on the notes
-	root.get_top_ABC_BoilerPlate = function(isPermutation, tuneTitle, tuneAuthor, tuneComments, showLegend, isTriplets, kick_stems_up, timeSigTop, timeSigBottom) {
+	root.get_top_ABC_BoilerPlate = function(isPermutation, tuneTitle, tuneAuthor, tuneComments, showLegend, isTriplets, kick_stems_up, timeSigTop, timeSigBottom, renderWidth) {
+				
 		// boiler plate
 		var fullABC = "%abc\n\X:6\n";
 		
@@ -667,6 +668,13 @@ function GrooveUtils() { "use strict";
 			fullABC += "C: " + tuneAuthor + "\n";
 			fullABC += "%%musicspace 20px\n";  // add some more space
 		}
+		
+		if(renderWidth < 400)
+			renderWidth = 400;   // min-width
+		if(renderWidth > 1200)
+			renderWidth = 1200;  // max-width
+		// the width of the music is always 25% bigger than what we pass in.   Go figure.
+		renderWidth = Math.floor(renderWidth*0.75);
 		
 		
 		if(isTriplets)
@@ -682,7 +690,7 @@ function GrooveUtils() { "use strict";
 		
 		fullABC +=  '%%flatbeams 1\n' +
 					'%%ornament up\n' +
-					'%%pagewidth 650px\n' +
+					'%%pagewidth ' + renderWidth + 'px\n' +
 					'%%leftmargin 0cm\n' +
 					'%%rightmargin 0cm\n' +
 					'%%topspace 10px\n' +
@@ -1182,7 +1190,7 @@ function GrooveUtils() { "use strict";
 	// create ABC notation from a GrooveData class
 	// returns a string of ABC Notation data
 	
-	root.createABCFromGrooveData = function(myGrooveData) {
+	root.createABCFromGrooveData = function(myGrooveData, renderWidth) {
 	
 		var FullNoteStickingArray = scaleNoteArrayToFullSize(myGrooveData.sticking_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		var FullNoteHHArray       = scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
@@ -1197,7 +1205,8 @@ function GrooveUtils() { "use strict";
 													root.isTripletDivision(myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue),
 													myGrooveData.kickStemsUp,
 													myGrooveData.numBeats,
-													myGrooveData.noteValue);
+													myGrooveData.noteValue,
+													renderWidth);
 		
 		fullABC += root.create_ABC_from_snare_HH_kick_arrays(FullNoteStickingArray, 
 																	  FullNoteHHArray, 
@@ -1263,7 +1272,7 @@ function GrooveUtils() { "use strict";
 			if(type == "note" || type=="grace") {
 				y = this.svg_highlight_y;
 				h = this.svg_highlight_h;
-				root.abc_obj.out_svg('<rect class="abcr" id="abcNoteNum_' + root.grooveUtilsUniqueIndex + "_" + root.abcNoteNumIndex + '" x="');
+				root.abc_obj.out_svg('<rect style="fill: transparent;" class="abcr" id="abcNoteNum_' + root.grooveUtilsUniqueIndex + "_" + root.abcNoteNumIndex + '" x="');
 				root.abc_obj.out_sxsy(x, '" y="', y);
 				root.abc_obj.out_svg('" width="' + w.toFixed(2) +
 					'" height="' + h.toFixed(2) + '"/>\n')

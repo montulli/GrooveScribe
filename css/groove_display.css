@@ -22,6 +22,7 @@
 	
 	/* there is another .svgTarget definitiion in groove_writer.css */
 	.svgTarget {
+		width: 100%;
 	}
 	
 	.playerControl {
@@ -31,7 +32,7 @@
 		font-family: 'Lato', sans-serif;
 	}
 	.playerControl.large {
-		width: 866px;
+		width: calc(100% - 140px);
 		border: 1px solid #009;
 		padding-left: 0px;
 	}
@@ -202,7 +203,7 @@
 		fill-opactity: 0.25;
 	}
 	.abcr.highlighted {
-		fill:#990000; 
+		fill:#990000 !important; 
 		fill-opacity: 0.25;
 	}
  	

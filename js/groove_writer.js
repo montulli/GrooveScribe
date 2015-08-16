@@ -2408,11 +2408,16 @@ function GrooveWriter() { "use strict";
 		var showLegend = document.getElementById("showLegend").checked;
 		var fullABC = "";
 		
+		var renderWidth = 600;
+		var	svgTarget = document.getElementById("svgTarget");
+		if(svgTarget)
+			renderWidth = svgTarget.offsetWidth - 100;
+		
 		switch (class_permutation_type) {
 		case "kick_16ths":  // use the hh & snare from the user
 			numSections = get_numSectionsFor_permutation_array();
 		
-			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
+			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4, renderWidth);
 			root.myGrooveUtils.note_mapping_array = [];
 			
 			// compute sections with different kick patterns
@@ -2442,7 +2447,7 @@ function GrooveWriter() { "use strict";
 		case "snare_16ths":  // use the hh & kick from the user
 			numSections = get_numSectionsFor_permutation_array();
 		
-			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4);
+			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, 4, 4, renderWidth);
 			root.myGrooveUtils.note_mapping_array = [];
 
 			//compute 16 sections with different snare patterns		
@@ -2467,7 +2472,7 @@ function GrooveWriter() { "use strict";
 			
 		case "none":
 		default:
-			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), true, 4, 4);
+			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), true, 4, 4, renderWidth);
 			root.myGrooveUtils.note_mapping_array = [];
 			
 			var addon_abc;
@@ -2515,7 +2520,7 @@ function GrooveWriter() { "use strict";
 	root.displayNewSVG = function() {
 		var	svgTarget = document.getElementById("svgTarget"),
 			diverr = document.getElementById("diverr");
-		
+				
 		var abc_source = document.getElementById("ABCsource").value;
 		var svg_return = root.myGrooveUtils.renderABCtoSVG(abc_source);
 		
@@ -2726,7 +2731,6 @@ function GrooveWriter() { "use strict";
 
 	root.setupWriterHotKeys = function() {
 		
-					
 		document.addEventListener("keydown", function(e){
 			
 			// only accept the event if it not going to an INPUT field	
@@ -2830,6 +2834,9 @@ function GrooveWriter() { "use strict";
 		
 		// enable or disable swing
 		root.myGrooveUtils.swingEnabled( root.myGrooveUtils.doesDivisionSupportSwing(class_notes_per_measure) );
+		
+		window.onresize = root.refresh_ABC();
+		
 	};
 	
 	// called right before the midi reloads for the next replay
@@ -3625,7 +3632,7 @@ function GrooveWriter() { "use strict";
 				checkbox.checked = OnElseOff;
 		}
 		
-		myGrooveWriter.refresh_ABC();
+		root.refresh_ABC();
 	};
 	
 	// a click on a permutation sub option checkbox
@@ -3645,7 +3652,7 @@ function GrooveWriter() { "use strict";
 			
 		}
 
-		myGrooveWriter.refresh_ABC();
+		root.refresh_ABC();
 	};
 	
 	// public function

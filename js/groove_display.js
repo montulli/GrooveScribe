@@ -134,13 +134,16 @@
 				
 				// spit out some HTML tags to hold the music and possibly the player
 				document.getElementById(HtmlTagId).innerHTML = '' +
-								'<span id="' + svgTargetId + '" class="svgTarget"></span>\n' +
-								'<span id="' + midiPlayerTargetId + '" ></span>\n';
-								
-				var abcNotation = myGrooveUtils.createABCFromGrooveData(myGrooveData);
+								'<div id="' + svgTargetId + '" class="svgTarget"></div>\n' +
+								'<div id="' + midiPlayerTargetId + '" ></div>\n';
+				
+				var svgTarget = document.getElementById(svgTargetId);
+				var renderWidth = svgTarget.offsetWidth - 100;			
+				
+				var abcNotation = myGrooveUtils.createABCFromGrooveData(myGrooveData, renderWidth);
 				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 				
-				document.getElementById(svgTargetId).innerHTML = svgReturn.svg;
+				svgTarget.innerHTML = svgReturn.svg;
 				
 				myGrooveUtils.setGrooveData(myGrooveData);
 
@@ -175,16 +178,19 @@
 							'<div id="' + svgTargetId + '" class="svgTarget" style="display:inline-block"></div>\n' +
 							'<div id="' + midiPlayerTargetId + '"></div>\n';
 							
+					var svgTarget = document.getElementById(svgTargetId);
+					var renderWidth = svgTarget.offsetWidth - 100;		
+							
 					// load the groove from the URL data if it was passed in.
 					var GrooveData = myGrooveUtils.getGrooveDataFromUrlString(GrooveDefinition);
 					console.log(GrooveData);
-					var abcNotation = myGrooveUtils.createABCFromGrooveData(GrooveData);
+					var abcNotation = myGrooveUtils.createABCFromGrooveData(GrooveData, renderWidth);
 					var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 					
 					if(linkToEditor)
-						document.getElementById(svgTargetId).innerHTML = '<a style="text-decoration: none" href="index.html' + GrooveDefinition + '">' + svgReturn.svg + '</a>';
+						svgTarget.innerHTML = '<a style="text-decoration: none" href="index.html' + GrooveDefinition + '">' + svgReturn.svg + '</a>';
 					else
-						document.getElementById(svgTargetId).innerHTML = svgReturn.svg;
+						svgTarget.innerHTML = svgReturn.svg;
 					
 					if(showPlayer) {
 						myGrooveUtils.setGrooveData(GrooveData);
