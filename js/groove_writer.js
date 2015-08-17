@@ -3133,7 +3133,7 @@ function GrooveWriter() { "use strict";
 		var fullURL = window.location.protocol + "//" + window.location.host + window.location.pathname + "?";
 		
 		if(root.myGrooveUtils.debugMode)
-			fullURL += "?Debug=1&";
+			fullURL += "Debug=1&";
 		
 		if(root.myGrooveUtils.grooveDBAuthoring)
 			fullURL += "GDB_Author=1&";

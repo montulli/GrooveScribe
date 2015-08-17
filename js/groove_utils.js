@@ -681,10 +681,7 @@ function GrooveUtils() { "use strict";
 		renderWidth = Math.floor(renderWidth*0.75);
 		
 		
-		if(isTriplets)
-			fullABC += "L:1/16\n";
-		else 
-			fullABC += "L:1/" + (timeSigBottom * 8) + "\n";   // 4/4 = 32,  6/8 = 64
+		fullABC += "L:1/" + (timeSigBottom * 8) + "\n";   // 4/4 = 32,  6/8 = 64
 		
 		if(isPermutation)
 			fullABC += "%%stretchlast 0\n" +
@@ -1018,35 +1015,68 @@ function GrooveUtils() { "use strict";
 		return retArray;
 	}
 	
+	function count_active_notes_in_arrays(array1, array2, array3, start_index, how_far_to_measure) {
+		var num_active_notes = 0;
+		
+		for(var i=start_index; i < start_index+how_far_to_measure; i++) {
+			if(array1[i] != false || array2[i] != false || (array3 && array3[i] != false))
+				num_active_notes++;
+		}
+		
+		return num_active_notes;
+	}
+	
 	// takes 4 arrays 24 elements long that represent the stickings, snare, HH & kick.
 	// each element contains either the note value in ABC "F","^g" or false to represent off
-	// translates them to an ABC string in 2 voices
+	// translates them to an ABC string (in 2 voices if !kick_stems_up)
 	// post_voice_abc is a string added to the end of each voice line that can end the line
+	//
+	// We output 24 notes in the ABC rather than the traditional 16 or 32 for 4/4 time.   
+	// This is because of the stickings above the bar are a separate voice and should not have the "3" above them
+	// This could be changed to using the normal number and moving all the stickings down to be comments on each note in one voice (But is a pretty big change)
 	function snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
 	
-		var scaler = 1;  // we are always in 24 notes here
+		var scaler = 2;  // we are always in 24 notes here, and the ABC needs to think we are in 48 since the specified division is 1/32
 		var ABC_String = "";
 		var stickings_voice_string = "V:Stickings\n";
 		var hh_snare_voice_string  = "V:Hands stem=up\n%%voicemap drum\n";
 		var kick_voice_string      = "V:Feet stem=down\n%%voicemap drum\n";
+		var eliminate_rests_in_triplets = 0;
 			
 		for(var i=0; i < num_notes; i++) {
 			
 			// triplets are special.  We want to output a note or a rest for every space of time
+			// 8th note triplets should always use rests
 			var end_of_group = 24/notes_per_measure;  // assuming we are always dealing with 24 notes
-			var grouping_size_for_rests = 24/notes_per_measure;   // we scale up the notes to fit a 24 length array
+			var grouping_size_for_rests = end_of_group;
 			
+			// this will remove rests and use different length notes to express triplets.   It is a little harder to decipher.
+			if(eliminate_rests_in_triplets) {
+				if(notes_per_measure != 12)	{
+					var group_size = notes_per_measure/4;
+					var end_of_group = group_size - (i % group_size);  // assuming we are always dealing with 24 notes
+					var grouping_size_for_rests = group_size;   // we scale up the notes to fit a 24 length array.  This will be 1 or 2
+				}
+			}
 			
 			if(i % ABC_gen_note_grouping_size(true, timeSigTop, timeSigBottom) == 0) {
+				var num_notes_in_next_group = root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom)
 				// creates the 3 or the 6 over the note grouping
 				// looks like (3:3:3 or (6:6:6
+				
+				// used for elemintating rests in triplets.
+				if(eliminate_rests_in_triplets) {
+					if(notes_per_measure != 12) {
+						num_notes_in_next_group = count_active_notes_in_arrays(HH_array, snare_array, kick_array, i, 6);
+					}
+				}
 				hh_snare_voice_string += "(" + root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom) +
 										":" + root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom) +
-										":" + root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom);
+										":" + num_notes_in_next_group;
 			} 
 			 
 			if( i % grouping_size_for_rests == 0 ) {
-				// we will only output a rest for each place there could be a note
+				// we will output a rest for each place there could be a note
 				stickings_voice_string += getABCforRest(sticking_array.slice(i), class_empty_note_array, class_empty_note_array, grouping_size_for_rests, scaler, true);
 				
 				if(kick_stems_up) {
