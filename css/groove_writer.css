@@ -12,7 +12,7 @@
 		font-family: 'Lato', sans-serif;
 	}
 	.fullWidthEle {
-		max-width: 1294px;
+		max-width: 1478px; /* 1550 - 72 */
 	}
 	#GrooveWriter {
 		/* tag surrounds entire app */
@@ -204,7 +204,7 @@
 		}
 	}
 	#musicalInput.expanded {
-		max-width: 5000px;
+		max-width: 5000px !important;
 	}
 	#measureContainer {
 		margin-left: auto;
