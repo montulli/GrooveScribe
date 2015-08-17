@@ -2407,6 +2407,9 @@ function GrooveWriter() { "use strict";
 		var tuneAuthor = document.getElementById("tuneAuthor").value;
 		var tuneComments = document.getElementById("tuneComments").value;
 		var showLegend = document.getElementById("showLegend").checked;
+		root.myGrooveUtils.isLegendVisable = showLegend;
+		
+		
 		var fullABC = "";
 		
 		var renderWidth = 600;
