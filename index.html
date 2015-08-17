@@ -3,9 +3,7 @@
 <html>
     <head>
 		<title>Groove Scribe</title>
-		
-		<mmmmeta name="viewport" content="width=1024, initial-scale=1.0">
-		
+				
 		<!--   Other peoples JS libraries    -->
 		<!-- new version of MIDI.JS  Disabled
 			<!-- shim required by midi.js 
@@ -87,7 +85,7 @@
 					}
 				</script>
 			</div>
-			<div id="TopNav">	
+			<div id="TopNav" class="fullWidthEle">	
 				<span id="upperLeft">
 					<span id="metronomeContainer">
 						<span id="metronomeLabel">METRONOME:</span>
@@ -95,21 +93,29 @@
 						<span class="metronomeButton" id="metronome4ths" onClick="myGrooveWriter.setMetronomeButton(4)">4th</span>
 						<span class="metronomeButton" id="metronome8ths" onClick="myGrooveWriter.setMetronomeButton(8)">8th</span>
 						<span class="metronomeButton" id="metronome16ths" onClick="myGrooveWriter.setMetronomeButton(16)">16th</span>
-						<span class="metronomeButton Options" id="metronomeOptionsAnchor" onClick="myGrooveWriter.metronomeOptionsAnchorClick(event)">Options</span>
+						<script>
+						if(!myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
+							document.write('<span class="metronomeButton Options" id="metronomeOptionsAnchor" onClick="myGrooveWriter.metronomeOptionsAnchorClick(event)">Options</span>');
+						}
+					</script>
 					</span>
 				</span>
 				<span id="upperRight">
-					<span class="rightButtons" id="permutationAnchor" onClick="myGrooveWriter.permutationAnchorClick(event)"><i class="fa fa-bars"></i> Permutations</span>
+					<script>
+						if(!myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
+							document.write('<span class="rightButtons" id="permutationAnchor" onClick="myGrooveWriter.permutationAnchorClick(event)"><i class="fa fa-bars"></i> Permutations</span>');
+						}
+					</script>
 					<span class="rightButtons" id="groovesAnchor" onClick="myGrooveWriter.groovesAnchorClick(event)"><i class="fa fa-bars"></i> Grooves</span>
 					<span class="rightButtons" id="helpAnchor" onClick="myGrooveWriter.helpAnchorClick(event)"><i class="fa fa-bars"></i> Help</span>
 				</span>
 			</div>
 		</span>  
 		
-		<div id="RightHandContent">
+		<div id="RightHandContent" class="fullWidthEle">
 			<span class="nonPrintable">
-				<div id="midiPlayer"><!-- space for the midiplayer to be attached by the javascript --></div>
-				<div id="musicalInput">
+				<div id="midiPlayer" class="fullWidthEle"><!-- space for the midiplayer to be attached by the javascript --></div>
+				<div id="musicalInput" class="fullWidthEle">
 					<span id="measureContainer">
 						<script>
 							var genHTML = "";
@@ -127,14 +133,14 @@
 							document.write(genHTML);
 					</script>
 				</div>
-				<div id="NotationLine">
+				<div id="NotationLine" class="fullWidthEle">
 					<span id='NotationLabel'>Notation</span>
 					<span id='KeyButton'><input type="checkbox" class="hiddenCheckbox" id="showLegend" onClick="myGrooveWriter.refresh_ABC()"><label id="LegendLabel" for="showLegend"><i class="fa fa-key"></i></label></span>
 				</div>
 			</span>  
 			<span class="Printable">
 				<!-- rendering area -->
-				<div id="sheetMusicDiv"">
+				<div id="sheetMusicDiv" class="fullWidthEle">
 					<div id="svgTarget" class="svgTarget">
 				<!-- space for the SVG music go display -->
 					</div>
@@ -146,15 +152,27 @@
 				<p class="warnings">Warnings:</p>
 				<div class="warnings" id="diverr"></div>
 				
+				<script>
+					if(myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
+						document.write('<div id="sheetMusicTextFields" class="fullWidthEle" style="display: none;">');
+					} else {
+						document.write('<div id="sheetMusicTextFields" class="fullWidthEle">');
+					}
+				</script>
+								&nbsp;
+								<b>Title:</b> <input class="sheetMusicInputField" id="tuneTitle" onChange="myGrooveWriter.refresh_ABC()" type="text"> &nbsp;
+								<b>Author:</b> <input class="sheetMusicInputField" id="tuneAuthor" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
+								<b>Comment:</b> <input class="sheetMusicInputField" id="tuneComments" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
+							</div>
+				</script>
 				
-				<div id="sheetMusicTextFields">
-					&nbsp;
-					<b>Title:</b> <input class="sheetMusicInputField" id="tuneTitle" onChange="myGrooveWriter.refresh_ABC()" type="text"> &nbsp;
-					<b>Author:</b> <input class="sheetMusicInputField" id="tuneAuthor" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
-					<b>Comment:</b> <input class="sheetMusicInputField" id="tuneComments" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
-				</div>
-				
-				<div id="bottomButtonRow">
+				<script>
+					if(myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
+						document.write('<div id="bottomButtonRow" class="fullWidthEle" style="display: none;">');
+					} else {
+						document.write('<div id="bottomButtonRow" class="fullWidthEle">');
+					}
+				</script>
 					<span class="pageBottomButton" id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);"><span class="bottomButtonLabel">STICKINGS</span></span>
 					<span class="pageBottomButton" type="button" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></span></i><span class="bottomButtonLabel">MIDI</span></span>
 					<span class="pageBottomButton" id="printButton" type="button" onclick="myGrooveWriter.printMusic()"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
@@ -170,6 +188,22 @@
 					Use the Groove Writer to write out new grooves, figure out the groove to your favorite songs,
 					or write down the groove to your latest tune.
 				</span>
+				
+				<!-- GrooveDB output area -->
+				<script>
+					if(myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
+						document.write('<div id="GrooveDB_MetaData">');
+					} else {
+						document.write('<div id="GrooveDB_MetaData" style="display: none;">');
+					}
+				</script>
+					<p>
+					This is the text that should be added to the grooveDB for this groove.  <br>
+					<b>Copy and paste it into the GrooveDB edit window </b>
+					<p>
+					<textarea id="GrooveDB_source" class="fullWidthEle"></textarea>
+				</div>
+				
 				<span id="undoStack"></span>
 				<span id="redoStack"></span>
 				<!-- ABC notation -->

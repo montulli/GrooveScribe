@@ -23,6 +23,7 @@ function GrooveWriter() { "use strict";
 	
 	// set debugMode immediately so we can use it in index.html
 	root.myGrooveUtils.debugMode = parseInt(root.myGrooveUtils.getQueryVariableFromURL("Debug", "0"), 10);
+	root.myGrooveUtils.grooveDBAuthoring = parseInt(root.myGrooveUtils.getQueryVariableFromURL("GDB_Author", "0"), 10);
 
 	// private vars in the scope of the class
 	var class_app_title = "Groove Scribe";
@@ -2835,7 +2836,7 @@ function GrooveWriter() { "use strict";
 		// enable or disable swing
 		root.myGrooveUtils.swingEnabled( root.myGrooveUtils.doesDivisionSupportSwing(class_notes_per_measure) );
 		
-		window.onresize = root.refresh_ABC();
+		window.onresize = root.refresh_ABC;
 		
 	};
 	
@@ -3133,6 +3134,9 @@ function GrooveWriter() { "use strict";
 		
 		if(root.myGrooveUtils.debugMode)
 			fullURL += "?Debug=1&";
+		
+		if(root.myGrooveUtils.grooveDBAuthoring)
+			fullURL += "GDB_Author=1&";
 
 		// static for now, time signature
 		fullURL += "TimeSig=4/4";
