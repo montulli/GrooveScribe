@@ -128,11 +128,15 @@ function GrooveUtils() { "use strict";
 		// right away.  :(  
 		setTimeout(function(){
 			document.onclick = root.documentOnClickHanderCloseContextMenu;
+			document.body.style.cursor = "pointer";  // make document.onclick work on iPad
+			
 			},100);
 	};
 	
 	root.hideContextMenu = function(contextMenu) {
 		document.onclick = false;
+		document.body.style.cursor = "auto";   // make document.onclick work on iPad
+			
 		
 		if(contextMenu) {
 			contextMenu.style.display = "none";
