@@ -528,7 +528,7 @@ function GrooveUtils() { "use strict";
 				else if(getAccents)
 					returnTabLine += "o";  // just kick
 				else	
-					returTabLine += "x";   // just splash
+					returnTabLine += "x";   // just splash
 			} else {
 				// all the "others"
 				if(getOthers)
