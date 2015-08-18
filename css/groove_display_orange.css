@@ -54,10 +54,10 @@
 		padding-left: 0px;
 	}
 	.midiPlayImage, .midiRepeatImage, .midiExpandImage {
+		display: inline-block;
 		width: 40px;
 		height: 40px;
 		cursor: pointer;
-		flex: none;
 		margin: 4px 0px 4px 0px;
 		border: 0px solid #000;
 		color: #cccccc;
@@ -67,6 +67,7 @@
 		line-height: 40px;
 		vertical-align: middle;
 		border-radius: 50%;
+		flex: none;
 	}
 	.midiPlayImage, .midiRepeatImage {
 		background: #666666;
