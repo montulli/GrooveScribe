@@ -93,12 +93,12 @@
 		/width: 50px;
 		margin: 12px 5px;
 		height: 20px;
-		transition: all .2s ease-in-out;
+		transition: all .1s ease-in-out;
 	}
 	.metronomeButton:hover, .rightButtons:hover, .metronomeButton.selected:hover, .rightButtons.selected:hover, .rightButtons.buttonSelected:hover {
 		/color: #3b5166;
-		font-weight: 700;
-		transform: scale(1.1);
+		font-weight: 500;
+		transform: scale(1.05);
 	}
 	.metronomeButton.options {
 		width: 75px;
@@ -124,7 +124,7 @@
 		-webkit-align-items: center;
 		justify-content: center;
 		-webkit-justify-content: space-around;
-		transition: all .2s ease-in-out;
+		transition: all .1s ease-in-out;
 	}
 	.subdivision.buttonSelected, .subdivision.buttonSelected:hover {  /* is subdivision and is selected */
 		background: #53758e;
@@ -136,7 +136,7 @@
 	   border-top-color: #28597a;
 	   background: #004781;
 	   color: #ccc;
-	   transform: scale(1.1);
+	   transform: scale(1.05);
 	 }
 	.myButton:active, .subdivision:active  {
 	   border-top-color: #1b435e;
