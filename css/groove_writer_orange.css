@@ -48,6 +48,7 @@
 		height: 48px;
 		border-bottom: 1px solid #000;
 		background: #E69D02;
+		background: linear-gradient(to right, #E69D02, #CC6500);
 	}
 	#midiPlayer {  /* more #midiPlayer css in groove_display.css */
 		width: calc(100% - 72px);
@@ -97,14 +98,14 @@
 	}
 	.metronomeButton:hover, .rightButtons:hover, .metronomeButton.selected:hover, .rightButtons.selected:hover, .rightButtons.buttonSelected:hover {
 		/color: #3b5166;
-		font-weight: 500;
+		font-weight: 700;
 		transform: scale(1.05);
 	}
 	.metronomeButton.options {
 		width: 75px;
 	}
 	.metronomeButton.buttonSelected, .metronomeButton.selected, .rightButtons.buttonSelected {  /* is a button and is selected */
-		color: #FFD75F;
+		color: #444444;
 		font-weight: 700;
 		/background: #68c2ff;
 	}
