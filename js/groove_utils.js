@@ -2123,11 +2123,16 @@ function GrooveUtils() { "use strict";
 			document.body.appendChild(programaticCSSRules);
 		}
 		
+		var style_before = document.defaultView.getComputedStyle(slider, ":before");
+		var style_after = document.defaultView.getComputedStyle(slider, ":after");
+		var before_color = style_before.getPropertyValue('color');
+		var after_color = style_after.getPropertyValue('color');
+		
 	    // change the before and after colors of the slider using a gradiant
 	    var percent = Math.ceil(((slider.value - slider.min) / (slider.max - slider.min)) * 100);
         
-		var new_style_str = '#' + sliderID + '::-moz-range-track' + '{ background: -moz-linear-gradient(left, #49b4f8 ' + percent + '%, #005789 ' + percent + '%)}\n';
-		new_style_str += '#' + sliderID + '::-webkit-slider-runnable-track' + '{ background: -webkit-linear-gradient(left, #49b4f8 0%, #49b4f8 ' + percent + '%, #005789 ' + percent + '%)}\n';
+		var new_style_str = '#' + sliderID + '::-moz-range-track' + '{ background: -moz-linear-gradient(left, ' + before_color + ' ' + percent + '%, ' + after_color + ' ' + percent + '%)}\n';
+		new_style_str += '#' + sliderID + '::-webkit-slider-runnable-track' + '{ background: -webkit-linear-gradient(left, ' + before_color + ' ' + '0%, ' + before_color + ' ' + percent + '%, ' + after_color + ' ' + percent + '%)}\n';
 		programaticCSSRules.textContent = new_style_str;
 
 	}

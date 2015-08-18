@@ -212,6 +212,14 @@ input[type=range] {
   width: 100%;
   background-color: #222222;
 }
+input[type=range]:before {
+  /* set this color for the runnable-track left of the thumb color */
+  color: #888888;
+}
+input[type=range]:after {
+  /* set this color for the runnable-track right of the thumb color */
+  color: #444444;
+}
 input[type=range]:focus {
   outline: none;
 }
