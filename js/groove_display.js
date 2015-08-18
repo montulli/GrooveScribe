@@ -25,12 +25,12 @@
 		 
 			root.checkloadjscssfile = function(filename, filetype){
 				if (filesadded.indexOf("["+filename+"]")==-1){
-					root.loadjscssfile(filename, filetype)
-					root.filesadded+="["+filename+"]" //List of files added in the form "[filename1],[filename2],etc"
+					root.loadjscssfile(filename, filetype);
+					root.filesadded+="["+filename+"]"; //List of files added in the form "[filename1],[filename2],etc"
 				}
 				else
-					alert("file already added!")
-			}
+					alert("file already added!");
+			};
 
 			root.loadjscssfile = function(filename, filetype) {
 				if(filename[0] == ".") {   // relative pathname 
@@ -40,20 +40,21 @@
 				if (root.filesadded.indexOf("["+filename+"]")!=-1)
 					return;   // file already added
 				
+				var fileref;
 				if (filetype=="js"){ //if filename is a external JavaScript file
-					var fileref=document.createElement('script')
-					fileref.setAttribute("type","text/javascript")
-					fileref.setAttribute("src", filename)
+					fileref=document.createElement('script');
+					fileref.setAttribute("type","text/javascript");
+					fileref.setAttribute("src", filename);
 				}
 				else if (filetype=="css"){ //if filename is an external CSS file
-					var fileref=document.createElement("link")
-					fileref.setAttribute("rel", "stylesheet")
-					fileref.setAttribute("type", "text/css")
-					fileref.setAttribute("href", filename)
+					fileref=document.createElement("link");
+					fileref.setAttribute("rel", "stylesheet");
+					fileref.setAttribute("type", "text/css");
+					fileref.setAttribute("href", filename);
 				}
 				if (typeof fileref!="undefined")
-					document.getElementsByTagName("head")[0].appendChild(fileref)
-			}
+					document.getElementsByTagName("head")[0].appendChild(fileref);
+			};
 			
 				//	<!--   midi.js package for sound   -->
 			root.loadjscssfile("../MIDI.js/js/midi/AudioDetect.js", "js");
@@ -153,7 +154,7 @@
 				myGrooveUtils.oneTimeInitializeMidi();
 				
 				root.GrooveDisplayUniqueCounter++;
-			}
+			};
 			
 			// Add a groove to a page
 			root.GrooveDBFormatPutGrooveOnPage = function (GrooveDBTabIn) {
@@ -164,7 +165,7 @@
 				document.write('<span id="' + HTMLElementID + '"></span>');
 				
 				window.addEventListener("load", function() { root.GrooveDBFormatPutGrooveInHTMLElement(HTMLElementID, GrooveDBTabIn);}, false);
-			}
+			};
 			
 			
 			root.displayGrooveInHTMLElementId = function (HtmlTagId, GrooveDefinition, showPlayer, linkToEditor) {
@@ -199,7 +200,7 @@
 						myGrooveUtils.expandOrRetractMIDI_playback(true, false);  // make it small
 						myGrooveUtils.oneTimeInitializeMidi();
 					}
-			}
+			};
 			
 			// Add a groove to a page
 			root.AddGrooveDisplayToPage = function (URLEncodedGrooveData, showPlayer, linkToEditor) {
@@ -210,7 +211,7 @@
 				document.write('<div id="' + HTMLElementID + '"></div>');
 				
 				window.addEventListener("load", function() { root.displayGrooveInHTMLElementId(HTMLElementID, URLEncodedGrooveData, showPlayer, linkToEditor);}, false);
-			}
+			};
 		})();  // end of class GrooveDisplay		
 	}  // end if						
 			

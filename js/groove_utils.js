@@ -148,7 +148,7 @@ function GrooveUtils() { "use strict";
 	
 	// figure it out from the division  Division is number of notes per measure 4, 6, 8, 12, 16, 24, 32, etc...
 	root.isTripletDivision = function(division, timeSigTop, timeSigBottom) {
-		if(timeSigTop == 4 && timeSigBottom == 4 && division % 6 == 0)
+		if(timeSigTop == 4 && timeSigBottom == 4 && division % 6 === 0)
 			return true;
 			
 		return false;
@@ -431,10 +431,10 @@ function GrooveUtils() { "use strict";
 		
 		for(var i=0; i < maxLength; i++) {
 			var newChar = "-";
-			if(dominateLine.charAt(i) != "")
+			if(dominateLine.charAt(i) !== "")
 				newChar = dominateLine.charAt(i);
 				
-			if(newChar == "-" && subordinateLine.charAt(i) != "")
+			if(newChar == "-" && subordinateLine.charAt(i) !== "")
 				newChar = subordinateLine.charAt(i);
 			
 			newLine += newChar;
@@ -537,7 +537,7 @@ function GrooveUtils() { "use strict";
 					returnTabLine += "-";
 			}
 			
-			if((separatorDistance+1 > 0) && (i % separatorDistance) == 0) 
+			if((separatorDistance+1 > 0) && (i % separatorDistance) === 0) 
 				returnTabLine += "|";
 		}	
 
@@ -670,7 +670,7 @@ function GrooveUtils() { "use strict";
 		// always add a Title even if it's blank
 		fullABC += "T: " + tuneTitle + "\n";
 		
-		if(tuneAuthor != "") {
+		if(tuneAuthor !== "") {
 			fullABC += "C: " + tuneAuthor + "\n";
 			fullABC += "%%musicspace 20px\n";  // add some more space
 		}
@@ -722,7 +722,7 @@ function GrooveUtils() { "use strict";
 			fullABC += "%%staves (Stickings Hands Feet)\n";
 									
 		// print comments below the legend if there is one, otherwise in the header section
-		if(tuneComments != "") {
+		if(tuneComments !== "") {
 			fullABC += "P: " + tuneComments + "\n";
 			fullABC += "%%musicspace 20px\n";  // add some more space
 		}
@@ -788,11 +788,11 @@ function GrooveUtils() { "use strict";
 			var num_notes_on = 0;
 			var nextCount;
 			
-			if(note1_array[0] != false) {
+			if(note1_array[0] !== false) {
 				// look ahead and see when the next note is
 				nextCount = 1;
 				for(var indexA= 1; indexA < end_of_group; indexA++) {
-					if(note1_array[indexA] != false || note2_array[indexA] != false || note3_array[indexA] != false)
+					if(note1_array[indexA] !== false || note2_array[indexA] !== false || note3_array[indexA] !== false)
 						break;
 					else
 						nextCount++;
@@ -802,11 +802,11 @@ function GrooveUtils() { "use strict";
 				num_notes_on++;
 			}
 			
-			if(note2_array[0] != false) {
+			if(note2_array[0] !== false) {
 				// look ahead and see when the next note is
 				nextCount = 1;
 				for(var indexB = 1; indexB < end_of_group; indexB++) {
-					if(note1_array[indexB] != false || note2_array[indexB] != false || note3_array[indexB] != false)
+					if(note1_array[indexB] !== false || note2_array[indexB] !== false || note3_array[indexB] !== false)
 						break;
 					else
 						nextCount++;
@@ -816,11 +816,11 @@ function GrooveUtils() { "use strict";
 				num_notes_on++;
 			}
 			
-			if(note3_array[0] != false) {
+			if(note3_array[0] !== false) {
 				// look ahead and see when the next note is
 				nextCount = 1;
 				for(var indexC = 1; indexC < end_of_group; indexC++) {
-					if(note1_array[indexC] != false || note2_array[indexC] != false || note3_array[indexC] != false)
+					if(note1_array[indexC] !== false || note2_array[indexC] !== false || note3_array[indexC] !== false)
 						break;
 					else
 						nextCount++;
@@ -862,10 +862,10 @@ function GrooveUtils() { "use strict";
 		var ABC_String = "";
 		
 		// count the # of rest
-		if(note1_array[0] == false && note2_array[0] == false && note3_array[0] == false) {
+		if(note1_array[0] === false && note2_array[0] === false && note3_array[0] === false) {
 			var restCount = 1;
 			for(var indexB = 1; indexB < end_of_group; indexB++) {
-				if(note1_array[indexB] != false || note2_array[indexB] != false || note3_array[indexB] != false)
+				if(note1_array[indexB] !== false || note2_array[indexB] !== false || note3_array[indexB] !== false)
 					break;
 				else
 					restCount++;
@@ -916,7 +916,7 @@ function GrooveUtils() { "use strict";
 				note_grouping = Math.ceil(notes_per_measure/4);
 				break;
 			}
-		} else if((timeSigTop % 3) == 0) {
+		} else if((timeSigTop % 3) === 0) {
 			// 3/4, 6/8, 12/8, etc
 			note_grouping = notes_per_measure/4;
 		
@@ -948,7 +948,7 @@ function GrooveUtils() { "use strict";
 			// 3/8
 			note_grouping = 12;
 		
-		} else if((timeSigTop % 3) == 0 && timeSigBottom == 8) {
+		} else if((timeSigTop % 3) === 0 && timeSigBottom == 8) {
 			// 6/8, 9/8
 			note_grouping = 24;
 		
@@ -1021,7 +1021,7 @@ function GrooveUtils() { "use strict";
 		var num_active_notes = 0;
 		
 		for(var i=start_index; i < start_index+how_far_to_measure; i++) {
-			if(array1[i] != false || array2[i] != false || (array3 && array3[i] != false))
+			if(array1[i] !== false || array2[i] !== false || (array3 && array3[i] !== false))
 				num_active_notes++;
 		}
 		
@@ -1055,14 +1055,14 @@ function GrooveUtils() { "use strict";
 			// this will remove rests and use different length notes to express triplets.   It is a little harder to decipher.
 			if(eliminate_rests_in_triplets) {
 				if(notes_per_measure != 12)	{
-					var group_size = notes_per_measure/4;
-					var end_of_group = group_size - (i % group_size);  // assuming we are always dealing with 24 notes
-					var grouping_size_for_rests = group_size;   // we scale up the notes to fit a 24 length array.  This will be 1 or 2
+					group_size = notes_per_measure/4;
+					end_of_group = group_size - (i % group_size);  // assuming we are always dealing with 24 notes
+					grouping_size_for_rests = group_size;   // we scale up the notes to fit a 24 length array.  This will be 1 or 2
 				}
 			}
 			
-			if(i % ABC_gen_note_grouping_size(true, timeSigTop, timeSigBottom) == 0) {
-				var num_notes_in_next_group = root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom)
+			if(i % ABC_gen_note_grouping_size(true, timeSigTop, timeSigBottom) === 0) {
+				var num_notes_in_next_group = root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom);
 				// creates the 3 or the 6 over the note grouping
 				// looks like (3:3:3 or (6:6:6
 				
@@ -1077,7 +1077,7 @@ function GrooveUtils() { "use strict";
 										":" + num_notes_in_next_group;
 			} 
 			 
-			if( i % grouping_size_for_rests == 0 ) {
+			if( i % grouping_size_for_rests === 0 ) {
 				// we will output a rest for each place there could be a note
 				stickings_voice_string += getABCforRest(sticking_array.slice(i), class_empty_note_array, class_empty_note_array, grouping_size_for_rests, scaler, true);
 				
@@ -1108,7 +1108,7 @@ function GrooveUtils() { "use strict";
 			}
 			
 			// add a bar line every 24 notes
-			if(((i+1) % 24) == 0) {
+			if(((i+1) % 24) === 0) {
 				stickings_voice_string += "|";
 				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
@@ -1142,13 +1142,13 @@ function GrooveUtils() { "use strict";
 			var grouping_size_for_rests = ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom);
 			
 			var end_of_group;
-			if(i%ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom) == 0)
+			if(i%ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom) === 0)
 				end_of_group = ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom);
 			else
 				end_of_group = (ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom)-((i)%ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom)));
 					 
 			 
-			if(i % ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom) == 0) {
+			if(i % ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom) === 0) {
 				// we will only output a rest at the beginning of a beat phrase, or if triplets for every space
 				stickings_voice_string += getABCforRest(sticking_array.slice(i), class_empty_note_array, class_empty_note_array, grouping_size_for_rests, scaler, true);
 				
@@ -1179,7 +1179,7 @@ function GrooveUtils() { "use strict";
 			}
 			
 			// add a bar line every meausre.   32 notes in 4/4 time.   (8 * timeSigTop)
-			if(((i+1) % (8*timeSigTop)) == 0) {
+			if(((i+1) % (8*timeSigTop)) === 0) {
 				stickings_voice_string += "|";
 				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
@@ -1200,23 +1200,23 @@ function GrooveUtils() { "use strict";
 		var mapping_array = new Array(num_notes);  // create large empty array
 	
 		for(var i=0; i < num_notes; i++) {
-			if((HH_array && HH_array[i] != false) || 
-			   (snare_array && snare_array[i] != false) || 
-			   (kick_array && kick_array[i] != false) )
+			if((HH_array && HH_array[i] !== false) || 
+			   (snare_array && snare_array[i] !== false) || 
+			   (kick_array && kick_array[i] !== false) )
 				mapping_array[i] = true;
 			else
 				mapping_array[i] = false;
 		}
 		
 		return mapping_array;
-	}
+	};
 	
 	// create ABC from note arrays
 	// The Arrays passed in must be 32 or 24 notes long 
 	// notes_per_measure denotes the number of notes that _should_ be in the measure even though the arrays are always large
 	root.create_ABC_from_snare_HH_kick_arrays = function(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
 		
-		if(timeSigTop == 4 && timeSigBottom == 4 && (notes_per_measure % 3) == 0) { // triplets 
+		if(timeSigTop == 4 && timeSigBottom == 4 && (notes_per_measure % 3) === 0) { // triplets 
 			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);
 		} else {
 			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);
@@ -1294,7 +1294,7 @@ function GrooveUtils() { "use strict";
 		// annotations
 		this.anno_start = function(type, start, stop, x, y, w, h) {
 			
-		}
+		};
 		this.svg_highlight_y = 0;
 		this.svg_highlight_h = 44;
 		this.anno_stop = function(type, start, stop, x, y, w, h) {
@@ -1310,8 +1310,7 @@ function GrooveUtils() { "use strict";
 				h = this.svg_highlight_h;
 				root.abc_obj.out_svg('<rect style="fill: transparent;" class="abcr" id="abcNoteNum_' + root.grooveUtilsUniqueIndex + "_" + root.abcNoteNumIndex + '" x="');
 				root.abc_obj.out_sxsy(x, '" y="', y);
-				root.abc_obj.out_svg('" width="' + w.toFixed(2) +
-					'" height="' + h.toFixed(2) + '"/>\n')
+				root.abc_obj.out_svg('" width="' + w.toFixed(2) + '" height="' + h.toFixed(2) + '"/>\n');
 					
 				//console.log("Type:"+type+ "\t abcNoteNumIndex:"+root.abcNoteNumIndex+ "\t X:"+x+ "\t Y:"+y+ "\t W:"+w+ "\t H:"+h);
 				
@@ -1319,7 +1318,7 @@ function GrooveUtils() { "use strict";
 				if(type != "grace")
 					root.abcNoteNumIndex++;
 			}
-		}
+		};
 		
 		// image output
 		this.img_out = function(str) {
@@ -1362,7 +1361,7 @@ function GrooveUtils() { "use strict";
 			}
 			root.abcNoteNumCurrentlyHighlighted = -1;
 		}
-	}
+	};
 		
 	// set note to -1 to unhighlight all notes
 	root.highlightNoteInABCSVGByIndex = function(noteToHighlight) {
@@ -1374,13 +1373,13 @@ function GrooveUtils() { "use strict";
 			myElements[i].setAttribute("class", myElements[i].getAttribute("class") + " highlighted");
 			root.abcNoteNumCurrentlyHighlighted = noteToHighlight;
 		}
-	}
+	};
 	
 	// cross index the percent complete with the myGrooveData note arrays to find the nth note
 	// Then highlight the note
 	root.highlightNoteInABCSVGFromPercentComplete = function(percentComplete) {
 		
-		if(root.note_mapping_array != null) {
+		if(root.note_mapping_array !== null) {
 			// convert percentComplete to an index
 			var curNoteIndex = percentComplete * root.note_mapping_array.length;
 			
@@ -1395,7 +1394,7 @@ function GrooveUtils() { "use strict";
 			// now the real_note_index should map to the correct abc note, highlight italics
 			root.highlightNoteInABCSVGByIndex(real_note_index);
 		}
-	}
+	};
 		
 	
 	// ******************************************************************************************************************
@@ -1411,7 +1410,7 @@ function GrooveUtils() { "use strict";
 		if(baseLocation.length > 0)
 			return baseLocation;
 		
-		if (global_grooveUtilsScriptSrc != "") {
+		if (global_grooveUtilsScriptSrc !== "") {
 			var lastSlash = global_grooveUtilsScriptSrc.lastIndexOf("/");
 			// lets find the slash before it since we need to go up a directory
 			lastSlash = global_grooveUtilsScriptSrc.lastIndexOf("/", lastSlash-1);
@@ -1532,7 +1531,7 @@ function GrooveUtils() { "use strict";
 		var midi_url = "data:audio/midi;base64," + btoa(midiFile.toBytes());
 		
 		return midi_url;
-	}
+	};
 	
 	/* 
 	 * midi_output_type:  "general_MIDI" or "Custom"
@@ -1585,7 +1584,7 @@ function GrooveUtils() { "use strict";
 					duration = 16;   // todo: use time sig to determine duration of a 32nd note
 				}
 				
-				if(swing_percentage != 0) {
+				if(swing_percentage !== 0) {
 					// swing effects the note placement of the e and the a.  (1e&a)
 					// swing increases the distance between the 1 and the e ad shortens the distance between the e and the &
 					// likewise the distance between the & and the a is increased and the a and the 1 is shortened
@@ -1641,7 +1640,7 @@ function GrooveUtils() { "use strict";
 							// shift by one sixteenth note
 							metronome_specific_index -= sixteenthNoteFrequency;
 							break;
-						case "E":
+						case "Ta":
 							if(!isTriplets) alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 							// shift by two sixteenth notes
 							metronome_specific_index -= (2*sixteenthNoteFrequency);
@@ -1653,21 +1652,21 @@ function GrooveUtils() { "use strict";
 				
 					if(metronome_specific_index >= 0) {  // can go negative due to MetronomeClickStart shift above
 						// Special sound on the one
-						if(metronome_specific_index == 0 || (metronome_specific_index % (quarterNoteFrequency * timeSigTop)) == 0) {
+						if(metronome_specific_index === 0 || (metronome_specific_index % (quarterNoteFrequency * timeSigTop)) === 0) {
 							metronome_note = 76;   // 1 count
 							
-						} else if((metronome_specific_index % quarterNoteFrequency) == 0) {
+						} else if((metronome_specific_index % quarterNoteFrequency) === 0) {
 							metronome_note = 77;   // standard metronome click
 						}
 							
 						if(!metronome_note && metronome_frequency == 8) {  // 8th notes requested
-							if((metronome_specific_index % eighthNoteFrequency) == 0) {
+							if((metronome_specific_index % eighthNoteFrequency) === 0) {
 								// click every 8th note
 								metronome_note = 77;   // standard metronome click
 							}
 								
 						} else if(!metronome_note && metronome_frequency == 16) {  // 16th notes requested
-							if((metronome_specific_index % sixteenthNoteFrequency) == 0) {
+							if((metronome_specific_index % sixteenthNoteFrequency) === 0) {
 								// click every 16th note
 								metronome_note = 77;   // standard metronome click
 								metronome_velocity = 25;   // not as loud as the normal click
@@ -1675,7 +1674,7 @@ function GrooveUtils() { "use strict";
 						}
 					}
 					
-					if(metronome_note != false) {
+					if(metronome_note !== false) {
 						//if(prev_metronome_note != false)
 						//	midiTrack.addNoteOff(midi_channel, prev_metronome_note, 0);
 						midiTrack.addNoteOn(midi_channel, metronome_note, delay_for_next_note, metronome_velocity);
@@ -1716,9 +1715,9 @@ function GrooveUtils() { "use strict";
 							break;
 					}
 					
-					if(hh_note != false) {
+					if(hh_note !== false) {
 						// need to end hi-hat open notes else the hh open sounds horrible
-						if(prev_hh_note != false) {
+						if(prev_hh_note !== false) {
 							midiTrack.addNoteOff(midi_channel, prev_hh_note, delay_for_next_note);
 							prev_hh_note = false;
 							delay_for_next_note = 0;   // zero the delay
@@ -1773,7 +1772,7 @@ function GrooveUtils() { "use strict";
 							break;
 					}
 					
-					if(snare_note != false) {
+					if(snare_note !== false) {
 						//if(prev_snare_note != false)
 						//	midiTrack.addNoteOff(midi_channel, prev_snare_note, 0);
 						midiTrack.addNoteOn(midi_channel, snare_note, delay_for_next_note, snare_velocity);
@@ -1801,14 +1800,14 @@ function GrooveUtils() { "use strict";
 						alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
 						break;
 					}
-					if(kick_note != false) {
+					if(kick_note !== false) {
 						//if(prev_kick_note != false)
 						//	midiTrack.addNoteOff(midi_channel, prev_kick_note, 0);
 						midiTrack.addNoteOn(midi_channel, kick_note, delay_for_next_note, kick_velocity);
 						delay_for_next_note = 0;   // zero the delay
 						//prev_kick_note = kick_note;
 					}
-					if(kick_splash_note != false) {
+					if(kick_splash_note !== false) {
 						//if(prev_kick_splash_note != false)
 						//	midiTrack.addNoteOff(midi_channel, prev_kick_splash_note, 0);
 						midiTrack.addNoteOn(midi_channel, kick_splash_note, delay_for_next_note, kick_velocity);
@@ -1876,7 +1875,7 @@ function GrooveUtils() { "use strict";
 	};
 	
 	root.pauseMIDI_playback = function() {
-		if(root.isMIDIPaused == false) {
+		if(root.isMIDIPaused === false) {
 			root.isMIDIPaused = true;
 			root.midiEventCallbacks.pauseEvent(root.midiEventCallbacks.classRoot);
 			MIDI.Player.pause();
@@ -1889,7 +1888,7 @@ function GrooveUtils() { "use strict";
 	root.startMIDI_playback = function() {
 		if(MIDI.Player.playing) {
 			return;
-		} else if(root.isMIDIPaused && false == root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot) ) {
+		} else if(root.isMIDIPaused && false === root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot) ) {
 			root.current_midi_start_time = new Date();
 			root.last_midi_update_time = 0;
 			MIDI.Player.resume();
@@ -1941,7 +1940,7 @@ function GrooveUtils() { "use strict";
 	};
 	
 	root.repeatMIDI_playback = function() {
-		if(root.shouldMIDIRepeat == false) {
+		if(root.shouldMIDIRepeat === false) {
 			root.shouldMIDIRepeat = true;
 			MIDI.Player.loop(true);
 		} else {
@@ -1972,7 +1971,7 @@ function GrooveUtils() { "use strict";
 	
 	root.getMidiStartTime = function() {
 		return root.current_midi_start_time;
-	}
+	};
 	
 	// calculate how long the midi has been playing total (since the last play/pause press
 	// this is computationally expensive
@@ -1999,7 +1998,7 @@ function GrooveUtils() { "use strict";
 		root.last_midi_update_time = time_now;
 		
 		return play_time_diff;   // a time struct that represents the total time played so far since the last play button push
-	}
+	};
 	
 	// update the midi play timer on the player. 
 	// Keeps track of how long we have been playing.
@@ -2043,7 +2042,7 @@ function GrooveUtils() { "use strict";
 					MIDI.Player.stop();
 					root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot, false);
 					MIDI.Player.start();
-				} else {
+				//  } else {
 					// let midi.loop handle the repeat for us
 					//MIDI.Player.stop();
 					//MIDI.Player.start();
@@ -2191,7 +2190,7 @@ function GrooveUtils() { "use strict";
 		
 		root.swingIsEnabled = trueElseFalse;
 		
-		if(root.swingIsEnabled == false) {
+		if(root.swingIsEnabled === false) {
 			root.setSwingSlider(0);
 		}
 	
@@ -2204,7 +2203,7 @@ function GrooveUtils() { "use strict";
         if(swing < 0 || swing > 60)
             swing = 0;
         
-        if(root.swingIsEnabled == false)
+        if(root.swingIsEnabled === false)
             swing = 0;
         
         // our real swing value only goes to 60%. 
@@ -2219,7 +2218,7 @@ function GrooveUtils() { "use strict";
 			swingAmount = parseInt(document.getElementById("swingInput" + root.grooveUtilsUniqueIndex).value, 10);
 		}
 		
-		if(root.swingIsEnabled == false) {
+		if(root.swingIsEnabled === false) {
 			document.getElementById('swingOutput'+ root.grooveUtilsUniqueIndex).innerHTML = "N/A";	
 		} else {
 			document.getElementById('swingOutput'+ root.grooveUtilsUniqueIndex).innerHTML = "" + swingAmount + "%";
@@ -2231,7 +2230,7 @@ function GrooveUtils() { "use strict";
 	
 	root.swingUpdateEvent = function(event) {
 		
-		if(root.swingIsEnabled == false) {
+		if(root.swingIsEnabled === false) {
 			root.setSwingSlider(0);
 		} else {
 			root.swingUpdate(event.target.value);

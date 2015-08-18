@@ -114,7 +114,7 @@ function GrooveWriter() { "use strict";
 	function is_snare_on(id) {
 		var state = get_snare_state(id, "ABC");
 		
-		if(state != false)
+		if(state !== false)
 			return true;
 			
 		return false;
@@ -176,7 +176,7 @@ function GrooveWriter() { "use strict";
 	function is_kick_on(id) {
 		var state = get_kick_state(id, "ABC");
 		
-		if(state != false)
+		if(state !== false)
 			return true;
 			
 		return false;
@@ -300,7 +300,7 @@ function GrooveWriter() { "use strict";
 	function is_hh_on(id) {
 		var state = get_hh_state(id, "ABC");
 		
-		if(state != false)
+		if(state !== false)
 			return true;
 			
 		return false;
@@ -439,8 +439,10 @@ function GrooveWriter() { "use strict";
 	
 		// since colors are inherited, if we have not set a color it will be blank in the ID'd element
 		// we set all colors to off in the stylesheet, so it must be off.
-		if( (document.getElementById("sticking_right" + id).style.color == "" && document.getElementById("sticking_left" + id).style.color == "") 
-			|| (document.getElementById("sticking_right" + id).style.color == constant_sticking_right_off_color_rgb && document.getElementById("sticking_left" + id).style.color == constant_sticking_left_off_color_rgb)) {
+		if( (document.getElementById("sticking_right" + id).style.color === "" && 
+		     document.getElementById("sticking_left" + id).style.color === "")  ||
+			(document.getElementById("sticking_right" + id).style.color == constant_sticking_right_off_color_rgb &&
+  			 document.getElementById("sticking_left" + id).style.color == constant_sticking_left_off_color_rgb)) {
 			
 			// both are off.   Call it off
 			if(returnType == "ABC")
@@ -569,7 +571,7 @@ function GrooveWriter() { "use strict";
 	function hilight_note(instrument, percent_complete) {
 		
 		if(percent_complete < 0) {
-			clear_all_highlights("clear")
+			clear_all_highlights("clear");
 			return;
 		}
 		
@@ -747,7 +749,7 @@ function GrooveWriter() { "use strict";
 				anchor.className = anchor.className.replace(new RegExp(' selected', 'g'), "");
 			}
 		}
-	}
+	};
 	
 	root.metronomeOptionsMenuPopupClick = function(option_type) {
 		
@@ -757,7 +759,7 @@ function GrooveWriter() { "use strict";
 			if(!current) {
 				root.myGrooveUtils.setMetronomeSolo(true);
 				document.getElementById("metronomeOptionsContextMenuSolo").className += " menuChecked";
-				if(class_metronome_interval == 0)
+				if(class_metronome_interval === 0)
 					root.setMetronomeButton(4);
 			} else {
 				root.myGrooveUtils.setMetronomeSolo(false);
@@ -866,7 +868,7 @@ function GrooveWriter() { "use strict";
 			showHideCSS_ClassVisibility(".kick-container", true, true);  // show it
 			showHideCSS_ClassVisibility(".snare-container", true, false);  // hide it
 			if(class_number_of_measures > 1)
-				alert("Permutation patterns only use the first measure, the other measures will be ignored.")
+				alert("Permutation patterns only use the first measure, the other measures will be ignored.");
 			selectButton(document.getElementById("permutationAnchor"));
 			document.getElementById("PermutationOptions").innerHTML = root.HTMLforPermutationOptions();
 			document.getElementById("PermutationOptions").className += " displayed";
@@ -888,15 +890,16 @@ function GrooveWriter() { "use strict";
 	};
 	
 	root.helpMenuPopupClick = function(help_type) {
+		var win;
 		
 		switch (help_type) {
 		case "help":
-			var win = window.open("help.html",'_blank');
+			win = window.open("help.html",'_blank');
 			win.focus();
 			break;
 			
 		case "about":
-			var win = window.open("about.html",'_blank');
+			win = window.open("about.html",'_blank');
 			win.focus();
 			break;
 
@@ -913,7 +916,7 @@ function GrooveWriter() { "use strict";
 			break;
 		}
 		
-	}
+	};
 	
 	// user has clicked on the advanced edit button
 	this.toggleAdvancedEdit = function() {
@@ -1006,11 +1009,11 @@ function GrooveWriter() { "use strict";
 			else if(instrument == "stickings" && action == "all_left")
 				setFunction(i, "left");
 			else if(instrument == "stickings" && action == "alternate")
-				setFunction(i, (i % 2 == 0 ? "right" :"left") );
+				setFunction(i, (i % 2 === 0 ? "right" :"left") );
 			else if(instrument == "hh" && action == "downbeats")
-				setFunction(i, (i % 2 == 0 ? "normal" :"off") );
+				setFunction(i, (i % 2 === 0 ? "normal" :"off") );
 			else if(instrument == "hh" && action == "upbeats")
-				setFunction(i, (i % 2 == 0 ? "off" :"normal") );
+				setFunction(i, (i % 2 === 0 ? "off" :"normal") );
 			else if(instrument == "snare" && action == "all_on")
 				setFunction(i, "accent");
 			else if(instrument == "snare" && action == "all_on_normal")
@@ -1074,7 +1077,7 @@ function GrooveWriter() { "use strict";
 	root.noteLeftClick = function(event, type, id) {
 		
 		// use a popup if advanced edit is on
-		if(class_advancedEditIsOn == true) {
+		if(class_advancedEditIsOn === true) {
 			root.noteRightClick(event, type, id);
 		
 		} else {	
@@ -1778,7 +1781,7 @@ function GrooveWriter() { "use strict";
 		// turn the kicks into snares
 		for(var i=0; i < snare_array.length; i++)
 		{
-			if(snare_array[i] != false)
+			if(snare_array[i] !== false)
 				snare_array[i] = constant_ABC_SN_Normal;
 		}
 		
@@ -1794,9 +1797,9 @@ function GrooveWriter() { "use strict";
 		if(section > 0) {   // Don't convert notes for the first measure since it is the ostinado
 			for(var i=0; i < snare_array.length; i++)
 			{
-				if(snare_array[i] != false)
+				if(snare_array[i] !== false)
 					snare_array[i] = constant_ABC_SN_Accent;
-				else if((i%2) == 0)  // all other even notes are ghosted snares  
+				else if((i%2) === 0)  // all other even notes are ghosted snares  
 					snare_array[i] = constant_ABC_SN_Normal;
 			}
 		}
@@ -1813,7 +1816,7 @@ function GrooveWriter() { "use strict";
 		if(section > 0) {   // Don't convert notes for the first measure since it is the ostinado
 			for(var i=0; i < snare_array.length; i++)
 			{
-				if(snare_array[i] != false) {  
+				if(snare_array[i] !== false) {  
 					snare_array[i] = constant_ABC_SN_Accent;
 					i++;   // the next one is not diddled  (leave it false)
 				} else { // all other even notes are diddled, which means 32nd notes  
@@ -1891,94 +1894,94 @@ function GrooveWriter() { "use strict";
 		
 		switch(sectionNum) {
 			case 0:
-				if(document.getElementById("PermuationOptionsOstinato").checked
-					&& (!document.getElementById("PermuationOptionsOstinato_sub1")
-						|| document.getElementById("PermuationOptionsOstinato_sub1").checked) )
+				if(document.getElementById("PermuationOptionsOstinato").checked  &&
+					(!document.getElementById("PermuationOptionsOstinato_sub1")  ||
+						document.getElementById("PermuationOptionsOstinato_sub1").checked) )
 					ret_val = true;
 				break;
 			case 1:
-				if(document.getElementById("PermuationOptionsSingles").checked
-					&& document.getElementById("PermuationOptionsSingles_sub1").checked)
+				if(document.getElementById("PermuationOptionsSingles").checked &&
+					document.getElementById("PermuationOptionsSingles_sub1").checked)
 					ret_val = true;
 				break;
 			case 2:
-				if(document.getElementById("PermuationOptionsSingles").checked
-					&& document.getElementById("PermuationOptionsSingles_sub2").checked)
+				if(document.getElementById("PermuationOptionsSingles").checked &&
+					document.getElementById("PermuationOptionsSingles_sub2").checked)
 					ret_val = true;
 				break;
 			case 3:
-				if(document.getElementById("PermuationOptionsSingles").checked
-					&& document.getElementById("PermuationOptionsSingles_sub3").checked)
+				if(document.getElementById("PermuationOptionsSingles").checked &&
+					document.getElementById("PermuationOptionsSingles_sub3").checked)
 					ret_val = true;
 				break;
 			case 4:
-				if(!usingTriplets()
-					&& document.getElementById("PermuationOptionsSingles").checked
-					&& document.getElementById("PermuationOptionsSingles_sub4").checked)
+				if(!usingTriplets() &&
+					document.getElementById("PermuationOptionsSingles").checked &&
+					document.getElementById("PermuationOptionsSingles_sub4").checked)
 					ret_val = true;
 				break;
 			case 5:
-				if(document.getElementById("PermuationOptionsDoubles").checked
-					&& document.getElementById("PermuationOptionsDoubles_sub1").checked)
+				if(document.getElementById("PermuationOptionsDoubles").checked &&
+					document.getElementById("PermuationOptionsDoubles_sub1").checked)
 					ret_val = true;
 				break;
 			case 6:
-				if(document.getElementById("PermuationOptionsDoubles").checked
-					&& document.getElementById("PermuationOptionsDoubles_sub2").checked)
+				if(document.getElementById("PermuationOptionsDoubles").checked &&
+					document.getElementById("PermuationOptionsDoubles_sub2").checked)
 					ret_val = true;
 				break;
 			case 7:
-				if(document.getElementById("PermuationOptionsDoubles").checked
-					&& document.getElementById("PermuationOptionsDoubles_sub3").checked)
+				if(document.getElementById("PermuationOptionsDoubles").checked &&
+					document.getElementById("PermuationOptionsDoubles_sub3").checked)
 					ret_val = true;
 				break;
 			case 8:
-				if(!usingTriplets()
-					&& document.getElementById("PermuationOptionsDoubles").checked
-					&& document.getElementById("PermuationOptionsDoubles_sub4").checked)
+				if(!usingTriplets() &&
+					document.getElementById("PermuationOptionsDoubles").checked &&
+					document.getElementById("PermuationOptionsDoubles_sub4").checked)
 					ret_val = true;
 				break;
 			case 9:
-				if(!usingTriplets()
-					&& document.getElementById("PermuationOptionsUpsDowns").checked
-					&& document.getElementById("PermuationOptionsUpsDowns_sub1").checked)
+				if(!usingTriplets() &&
+					 document.getElementById("PermuationOptionsUpsDowns").checked &&
+					 document.getElementById("PermuationOptionsUpsDowns_sub1").checked)
 					ret_val = true;
 				break;
 			case 10:
-				if(!usingTriplets()
-					&& document.getElementById("PermuationOptionsUpsDowns").checked
-					&& document.getElementById("PermuationOptionsUpsDowns_sub2").checked)
+				if(!usingTriplets() &&
+					 document.getElementById("PermuationOptionsUpsDowns").checked &&
+					 document.getElementById("PermuationOptionsUpsDowns_sub2").checked)
 					ret_val = true;
 				break;
 			case 11:
-				if(document.getElementById("PermuationOptionsTriples").checked
-					&& (!document.getElementById("PermuationSubOptionsTriples1")
-						|| document.getElementById("PermuationOptionsTriples_sub1").checked) )
+				if(document.getElementById("PermuationOptionsTriples").checked &&
+					(!document.getElementById("PermuationSubOptionsTriples1") ||
+						document.getElementById("PermuationOptionsTriples_sub1").checked) )
 					ret_val = true;
 				break;
 			case 12:
-				if(!usingTriplets()
-					&& document.getElementById("PermuationOptionsTriples").checked
-					&& document.getElementById("PermuationOptionsTriples_sub2").checked)
+				if(!usingTriplets() &&
+					document.getElementById("PermuationOptionsTriples").checked &&
+					document.getElementById("PermuationOptionsTriples_sub2").checked)
 					ret_val = true;
 				break;
 			case 13:
-				if(!usingTriplets()
-					&& document.getElementById("PermuationOptionsTriples").checked
-					&& document.getElementById("PermuationOptionsTriples_sub3").checked)
+				if(!usingTriplets() &&
+					document.getElementById("PermuationOptionsTriples").checked &&
+					document.getElementById("PermuationOptionsTriples_sub3").checked)
 					ret_val = true;
 				break;
 			case 14:
-				if(!usingTriplets()
-					&& document.getElementById("PermuationOptionsTriples").checked
-					&& document.getElementById("PermuationOptionsTriples_sub4").checked)
+				if(!usingTriplets() &&
+					document.getElementById("PermuationOptionsTriples").checked &&
+					document.getElementById("PermuationOptionsTriples_sub4").checked)
 					ret_val = true;
 				break;
 			case 15:
-				if(!usingTriplets()
-					&& document.getElementById("PermuationOptionsQuads").checked
-					&& (!document.getElementById("PermuationOptionsQuads_sub1")
-						|| document.getElementById("PermuationOptionsQuads_sub1").checked) )
+				if(!usingTriplets() &&
+				   document.getElementById("PermuationOptionsQuads").checked &&
+				   (!document.getElementById("PermuationOptionsQuads_sub1") ||
+					document.getElementById("PermuationOptionsQuads_sub1").checked) )
 					ret_val = true;
 				break;
 			default:
@@ -2172,7 +2175,7 @@ function GrooveWriter() { "use strict";
 		default:
 			root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
 			
-			for(var i=1; i < class_number_of_measures; i++) {
+			for(i=1; i < class_number_of_measures; i++) {
 				// reset arrays
 				Sticking_Array = class_empty_note_array.slice(0);  // copy by value
 				HH_Array = class_empty_note_array.slice(0);  // copy by value
@@ -2224,7 +2227,7 @@ function GrooveWriter() { "use strict";
 			
 			var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, i*class_notes_per_measure);
 			
-			if(i == 0) {  // assign
+			if(i === 0) {  // assign
 				myGrooveData.sticking_array    =  Sticking_Array;
 				myGrooveData.hh_array          =  HH_Array;
 				myGrooveData.snare_array       =  Snare_Array;
@@ -2309,16 +2312,16 @@ function GrooveWriter() { "use strict";
 	
 	// debug print the stack
 	function debugPrintUndoRedoStack() {
-		
+		var i;
 		var newHTML = "<h3>Undo Stack</h3><ol>";
-		for(var i in class_undo_stack) {
+		for(i in class_undo_stack) {
 			newHTML += "<li>" + class_undo_stack[i];
 		}
 		newHTML += "</ol><br>";
 		document.getElementById("undoStack").innerHTML = newHTML;
 		
 		newHTML = "<h3>Redo Stack</h3><ol>";
-		for(var i in class_redo_stack) {
+		for(i in class_redo_stack) {
 			newHTML += "<li>" + class_redo_stack[i];
 		}
 		newHTML += "</ol><br>";
@@ -2330,7 +2333,7 @@ function GrooveWriter() { "use strict";
 	root.AddItemToUndoOrRedoStack = function(newURL, ourStack, noClear) {
 		
 		if(!ourStack)
-			return;
+			return false;
 		
 		if(newURL == class_undo_stack[class_undo_stack.length-1]) {
 			//debugPrintUndoRedoStack();
@@ -2359,7 +2362,7 @@ function GrooveWriter() { "use strict";
 		if(root.AddItemToUndoOrRedoStack(urlFragment, class_undo_stack)) {
 			class_redo_stack = [];   
 		}
-	}
+	};
 	
 	
 	// update the current URL so that reloads and history traversal and link shares and bookmarks work correctly
@@ -2370,11 +2373,11 @@ function GrooveWriter() { "use strict";
 		root.AddFullURLToUndoStack(newURL);
 		
 		var title = document.getElementById("tuneTitle").value.trim();
-		if(title != "")
+		if(title !== "")
 			newTitle = title;
 			
 		var author = document.getElementById("tuneAuthor").value.trim();
-		if(author != "") {
+		if(author !== "") {
 			if(title)
 				newTitle += " by " + author;
 			else	
@@ -2481,7 +2484,7 @@ function GrooveWriter() { "use strict";
 			
 			var addon_abc;
 			
-			for(var i=0; i < class_number_of_measures; i++) {
+			for(i=0; i < class_number_of_measures; i++) {
 				// reset arrays
 				Sticking_Array = class_empty_note_array.slice(0);  // copy by value
 				HH_Array = class_empty_note_array.slice(0);  // copy by value
@@ -2494,7 +2497,7 @@ function GrooveWriter() { "use strict";
 				if(i == class_number_of_measures-1) { 
 					// last measure
 					addon_abc = "|\n";
-				} else if(i % 2 == 0) {
+				} else if(i % 2 === 0) {
 					// even measure
 					addon_abc = "\\\n";
 				} else {
@@ -2777,9 +2780,9 @@ function GrooveWriter() { "use strict";
 					break;
 				}
 			}
+			return true;  // let the default handler deal with the keypress
 		});
-		return true;  // let the default handler deal with the keypress
-	}
+	};
 		
 	// public function.
 	// This function initializes the data for the groove Scribe web page
@@ -2864,7 +2867,7 @@ function GrooveWriter() { "use strict";
 		if(document.getElementById("metronomeAutoSpeedUpKeepGoingForever"))
 			keepIncreasingForever = document.getElementById("metronomeAutoSpeedUpKeepGoingForever").checked;
 			
-		var curTempo = root.myGrooveUtils.getTempo();;	
+		var curTempo = root.myGrooveUtils.getTempo();	
 			
 		var midiStartTime = root.myGrooveUtils.getMidiStartTime();
 		if(class_our_midi_start_time != midiStartTime) {
@@ -2880,7 +2883,7 @@ function GrooveWriter() { "use strict";
 		}
 		var totalMidiPlayTime = root.myGrooveUtils.getMidiPlayTime();
 		var timeDiffMilliseconds = totalMidiPlayTime.getTime() - class_our_last_midi_tempo_increase_time.getTime();
-		var tempoDiffFloat = (totalTempoIncreaseAmount) * (timeDiffMilliseconds/(tempoIncreaseInterval*1000))
+		var tempoDiffFloat = (totalTempoIncreaseAmount) * (timeDiffMilliseconds/(tempoIncreaseInterval*1000));
 		
 		// round the number down, but keep track of the remainder so we carry it forward.   Otherwise
 		// rounding errors cause us to be way off.
@@ -2899,7 +2902,7 @@ function GrooveWriter() { "use strict";
 		
 		if(tempoDiffInt > 0) 
 			root.myGrooveUtils.setTempo(root.myGrooveUtils.getTempo() + tempoDiffInt);
-	}
+	};
 				
 				
 	// takes a string of notes encoded in a serialized string and sets the notes on or off
@@ -3148,15 +3151,15 @@ function GrooveWriter() { "use strict";
 		fullURL += "&Div=" + class_notes_per_measure;
 		
 		var title = document.getElementById("tuneTitle").value.trim();
-		if(title != "")
+		if(title !== "")
 			fullURL += "&Title=" + encodeURIComponent(title);
 			
 		var author = document.getElementById("tuneAuthor").value.trim();
-		if(author != "")
+		if(author !== "")
 			fullURL += "&Author=" + encodeURIComponent(author);
 		
 		var comments = document.getElementById("tuneComments").value.trim();
-		if(comments != "")
+		if(comments !== "")
 			fullURL += "&Comments=" + encodeURIComponent(comments);
 		
 		fullURL += "&Tempo=" + root.myGrooveUtils.getTempo();
@@ -3181,7 +3184,7 @@ function GrooveWriter() { "use strict";
 			Snare += get_snare_state(i, "URL");
 			Kick += get_kick_state(i, "URL");
 		
-			if(((i+1) % class_notes_per_measure) == 0) {
+			if(((i+1) % class_notes_per_measure) === 0) {
 				Stickings += "|";
 				HH += "|";
 				Snare += "|";
@@ -3214,12 +3217,6 @@ function GrooveWriter() { "use strict";
 		
 		if(popup) 
 			popup.style.display = "none";
-			
-		if(type == "OK") {
-		
-		} else {
-		
-		}
 	};
 	
 	root.updateRangeLabel = function(event, idToUpdate) {
@@ -3301,7 +3298,7 @@ function GrooveWriter() { "use strict";
 				}
 			});
 			request.execute(function(response) {      
-				if((response.id != null)){
+				if((response.id !== null)){
 					var textField = document.getElementById(cssIdOfTextFieldToFill);
 					textField.value = response.id;
 				
@@ -3518,7 +3515,7 @@ function GrooveWriter() { "use strict";
 									');
 									
 									// add space between notes, exept on the last note
-									if((i-(indexStartForNotes-1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
+									if((i-(indexStartForNotes-1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) === 0 && i < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}
@@ -3562,7 +3559,7 @@ function GrooveWriter() { "use strict";
 										</div>\
 									');
 									
-									if((i-(indexStartForNotes-1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
+									if((i-(indexStartForNotes-1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) === 0 && i < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}
@@ -3582,7 +3579,7 @@ function GrooveWriter() { "use strict";
 										</div> \
 										');
 										
-									if((i-(indexStartForNotes-1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) == 0 && i < class_notes_per_measure+indexStartForNotes-1) {
+									if((i-(indexStartForNotes-1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) === 0 && i < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}
@@ -3599,7 +3596,7 @@ function GrooveWriter() { "use strict";
 										</div> \
 									');
 									
-									if((j-(indexStartForNotes-1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) == 0 && j < class_notes_per_measure+indexStartForNotes-1) {
+									if((j-(indexStartForNotes-1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) === 0 && j < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}
@@ -3608,7 +3605,7 @@ function GrooveWriter() { "use strict";
 			newHTML += ('\
 					</div>\
 				</div>\
-			</span>')
+			</span>');
 		
 		
 		if(class_number_of_measures > 1)

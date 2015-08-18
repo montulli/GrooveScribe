@@ -37,12 +37,12 @@ if (typeof (grooves) === "undefined") var grooves = {};
 		'Samba':  '?TimeSig=4/4&Div=16&Title=Samba Ostinato&Tempo=60&Swing=0&measures=1&H=|----------------|&S=|----------------|&K=|o-xoo-xoo-xoo-xo|',
 		'Tumbao':      '?TimeSig=4/4&Div=16&Title=Tumbao Ostinato&Tempo=60&Measures=1&H=|----------------|&S=|----------------|&K=|x--ox-o-x--ox-o-|',
 		'Baiao':       '?TimeSig=4/4&Div=16&Title=Baiao Ostinato&Tempo=60&Measures=1&H=|----------------|&S=|----------------|&K=|o-xo--X-o-xo--X-|'
-	}
+	};
 	
 	root.FullArray = {"Rock grooves":    root.Rock_Grooves,
 					 "Triplet grooves":  root.Triplet_Grooves,
 					 "World grooves":	 root.World_Grooves,
-					 "Foot Ostinatos":   root.Foot_Ostinatos,
+					 "Foot Ostinatos":   root.Foot_Ostinatos
 					};
 	
 	root.isArray = function (myArray) {
