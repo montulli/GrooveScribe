@@ -19,6 +19,7 @@ if (typeof (grooves) === "undefined") var grooves = {};
 	};
 
 	root.Triplet_Grooves = {
+		'Jazz Shuffle': '?TimeSig=4/4&Div=12&Title=Jazz%20Shuffle&Tempo=100&Measures=1&H=|r--r-rr--r-r|&S=|g-gO-gg-gO-g|&K=|o--X--o--X--|',
 		'Half Time Shuffle in 8th notes': '?TimeSig=4/4&Div=12&Title=Half%20Time%20Shuffle&Swing=0&measures=1&H=|x-xx-xx-xx-x|&S=|-g--g-Og--g-|&K=|------------|',
 		'Half Time Shuffle in 16th notes': '?TimeSig=4/4&Div=24&Swing=0&Tempo=85&Measures=1&H=|x-xx-xx-xx-xx-xx-xx-xx-x|&S=|-g--g-Og--g--g--g-Og--g-|&K=|------------------------|',
 		'Purdie Shuffle':    '?TimeSig=4/4&Div=12&Swing=0&Tempo=120&Title=Purdie%20Shuffle&Swing=0&measures=1&H=|x-xx-xx-xx-x|&S=|-g--g-Og--g-|&K=|o----o-----o|',
@@ -33,9 +34,9 @@ if (typeof (grooves) === "undefined") var grooves = {};
 	};
 	
 	root.Foot_Ostinatos = {
-		'Samba':  '?TimeSig=4/4&Div=16&Title=Samba&Tempo=80&Swing=0&measures=1&H=|----------------|&S=|----------------|&K=|o-xoo-xoo-xoo-xo|',
-		'Tumbao':      '?TimeSig=4/4&Div=16&Title=Tumbao&Tempo=80&Swing=0&measures=1&H=|----------------|&S=|----------------|&K=|o-xo--X-o-xo--X-|',
-		'Baiao':       '?TimeSig=4/4&Div=16&Title=baiao&Tempo=80&Swing=0&measures=1&H=|----------------|&S=|----------------|&K=|o--o--o-o--o--o-|'
+		'Samba':  '?TimeSig=4/4&Div=16&Title=Samba Ostinato&Tempo=60&Swing=0&measures=1&H=|----------------|&S=|----------------|&K=|o-xoo-xoo-xoo-xo|',
+		'Tumbao':      '?TimeSig=4/4&Div=16&Title=Tumbao Ostinato&Tempo=60&Measures=1&H=|----------------|&S=|----------------|&K=|x--ox-o-x--ox-o-|',
+		'Baiao':       '?TimeSig=4/4&Div=16&Title=Baiao Ostinato&Tempo=60&Measures=1&H=|----------------|&S=|----------------|&K=|o-xo--X-o-xo--X-|'
 	}
 	
 	root.FullArray = {"Rock grooves":    root.Rock_Grooves,

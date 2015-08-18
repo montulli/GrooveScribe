@@ -76,51 +76,37 @@
 	#metronomeLabel {
 		display: inline-block;
 		height: 20px;
-		font-weight: 700;
-		margin-top: 10px;
+		font-weight: 500;
+		margin: 12px 5px 0px 10px;
 		text-align: center;
-		padding: 5px 5px 5px 5px;
-		margin-left: 10px;
-		margin-right: 5px;
 		color: #EEF;
 	}
-	.metronomeButton {
+	.metronomeButton, .rightButtons {
 		padding: 2px;
 		cursor: pointer;
 		display: inline-block;
-		background: #0071ad;
-		color: #89bee5;
+		/background: #0071ad;
+		color: #FFF;
 		border: 0px solid #00B;
 		text-align: center;
 		border-radius: 20px;
-		width: 50px;
+		/width: 50px;
+		margin: 12px 5px;
 		height: 20px;
+		transition: all .2s ease-in-out;
+	}
+	.metronomeButton:hover, .rightButtons:hover, .metronomeButton.selected:hover, .rightButtons.selected:hover, .rightButtons.buttonSelected:hover {
+		/color: #3b5166;
+		font-weight: 700;
+		transform: scale(1.1);
 	}
 	.metronomeButton.options {
 		width: 75px;
 	}
-	.metronomeButton:active {
-		color: #EEF;
-	}
-	.metronomeButton.buttonSelected, .metronomeButton.selected, .metronomeButton.buttonSelected:hover {  /* is a button and is selected */
-		color: #FFF;
-		background: #68c2ff;
-		cursor: auto;
-	}
-	.rightButtons  {
-	    display: inline-block;
-		cursor: pointer;
-		height: 20px;
-		font-weight: 500;
-		margin: 13px 3px 3px 3px;
-		padding: 2px 10px;
-		border: 0px solid #00B;
-		border-radius: 20px;
-		color: #EEF;
-	}
-	.rightButtons.buttonSelected {
-		background: #68c2ff;
-		color: #FFF;
+	.metronomeButton.buttonSelected, .metronomeButton.selected, .rightButtons.buttonSelected {  /* is a button and is selected */
+		color: #ff8c00;
+		font-weight: 700;
+		/background: #68c2ff;
 	}
 	#timeLabel, .subdivision, #advancedEditAnchor {
 		display: block;
@@ -138,12 +124,24 @@
 		-webkit-align-items: center;
 		justify-content: center;
 		-webkit-justify-content: space-around;
+		transition: all .2s ease-in-out;
 	}
 	.subdivision.buttonSelected, .subdivision.buttonSelected:hover {  /* is subdivision and is selected */
 		background: #53758e;
 		color: #FFF;
 		cursor: auto;
-	}
+		transform: scale(1.1);
+	}	
+	.myButton:hover, .subdivision:hover {
+	   border-top-color: #28597a;
+	   background: #004781;
+	   color: #ccc;
+	   transform: scale(1.1);
+	 }
+	.myButton:active, .subdivision:active  {
+	   border-top-color: #1b435e;
+	   background: #1b435e;
+    }
 	.buttonFraction {  /* The number above "triplet" in the .subdivision 1/4, 1/8, etc */
 		display: block;
 		font-size: 18px;
@@ -718,29 +716,6 @@
 	#metronomeAutoSpeedupConfigurationCloseButton {
 		float: right;
 	}
-	
-	.myButton {
-	   border-top: 1px solid #96d1f8;
-	   background: #65a9d7;
-	   padding: 5px 10px;
-	   color: white;
-	   font-size: 14px;
-	   text-decoration: none;
-	   vertical-align: middle;
-	 }
-	
-	.myButton:hover, .subdivision:hover, .rightButtons:hover , .metronomeButton:hover {
-	   border-top-color: #28597a;
-	   background: #004781;
-	   color: #ccc;
-	 }
-	.rightButtons:hover  {
-		background: #0071AD;
-	}
-	.myButton:active, .subdivision:active, .rightButtons:active  {
-	   border-top-color: #1b435e;
-	   background: #1b435e;
-    }
 	#showHideSecondMeasureButton {
 	}
 	#showHideStickingsButton {
