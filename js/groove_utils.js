@@ -708,7 +708,7 @@ function GrooveUtils() { "use strict";
 					'%%beginsvg\n' +
 					' <defs>\n' +
 					' <path id="Xhead" d="m-3 -3l6 6m0 -6l-6 6" class="stroke" style="stroke-width:1.2"/>\n' +
-					' </defs>s\n' +
+					' </defs>\n' +
 					'%%endsvg\n' +
 					'%%map drum ^g heads=Xhead print=g  % Hi-Hat\n' +
 					'%%map drum ^A\' heads=Xhead print=A\'  % Crash\n' +
