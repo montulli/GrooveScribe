@@ -112,6 +112,48 @@ function GrooveUtils() { "use strict";
 		return (root.getQueryVariableFromString(variable, def_value, window.location.search));
 	};
 
+	root.getBrowserInfo = function() {
+		var browser = navigator.appName;
+	    var b_version = navigator.appVersion;
+	    var version = parseFloat(b_version);
+	    var useragent = navigator.userAgent;
+	    switch (browser){
+	        case 'Microsoft Internet Explorer':
+	            browser = "MSIE";
+	            version = useragent.substr(useragent.lastIndexOf('MSIE') + 5, 3);
+	            break;
+	        case 'Netscape':
+	            if (useragent.lastIndexOf('Chrome/') > 0) {
+	                browser = "Chrome";
+	                version = useragent.substr(useragent.lastIndexOf('Chrome/') + 7, 4);
+	            }
+	            else if (useragent.lastIndexOf('Firefox/') > 0) {
+	                browser = "Firefox";
+	                version = useragent.substr(useragent.lastIndexOf('Firefox/') + 8, 5);
+	            }
+	            else if (useragent.lastIndexOf('Safari/') > 0) {
+	                browser = "Safari";
+	                version = useragent.substr(useragent.lastIndexOf('Safari/') + 7, 6);
+	            }
+				else if (useragent.lastIndexOf('Trident/') > 0) {
+	                browser = "MSIE";
+	                version = useragent.substr(useragent.lastIndexOf('rv:') + 3, 4);
+	            }
+				else if (useragent.lastIndexOf('Edge/') > 0) {
+	                browser = "Edge";
+	                version = useragent.substr(useragent.lastIndexOf('Edge/') + 5, 4);
+	            }
+	            else
+	            { alert("undefined browser"); }
+	            break;
+	        case 'Opera':
+	            version = useragent.substr(useragent.lastIndexOf('Version/') + 8, 5);
+	            break;
+	    }    
+		
+		return {"browser": browser, "version": version};
+	}
+	
 	// every document click passes through here.
 	// close a popup if one is up and we click off of it.
 	root.documentOnClickHanderCloseContextMenu = function (event) {

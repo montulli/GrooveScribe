@@ -2822,6 +2822,15 @@ function GrooveWriter() { "use strict";
 
 		window.onresize = root.refresh_ABC;
 
+		var info = root.myGrooveUtils.getBrowserInfo();
+		if (info.browser == "Edge") {
+			window.alert('The Edge browser is currently unsupported due to a audio playback issue.   Please use Chrome or Firefox instead');
+		} else if (info.browser == "MSIE" && info.version < 10) {
+			window.alert('This version of IE is unsupported.   Please use Chrome or Firefox instead');
+		} else if (info.browser == "Safari" && info.version < 537) {
+			window.alert('This version of Safari is unsupported.   Please use Chrome instead');
+		}
+
 	};
 
 	// called right before the midi reloads for the next replay
