@@ -2278,20 +2278,20 @@ function GrooveUtils() {
 			'		<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
 			'			<div class="tempoRow">' +
 			'				<span class="tempoLabel">BPM</span>' +
-			'				<div for="tempo" class="tempoOutput" id="tempoOutput' + root.grooveUtilsUniqueIndex + '">80</div>' +
+			'				<span for="tempo" class="tempoOutput" id="tempoOutput' + root.grooveUtilsUniqueIndex + '">80</span>' +
 			'				<input type=range min=40 max=240 value=90 class="tempoInput" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings">' +
 			'			</div>' +
 			'			<div class="swingRow">' +
 			'				<span class="swingLabel">SWING</span>' +
-			'				<div for="swingAmount" class="swingOutput" id="swingOutput' + root.grooveUtilsUniqueIndex + '">0% swing</div>' +
+			'				<span for="swingAmount" class="swingOutput" id="swingOutput' + root.grooveUtilsUniqueIndex + '">0% swing</span>' +
 			'				<input type=range min=0 max=50 value=0 class="swingInput" id="swingInput' + root.grooveUtilsUniqueIndex + '" list="swingSettings" step=5 >' +
 			'			</div>' +
-			'		</div>';
+			'       </span>';
 			
-			//'		<img alt="Repeat" title="Repeat" class="midiRepeatImage" id="midiRepeatImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'repeat.png">'
-		
-		if(expandable)
-			newHTML += 	'       <span class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '"></span>';
+			if(expandable)
+				newHTML += 	'<span class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '"></span>';
+			
+			newHTML +=  '</div>';	
 			
 		return newHTML;
 	};

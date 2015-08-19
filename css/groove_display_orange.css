@@ -30,6 +30,7 @@
 		background-color: #222222;
 		width: 100%;  /* expand to the surounding element */
 		font-family: 'Lato', sans-serif;
+		white-space: nowrap;
 	}
 	.playerControl.large {
 		width: calc(100% - 140px);
@@ -67,6 +68,7 @@
 		line-height: 40px;
 		vertical-align: middle;
 		border-radius: 50%;
+		-webkit-flex: none;
 		flex: none;
 	}
 	.midiPlayImage, .midiRepeatImage {
@@ -97,10 +99,12 @@
 		content: "\f066";
 	} 
 	.tempoAndProgress {
+		display: inline-block;
 		padding-top: 2px;
-		width: 100%;
+		width: 50%;
 		height: 46px;
-		flex: 4;
+		flex: 1;
+		-webkit-flex: 1;
 	}
 	.tempoAndProgress.small {
 			display: none;
@@ -119,7 +123,7 @@
 		margin-top: 4px;
 		margin-right: 2%;
 		color: #66c0fe;
-		width: 90%;
+		/width: 90%;
 		flex: 1;
 		-webkit-flex: 1;
 	}
@@ -132,6 +136,8 @@
 		font-size: 16px;
 		width: 60px;
 		color: #999999;
+		-webkit-flex: none;
+		flex: none;
 	}
 	.tempoOutput, .swingOutput {
 		display: inline-block;
@@ -141,7 +147,8 @@
 		color: #999999;
 		padding-left: 8px;
 		width: 34px;
-		flex:none;
+		-webkit-flex: none;
+		flex: none;
 	}
 	.swingSettings {
 		color: #FFF;
@@ -210,7 +217,7 @@
  	
 input[type=range] {
   -webkit-appearance: none;
-  width: 100%;
+  /width: 100%;
   background-color: #222222;
 }
 input[type=range]:before {

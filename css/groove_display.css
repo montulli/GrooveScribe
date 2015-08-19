@@ -30,6 +30,7 @@
 		background-color: #2484c0;
 		width: 100%;  /* expand to the surounding element */
 		font-family: 'Lato', sans-serif;
+		white-space: nowrap;
 	}
 	.playerControl.large {
 		width: calc(100% - 140px);
@@ -99,7 +100,7 @@
 		padding-top: 2px;
 		width: 100%;
 		height: 46px;
-		flex: 4;
+		flex: 1;
 	}
 	.tempoAndProgress.small {
 			display: none;
@@ -120,7 +121,6 @@
 		color: #66c0fe;
 		width: 90%;
 		flex: 1;
-		-webkit-flex: 1;
 	}
 	.tempoSettings {
 		color: #FFF;
@@ -140,7 +140,7 @@
 		color: #0cdef9;
 		padding-left: 8px;
 		width: 34px;
-		flex:none;
+		flex: none;
 	}
 	.swingSettings {
 		color: #FFF;
