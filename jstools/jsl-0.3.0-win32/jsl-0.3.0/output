@@ -1,0 +1,836 @@
+JavaScript Lint 0.3.0 (JavaScript-C 1.5 2004-09-24)
+Developed by Matthias Miller (http://www.JavaScriptLint.com)
+
+grooves.js
+groove_display.js
+groove_utils.js
+groove_writer.js
+index.html
+AudioDetect.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\AudioDetect.js(52): warning: anonymous function does not always return a value
+		return;
+......................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\AudioDetect.js(67): warning: anonymous function does not always return a value
+};
+^
+
+LoadPlugin.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\LoadPlugin.js(35): lint warning: empty statement or extra semicolon
+	};
+.........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\LoadPlugin.js(61): warning: redeclaration of var filetype
+			var filetype = types["audio/ogg"] ? "ogg" : "mp3";    // prefer better quality 
+............................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\LoadPlugin.js(156): lint warning: parseInt missing radix parameter
+			this.totalSize = parseInt(this.getResponseHeader("Content-Length"));
+..........................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\LoadPlugin.js(177): warning: anonymous function does not always return a value
+	};
+........^
+
+Plugin.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(142): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+		if (MIDI.Soundfont[instrument][url] == "") { // empty soundfont
+.........................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(148): warning: anonymous function does not always return a value
+			return callback(instrument);
+...................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(175): lint warning: missing semicolon
+		}
+................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(176): warning: anonymous function does not always return a value
+	};
+........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(213): warning: anonymous function does not always return a value
+		return source;
+.............................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(319): warning: variable note hides argument
+		var note = notes[note];
+....................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(335): warning: variable note hides argument
+		var note = notes[note];
+....................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(365): warning: anonymous function does not always return a value
+			}, delay * 1000);
+........................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(369): warning: anonymous function does not always return a value
+	};
+........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(378): warning: anonymous function does not always return a value
+		} else {
+................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(378): lint warning: missing semicolon
+		} else {
+................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(381): warning: anonymous function does not always return a value
+	};
+........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(396): warning: anonymous function does not always return a value
+	};
+........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(411): warning: anonymous function does not always return a value
+	};
+........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(465): warning: anonymous function does not always return a value
+			}, delay * 1000);
+........................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(469): warning: anonymous function does not always return a value
+	};
+........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Plugin.js(578): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+			};
+.........................^
+
+Player.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Player.js(42): lint warning: missing semicolon
+root.stop = function () {
+^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Player.js(173): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+		if(root.shouldLoop && (root.currentTime == root.endTime)  && eventQueue.length == 0 ) {
+....................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Player.js(178): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+		} else if (root.currentTime === queuedTime && queuedTime < root.endTime && eventQueue.length == 0) {
+.................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Player.js(180): lint warning: leading decimal point may indicate a number or an object member
+			startAudio(queuedTime + .001, true);
+................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Player.js(230): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+		if(data[n][1] != 0 && messages >= 100) {
+...................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Player.js(287): warning: redeclaration of var o
+		var o = noteRegistrar[key]
+....................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\js\midi\Player.js(288): lint warning: missing semicolon
+		if (noteRegistrar[key].message === 144 && onMidiEvent) {
+................^
+
+DOMLoader.XMLHttp.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\DOMLoader.XMLHttp.js(32): lint warning: missing semicolon
+		}, function () {
+................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\DOMLoader.XMLHttp.js(34): lint warning: missing semicolon
+		}, function () {
+................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\DOMLoader.XMLHttp.js(36): lint warning: missing semicolon
+		}];
+................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\DOMLoader.XMLHttp.js(86): lint warning: empty statement or extra semicolon
+		};
+.................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\DOMLoader.XMLHttp.js(107): lint warning: missing semicolon
+} else {
+^
+
+stream.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\stream.js(15): lint warning: unexpected end of line; it is ambiguous whether these lines are part of the same statement
+			+ (str.charCodeAt(position + 1) << 16)
+........................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\stream.js(16): lint warning: unexpected end of line; it is ambiguous whether these lines are part of the same statement
+			+ (str.charCodeAt(position + 2) << 8)
+........................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\stream.js(17): lint warning: unexpected end of line; it is ambiguous whether these lines are part of the same statement
+			+ str.charCodeAt(position + 3));
+........................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\stream.js(26): lint warning: unexpected end of line; it is ambiguous whether these lines are part of the same statement
+			+ str.charCodeAt(position + 1));
+........................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\stream.js(59): warning: function readVarInt does not always return a value
+	}
+........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\stream.js(69): lint warning: missing semicolon
+}
+^
+
+midifile.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(70): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+						if (length != 0) throw "Expected length for endOfTrack event is 0, got " + length;
+...............................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(77): lint warning: unexpected end of line; it is ambiguous whether these lines are part of the same statement
+							+ (stream.readInt8() << 8)
+........................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(78): lint warning: unexpected end of line; it is ambiguous whether these lines are part of the same statement
+							+ stream.readInt8()
+........................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(79): lint warning: unexpected end of line; it is ambiguous whether these lines are part of the same statement
+						)
+................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(80): lint warning: missing semicolon
+						return event;
+................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(115): lint warning: missing semicolon
+						event.data = stream.read(length);
+................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(122): warning: redeclaration of var length
+				var length = stream.readVarInt();
+....................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(127): warning: redeclaration of var length
+				var length = stream.readVarInt();
+....................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(136): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+			if ((eventTypeByte & 0x80) == 0) {
+.......................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(158): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+					if (event.velocity == 0) {
+...............................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(194): lint warning: missing semicolon
+			}
+........................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(210): lint warning: missing semicolon
+	} else {
+........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(219): lint warning: missing semicolon
+	var tracks = [];
+........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\midifile.js(238): lint warning: missing semicolon
+}
+^
+
+replayer.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(3): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+	if (o == null) return (o);
+.....................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(21): lint warning: unexpected end of line; it is ambiguous whether these lines are part of the same statement
+			)
+........................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(36): lint warning: unexpected end of line; it is ambiguous whether these lines are part of the same statement
+				&& (ticksToNextEvent == null || trackStates[i].ticksToNextEvent < ticksToNextEvent)
+................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(36): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+				&& (ticksToNextEvent == null || trackStates[i].ticksToNextEvent < ticksToNextEvent)
+................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(36): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+				&& (ticksToNextEvent == null || trackStates[i].ticksToNextEvent < ticksToNextEvent)
+.............................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(37): lint warning: unexpected end of line; it is ambiguous whether these lines are part of the same statement
+			) {
+........................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(43): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+		if (nextEventTrack != null) {
+..........................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(53): warning: redeclaration of var i
+			for (var i = 0; i < trackStates.length; i++) {
+.................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(54): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+				if (trackStates[i].ticksToNextEvent != null) {
+...........................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(56): lint warning: missing semicolon
+				}
+................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(63): lint warning: missing semicolon
+		} else {
+................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(66): lint warning: empty statement or extra semicolon
+	};
+.........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(84): lint warning: empty statement or extra semicolon
+		};
+.................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(86): warning: test for equality (==) mistyped as assignment (=)?
+		if (midiEvent = getNextEvent()) {
+..............................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(89): lint warning: empty statement or extra semicolon
+	};
+.........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\jasmid\replayer.js(96): lint warning: empty statement or extra semicolon
+};
+.^
+
+Base64.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\Base64.js(16): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+			chr1 = input.charCodeAt(i++);
+....................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\Base64.js(17): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+			chr2 = input.charCodeAt(i++);
+....................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\Base64.js(18): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+			chr3 = input.charCodeAt(i++);
+....................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\Base64.js(47): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+			enc1 = keyStr.indexOf(input.charAt(i++));
+................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\Base64.js(48): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+			enc2 = keyStr.indexOf(input.charAt(i++));
+................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\Base64.js(49): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+			enc3 = keyStr.indexOf(input.charAt(i++));
+................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\Base64.js(50): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+			enc4 = keyStr.indexOf(input.charAt(i++));
+................................................................^
+
+base64binary.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\base64binary.js(64): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+			enc1 = this._keyStr.indexOf(input.charAt(j++));
+......................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\base64binary.js(65): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+			enc2 = this._keyStr.indexOf(input.charAt(j++));
+......................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\base64binary.js(66): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+			enc3 = this._keyStr.indexOf(input.charAt(j++));
+......................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\MIDI.js\inc\base64binary.js(67): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+			enc4 = this._keyStr.indexOf(input.charAt(j++));
+......................................................................^
+
+jsmidgen.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\jsmidgen.js(24): lint warning: regular expressions should be preceded by a left parenthesis, assignment, colon, or comma
+			if (typeof p == 'number' || !/[^0-9]/.test(p)) {
+.....................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\jsmidgen.js(108): warning: test for equality (==) mistyped as assignment (=)?
+			while (ticks = ticks >> 7) {
+.................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\jsmidgen.js(123): warning: trailing comma is not legal in ECMA-262 object initializers
+	};
+........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\jsmidgen.js(141): warning: anonymous function does not always return a value
+	};
+........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\jsmidgen.js(207): warning: anonymous function does not always return a value
+	};
+........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\jsmidgen.js(266): warning: anonymous function does not always return a value
+	};
+........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\jsmidgen.js(282): warning: trailing comma is not legal in ECMA-262 object initializers
+		}));
+................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\jsmidgen.js(293): warning: trailing comma is not legal in ECMA-262 object initializers
+		}));
+................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\jsmidgen.js(311): warning: trailing comma is not legal in ECMA-262 object initializers
+		}));
+................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\jsmidgen.js(320): warning: trailing comma is not legal in ECMA-262 object initializers
+		}));
+................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\jsmidgen.js(357): warning: anonymous function does not always return a value
+	};
+........^
+
+abc2svg-1.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): lint warning: missing semicolon
+function Abc(user){var wpsobj,svgobj;this.user=user;this.version="1.2.1",this.vdate="2015-05-25";const BAR=0,CLEF=1,CUSTOS=2,FORMAT=3,GRACE=4,KEY=5,METER=6,MREST=7,NOTE=8,PART=9,REST=10,SPACE=11,STAVES=12,STBRK=13,TEMPO=14,TUPLET=15,BLOCK=16;SL_ABOVE=1,SL
+^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): lint warning: multiple statements separated by commas (use semicolons?)
+function Abc(user){var wpsobj,svgobj;this.user=user;this.version="1.2.1",this.vdate="2015-05-25";const BAR=0,CLEF=1,CUSTOS=2,FORMAT=3,GRACE=4,KEY=5,METER=6,MREST=7,NOTE=8,PART=9,REST=10,SPACE=11,STAVES=12,STBRK=13,TEMPO=14,TUPLET=15,BLOCK=16;SL_ABOVE=1,SL
+........................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): lint warning: multiple statements separated by commas (use semicolons?)
+function Abc(user){var wpsobj,svgobj;this.user=user;this.version="1.2.1",this.vdate="2015-05-25";const BAR=0,CLEF=1,CUSTOS=2,FORMAT=3,GRACE=4,KEY=5,METER=6,MREST=7,NOTE=8,PART=9,REST=10,SPACE=11,STAVES=12,STBRK=13,TEMPO=14,TUPLET=15,BLOCK=16;SL_ABOVE=1,SL
+............................................................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): lint warning: missing semicolon
+w obj.constructor;for(var k in obj)tmp[k]=obj[k];return tmp}function errbld(sev,txt,fn,idx){var i,j,l,c,h;if(user.errbld){switch(sev){case 0:sev="warn";break;case 1:sev="error";break;default:sev="fatal";break}user.errbld(sev,txt,fn,idx);return}if(idx!=und
+...........................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): lint warning: missing semicolon
+w obj.constructor;for(var k in obj)tmp[k]=obj[k];return tmp}function errbld(sev,txt,fn,idx){var i,j,l,c,h;if(user.errbld){switch(sev){case 0:sev="warn";break;case 1:sev="error";break;default:sev="fatal";break}user.errbld(sev,txt,fn,idx);return}if(idx!=und
+................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): lint warning: missing semicolon
+w obj.constructor;for(var k in obj)tmp[k]=obj[k];return tmp}function errbld(sev,txt,fn,idx){var i,j,l,c,h;if(user.errbld){switch(sev){case 0:sev="warn";break;case 1:sev="error";break;default:sev="fatal";break}user.errbld(sev,txt,fn,idx);return}if(idx!=und
+...................................................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): lint warning: missing semicolon
+efined&&idx>=0){l=0;i=-1;c=0;while(1){j=parse.file.indexOf("\n",i+1);if(j<0){i=parse.file.length-1;break}if(j>idx)break;l++;i=j}c=idx-i}h="";if(fn){h=fn;if(l)h+=":"+(l+1)+":"+(c+1);h+=" "}switch(sev){case 0:h+="Warning: ";break;case 1:h+="Error: ";break;d
+........................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): lint warning: missing semicolon
+efined&&idx>=0){l=0;i=-1;c=0;while(1){j=parse.file.indexOf("\n",i+1);if(j<0){i=parse.file.length-1;break}if(j>idx)break;l++;i=j}c=idx-i}h="";if(fn){h=fn;if(l)h+=":"+(l+1)+":"+(c+1);h+=" "}switch(sev){case 0:h+="Warning: ";break;case 1:h+="Error: ";break;d
+...............................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): lint warning: missing semicolon
+efined&&idx>=0){l=0;i=-1;c=0;while(1){j=parse.file.indexOf("\n",i+1);if(j<0){i=parse.file.length-1;break}if(j>idx)break;l++;i=j}c=idx-i}h="";if(fn){h=fn;if(l)h+=":"+(l+1)+":"+(c+1);h+=" "}switch(sev){case 0:h+="Warning: ";break;case 1:h+="Error: ";break;d
+.......................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): lint warning: missing semicolon
+efined&&idx>=0){l=0;i=-1;c=0;while(1){j=parse.file.indexOf("\n",i+1);if(j<0){i=parse.file.length-1;break}if(j>idx)break;l++;i=j}c=idx-i}h="";if(fn){h=fn;if(l)h+=":"+(l+1)+":"+(c+1);h+=" "}switch(sev){case 0:h+="Warning: ";break;case 1:h+="Error: ";break;d
+...........................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): lint warning: missing semicolon
+efault:h+="Internal bug: ";break}txt=txt.replace(/&/g,"&amp;");txt=txt.replace(/</g,"&lt;");txt=txt.replace(/>/g,"&gt;");user.errmsg(h+txt,l,c)}function error(sev,s,msg){if(s)errbld(sev,msg,s.ctx.fname,s.istart);else errbld(sev,msg)}function scanBuf(){thi
+................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): lint warning: missing semicolon
+efault:h+="Internal bug: ";break}txt=txt.replace(/&/g,"&amp;");txt=txt.replace(/</g,"&lt;");txt=txt.replace(/>/g,"&gt;");user.errmsg(h+txt,l,c)}function error(sev,s,msg){if(s)errbld(sev,msg,s.ctx.fname,s.istart);else errbld(sev,msg)}function scanBuf(){thi
+...............................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): lint warning: missing semicolon
+efault:h+="Internal bug: ";break}txt=txt.replace(/&/g,"&amp;");txt=txt.replace(/</g,"&lt;");txt=txt.replace(/>/g,"&gt;");user.errmsg(h+txt,l,c)}function error(sev,s,msg){if(s)errbld(sev,msg,s.ctx.fname,s.istart);else errbld(sev,msg)}function scanBuf(){thi
+........................................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\abc2svg-1.js(7): SyntaxError: missing name after . operator
+s.index=0;this.char=function(){if(this.index>=this.buffer.length)return undefined;return this.buffer[this.index]};this.next_char=function(){if(this.index>=this.buffer.length)return undefined;return this.buffer[++this.index]};this.advance=function(){if(thi
+...............^
+
+client.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\https:\apis.google.com\js\client.js(0): can't open file: Invalid argument
+share.min.js
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(1): lint warning: multiple statements separated by commas (use semicolons?)
+&(f=self),f.Share=e()}}(function(){var define,module,exports;
+.........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(1): lint warning: missing semicolon
+&(f=self),f.Share=e()}}(function(){var define,module,exports;
+.....................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+mail.display+"}"};var ShareUtils;"classList"in document.documentElement||!Object.defineProperty||"undefined"==typeof HTMLElement||Object.defineProperty(HTMLElement.prototype,"classList",{get:function(){var t,e,o;return o=function(t){return function(o){var
+................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: empty statement or extra semicolon
+mail.display+"}"};var ShareUtils;"classList"in document.documentElement||!Object.defineProperty||"undefined"==typeof HTMLElement||Object.defineProperty(HTMLElement.prototype,"classList",{get:function(){var t,e,o;return o=function(t){return function(o){var
+.................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+ n,i;n=e.className.split(/\s+/),i=n.indexOf(o),t(n,i,o),e.className=n.join(" ")}},e=this,t={add:o(function(t,e,o){~e||t.push(o)}),remove:o(function(t,e){~e&&t.splice(e,1)}),toggle:o(function(t,e,o){~e?t.splice(e,1):t.push(o)}),contains:function(t){return!
+...............................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ n,i;n=e.className.split(/\s+/),i=n.indexOf(o),t(n,i,o),e.className=n.join(" ")}},e=this,t={add:o(function(t,e,o){~e||t.push(o)}),remove:o(function(t,e){~e&&t.splice(e,1)}),toggle:o(function(t,e,o){~e?t.splice(e,1):t.push(o)}),contains:function(t){return!
+...............................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ n,i;n=e.className.split(/\s+/),i=n.indexOf(o),t(n,i,o),e.className=n.join(" ")}},e=this,t={add:o(function(t,e,o){~e||t.push(o)}),remove:o(function(t,e){~e&&t.splice(e,1)}),toggle:o(function(t,e,o){~e?t.splice(e,1):t.push(o)}),contains:function(t){return!
+................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+ n,i;n=e.className.split(/\s+/),i=n.indexOf(o),t(n,i,o),e.className=n.join(" ")}},e=this,t={add:o(function(t,e,o){~e||t.push(o)}),remove:o(function(t,e){~e&&t.splice(e,1)}),toggle:o(function(t,e,o){~e?t.splice(e,1):t.push(o)}),contains:function(t){return!
+.................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ n,i;n=e.className.split(/\s+/),i=n.indexOf(o),t(n,i,o),e.className=n.join(" ")}},e=this,t={add:o(function(t,e,o){~e||t.push(o)}),remove:o(function(t,e){~e&&t.splice(e,1)}),toggle:o(function(t,e,o){~e?t.splice(e,1):t.push(o)}),contains:function(t){return!
+...............................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ n,i;n=e.className.split(/\s+/),i=n.indexOf(o),t(n,i,o),e.className=n.join(" ")}},e=this,t={add:o(function(t,e,o){~e||t.push(o)}),remove:o(function(t,e){~e&&t.splice(e,1)}),toggle:o(function(t,e,o){~e?t.splice(e,1):t.push(o)}),contains:function(t){return!
+..........................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ n,i;n=e.className.split(/\s+/),i=n.indexOf(o),t(n,i,o),e.className=n.join(" ")}},e=this,t={add:o(function(t,e,o){~e||t.push(o)}),remove:o(function(t,e){~e&&t.splice(e,1)}),toggle:o(function(t,e,o){~e?t.splice(e,1):t.push(o)}),contains:function(t){return!
+................................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+!~e.className.split(/\s+/).indexOf(t)},item:function(t){return e.className.split(/\s+/)[t]||null}},Object.defineProperty(t,"length",{get:function(){return e.className.split(/\s+/).length}}),t}}),String.prototype.to_rfc3986=function(){var t;return t=encode
+.....................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+!~e.className.split(/\s+/).indexOf(t)},item:function(t){return e.className.split(/\s+/)[t]||null}},Object.defineProperty(t,"length",{get:function(){return e.className.split(/\s+/).length}}),t}}),String.prototype.to_rfc3986=function(){var t;return t=encode
+................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+!~e.className.split(/\s+/).indexOf(t)},item:function(t){return e.className.split(/\s+/)[t]||null}},Object.defineProperty(t,"length",{get:function(){return e.className.split(/\s+/).length}}),t}}),String.prototype.to_rfc3986=function(){var t;return t=encode
+..........................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+!~e.className.split(/\s+/).indexOf(t)},item:function(t){return e.className.split(/\s+/)[t]||null}},Object.defineProperty(t,"length",{get:function(){return e.className.split(/\s+/).length}}),t}}),String.prototype.to_rfc3986=function(){var t;return t=encode
+...............................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+!~e.className.split(/\s+/).indexOf(t)},item:function(t){return e.className.split(/\s+/)[t]||null}},Object.defineProperty(t,"length",{get:function(){return e.className.split(/\s+/).length}}),t}}),String.prototype.to_rfc3986=function(){var t;return t=encode
+..................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+URIComponent(this),t.replace(/[!'()*]/g,function(t){return"%"+t.charCodeAt(0).toString(16)})},ShareUtils=function(){function t(){}return t.prototype.extend=function(t,e,o){var n,i;for(i in e)n=void 0!==t[i],n&&"object"==typeof e[i]?this.extend(t[i],e[i],o
+..................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+URIComponent(this),t.replace(/[!'()*]/g,function(t){return"%"+t.charCodeAt(0).toString(16)})},ShareUtils=function(){function t(){}return t.prototype.extend=function(t,e,o){var n,i;for(i in e)n=void 0!==t[i],n&&"object"==typeof e[i]?this.extend(t[i],e[i],o
+..........................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+URIComponent(this),t.replace(/[!'()*]/g,function(t){return"%"+t.charCodeAt(0).toString(16)})},ShareUtils=function(){function t(){}return t.prototype.extend=function(t,e,o){var n,i;for(i in e)n=void 0!==t[i],n&&"object"==typeof e[i]?this.extend(t[i],e[i],o
+............................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: use of the void type may be unnecessary (void is always undefined)
+URIComponent(this),t.replace(/[!'()*]/g,function(t){return"%"+t.charCodeAt(0).toString(16)})},ShareUtils=function(){function t(){}return t.prototype.extend=function(t,e,o){var n,i;for(i in e)n=void 0!==t[i],n&&"object"==typeof e[i]?this.extend(t[i],e[i],o
+.................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+URIComponent(this),t.replace(/[!'()*]/g,function(t){return"%"+t.charCodeAt(0).toString(16)})},ShareUtils=function(){function t(){}return t.prototype.extend=function(t,e,o){var n,i;for(i in e)n=void 0!==t[i],n&&"object"==typeof e[i]?this.extend(t[i],e[i],o
+..............................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+):(o||!n)&&(t[i]=e[i])},t.prototype.hide=function(t){return t.style.display="none"},t.prototype.show=function(t){return t.style.display="block"},t.prototype.has_class=function(t,e){return t.classList.contains(e)},t.prototype.add_class=function(t,e){return
+......................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+):(o||!n)&&(t[i]=e[i])},t.prototype.hide=function(t){return t.style.display="none"},t.prototype.show=function(t){return t.style.display="block"},t.prototype.has_class=function(t,e){return t.classList.contains(e)},t.prototype.add_class=function(t,e){return
+.......................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+):(o||!n)&&(t[i]=e[i])},t.prototype.hide=function(t){return t.style.display="none"},t.prototype.show=function(t){return t.style.display="block"},t.prototype.has_class=function(t,e){return t.classList.contains(e)},t.prototype.add_class=function(t,e){return
+..................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+):(o||!n)&&(t[i]=e[i])},t.prototype.hide=function(t){return t.style.display="none"},t.prototype.show=function(t){return t.style.display="block"},t.prototype.has_class=function(t,e){return t.classList.contains(e)},t.prototype.add_class=function(t,e){return
+...............................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+):(o||!n)&&(t[i]=e[i])},t.prototype.hide=function(t){return t.style.display="none"},t.prototype.show=function(t){return t.style.display="block"},t.prototype.has_class=function(t,e){return t.classList.contains(e)},t.prototype.add_class=function(t,e){return
+...................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ t.classList.add(e)},t.prototype.remove_class=function(t,e){return t.classList.remove(e)},t.prototype.is_encoded=function(t){return t=t.to_rfc3986(),decodeURIComponent(t)!==t},t.prototype.encode=function(t){return"undefined"==typeof t||this.is_encoded(t)?
+...................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ t.classList.add(e)},t.prototype.remove_class=function(t,e){return t.classList.remove(e)},t.prototype.is_encoded=function(t){return t=t.to_rfc3986(),decodeURIComponent(t)!==t},t.prototype.encode=function(t){return"undefined"==typeof t||this.is_encoded(t)?
+........................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+ t.classList.add(e)},t.prototype.remove_class=function(t,e){return t.classList.remove(e)},t.prototype.is_encoded=function(t){return t=t.to_rfc3986(),decodeURIComponent(t)!==t},t.prototype.encode=function(t){return"undefined"==typeof t||this.is_encoded(t)?
+....................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ t.classList.add(e)},t.prototype.remove_class=function(t,e){return t.classList.remove(e)},t.prototype.is_encoded=function(t){return t=t.to_rfc3986(),decodeURIComponent(t)!==t},t.prototype.encode=function(t){return"undefined"==typeof t||this.is_encoded(t)?
+..............................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+t:t.to_rfc3986()},t.prototype.popup=function(t,e){var o,n,i,r;return null==e&&(e={}),n={width:500,height:350},n.top=screen.height/2-n.height/2,n.left=screen.width/2-n.width/2,i=function(){var t;t=[];for(o in e)r=e[o],t.push(""+o+"="+this.encode(r));return
+................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+t:t.to_rfc3986()},t.prototype.popup=function(t,e){var o,n,i,r;return null==e&&(e={}),n={width:500,height:350},n.top=screen.height/2-n.height/2,n.left=screen.width/2-n.width/2,i=function(){var t;t=[];for(o in e)r=e[o],t.push(""+o+"="+this.encode(r));return
+............................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+t:t.to_rfc3986()},t.prototype.popup=function(t,e){var o,n,i,r;return null==e&&(e={}),n={width:500,height:350},n.top=screen.height/2-n.height/2,n.left=screen.width/2-n.width/2,i=function(){var t;t=[];for(o in e)r=e[o],t.push(""+o+"="+this.encode(r));return
+....................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+t:t.to_rfc3986()},t.prototype.popup=function(t,e){var o,n,i,r;return null==e&&(e={}),n={width:500,height:350},n.top=screen.height/2-n.height/2,n.left=screen.width/2-n.width/2,i=function(){var t;t=[];for(o in e)r=e[o],t.push(""+o+"="+this.encode(r));return
+........................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ t}.call(this).join("&"),i&&(i="?"+i),window.open(t+i,"targetWindow","toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,left="+n.left+",top="+n.top+",width="+n.width+",height="+n.height)},t}();var Share,__hasProp={}.hasOwnProperty,_
+..^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ t}.call(this).join("&"),i&&(i="?"+i),window.open(t+i,"targetWindow","toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,left="+n.left+",top="+n.top+",width="+n.width+",height="+n.height)},t}();var Share,__hasProp={}.hasOwnProperty,_
+.................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ t}.call(this).join("&"),i&&(i="?"+i),window.open(t+i,"targetWindow","toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,left="+n.left+",top="+n.top+",width="+n.width+",height="+n.height)},t}();var Share,__hasProp={}.hasOwnProperty,_
+....................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+_extends=function(t,e){function o(){this.constructor=t}for(var n in e)__hasProp.call(e,n)&&(t[n]=e[n]);return o.prototype=e.prototype,t.prototype=new o,t.__super__=e.prototype,t};Share=function(t){function e(t,e){var o;return this.element=t,this.el={head:
+......................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+_extends=function(t,e){function o(){this.constructor=t}for(var n in e)__hasProp.call(e,n)&&(t[n]=e[n]);return o.prototype=e.prototype,t.prototype=new o,t.__super__=e.prototype,t};Share=function(t){function e(t,e){var o;return this.element=t,this.el={head:
+.....................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+_extends=function(t,e){function o(){this.constructor=t}for(var n in e)__hasProp.call(e,n)&&(t[n]=e[n]);return o.prototype=e.prototype,t.prototype=new o,t.__super__=e.prototype,t};Share=function(t){function e(t,e){var o;return this.element=t,this.el={head:
+.................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+_extends=function(t,e){function o(){this.constructor=t}for(var n in e)__hasProp.call(e,n)&&(t[n]=e[n]);return o.prototype=e.prototype,t.prototype=new o,t.__super__=e.prototype,t};Share=function(t){function e(t,e){var o;return this.element=t,this.el={head:
+................................................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: use of the void type may be unnecessary (void is always undefined)
+(o=document.querySelector('meta[property="og:title"]')||document.querySelector('meta[name="twitter:title"]'))?o.getAttribute("content"):(o=document.querySelector("title"))?o.innerText:void 0,image:(o=document.querySelector('meta[property="og:image"]')||do
+........................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: use of the void type may be unnecessary (void is always undefined)
+cument.querySelector('meta[name="twitter:image"]'))?o.getAttribute("content"):void 0,description:(o=document.querySelector('meta[property="og:description"]')||document.querySelector('meta[name="twitter:description"]')||document.querySelector('meta[name="d
+..............................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+id:null,title:null,caption:null,description:null,image:null},pinterest:{enabled:!0,url:null,image:null,description:null},email:{enabled:!0,title:null,description:null}}},this.setup(t,e),this}return __extends(e,t),e.prototype.setup=function(t,e){var o,n,i,
+..............................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+id:null,title:null,caption:null,description:null,image:null},pinterest:{enabled:!0,url:null,image:null,description:null},email:{enabled:!0,title:null,description:null}}},this.setup(t,e),this}return __extends(e,t),e.prototype.setup=function(t,e){var o,n,i,
+....................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+facebook.enabled&&this.config.networks.facebook.load_sdk&&this.inject_facebook_sdk(),o=r=0,s=i.length;s>r;o=++r)n=i[o],this.setup_instance(t,o)},e.prototype.setup_instance=function(t,e){var o,n,i,r,s,c,l,a,p=this;for(n=document.querySelectorAll(t)[e],this
+...............................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+facebook.enabled&&this.config.networks.facebook.load_sdk&&this.inject_facebook_sdk(),o=r=0,s=i.length;s>r;o=++r)n=i[o],this.setup_instance(t,o)},e.prototype.setup_instance=function(t,e){var o,n,i,r,s,c,l,a,p=this;for(n=document.querySelectorAll(t)[e],this
+......................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+facebook.enabled&&this.config.networks.facebook.load_sdk&&this.inject_facebook_sdk(),o=r=0,s=i.length;s>r;o=++r)n=i[o],this.setup_instance(t,o)},e.prototype.setup_instance=function(t,e){var o,n,i,r,s,c,l,a,p=this;for(n=document.querySelectorAll(t)[e],this
+...............................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+orks-"+this.config.enabled_networks),i.addEventListener("click",function(){return p.event_toggle(o)}),p=this,a=[],e=c=0,l=s.length;l>c;e=++c)r=s[e],a.push(r.addEventListener("click",function(){return p.event_network(n,this),p.event_close(o)}));return a},e
+...................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+orks-"+this.config.enabled_networks),i.addEventListener("click",function(){return p.event_toggle(o)}),p=this,a=[],e=c=0,l=s.length;l>c;e=++c)r=s[e],a.push(r.addEventListener("click",function(){return p.event_network(n,this),p.event_close(o)}));return a},e
+............................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+orks-"+this.config.enabled_networks),i.addEventListener("click",function(){return p.event_toggle(o)}),p=this,a=[],e=c=0,l=s.length;l>c;e=++c)r=s[e],a.push(r.addEventListener("click",function(){return p.event_network(n,this),p.event_close(o)}));return a},e
+...................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+orks-"+this.config.enabled_networks),i.addEventListener("click",function(){return p.event_toggle(o)}),p=this,a=[],e=c=0,l=s.length;l>c;e=++c)r=s[e],a.push(r.addEventListener("click",function(){return p.event_network(n,this),p.event_close(o)}));return a},e
+...............................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+orks-"+this.config.enabled_networks),i.addEventListener("click",function(){return p.event_toggle(o)}),p=this,a=[],e=c=0,l=s.length;l>c;e=++c)r=s[e],a.push(r.addEventListener("click",function(){return p.event_network(n,this),p.event_close(o)}));return a},e
+................................................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+orks-"+this.config.enabled_networks),i.addEventListener("click",function(){return p.event_toggle(o)}),p=this,a=[],e=c=0,l=s.length;l>c;e=++c)r=s[e],a.push(r.addEventListener("click",function(){return p.event_network(n,this),p.event_close(o)}));return a},e
+............................................................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+.prototype.event_toggle=function(t){return this.has_class(t,"active")?this.event_close(t):this.event_open(t)},e.prototype.event_open=function(t){return this.has_class(t,"load")&&this.remove_class(t,"load"),this.add_class(t,"active")},e.prototype.event_clo
+............................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+.prototype.event_toggle=function(t){return this.has_class(t,"active")?this.event_close(t):this.event_open(t)},e.prototype.event_open=function(t){return this.has_class(t,"load")&&this.remove_class(t,"load"),this.add_class(t,"active")},e.prototype.event_clo
+.............................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+.prototype.event_toggle=function(t){return this.has_class(t,"active")?this.event_close(t):this.event_open(t)},e.prototype.event_open=function(t){return this.has_class(t,"load")&&this.remove_class(t,"load"),this.add_class(t,"active")},e.prototype.event_clo
+........................................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+se=function(t){return this.remove_class(t,"active")},e.prototype.event_network=function(t,e){var o;return o=e.getAttribute("data-network"),this.hook("before",o,t),this["network_"+o](),this.hook("after",o,t)},e.prototype.open=function(){return this["public
+...................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+se=function(t){return this.remove_class(t,"active")},e.prototype.event_network=function(t,e){var o;return o=e.getAttribute("data-network"),this.hook("before",o,t),this["network_"+o](),this.hook("after",o,t)},e.prototype.open=function(){return this["public
+..........................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+se=function(t){return this.remove_class(t,"active")},e.prototype.event_network=function(t,e){var o;return o=e.getAttribute("data-network"),this.hook("before",o,t),this["network_"+o](),this.hook("after",o,t)},e.prototype.open=function(){return this["public
+..............................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+"]("open")},e.prototype.close=function(){return this["public"]("close")},e.prototype.toggle=function(){return this["public"]("toggle")},e.prototype["public"]=function(t){var e,o,n,i,r,s,c;for(s=document.querySelectorAll(this.element),c=[],o=i=0,r=s.length
+..........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+"]("open")},e.prototype.close=function(){return this["public"]("close")},e.prototype.toggle=function(){return this["public"]("toggle")},e.prototype["public"]=function(t){var e,o,n,i,r,s,c;for(s=document.querySelectorAll(this.element),c=[],o=i=0,r=s.length
+.......................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+"]("open")},e.prototype.close=function(){return this["public"]("close")},e.prototype.toggle=function(){return this["public"]("toggle")},e.prototype["public"]=function(t){var e,o,n,i,r,s,c;for(s=document.querySelectorAll(this.element),c=[],o=i=0,r=s.length
+......................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: increment (++) and decrement (--) operators used as part of greater statement
+;r>i;o=++i)n=s[o],e=n.getElementsByClassName("social")[0],c.push(this["event_"+t](e));return c},e.prototype.network_facebook=function(){return this.config.networks.facebook.load_sdk?window.FB?FB.ui({method:"feed",name:this.config.networks.facebook.title,l
+..........^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+;r>i;o=++i)n=s[o],e=n.getElementsByClassName("social")[0],c.push(this["event_"+t](e));return c},e.prototype.network_facebook=function(){return this.config.networks.facebook.load_sdk?window.FB?FB.ui({method:"feed",name:this.config.networks.facebook.title,l
+.................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+;r>i;o=++i)n=s[o],e=n.getElementsByClassName("social")[0],c.push(this["event_"+t](e));return c},e.prototype.network_facebook=function(){return this.config.networks.facebook.load_sdk?window.FB?FB.ui({method:"feed",name:this.config.networks.facebook.title,l
+..............................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ps://www.facebook.com/sharer/sharer.php",{u:this.config.networks.facebook.url})},e.prototype.network_twitter=function(){return this.popup("https://twitter.com/intent/tweet",{text:this.config.networks.twitter.description,url:this.config.networks.twitter.ur
+...............................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+l})},e.prototype.network_google_plus=function(){return this.popup("https://plus.google.com/share",{url:this.config.networks.google_plus.url})},e.prototype.network_pinterest=function(){return this.popup("https://www.pinterest.com/pin/create/button",{url:th
+...^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+l})},e.prototype.network_google_plus=function(){return this.popup("https://plus.google.com/share",{url:this.config.networks.google_plus.url})},e.prototype.network_pinterest=function(){return this.popup("https://www.pinterest.com/pin/create/button",{url:th
+.............................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+is.config.networks.pinterest.url,media:this.config.networks.pinterest.image,description:this.config.networks.pinterest.description})},e.prototype.network_email=function(){return this.popup("mailto:",{subject:this.config.networks.email.title,body:this.conf
+....................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ig.networks.email.description})},e.prototype.inject_icons=function(){return this.inject_stylesheet("https://www.sharebutton.co/fonts/v2/entypo.min.css")},e.prototype.inject_fonts=function(){return this.inject_stylesheet("http://fonts.googleapis.com/css?fa
+...............................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+ig.networks.email.description})},e.prototype.inject_icons=function(){return this.inject_stylesheet("https://www.sharebutton.co/fonts/v2/entypo.min.css")},e.prototype.inject_fonts=function(){return this.inject_stylesheet("http://fonts.googleapis.com/css?fa
+........................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+mily=Lato:900&text="+this.config.ui.button_text)},e.prototype.inject_stylesheet=function(t){var e;return this.el.head.querySelector('link[href="'+t+'"]')?void 0:(e=document.createElement("link"),e.setAttribute("rel","stylesheet"),e.setAttribute("href",t),
+................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: use of the void type may be unnecessary (void is always undefined)
+mily=Lato:900&text="+this.config.ui.button_text)},e.prototype.inject_stylesheet=function(t){var e;return this.el.head.querySelector('link[href="'+t+'"]')?void 0:(e=document.createElement("link"),e.setAttribute("rel","stylesheet"),e.setAttribute("href",t),
+..........................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+mily=Lato:900&text="+this.config.ui.button_text)},e.prototype.inject_stylesheet=function(t){var e;return this.el.head.querySelector('link[href="'+t+'"]')?void 0:(e=document.createElement("link"),e.setAttribute("rel","stylesheet"),e.setAttribute("href",t),
+..................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+this.el.head.appendChild(e))},e.prototype.inject_css=function(t){var e,o,n,i;return n="."+t.getAttribute("class").split(" ").join("."),this.el.head.querySelector("meta[name='sharer"+n+"']")?void 0:(this.config.selector=n,e=getStyles(this.config),i=documen
+............................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+this.el.head.appendChild(e))},e.prototype.inject_css=function(t){var e,o,n,i;return n="."+t.getAttribute("class").split(" ").join("."),this.el.head.querySelector("meta[name='sharer"+n+"']")?void 0:(this.config.selector=n,e=getStyles(this.config),i=documen
+......................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: use of the void type may be unnecessary (void is always undefined)
+this.el.head.appendChild(e))},e.prototype.inject_css=function(t){var e,o,n,i;return n="."+t.getAttribute("class").split(" ").join("."),this.el.head.querySelector("meta[name='sharer"+n+"']")?void 0:(this.config.selector=n,e=getStyles(this.config),i=documen
+..............................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+this.el.head.appendChild(e))},e.prototype.inject_css=function(t){var e,o,n,i;return n="."+t.getAttribute("class").split(" ").join("."),this.el.head.querySelector("meta[name='sharer"+n+"']")?void 0:(this.config.selector=n,e=getStyles(this.config),i=documen
+............................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+d.appendChild(o))},e.prototype.inject_html=function(t){return t.innerHTML="<label class='entypo-export'><span>"+this.config.ui.button_text+"</span></label><div class='social load "+this.config.ui.flyout+"'><ul><li class='entypo-pinterest' data-network='pi
+.................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+nterest'></li><li class='entypo-twitter' data-network='twitter'></li><li class='entypo-facebook' data-network='facebook'></li><li class='entypo-gplus' data-network='google_plus'></li><li class='entypo-paper-plane' data-network='email'></li></ul></div>"},e
+............................................................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: use of the void type may be unnecessary (void is always undefined)
+.prototype.inject_facebook_sdk=function(){var t,e;return window.FB||!this.config.networks.facebook.app_id||this.el.body.querySelector("#fb-root")?void 0:(e=document.createElement("script"),e.text="window.fbAsyncInit=function(){FB.init({appId:'"+this.confi
+..................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+.prototype.inject_facebook_sdk=function(){var t,e;return window.FB||!this.config.networks.facebook.app_id||this.el.body.querySelector("#fb-root")?void 0:(e=document.createElement("script"),e.text="window.fbAsyncInit=function(){FB.init({appId:'"+this.confi
+............................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+efore(r,i)})(document,'script','facebook-jssdk')",t=document.createElement("div"),t.id="fb-root",this.el.body.appendChild(t),this.el.body.appendChild(e))},e.prototype.hook=function(t,e,o){var n,i;n=this.config.networks[e][t],"function"==typeof n&&(i=n.cal
+.........................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+efore(r,i)})(document,'script','facebook-jssdk')",t=document.createElement("div"),t.id="fb-root",this.el.body.appendChild(t),this.el.body.appendChild(e))},e.prototype.hook=function(t,e,o){var n,i;n=this.config.networks[e][t],"function"==typeof n&&(i=n.cal
+................................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+l(this.config.networks[e],o),void 0!==i&&(i=this.normalize_filter_config_updates(i),this.extend(this.config.networks[e],i,!0),this.normalize_network_configuration()))},e.prototype.set_global_configuration=function(){var t,e,o,n,i,r;i=this.config.networks,
+............................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: use of the void type may be unnecessary (void is always undefined)
+l(this.config.networks[e],o),void 0!==i&&(i=this.normalize_filter_config_updates(i),this.extend(this.config.networks[e],i,!0),this.normalize_network_configuration()))},e.prototype.set_global_configuration=function(){var t,e,o,n,i,r;i=this.config.networks,
+.............................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+l(this.config.networks[e],o),void 0!==i&&(i=this.normalize_filter_config_updates(i),this.extend(this.config.networks[e],i,!0),this.normalize_network_configuration()))},e.prototype.set_global_configuration=function(){var t,e,o,n,i,r;i=this.config.networks,
+...................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+l(this.config.networks[e],o),void 0!==i&&(i=this.normalize_filter_config_updates(i),this.extend(this.config.networks[e],i,!0),this.normalize_network_configuration()))},e.prototype.set_global_configuration=function(){var t,e,o,n,i,r;i=this.config.networks,
+......................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+l(this.config.networks[e],o),void 0!==i&&(i=this.normalize_filter_config_updates(i),this.extend(this.config.networks[e],i,!0),this.normalize_network_configuration()))},e.prototype.set_global_configuration=function(){var t,e,o,n,i,r;i=this.config.networks,
+..............................................................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: comparisons against null, 0, true, false, or an empty string allowing implicit type conversion (use === or !==)
+r=[];for(e in i){n=i[e];for(o in n)null==this.config.networks[e][o]&&(this.config.networks[e][o]=this.config[o]);this.config.networks[e].enabled?(t="block",this.config.enabled_networks+=1):t="none",r.push(this.config.networks[e].display=t)}return r},e.pro
+...................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+r=[];for(e in i){n=i[e];for(o in n)null==this.config.networks[e][o]&&(this.config.networks[e][o]=this.config[o]);this.config.networks[e].enabled?(t="block",this.config.enabled_networks+=1):t="none",r.push(this.config.networks[e].display=t)}return r},e.pro
+...........................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+r=[];for(e in i){n=i[e];for(o in n)null==this.config.networks[e][o]&&(this.config.networks[e][o]=this.config[o]);this.config.networks[e].enabled?(t="block",this.config.enabled_networks+=1):t="none",r.push(this.config.networks[e].display=t)}return r},e.pro
+.....................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+r=[];for(e in i){n=i[e];for(o in n)null==this.config.networks[e][o]&&(this.config.networks[e][o]=this.config[o]);this.config.networks[e].enabled?(t="block",this.config.enabled_networks+=1):t="none",r.push(this.config.networks[e].display=t)}return r},e.pro
+...............................................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: missing semicolon
+r=[];for(e in i){n=i[e];for(o in n)null==this.config.networks[e][o]&&(this.config.networks[e][o]=this.config[o]);this.config.networks[e].enabled?(t="block",this.config.enabled_networks+=1):t="none",r.push(this.config.networks[e].display=t)}return r},e.pro
+........................................................................................................................................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: multiple statements separated by commas (use semicolons?)
+totype.normalize_network_configuration=function(){return this.config.networks.facebook.app_id||(this.config.networks.facebook.load_sdk=!1),this.is_encoded(this.config.networks.twitter.description)||(this.config.networks.twitter.description=encodeURICompon
+..........................................................................................................................................^
+
+E:\Users\montulli\Documents\Groove Writer Working Directory\js\share.min.js(2): lint warning: use of the void ty
