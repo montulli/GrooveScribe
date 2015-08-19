@@ -5,7 +5,8 @@
 	// Original Creation date: Feb 2015.
 
 // GrooveWriter class.   The only one in this file. 
-function GrooveWriter() { "use strict";
+"use strict";
+function GrooveWriter() { 
 
 	var root = this;
 
