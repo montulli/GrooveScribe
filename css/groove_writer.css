@@ -694,7 +694,7 @@
 	#fullURLLink {
 		float: right;
 	}
-	#metronomeAutoSpeedupInputRow {
+	.metronomeAutoSpeedupInputRow {
 		vertical-align: text-bottom;
 	}
 	#metronomeAutoSpeedupTempoIncreaseAmount, #metronomeAutoSpeedupTempoIncreaseInterval {

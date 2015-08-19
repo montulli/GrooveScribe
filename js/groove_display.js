@@ -1,9 +1,10 @@
 // groove_display.js
 // utility functions to support displaying a groove on a page
+"use strict";
 
 	// GrooveDisplay class.   The only one in this file.
 	// singleton
-	if (typeof (GrooveDisplay) === "undefined") { "use strict";
+	if (typeof (GrooveDisplay) === "undefined") { 
 							
 		var GrooveDisplay = {};
 		

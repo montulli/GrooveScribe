@@ -7,16 +7,15 @@
 	// Original Creation date: Feb 2015.
 
 // GrooveWriter class.   The only one in this file. 
-
-global_num_GrooveUtilsCreated = 0;
+"use strict";
+var global_num_GrooveUtilsCreated = 0;
+var global_grooveUtilsScriptSrc = "";
 if(document.currentScript)
 	global_grooveUtilsScriptSrc = document.currentScript.src;
-else
-	global_grooveUtilsScriptSrc = "";
-global_midiInitialized = false;
+var global_midiInitialized = false;
 
 // GrooveUtils class.   The only one in this file. 
-function GrooveUtils() { "use strict";
+function GrooveUtils() { 
 
 	global_num_GrooveUtilsCreated++;   // should increment on every new
 	
@@ -2272,13 +2271,13 @@ function GrooveUtils() { "use strict";
 	
 	root.HTMLForMidiPlayer = function(expandable) {
 		var newHTML = '' +
-			'<span id="playerControl' + root.grooveUtilsUniqueIndex + '" class="playerControl">' +
+			'<div id="playerControl' + root.grooveUtilsUniqueIndex + '" class="playerControl">' +
 			'	<div class="playerControlsRow" id="playerControlsRow' + root.grooveUtilsUniqueIndex + '">' +
 			'		<span class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '"></span>' +
 			'       <span class="MIDIPlayTime" id="MIDIPlayTime' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Midi_play_time_zero + '</span>' +
 			'		<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
 			'			<div class="tempoRow">' +
-			'				<span class="tempoLabel"">BPM</span>' +
+			'				<span class="tempoLabel">BPM</span>' +
 			'				<div for="tempo" class="tempoOutput" id="tempoOutput' + root.grooveUtilsUniqueIndex + '">80</div>' +
 			'				<input type=range min=40 max=240 value=90 class="tempoInput" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings">' +
 			'			</div>' +
@@ -2287,7 +2286,7 @@ function GrooveUtils() { "use strict";
 			'				<div for="swingAmount" class="swingOutput" id="swingOutput' + root.grooveUtilsUniqueIndex + '">0% swing</div>' +
 			'				<input type=range min=0 max=50 value=0 class="swingInput" id="swingInput' + root.grooveUtilsUniqueIndex + '" list="swingSettings" step=5 >' +
 			'			</div>' +
-			'		</span>';
+			'		</div>';
 			
 			//'		<img alt="Repeat" title="Repeat" class="midiRepeatImage" id="midiRepeatImage' + root.grooveUtilsUniqueIndex + '" src="' + root.getMidiImageLocation() + 'repeat.png">'
 		

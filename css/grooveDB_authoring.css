@@ -1,0 +1,16 @@
+/* css rules for the GrooveDB authoring tool.  
+ *
+ * This stylesheet should only be loaded in the special case of the GroveDB authoring mode
+ *
+ * this is a modification of the normal Groove Scribe.  
+ * removes a bunch of stuff that isn't necessary for grooveDB authoring
+ */
+ 
+ /* remove divs that don't belong by hiding them */
+ .grooveDB_hidden {
+	display: none;
+ }
+ 
+ .grooveDB_show {
+	display: block !important;
+}

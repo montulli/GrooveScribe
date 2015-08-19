@@ -3498,9 +3498,9 @@ function GrooveWriter() { "use strict";
 					<div class="line-labels">\
 						<div class="stickings-label" onClick="myGrooveWriter.noteLabelClick(event, \'stickings\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'stickings\', ' + baseindex + ')">STICKINGS</div>\
 					</div>\
-					<div class="music-line-container">\
+					<div class="music-line-container">\n\
 						\
-						<div class="notes-container">');
+						<div class="notes-container">\n');
 						
 						newHTML += ('\
 							<div class="stickings-container">\
@@ -3508,23 +3508,23 @@ function GrooveWriter() { "use strict";
 								for(var i = indexStartForNotes; i < class_notes_per_measure+indexStartForNotes; i++) {
 								
 									newHTML += ('\
-										<div id="sticking' + i + '" class="sticking">\
-											<div class="sticking_right note_part"  id="sticking_right' + i + '"  onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ') onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'sticking\'">R</div>\
-											<div class="sticking_left note_part"  id="sticking_left' + i + '"  onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')", ' + i + ')">L</div>\
-										</div>\
+										<div id="sticking' + i + '" class="sticking">\n\
+											<div class="sticking_right note_part"  id="sticking_right' + i + '"  onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'sticking\'">R</div>\n\
+											<div class="sticking_left note_part"   id="sticking_left' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">L</div>\n\
+										</div>\n\
 									');
 									
 									// add space between notes, exept on the last note
 									if((i-(indexStartForNotes-1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) === 0 && i < class_notes_per_measure+indexStartForNotes-1) {
-										newHTML += ('<div class="space_between_note_groups"> </div> ');
+										newHTML += ('<div class="space_between_note_groups"> </div>\n');
 									}
 								}
-							newHTML += ('<div class="end_note_space"></div>\n</div>');
+							newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 						
 						newHTML += ('\
 						</div>\
 					</div>\
-				</div>');
+				</div>\n');
 				
 		newHTML += ('\
 				<span class="notes-row-container">\
@@ -3540,7 +3540,7 @@ function GrooveWriter() { "use strict";
 						<div class="staff-line-2"></div>\
 						<div class="staff-line-3"></div>\
 						<div class="staff-line-4"></div>\
-						<div class="staff-line-5"></div>');
+						<div class="staff-line-5"></div>\n');
 
 						
 						newHTML += ('\
@@ -3556,14 +3556,14 @@ function GrooveWriter() { "use strict";
 											<div class="hh_open note_part"   id="hh_open'   + i + '"><i class="fa fa-circle-o"></i></div>\
 											<div class="hh_close note_part"  id="hh_close'  + i + '"><i class="fa fa-plus"></i></div>\
 											<div class="hh_accent note_part" id="hh_accent' + i + '"><i class="fa fa-angle-right"></i></div>\
-										</div>\
+										</div>\n\
 									');
 									
 									if((i-(indexStartForNotes-1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) === 0 && i < class_notes_per_measure+indexStartForNotes-1) {
-										newHTML += ('<div class="space_between_note_groups"> </div> ');
+										newHTML += ('<div class="space_between_note_groups"> </div> \n');
 									}
 								}
-							newHTML += ('<div class="end_note_space"></div>\n</div>');
+							newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 							
 							newHTML += ('\
 							<div class="snare-container">\
@@ -3576,14 +3576,14 @@ function GrooveWriter() { "use strict";
 										<div class="snare_xstick note_part" id="snare_xstick' + i + '"><i class="fa fa-times"></i></div>\
 										<div class="snare_flam note_part" id="snare_flam' + i + '"><i class="fa ">&#9835;</i></div>\
 										<div class="snare_accent note_part" id="snare_accent' + i + '"><i class="fa fa-angle-right"></i></div>\
-										</div> \
+										</div> \n\
 										');
 										
 									if((i-(indexStartForNotes-1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) === 0 && i < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}
-							newHTML += ('<div class="end_note_space"></div>\n</div>');
+							newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 							
 							newHTML += ('\
 							<div class="kick-container">\
@@ -3591,21 +3591,21 @@ function GrooveWriter() { "use strict";
 								for(var j = indexStartForNotes; j < class_notes_per_measure+indexStartForNotes; j++) {
 									newHTML += ('\
 										<div id="kick' + j + '" class="kick" onClick="myGrooveWriter.noteLeftClick(event, \'kick\', ' + j + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'kick\', ' + j + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'kick\', ' + j + ')">\
-										<div class="kick_splash note_part" id="kick_splash' + j + '"><i class="fa fa-times"></i></div></a>\
-										<div class="kick_circle note_part" id="kick_circle' + j + '"></div></a>\
-										</div> \
+										<div class="kick_splash note_part" id="kick_splash' + j + '"><i class="fa fa-times"></i></div>\
+										<div class="kick_circle note_part" id="kick_circle' + j + '"></div>\
+										</div> \n\
 									');
 									
 									if((j-(indexStartForNotes-1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) === 0 && j < class_notes_per_measure+indexStartForNotes-1) {
 										newHTML += ('<div class="space_between_note_groups"> </div> ');
 									}
 								}
-							newHTML += ('<div class="end_note_space"></div>\n</div>');
+							newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 							
 			newHTML += ('\
 					</div>\
 				</div>\
-			</span>');
+			</span>\n');
 		
 		
 		if(class_number_of_measures > 1)
@@ -3614,7 +3614,7 @@ function GrooveWriter() { "use strict";
 			newHTML += '<span class="closeMeasureButton"><i class="fa">&nbsp;&nbsp;&nbsp;</i></span>';
 			
 		if(baseindex == class_number_of_measures) // add new measure button
-			newHTML += '<span id="addMeasureButton" title="Add measure"onClick="myGrooveWriter.addMeasureButtonClick(event)"><i class="fa fa-plus"></i></span>';
+			newHTML += '<span id="addMeasureButton" title="Add measure" onClick="myGrooveWriter.addMeasureButtonClick(event)"><i class="fa fa-plus"></i></span>';
 			
 		newHTML += ('</div>');
 		

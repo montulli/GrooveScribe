@@ -1,32 +1,9 @@
-
-
+<!DOCTYPE html>
 <html>
     <head>
 		<title>Groove Scribe</title>
 				
 		<!--   Other peoples JS libraries    -->
-		<!-- new version of MIDI.JS  Disabled
-			<!-- shim required by midi.js 
-			<script src="./MIDI.js/inc/shim/Base64.js" type="text/javascript"></script>
-			<script src="./MIDI.js/inc/shim/Base64binary.js" type="text/javascript"></script>
-			<script src="./MIDI.js/inc/shim/WebAudioAPI.js" type="text/javascript"></script>
-			<script src="./MIDI.js/inc/shim/WebMIDIAPI.js" type="text/javascript"></script>
-			<!-- jasmid package midi package required by midi.js
-			<script src="./MIDI.js/inc/jasmid/stream.js"></script>
-			<script src="./MIDI.js/inc/jasmid/midifile.js"></script>
-			<script src="./MIDI.js/inc/jasmid/replayer.js"></script>
-			<!--   midi.js package for playing a midi file   
-			<script src="./MIDI.js/js/midi/audioDetect.js" type="text/javascript"></script>
-			<script src="./MIDI.js/js/midi/gm.js" type="text/javascript"></script>
-			<script src="./MIDI.js/js/midi/loader.js" type="text/javascript"></script>
-			<script src="./MIDI.js/js/midi/plugin.audiotag.js" type="text/javascript"></script>
-			<script src="./MIDI.js/js/midi/plugin.webaudio.js" type="text/javascript"></script>
-			<script src="./MIDI.js/js/midi/plugin.webmidi.js" type="text/javascript"></script>
-			<script src="./MIDI.js/js/midi/player.js" type="text/javascript"></script>
-			<!-- utils for midi.js 
-			<script src="./MIDI.js/js/util/dom_request_xhr.js" type="text/javascript"></script>
-			<script src="./MIDI.js/js/util/dom_request_script.js" type="text/javascript"></script>
-		-->
 		<!-- old version of MIDI.JS -->
 			<script src="./MIDI.js/js/midi/AudioDetect.js" type="text/javascript"></script>
 			<script src="./MIDI.js/js/midi/LoadPlugin.js" type="text/javascript"></script>
@@ -52,22 +29,27 @@
 		<script src="js/groove_writer.js"></script>
 		<script src="js/groove_utils.js"></script>
 		<script src="js/grooves.js"></script>
-		
-		<script>
-			// instantiate a global instance of the GrooveWriterClass.    This page only uses one
-			myGrooveWriter = new GrooveWriter();
-		</script>
-		
+
 		<link href='https://fonts.googleapis.com/css?family=Lato:400,700,300' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.3.0/css/font-awesome.min.css">
 	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css">
 		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css">
 
+		<script type="text/javascript">			
+			// instantiate a global instance of the GrooveWriterClass.    This page only uses one
+			myGrooveWriter = new GrooveWriter();
+			
+			if(myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
+				document.write('<link rel="stylesheet" type="text/css" href="css/grooveDB_authoring.css">');
+			}
+		</script>
+		
+					
     </head>
     <body>
 	    	<!-- use css to position this to the upper right -->
 	<div id="GrooveWriter">  
-		<span class="nonPrintable">
+		<div class="nonPrintable">
 			<div id="LeftHandNav">
 				<span id="divisionButtonContainer">
 					<span id="timeLabel">TIME</span>
@@ -75,8 +57,8 @@
 					<span class="subdivision" id="8ths"  onClick="myGrooveWriter.changeDivision(8)"><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span></span>
 					<span class="subdivision" id="16ths" onClick="myGrooveWriter.changeDivision(16)"><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span></span>
 					<span class="subdivision" id="32ths" onClick="myGrooveWriter.changeDivision(32)"><span class="buttonFraction"><sup>1</sup>/<sub>32</sub></span></span>
-					<span class="subdivision" id="12ths" onClick="myGrooveWriter.changeDivision(12)"><div><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>TRIPLETS</div></span>
-					<span class="subdivision" id="24ths" onClick="myGrooveWriter.changeDivision(24)"><div><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>TRIPLETS</div></span>
+					<span class="subdivision" id="12ths" onClick="myGrooveWriter.changeDivision(12)"><span><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>TRIPLETS</span></span>
+					<span class="subdivision" id="24ths" onClick="myGrooveWriter.changeDivision(24)"><span><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>TRIPLETS</span></span>
 				</span>
 				
 				<script>
@@ -93,31 +75,23 @@
 						<span class="metronomeButton" id="metronome4ths" onClick="myGrooveWriter.setMetronomeButton(4)">4th</span>
 						<span class="metronomeButton" id="metronome8ths" onClick="myGrooveWriter.setMetronomeButton(8)">8th</span>
 						<span class="metronomeButton" id="metronome16ths" onClick="myGrooveWriter.setMetronomeButton(16)">16th</span>
-						<script>
-						if(!myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
-							document.write('<span class="metronomeButton Options" id="metronomeOptionsAnchor" onClick="myGrooveWriter.metronomeOptionsAnchorClick(event)">Options</span>');
-						}
-					</script>
+						<span class="metronomeButton Options grooveDB_hidden" id="metronomeOptionsAnchor" onClick="myGrooveWriter.metronomeOptionsAnchorClick(event)">Options</span>
 					</span>
 				</span>
 				<span id="upperRight">
-					<script>
-						if(!myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
-							document.write('<span class="rightButtons" id="permutationAnchor" onClick="myGrooveWriter.permutationAnchorClick(event)"><i class="fa fa-bars"></i> Permutations</span>');
-						}
-					</script>
+					<span class="rightButtons grooveDB_hidden" id="permutationAnchor" onClick="myGrooveWriter.permutationAnchorClick(event)"><i class="fa fa-bars"></i> Permutations</span>
 					<span class="rightButtons" id="groovesAnchor" onClick="myGrooveWriter.groovesAnchorClick(event)"><i class="fa fa-bars"></i> Grooves</span>
 					<span class="rightButtons" id="helpAnchor" onClick="myGrooveWriter.helpAnchorClick(event)"><i class="fa fa-bars"></i> Help</span>
 				</span>
 			</div>
-		</span>  
+		</div>  
 		
 		<div id="RightHandContent">
-			<span class="nonPrintable">
+			<div class="nonPrintable">
 				<div id="midiPlayer" class="fullWidthEle"><!-- space for the midiplayer to be attached by the javascript --></div>
 				<div id="musicalInput" class="fullWidthEle">
 					<span id="measureContainer">
-						<script>
+						<script type="text/javascript">
 							var genHTML = "";
 							for(var cur_measure=1; cur_measure <= myGrooveWriter.numberOfMeasures(); cur_measure++) {
 								genHTML += myGrooveWriter.HTMLforStaffContainer(cur_measure, (cur_measure-1) * myGrooveWriter.notesPerMeasure());
@@ -127,57 +101,43 @@
 					</span>
 				</div>
 				<div id="PermutationOptions">
-					<script>
+					<script type="text/javascript">
 							var genHTML = "";
 							genHTML += myGrooveWriter.HTMLforPermutationOptions();
 							document.write(genHTML);
-					</script>
+					</script>	
 				</div>
 				<div id="NotationLine" class="fullWidthEle">
 					<span id='NotationLabel'>Notation</span>
 					<span id='KeyButton'><input type="checkbox" class="hiddenCheckbox" id="showLegend" onClick="myGrooveWriter.refresh_ABC()"><label id="LegendLabel" for="showLegend"><i class="fa fa-key"></i></label></span>
 				</div>
-			</span>  
-			<span class="Printable">
+			</div>  
+			<div class="Printable">
 				<!-- rendering area -->
 				<div id="sheetMusicDiv" class="fullWidthEle">
 					<div id="svgTarget" class="svgTarget">
 				<!-- space for the SVG music go display -->
 					</div>
 				</div>
-			</span>
-			<span class="nonPrintable">
-				<!-- errors -->
+			</div>
+			<div class="nonPrintable">
 				
 				<p class="warnings">Warnings:</p>
-				<div class="warnings" id="diverr"></div>
+				<div class="warnings" id="diverr">
+				</div>
 				
-				<script>
-					if(myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
-						document.write('<div id="sheetMusicTextFields" class="fullWidthEle" style="display: none;">');
-					} else {
-						document.write('<div id="sheetMusicTextFields" class="fullWidthEle">');
-					}
-				</script>
-								&nbsp;
-								<b>Title:</b> <input class="sheetMusicInputField" id="tuneTitle" onChange="myGrooveWriter.refresh_ABC()" type="text"> &nbsp;
-								<b>Author:</b> <input class="sheetMusicInputField" id="tuneAuthor" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
-								<b>Comment:</b> <input class="sheetMusicInputField" id="tuneComments" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
-							</div>
-				</script>
-				
-				<script>
-					if(myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
-						document.write('<div id="bottomButtonRow" class="fullWidthEle" style="display: none;">');
-					} else {
-						document.write('<div id="bottomButtonRow" class="fullWidthEle">');
-					}
-				</script>
-					<span class="pageBottomButton" id="showHideStickingsButton" href="" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);"><span class="bottomButtonLabel">STICKINGS</span></span>
-					<span class="pageBottomButton" type="button" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></span></i><span class="bottomButtonLabel">MIDI</span></span>
-					<span class="pageBottomButton" id="printButton" type="button" onclick="myGrooveWriter.printMusic()"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
-					<span class="pageBottomButton" id="shareSaveButton" href="#" onClick="event.preventDefault(); myGrooveWriter.show_FullURLPopup()"><span class="bottomButtonIcon"><i class="fa fa-share fa-2x"></i></span><span class="bottomButtonLabel">SHARE</span></span>
-				</div>	  
+				<div id="sheetMusicTextFields" class="fullWidthEle grooveDB_hidden">
+					<b>Title:</b> <input class="sheetMusicInputField" id="tuneTitle" onChange="myGrooveWriter.refresh_ABC()" type="text"> &nbsp;
+					<b>Author:</b> <input class="sheetMusicInputField" id="tuneAuthor" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
+					<b>Comment:</b> <input class="sheetMusicInputField" id="tuneComments" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
+				</div>
+
+				<div id="bottomButtonRow" class="fullWidthEle grooveDB_hidden">
+					<span class="pageBottomButton" id="showHideStickingsButton" onClick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);"><span class="bottomButtonLabel">STICKINGS</span></span>
+					<span class="pageBottomButton" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as()"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></i></span><span class="bottomButtonLabel">MIDI</span></span>
+					<span class="pageBottomButton" id="printButton" onclick="myGrooveWriter.printMusic()"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
+					<span class="pageBottomButton" id="shareSaveButton" onClick="event.preventDefault(); myGrooveWriter.show_FullURLPopup()"><span class="bottomButtonIcon"><i class="fa fa-share fa-2x"></i></span><span class="bottomButtonLabel">SHARE</span></span>
+				</div>
 				
 				<div id="midiTextOutput">
 				</div>
@@ -190,13 +150,7 @@
 				</span>
 				
 				<!-- GrooveDB output area -->
-				<script>
-					if(myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
-						document.write('<div id="GrooveDB_MetaData">');
-					} else {
-						document.write('<div id="GrooveDB_MetaData" style="display: none;">');
-					}
-				</script>
+				<div id="GrooveDB_MetaData" class="grooveDB_show" style="display:none;">
 					<p>
 					This is the text that should be added to the grooveDB for this groove.  <br>
 					<b>Copy and paste it into the GrooveDB edit window </b>
@@ -207,7 +161,7 @@
 				<span id="undoStack"></span>
 				<span id="redoStack"></span>
 				<!-- ABC notation -->
-				<script>
+				<script type="text/javascript">
 					if(myGrooveWriter.myGrooveUtils.debugMode) {
 						document.write('<A href="" id="showHideABC" onClick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a>');
 					}
@@ -226,7 +180,7 @@
 				
 				<div id="totalPlayTime">
 				</div>
-			</span>
+			</div>
 		</div>
 
 		
@@ -251,9 +205,9 @@
 		</div>
 		<div class="noteContextMenu">
 			<ul id="metronomeOptionsOffsetClickForTripletsContextMenu" class="list">
-				<li class="metronomeOptionsOffsetClickContextMenuItem menuChecked" id="metronomeOptionsOffsetClickContextMenuOnThe1"  onClick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("1")'>Start on the "<b>1</b>"</li>
-				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheTi" onClick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("TI")'>Start on the "<b>TI</b>"</li>
-				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheTa" onClick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("TA")'>Start on the "<b>TA</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem menuChecked" id="metronomeOptionsOffsetClickContextMenuOnThe1Triplet"  onClick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("1")'>Start on the "<b>1</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheTiTriplet" onClick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("TI")'>Start on the "<b>TI</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheTaTriplet" onClick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("TA")'>Start on the "<b>TA</b>"</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
@@ -368,7 +322,7 @@
 		<!-- this is used by the metronome auto speed up option menu, and is hidden by default -->
 		<div id="metronomeAutoSpeedupConfiguration">
 			<table id="metronomeAutoSpeedupInputTable" >
-			<tr id="metronomeAutoSpeedupInputRow">
+			<tr class="metronomeAutoSpeedupInputRow">
 				<td>
 				Amount:
 				</td><td>
@@ -377,7 +331,7 @@
 				 BPM
 				</td>
 			</tr>	
-			<tr id="metronomeAutoSpeedupInputRow">
+			<tr class="metronomeAutoSpeedupInputRow">
 				<td>
 				Interval:
 				</td><td>
