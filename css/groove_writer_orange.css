@@ -588,10 +588,13 @@
 		border-top: 1px solid #999;
 		padding: 8px 0px;
 		text-align: center;
-		-webkit-justify-content: space-between;
+		-webkit-justify-content: space-around;
 		display: -webkit-flex;
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-around;
+	}
+	.sheetMusicTextField {
+		margin: 0px 10px;
 	}
 	.sheetMusicInputField {
 	
@@ -805,6 +808,7 @@
 	}
 	.pageBottomButton {
 		display: inline-block;
+		margin: 0px 20px;
 	}
 	.pageBottomButton:hover {
 		cursor: pointer;
