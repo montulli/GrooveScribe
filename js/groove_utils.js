@@ -9,6 +9,8 @@
 // GrooveWriter class.   The only one in this file.
 
 /*jslint browser:true */
+/*global Abc, MIDI, Midi */
+
 
 var global_num_GrooveUtilsCreated = 0;
 var global_grooveUtilsScriptSrc = "";
@@ -462,7 +464,6 @@ function GrooveUtils() { "use strict";
 	//
 	// Returns array that contains notesPerMeasure * numberOfMeasures entries.
 	root.noteArraysFromURLData = function (drumType, noteString, notesPerMeasure, numberOfMeasures) {
-		var setFunction;
 		var retArray = [];
 
 		// decode the %7C url encoding types
