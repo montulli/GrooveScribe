@@ -4,9 +4,14 @@
 // Author: Lou Montulli
 // Original Creation date: Feb 2015.
 
+/*jshint multistr: true */
+/*jslint browser:true */
+
+/*global gapi, GrooveUtils, Midi, Share */
+
 // GrooveWriter class.   The only one in this file.
-"use strict";
-function GrooveWriter() {
+
+function GrooveWriter() { "use strict";
 
 	var root = this;
 
@@ -130,7 +135,7 @@ function GrooveWriter() {
 	function get_snare_state(id, returnType) {
 
 		if (returnType != "ABC" && returnType != "URL") {
-			alert("bad returnType in get_snare_state()");
+			window.alert("bad returnType in get_snare_state()");
 			returnType = "ABC";
 		}
 
@@ -192,7 +197,7 @@ function GrooveWriter() {
 		var kickOn = (document.getElementById("kick_circle" + id).style.backgroundColor == constant_note_on_color_rgb);
 
 		if (returnType != "ABC" && returnType != "URL") {
-			alert("bad returnType in get_kick_state()");
+			window.alert("bad returnType in get_kick_state()");
 			returnType = "ABC";
 		}
 
@@ -246,7 +251,7 @@ function GrooveWriter() {
 			document.getElementById("kick_splash" + id).style.color = constant_note_on_color_hex;
 			break;
 		default:
-			alert("bad switch in set_kick_state");
+			window.alert("bad switch in set_kick_state");
 			break;
 		}
 	}
@@ -288,7 +293,7 @@ function GrooveWriter() {
 			document.getElementById("snare_xstick" + id).style.color = constant_note_on_color_hex;
 			break;
 		default:
-			alert("bad switch in set_snare_state");
+			window.alert("bad switch in set_snare_state");
 			break;
 		}
 	}
@@ -308,7 +313,7 @@ function GrooveWriter() {
 	function get_hh_state(id, returnType) {
 
 		if (returnType != "ABC" && returnType != "URL") {
-			alert("bad returnType in get_hh_state()");
+			window.alert("bad returnType in get_hh_state()");
 			returnType = "ABC";
 		}
 
@@ -393,7 +398,7 @@ function GrooveWriter() {
 			document.getElementById("hh_accent" + id).style.color = constant_note_on_color_hex;
 			break;
 		default:
-			alert("bad switch in set_hh_state");
+			window.alert("bad switch in set_hh_state");
 			break;
 		}
 	}
@@ -417,7 +422,7 @@ function GrooveWriter() {
 			document.getElementById("sticking_left" + id).style.color = constant_note_on_color_hex;
 			break;
 		default:
-			alert("Bad state in set_sticking_on");
+			window.alert("Bad state in set_sticking_on");
 			break;
 		}
 	}
@@ -425,7 +430,7 @@ function GrooveWriter() {
 	function get_sticking_state(id, returnType) {
 		var sticking_state = false;
 		if (returnType != "ABC" && returnType != "URL") {
-			alert("bad returnType in get_kick_state()");
+			window.alert("bad returnType in get_kick_state()");
 			returnType = "ABC";
 		}
 
@@ -525,7 +530,7 @@ function GrooveWriter() {
 			class_cur_kick_highlight_id = id;
 			break;
 		default:
-			alert("bad case in hilight_note");
+			window.alert("bad case in hilight_note");
 			break;
 		}
 
@@ -634,6 +639,7 @@ function GrooveWriter() {
 			id = "metronome16ths";
 			break;
 		case 0:
+			/* falls through */
 		default:
 			id = "metronomeOff";
 			if (root.myGrooveUtils.getMetronomeSolo()) {
@@ -795,7 +801,7 @@ function GrooveWriter() {
 			break;
 
 		default:
-			alert("bad case in metronomeOptionsMenuPopupClick()");
+			window.alert("bad case in metronomeOptionsMenuPopupClick()");
 			break;
 		}
 
@@ -856,13 +862,14 @@ function GrooveWriter() {
 			showHideCSS_ClassVisibility(".kick-container", true, true); // show it
 			showHideCSS_ClassVisibility(".snare-container", true, false); // hide it
 			if (class_number_of_measures > 1)
-				alert("Permutation patterns only use the first measure, the other measures will be ignored.");
+				window.alert("Permutation patterns only use the first measure, the other measures will be ignored.");
 			selectButton(document.getElementById("permutationAnchor"));
 			document.getElementById("PermutationOptions").innerHTML = root.HTMLforPermutationOptions();
 			document.getElementById("PermutationOptions").className += " displayed";
 			break;
 
 		case "none":
+			/* falls through */
 		default:
 			showHideCSS_ClassVisibility(".kick-container", true, true); // show it
 			showHideCSS_ClassVisibility(".snare-container", true, true); // show it
@@ -900,7 +907,7 @@ function GrooveWriter() {
 			break;
 
 		default:
-			alert("bad case in helpMenuPopupClick()");
+			window.alert("bad case in helpMenuPopupClick()");
 			break;
 		}
 
@@ -940,7 +947,7 @@ function GrooveWriter() {
 			contextMenu = document.getElementById("kickLabelContextMenu");
 			break;
 		default:
-			alert("bad case in noteLabelClick");
+			window.alert("bad case in noteLabelClick");
 			break;
 		}
 
@@ -979,7 +986,7 @@ function GrooveWriter() {
 			setFunction = set_kick_state;
 			break;
 		default:
-			alert("bad case in noteLabelPopupClick");
+			window.alert("bad case in noteLabelPopupClick");
 			return false;
 		}
 
@@ -1008,7 +1015,7 @@ function GrooveWriter() {
 			else if (action == "cancel")
 				continue; // do nothing.
 			else
-				alert("Bad IF case in noteLabelPopupClick");
+				window.alert("Bad IF case in noteLabelPopupClick");
 		}
 
 		class_measure_for_note_label_click = 0; // reset
@@ -1038,7 +1045,7 @@ function GrooveWriter() {
 			contextMenu = document.getElementById("kickContextMenu");
 			break;
 		default:
-			alert("Bad case in handleNotePopup");
+			window.alert("Bad case in handleNotePopup");
 			break;
 		}
 
@@ -1080,7 +1087,7 @@ function GrooveWriter() {
 				sticking_rotate_state(id);
 				break;
 			default:
-				alert("Bad case in noteLeftClick");
+				window.alert("Bad case in noteLeftClick");
 				break;
 			}
 
@@ -1106,7 +1113,7 @@ function GrooveWriter() {
 			set_kick_state(id, new_setting);
 			break;
 		default:
-			alert("Bad case in contextMenuClick");
+			window.alert("Bad case in contextMenuClick");
 			break;
 		}
 
@@ -1136,7 +1143,7 @@ function GrooveWriter() {
 				set_kick_state(id, action == "off" ? "off" : "normal");
 				break;
 			default:
-				alert("Bad case in noteOnMouseEnter");
+				window.alert("Bad case in noteOnMouseEnter");
 				break;
 			}
 			create_ABC(); // update music
@@ -1381,6 +1388,7 @@ function GrooveWriter() {
 				"F", false, "F", false, false, false, "F", false];
 			break;
 		case 15:
+			/* falls through */
 		default:
 			kick_array = ["F", false, "F", false, "F", false, "F", false,
 				"F", false, "F", false, "F", false, "F", false,
@@ -1489,6 +1497,7 @@ function GrooveWriter() {
 				"F", false, "F", false, false, false, "F", false];
 			break;
 		case 15:
+			/* falls through */
 		default:
 			kick_array = ["F", false, "F", false, "F", false, "F", false,
 				"F", false, "F", false, "F", false, "F", false,
@@ -1557,10 +1566,11 @@ function GrooveWriter() {
 		case 13: // 3nd triplet
 		case 14: // 4nd triplet
 		case 15: // 1st Quad
-			alert("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
+			window.alert("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
 			break;
 
 		case 11: // first triplet
+			/* falls through */
 		default:
 			// use default
 			break;
@@ -1632,10 +1642,11 @@ function GrooveWriter() {
 		case 13: // 3nd triplet
 		case 14: // 4nd triplet
 		case 15: // 1st Quad
-			alert("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
+			window.alert("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
 			break;
 
 		case 11: // first triplet
+			/* falls through */
 		default:
 			// use default
 			break;
@@ -1707,10 +1718,11 @@ function GrooveWriter() {
 		case 13: // 3nd triplet
 		case 14: // 4nd triplet
 		case 15: // 1st Quad
-			alert("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
+			window.alert("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
 			break;
 
 		case 11: // first triplet
+			/* falls through */
 		default:
 			// use default
 			break;
@@ -1958,9 +1970,9 @@ function GrooveWriter() {
 				ret_val = true;
 			break;
 		default:
-			alert("bad case in groove_writer.js:shouldDisplayPermutationForSection()");
+			window.alert("bad case in groove_writer.js:shouldDisplayPermutationForSection()");
 			return false;
-			break;
+			//break;
 		}
 
 		return ret_val;
@@ -2059,7 +2071,7 @@ function GrooveWriter() {
 				break;
 
 			default:
-				alert("bad case in merge_kick_arrays()");
+				window.alert("bad case in merge_kick_arrays()");
 				new_kick_array.push(primary_kick_array[i]);
 				break;
 			}
@@ -2144,6 +2156,7 @@ function GrooveWriter() {
 			break;
 
 		case "none":
+			/* falls through */
 		default:
 			root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
 
@@ -2447,6 +2460,7 @@ function GrooveWriter() {
 			break;
 
 		case "none":
+			/* falls through */
 		default:
 			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), true, 4, 4, renderWidth);
 			root.myGrooveUtils.note_mapping_array = [];
@@ -2729,13 +2743,13 @@ function GrooveWriter() {
 					// left arrow
 					root.myGrooveUtils.downTempo();
 					return false;
-					break;
+					//break;
 
 				case 39: // right arrow
 					// right arrow
 					root.myGrooveUtils.upTempo();
 					return false;
-					break;
+					//break;
 
 				default:
 					/* DEBUG
@@ -2992,7 +3006,7 @@ function GrooveWriter() {
 				setFunction(displayIndex, "off");
 				break;
 			default:
-				alert("Bad note in setNotesFromURLData: " + notes[i]);
+				window.alert("Bad note in setNotesFromURLData: " + notes[i]);
 				break;
 			}
 		}
@@ -3009,9 +3023,9 @@ function GrooveWriter() {
 		if (abcArray.length > notesOnScreen && abcArray.length / notesOnScreen >= 2) {
 			// if we encounter a 16th note groove for an 8th note board, let's scale it	down
 			noteStringScaler = Math.ceil(abcArray.length / notesOnScreen);
-		} else if (abcArray.length < notesOnScreen && notesOnScreen / notes.length >= 2) {
+		} else if (abcArray.length < notesOnScreen && notesOnScreen / abcArray.length >= 2) {
 			// if we encounter a 8th note groove for an 16th note board, let's scale it up
-			displayScaler = Math.ceil(notesOnScreen / notes.length);
+			displayScaler = Math.ceil(notesOnScreen / abcArray.length);
 		}
 
 		if (drumType == "Stickings") {
@@ -3085,7 +3099,7 @@ function GrooveWriter() {
 				setFunction(displayIndex, "off");
 				break;
 			default:
-				alert("Bad note in setNotesFromABCArray: " + abcArray[i]);
+				window.alert("Bad note in setNotesFromABCArray: " + abcArray[i]);
 				break;
 			}
 		}
@@ -3220,7 +3234,7 @@ function GrooveWriter() {
 							this.description = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLTextField").value);
 						},
 						after : function () {
-							console.log("User shared:", this.url);
+							//console.log("User shared:", this.url);
 						}
 					}
 				}
@@ -3268,7 +3282,7 @@ function GrooveWriter() {
 				}
 			});
 		} else {
-			alert("Error: URL Shortener API is not loaded");
+			window.alert("Error: URL Shortener API is not loaded");
 		}
 
 	}
@@ -3332,11 +3346,11 @@ function GrooveWriter() {
 	}
 
 	root.saveABCtoFile = function () {
-		myABC = getABCDataWithLineEndings();
+		var myABC = getABCDataWithLineEndings();
 
-		myURL = 'data:text/plain;charset=utf-8;base64,' + btoa(myABC);
+		var myURL = 'data:text/plain;charset=utf-8;base64,' + btoa(myABC);
 
-		alert("Use \"Save As\" to save the new page to a local file");
+		window.alert("Use \"Save As\" to save the new page to a local file");
 		window.open(myURL);
 
 	};
@@ -3703,7 +3717,7 @@ function GrooveWriter() {
 				});
 			break;
 		default:
-			alert("Bad case in HTMLforPermutationOptions()");
+			window.alert("Bad case in HTMLforPermutationOptions()");
 			break;
 		}
 
