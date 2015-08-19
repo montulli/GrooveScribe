@@ -7,7 +7,8 @@
 // Original Creation date: Feb 2015.
 
 // GrooveWriter class.   The only one in this file.
-"use strict";
+/*jslint browser:true */
+
 var global_num_GrooveUtilsCreated = 0;
 var global_grooveUtilsScriptSrc = "";
 if (document.currentScript)
@@ -15,7 +16,7 @@ if (document.currentScript)
 var global_midiInitialized = false;
 
 // GrooveUtils class.   The only one in this file.
-function GrooveUtils() {
+function GrooveUtils() { "use strict";
 
 	global_num_GrooveUtilsCreated++; // should increment on every new
 
@@ -232,28 +233,28 @@ function GrooveUtils() {
 	//
 	//  Sticking support:
 	//		R: right
-	//  	L: left
+	//      L: left
 	//
 	//  HiHat support:
-	//     	x: normal
-	//     	X: accent
-	//     	o: open
+	//		x: normal
+	//		X: accent
+	//		o: open
 	//		+: close
-	//     	c: crash
-	//      r: ride
-	//     	-: off
+	//		c: crash
+	//		r: ride
+	//		-: off
 	//
 	//   Snare support:
-	//     	o: normal
-	//     	O: accent
-	//     	g: ghost
-	//      x: cross stick
-	//     	-: off
+	//		o: normal
+	//		O: accent
+	//		g: ghost
+	//		x: cross stick
+	//		-: off
 	//
 	//   Kick support:
-	//     	o: normal
-	//     	x: hi hat splash with foot
-	//     	X: kick & hi hat splash with foot simultaneously
+	//		o: normal
+	//		x: hi hat splash with foot
+	//		X: kick & hi hat splash with foot simultaneously
 	//
 	//  Note that "|" and " " will be skipped so that standard drum tabs can be applied
 	//  Example:
@@ -292,13 +293,13 @@ function GrooveUtils() {
 			switch (drumType) {
 			case "H":
 				return constant_ABC_HH_Open;
-				break;
+				//break;
 			case "S":
 				return constant_ABC_SN_Normal;
-				break;
+				//break;
 			case "K":
 				return constant_ABC_KI_Normal;
-				break;
+				//break;
 			default:
 				break;
 			}
@@ -308,10 +309,10 @@ function GrooveUtils() {
 			switch (drumType) {
 			case "H":
 				return constant_ABC_HH_Ride;
-				break;
+				//break;
 			case "Stickings":
 				return constant_ABC_STICK_R;
-				break;
+				//break;
 			default:
 				break;
 			}
@@ -320,13 +321,13 @@ function GrooveUtils() {
 			switch (drumType) {
 			case "S":
 				return constant_ABC_SN_XStick;
-				break;
+				//break;
 			case "K":
 				return constant_ABC_KI_Splash;
-				break;
+				//break;
 			case "H":
 				return constant_ABC_HH_Normal;
-				break;
+				//break;
 			default:
 				break;
 			}
@@ -335,10 +336,10 @@ function GrooveUtils() {
 			switch (drumType) {
 			case "K":
 				return constant_ABC_KI_SandK;
-				break;
+				//break;
 			case "H":
 				return constant_ABC_HH_Accent;
-				break;
+				//break;
 			default:
 				break;
 			}
@@ -350,17 +351,17 @@ function GrooveUtils() {
 			break;
 		case "-":
 			return false;
-			break;
+			//break;
 		default:
 			break;
 		}
 
-		alert("Bad tablature note found in tablatureToABCNotationPerNote.  Tab: " + tablatureChar + " for drum type: " + drumType);
+		window.alert("Bad tablature note found in tablatureToABCNotationPerNote.  Tab: " + tablatureChar + " for drum type: " + drumType);
 		return false;
 	}
 
 	// same as above, but reversed
-	function ABCNotationToTablaturePerNote(drumType, abcChar) {
+	function abcNotationToTablaturePerNote(drumType, abcChar) {
 		var tabChar = "-";
 
 		switch (abcChar) {
@@ -413,7 +414,7 @@ function GrooveUtils() {
 			tabChar = "-";
 			break;
 		default:
-			alert("bad case in ABCNotationToTablaturePerNote");
+			window.alert("bad case in abcNotationToTablaturePerNote");
 			break;
 		}
 
@@ -510,7 +511,7 @@ function GrooveUtils() {
 			maxLength = noteArray.length;
 
 		for (var i = 0; i < maxLength; i++) {
-			var newTabChar = ABCNotationToTablaturePerNote(drumType, noteArray[i]);
+			var newTabChar = abcNotationToTablaturePerNote(drumType, noteArray[i]);
 
 			if (separatorDistance > 0)
 				returnTabLine += "|";
@@ -663,7 +664,7 @@ function GrooveUtils() {
 	root.get_top_ABC_BoilerPlate = function (isPermutation, tuneTitle, tuneAuthor, tuneComments, showLegend, isTriplets, kick_stems_up, timeSigTop, timeSigBottom, renderWidth) {
 
 		// boiler plate
-		var fullABC = "%abc\n\X:6\n";
+		var fullABC = "%abc\nX:6\n";
 
 		fullABC += "M:" + timeSigTop + "/" + timeSigBottom + "\n";
 
@@ -886,7 +887,7 @@ function GrooveUtils() {
 	// for 8ths and 16th we group with 4
 	// for triplets we group with 3
 	// This function is for laying out the HTML
-	// see ABC_gen_note_grouping_size for the sheet music layout grouping size
+	// see abc_gen_note_grouping_size for the sheet music layout grouping size
 	root.noteGroupingSize = function (notes_per_measure, timeSigTop, timeSigBottom) {
 		var note_grouping = 4;
 
@@ -913,7 +914,7 @@ function GrooveUtils() {
 				break;
 
 			default:
-				alert("bad switch in GrooveUtils.noteGroupingSize()");
+				window.alert("bad switch in GrooveUtils.noteGroupingSize()");
 				note_grouping = Math.ceil(notes_per_measure / 4);
 				break;
 			}
@@ -934,7 +935,7 @@ function GrooveUtils() {
 	// scale correctly
 	// The base array is now 32 notes long to support 32nd notes
 	// since we would normally group by 4 we need to group by 8 since we are scaling it
-	function ABC_gen_note_grouping_size(usingTriplets, timeSigTop, timeSigBottom) {
+	function abc_gen_note_grouping_size(usingTriplets, timeSigTop, timeSigBottom) {
 		var note_grouping;
 
 		if (timeSigTop == 4 && timeSigBottom == 4) {
@@ -970,7 +971,7 @@ function GrooveUtils() {
 		var scaler;
 
 		if (!timeSigTop || timeSigTop < 1 || timeSigTop > 36) {
-			alert("Error in getNoteScaler, out of range: " + timeSigTop);
+			window.alert("Error in getNoteScaler, out of range: " + timeSigTop);
 			scaler = 1;
 		} else if (timeSigTop == 4) {
 			if (root.isTripletDivision(notes_per_measure, timeSigTop, timeSigBottom))
@@ -1055,13 +1056,13 @@ function GrooveUtils() {
 			// this will remove rests and use different length notes to express triplets.   It is a little harder to decipher.
 			if (eliminate_rests_in_triplets) {
 				if (notes_per_measure != 12) {
-					group_size = notes_per_measure / 4;
+					var group_size = notes_per_measure / 4;
 					end_of_group = group_size - (i % group_size); // assuming we are always dealing with 24 notes
 					grouping_size_for_rests = group_size; // we scale up the notes to fit a 24 length array.  This will be 1 or 2
 				}
 			}
 
-			if (i % ABC_gen_note_grouping_size(true, timeSigTop, timeSigBottom) === 0) {
+			if (i % abc_gen_note_grouping_size(true, timeSigTop, timeSigBottom) === 0) {
 				var num_notes_in_next_group = root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom);
 				// creates the 3 or the 6 over the note grouping
 				// looks like (3:3:3 or (6:6:6
@@ -1100,7 +1101,7 @@ function GrooveUtils() {
 				kick_voice_string += getABCforNote(kick_array.slice(i), class_empty_note_array, class_empty_note_array, end_of_group, scaler);
 			}
 
-			if ((i % ABC_gen_note_grouping_size(true, timeSigTop, timeSigBottom)) == ABC_gen_note_grouping_size(true, timeSigTop, timeSigBottom) - 1) {
+			if ((i % abc_gen_note_grouping_size(true, timeSigTop, timeSigBottom)) == abc_gen_note_grouping_size(true, timeSigTop, timeSigBottom) - 1) {
 
 				stickings_voice_string += " ";
 				hh_snare_voice_string += " "; // Add a space to break the bar line every group notes
@@ -1138,15 +1139,15 @@ function GrooveUtils() {
 
 		for (var i = 0; i < num_notes; i++) {
 
-			var grouping_size_for_rests = ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom);
+			var grouping_size_for_rests = abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom);
 
 			var end_of_group;
-			if (i % ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom) === 0)
-				end_of_group = ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom);
+			if (i % abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom) === 0)
+				end_of_group = abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom);
 			else
-				end_of_group = (ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom) - ((i) % ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom)));
+				end_of_group = (abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom) - ((i) % abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom)));
 
-			if (i % ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom) === 0) {
+			if (i % abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom) === 0) {
 				// we will only output a rest at the beginning of a beat phrase, or if triplets for every space
 				stickings_voice_string += getABCforRest(sticking_array.slice(i), class_empty_note_array, class_empty_note_array, grouping_size_for_rests, scaler, true);
 
@@ -1169,7 +1170,7 @@ function GrooveUtils() {
 				kick_voice_string += getABCforNote(kick_array.slice(i), class_empty_note_array, class_empty_note_array, end_of_group, scaler);
 			}
 
-			if ((i % ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom)) == ABC_gen_note_grouping_size(false, timeSigTop, timeSigBottom) - 1) {
+			if ((i % abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom)) == abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom) - 1) {
 
 				stickings_voice_string += " ";
 				hh_snare_voice_string += " "; // Add a space to break the bar line every group notes
@@ -1447,7 +1448,7 @@ function GrooveUtils() {
 				root.loadMIDIFromURL(midiURL);
 				root.midiEventCallbacks.noteHasChangedSinceLastDataLoad = false;
 			} else {
-				alert("can't load midi song.   myGrooveData is empty");
+				window.alert("can't load midi song.   myGrooveData is empty");
 			}
 		};
 		this.doesMidiDataNeedRefresh = function (root) {
@@ -1533,8 +1534,8 @@ function GrooveUtils() {
 	 * num_notes: number of notes in the arrays  (currently expecting 32 notes per measure)
 	 * metronome_frequency: 0, 4, 8, 16   None, quarter notes, 8th notes, 16ths
 	 * num_notes_for_swing: how many notes are we using.   Since we need to know where the upstrokes are we need to know
-	 * 			what the proper division is.   It can change when we are doing permutations, otherwise it is what is the
-	 *			class_notes_per_measure
+	 *                      what the proper division is.   It can change when we are doing permutations, otherwise it is what is the
+	 *                      class_notes_per_measure
 	 *
 	 * The arrays passed in contain the ABC notation for a given note value or false for a rest.
 	 */
@@ -1547,7 +1548,7 @@ function GrooveUtils() {
 		var midi_channel = 0;
 
 		if (swing_percentage < 0 || swing_percentage > 0.99) {
-			alert("Swing percentage out of range in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+			window.alert("Swing percentage out of range in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
 			swing_percentage = 0;
 		}
 
@@ -1615,36 +1616,36 @@ function GrooveUtils() {
 					break;
 				case "E":
 					if (isTriplets)
-						alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						window.alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by one sixteenth note
 					metronome_specific_index -= sixteenthNoteFrequency;
 					break;
 				case "AND":
 					if (isTriplets)
-						alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						window.alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by two sixteenth notes
 					metronome_specific_index -= (2 * sixteenthNoteFrequency);
 					break;
 				case "A":
 					if (isTriplets)
-						alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						window.alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by three sixteenth notes
 					metronome_specific_index -= (3 * sixteenthNoteFrequency);
 					break;
 				case "Ti":
 					if (!isTriplets)
-						alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						window.alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by one sixteenth note
 					metronome_specific_index -= sixteenthNoteFrequency;
 					break;
 				case "Ta":
 					if (!isTriplets)
-						alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						window.alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by two sixteenth notes
 					metronome_specific_index -= (2 * sixteenthNoteFrequency);
 					break;
 				default:
-					alert("bad case in MIDI_from_HH_Snare_Kick_Arrays");
+					window.alert("bad case in MIDI_from_HH_Snare_Kick_Arrays");
 					break;
 				}
 
@@ -1709,7 +1710,7 @@ function GrooveUtils() {
 				case false:
 					break;
 				default:
-					alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+					window.alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
 					break;
 				}
 
@@ -1766,7 +1767,7 @@ function GrooveUtils() {
 				case false:
 					break;
 				default:
-					alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+					window.alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
 					break;
 				}
 
@@ -1795,7 +1796,7 @@ function GrooveUtils() {
 				case false:
 					break;
 				default:
-					alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+					window.alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
 					break;
 				}
 				if (kick_note !== false) {
@@ -1862,7 +1863,7 @@ function GrooveUtils() {
 
 		MIDI.Player.timeWarp = 1; // speed the song is played back
 		MIDI.Player.BPM = root.getTempo();
-		MIDI.Player.loadFile(midiURL, MIDILoaderCallback());
+		MIDI.Player.loadFile(midiURL, midiLoaderCallback());
 	};
 
 	root.MIDI_save_as = function (midiURL) {
@@ -2073,7 +2074,7 @@ function GrooveUtils() {
 		// this used to work when we used note 60 as a spacer between chords
 		//if(data.note == 60)
 		//	class_midi_note_num++;
-
+		/*
 		if (0 && data.message == 144) {
 			debug_note_count++;
 			// my debugging code for midi
@@ -2094,16 +2095,17 @@ function GrooveUtils() {
 
 			document.getElementById("midiTextOutput").innerHTML += newHTML;
 		}
+		*/
 	}
 
-	function MIDILoaderCallback() {
+	function midiLoaderCallback() {
 		MIDI.Player.addListener(ourMIDICallback);
 	}
 
 	root.getTempo = function () {
 		var tempo = parseInt(document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex).value, 10);
 		if (tempo < 19 && tempo > 281)
-			tempo = constant_default_tempo;
+			tempo = constant_DEFAULT_TEMPO;
 
 		return tempo;
 	};
