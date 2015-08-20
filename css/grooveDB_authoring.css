@@ -8,7 +8,7 @@
  
  /* remove divs that don't belong by hiding them */
  .grooveDB_hidden {
-	display: none;
+	display: none !important;
  }
  
  .grooveDB_show {

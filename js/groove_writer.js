@@ -81,15 +81,6 @@ function GrooveWriter() { "use strict";
 		return class_notes_per_measure;
 	};
 
-	// check for firefox browser
-	function isFirefox() {
-		var val = navigator.userAgent.toLowerCase();
-		if (val.indexOf("firefox") > -1)
-			return true;
-
-		return false;
-	}
-
 	// is the division a triplet groove?   6, 12, or 24 notes
 	function usingTriplets() {
 		if (root.myGrooveUtils.isTripletDivision(class_notes_per_measure, 4, 4))
@@ -2521,16 +2512,6 @@ function GrooveWriter() { "use strict";
 
 	};
 
-	function showHideNonPrintableAreas(showElseHide) {
-		var myElements = document.querySelectorAll(".nonPrintable");
-
-		for (var i = 0; i < myElements.length; i++) {
-			var divBlock = myElements[i];
-			divBlock.style.display = showElseHide ? "block" : "none";
-		}
-
-	}
-
 	root.ShowHideABCResults = function () {
 		var ABCResults = document.getElementById("ABC_Results");
 
@@ -2686,31 +2667,17 @@ function GrooveWriter() { "use strict";
 	};
 
 	root.printMusic = function () {
-		var oldMethod = isFirefox();
+
+		var oldMethod = true;
 
 		if (oldMethod) {
-			// hide everything but the music and force a print
-			// doesn't work for browsers that don't have a blocking print call. (iOS)
-			showHideNonPrintableAreas(false);
-			var style = window.getComputedStyle(document.body);
-			var oldColor = style.backgroundColor;
-			document.body.style.backgroundColor = "#FFF";
-
-			var svgTargetDiv = document.getElementById("svgTarget");
-			style = window.getComputedStyle(svgTargetDiv);
-			var oldBoxShadow = style.boxShadow;
-
-			svgTargetDiv.style.boxShadow = "none";
-
+			// css media queries wiil hide all but the music 
+			// force a print
+			
 			window.print();
 
-			// reset
-			document.body.style.backgroundColor = oldColor;
-			svgTargetDiv.style.boxShadow = oldBoxShadow;
-
-			showHideNonPrintableAreas(true);
 		} else {
-			// open a new window just for printing
+			// open a new window just for printing   (new method)
 			var win = window.open("", class_app_title + " Print");
 			win.document.body.innerHTML = "<title>" + class_app_title + "</title>\n";
 			win.document.body.innerHTML += document.getElementById("svgTarget").innerHTML;
@@ -2825,18 +2792,20 @@ function GrooveWriter() { "use strict";
 
 		window.onresize = root.refresh_ABC;
 
-		var info = root.myGrooveUtils.getBrowserInfo();
-		if (info.browser == "Edge") {
-			window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + 'The Edge browser is currently unsupported due to a audio playback issue.   Please use Chrome or Firefox instead while we try to fix the problem.');
-		} else if (info.browser == "MSIE" && info.version < 10) {
-			window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + 'This version of IE is unsupported.   Please use Chrome or Firefox instead');
-		} else if (info.browser == "Safari" && info.platform == "windows" && info.version < 535) {
-			window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + 'This version of Safari is unsupported.   Please use Chrome instead');
-		} else {
-			if(root.myGrooveUtils.debugMode)
-				window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + info.uastring + "\nRunning on: " + info.platform);
+		root.browserInfo = root.myGrooveUtils.getBrowserInfo();
+		if (root.browserInfo.browser == "Edge") {
+			window.alert("This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".\n" + 'The Edge browser is currently unsupported due to a audio playback issue.   Please use Chrome or Firefox instead while we try to fix the problem.');
+		} else if (root.browserInfo.browser == "MSIE" && root.browserInfo.version < 10) {
+			window.alert("This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".\n" + 'This version of IE is unsupported.   Please use Chrome or Firefox instead');
+		} else if (root.browserInfo.browser == "Safari" && root.browserInfo.platform == "windows" && root.browserInfo.version < 535) {
+			window.alert("This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".\n" + 'This version of Safari is unsupported.   Please use Chrome instead');
 		}
-
+		if(root.myGrooveUtils.debugMode) {
+			var debugOutput = document.getElementById("debugOutput");
+			if(debugOutput) {
+				debugOutput.innerHTML += "<div>This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".<br>" + root.browserInfo.uastring + "<br>Running on: " + root.browserInfo.platform + "</div>";
+			}
+		}
 	};
 
 	// called right before the midi reloads for the next replay
