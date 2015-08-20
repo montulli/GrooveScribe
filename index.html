@@ -314,11 +314,12 @@
 		<!-- this is used by the share/save button, and is hidden by default -->
 		<div id="fullURLPopup">
 			<span id="fullURLCloseButton" onclick="myGrooveWriter.close_FullURLPopup();"><i class="fa fa-lg fa-times-circle"></i></span>
-			Use this URL to return with all the notes the way you set them.<br>
+			Use this URL to share or save this groove<br>
+			(You can also bookmark the page)<br>
 			<br>
 			<input type="text" id="fullURLTextField"><br>
 			<label>Generate Short URL:<input type="checkbox" id="shortenerCheckbox" onchange="myGrooveWriter.shortenerCheckboxChanged();"></label>
-			<a href="#" id="fullURLLink">follow link</a>
+			<label id="embedCodeLabel">Generate Embed Code:<input type="checkbox" id="embedCodeCheckbox" onchange="myGrooveWriter.embedCodeCheckboxChanged();"></label>
 			<br>
 			<br>
 			<div id="shareButton"></div>

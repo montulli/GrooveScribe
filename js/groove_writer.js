@@ -3092,10 +3092,22 @@ function GrooveWriter() { "use strict";
 	// get a really long URL that encodes all of the notes and the rest of the state of the page.
 	// this will allow us to bookmark or reference a groove and handle undo/redo.
 	//
-	function get_FullURLForPage() {
+	function get_FullURLForPage(url_destination) {
 
-		var fullURL = window.location.protocol + "//" + window.location.host + window.location.pathname + "?";
+		var fullURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
 
+		if(!url_destination) {
+			// then assume it is the groove writer display.  Do nothing
+		} if(url_destination == "display") {
+			// asking for the "groove_display" page
+			if(fullURL.includes('index.html'))
+				fullURL = fullURL.replace('index.html', 'GrooveEmbed.html');
+			else
+				fullURL += 'GrooveEmbed.html';
+		}
+		
+		fullURL += '?';
+		
 		if (root.myGrooveUtils.debugMode)
 			fullURL += "Debug=1&";
 
@@ -3184,6 +3196,24 @@ function GrooveWriter() { "use strict";
 			element.innerHTML = event.currentTarget.value;
 		}
 	};
+	
+	root.fillInFullURLInFullURLPopup = function () {
+		document.getElementById("embedCodeCheckbox").checked = false;  // uncheck embedCodeCheckbox, because it is not compatible
+		document.getElementById("shortenerCheckbox").checked = false;  // uncheck shortenerCheckbox, because it is not compatible	
+		
+		var popup = document.getElementById("fullURLPopup");
+		if (popup) {
+			var fullURL = get_FullURLForPage();
+			var textField = document.getElementById("fullURLTextField");
+			textField.value = fullURL;
+
+			popup.style.display = "block";
+
+			// select the URL for copy/paste
+			textField.focus();
+			textField.select();
+		}
+	};
 
 	root.show_FullURLPopup = function () {
 		var popup = document.getElementById("fullURLPopup");
@@ -3224,20 +3254,7 @@ function GrooveWriter() { "use strict";
 				}
 			});
 
-		if (popup) {
-			var fullURL = get_FullURLForPage();
-			var textField = document.getElementById("fullURLTextField");
-			textField.value = fullURL;
-
-			popup.style.display = "block";
-
-			// select the URL for copy/paste
-			textField.focus();
-			textField.select();
-
-			// fill in link at bottom
-			document.getElementById("fullURLLink").href = fullURL;
-		}
+		root.fillInFullURLInFullURLPopup();
 	};
 
 	root.close_FullURLPopup = function () {
@@ -3270,12 +3287,37 @@ function GrooveWriter() { "use strict";
 		}
 
 	}
+	
+	// embed looks something like this:
+	// <iframe width="100%" height="240" src="https://hosting.com/path/GrooveDisplay.html?Div=16&Title=Example..." frameborder="0" ></iframe>
+	function get_embedURL(fullURL, cssIdOfTextFieldToFill) {
+			
+		var embedText = '<iframe width="100%" height="240" src="' + fullURL + '" frameborder="0" ></iframe>	';
+			
+		var textField = document.getElementById(cssIdOfTextFieldToFill);
+		textField.value = embedText;
+
+		// select the URL for copy/paste
+		textField.focus();
+		textField.select();
+	}
 
 	root.shortenerCheckboxChanged = function () {
-		if (document.getElementById("shortenerCheckbox").checked)
+		if (document.getElementById("shortenerCheckbox").checked) {
+			document.getElementById("embedCodeCheckbox").checked = false;  // uncheck embedCodeCheckbox, because it is not compatible
 			get_ShortendURL(get_FullURLForPage(), 'fullURLTextField');
-		else
-			root.show_FullURLPopup();
+		} else {
+			root.fillInFullURLInFullURLPopup();
+		}
+	};
+	
+	root.embedCodeCheckboxChanged = function () {
+		if (document.getElementById("embedCodeCheckbox").checked) {
+			document.getElementById("shortenerCheckbox").checked = false;  // uncheck shortenerCheckbox, because it is not compatible
+			get_embedURL(get_FullURLForPage("display"), 'fullURLTextField');
+		} else {
+			root.fillInFullURLInFullURLPopup();
+		}
 	};
 
 	function set_Default_notes(encodedURLData) {
