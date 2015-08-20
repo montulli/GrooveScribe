@@ -2834,7 +2834,7 @@ function GrooveWriter() { "use strict";
 			window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + 'This version of Safari is unsupported.   Please use Chrome instead');
 		} else {
 			if(root.myGrooveUtils.debugMode)
-				window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + info.uastring);
+				window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + info.uastring + "\nRunning on: " + info.platform);
 		}
 
 	};

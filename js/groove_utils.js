@@ -151,6 +151,8 @@ function GrooveUtils() {
 			platform = "iOS";
 		} else if (useragent.lastIndexOf('iPad') > 0) {
 			platform = "iOS";
+		} else if (useragent.lastIndexOf('Android') > 0) {
+			platform = "android";
 		} else if (useragent.lastIndexOf('Macintosh') > 0) {
 			platform = "mac";
 		}
