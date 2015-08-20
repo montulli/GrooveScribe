@@ -687,6 +687,10 @@
 	#fullURLCloseButton {
 		font-size: 120%;
 		float: right;
+		cursor: pointer;
+	}
+	#fullURLCloseButton:hover {
+		color: #444;
 	}
 	#fullURLTextField {
 		width: 495px;
@@ -715,6 +719,7 @@
 	}
 	#metronomeAutoSpeedupConfigurationCloseButton {
 		float: right;
+		font-size: 20px;
 	}
 	#showHideSecondMeasureButton {
 	}
@@ -760,6 +765,10 @@
 		position: fixed;
 		bottom: 3px;
 		right: 3px;
+		background-color: rgba(221, 221, 221, 0.3);
+	}
+	.totalTimeNum {
+		color: #CC6500;
 	}
 	.myCheckbox { 
 		display:none; 

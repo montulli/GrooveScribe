@@ -755,6 +755,10 @@
 		position: fixed;
 		bottom: 3px;
 		right: 3px;
+		background-color: rgba(221, 221, 221, 0.3);
+	}
+	.totalTimeNum {
+		color: #CC6500;
 	}
 	.myCheckbox { 
 		display:none; 

@@ -51,6 +51,8 @@ function GrooveUtils() {
 	root.current_midi_start_time = 0;
 	root.last_midi_update_time = 0;
 	root.total_midi_play_time_msecs = 0;
+	root.total_midi_notes = 0;
+	root.total_midi_repeats = 0;
 
 	// constants
 	var CONSTANT_Midi_play_time_zero = "0:00";
@@ -2032,21 +2034,19 @@ function GrooveUtils() {
 		var time_now = new Date();
 		var play_time_diff = new Date(time_now.getTime() - root.current_midi_start_time.getTime());
 
-		/*
 		var TotalPlayTime = document.getElementById("totalPlayTime");
-		if(TotalPlayTime) {
-		if(root.last_midi_update_time == 0)
-		root.last_midi_update_time = root.current_midi_start_time;
-		var delta_time_diff = new Date(time_now - root.last_midi_update_time);
-		root.total_midi_play_time_msecs += delta_time_diff.getTime();
-		var totalTime = new Date(root.total_midi_play_time_msecs);
-		time_string = "";
-		if(totalTime.getUTCHours() > 0)
-		time_string = totalTime.getUTCHours() + ":" + (totalTime.getUTCMinutes() < 10 ? "0" : "");
-		time_string += totalTime.getUTCMinutes() + ":" + (totalTime.getSeconds() < 10 ? "0" : "") + totalTime.getSeconds();
-		TotalPlayTime.innerHTML = "Total Time: " + time_string;
+		if (TotalPlayTime) {
+			if (root.last_midi_update_time == 0)
+				root.last_midi_update_time = root.current_midi_start_time;
+			var delta_time_diff = new Date(time_now - root.last_midi_update_time);
+			root.total_midi_play_time_msecs += delta_time_diff.getTime();
+			var totalTime = new Date(root.total_midi_play_time_msecs);
+			var time_string = "";
+			if (totalTime.getUTCHours() > 0)
+				time_string = totalTime.getUTCHours() + ":" + (totalTime.getUTCMinutes() < 10 ? "0" : "");
+			time_string += totalTime.getUTCMinutes() + ":" + (totalTime.getSeconds() < 10 ? "0" : "") + totalTime.getSeconds();
+			TotalPlayTime.innerHTML = 'Total Play Time: <span class="totalTimeNum">' + time_string + '</span> notes: <span class="totalTimeNum">' + root.total_midi_notes + '</span> repetitions: <span class="totalTimeNum">' + root.total_midi_repeats + '</span>';
 		}
-		 */
 
 		root.last_midi_update_time = time_now;
 
@@ -2091,6 +2091,8 @@ function GrooveUtils() {
 
 			if (root.shouldMIDIRepeat) {
 
+				root.total_midi_repeats++;
+				
 				if (root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot)) {
 					MIDI.Player.stop();
 					root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot, false);
@@ -2121,6 +2123,7 @@ function GrooveUtils() {
 				note_type = "kick";
 			}
 			if (note_type) {
+				root.total_midi_notes++;
 				root.midiEventCallbacks.notePlaying(root.midiEventCallbacks.classRoot, note_type, percentComplete);
 				root.highlightNoteInABCSVGFromPercentComplete(percentComplete);
 			}
