@@ -123,7 +123,10 @@ function GrooveUtils() { "use strict";
 	            version = useragent.substr(useragent.lastIndexOf('MSIE') + 5, 3);
 	            break;
 	        case 'Netscape':
-	            if (useragent.lastIndexOf('Chrome/') > 0) {
+	            if (useragent.lastIndexOf('Edge/') > 0) {
+	                browser = "Edge";
+	                version = useragent.substr(useragent.lastIndexOf('Edge/') + 5, 4);
+	            } else if (useragent.lastIndexOf('Chrome/') > 0) {
 	                browser = "Chrome";
 	                version = useragent.substr(useragent.lastIndexOf('Chrome/') + 7, 4);
 	            }
@@ -139,10 +142,7 @@ function GrooveUtils() { "use strict";
 	                browser = "MSIE";
 	                version = useragent.substr(useragent.lastIndexOf('rv:') + 3, 4);
 	            }
-				else if (useragent.lastIndexOf('Edge/') > 0) {
-	                browser = "Edge";
-	                version = useragent.substr(useragent.lastIndexOf('Edge/') + 5, 4);
-	            }
+				
 	            else
 	            { alert("undefined browser"); }
 	            break;

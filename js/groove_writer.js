@@ -2779,7 +2779,7 @@ function GrooveWriter() { "use strict";
 		setupPermutationMenu();
 
 		// set the background and text color of the current subdivision
-		selectButton(document.getElementById(class_notes_per_measure + "ths"));
+		selectButton(document.getElementById("subdivision_" + class_notes_per_measure + "ths"));
 
 		// add html for the midi player
 		root.myGrooveUtils.AddMidiPlayerToPage("midiPlayer");
@@ -2824,11 +2824,14 @@ function GrooveWriter() { "use strict";
 
 		var info = root.myGrooveUtils.getBrowserInfo();
 		if (info.browser == "Edge") {
-			window.alert('The Edge browser is currently unsupported due to a audio playback issue.   Please use Chrome or Firefox instead');
+			window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + 'The Edge browser is currently unsupported due to a audio playback issue.   Please use Chrome or Firefox instead while we try to fix the problem.');
 		} else if (info.browser == "MSIE" && info.version < 10) {
-			window.alert('This version of IE is unsupported.   Please use Chrome or Firefox instead');
+			window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + 'This version of IE is unsupported.   Please use Chrome or Firefox instead');
 		} else if (info.browser == "Safari" && info.version < 537) {
-			window.alert('This version of Safari is unsupported.   Please use Chrome instead');
+			window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + 'This version of Safari is unsupported.   Please use Chrome instead');
+		} else {
+			if(root.myGrooveUtils.debugMode)
+				window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".");
 		}
 
 	};
@@ -3396,10 +3399,10 @@ function GrooveWriter() { "use strict";
 		}
 
 		// un-highlight the old div
-		unselectButton(document.getElementById(oldDivision + "ths"));
+		unselectButton(document.getElementById("subdivision_" + oldDivision + "ths"));
 
 		// highlight the new div
-		selectButton(document.getElementById(class_notes_per_measure + "ths"));
+		selectButton(document.getElementById("subdivision_" + class_notes_per_measure + "ths"));
 
 		// if the permutation menu is not "none" this will change the layout
 		// otherwise it should do nothing
