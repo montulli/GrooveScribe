@@ -3,8 +3,8 @@
 
 /*jshint multistr: true */
 /*jslint browser:true */
-/*jslint evil: true */  
-/*global GrooveUtils */
+/*jslint evil: true */
+/*global GrooveUtils, GrooveDisplay */
 
 // GrooveDisplay class.   The only one in this file.
 // singleton
@@ -35,8 +35,9 @@ if (typeof(GrooveDisplay) === "undefined") {
 			if (root.filesadded.indexOf("[" + filename + "]") == -1) {
 				root.loadjscssfile(filename, filetype);
 				root.filesadded += "[" + filename + "]"; //List of files added in the form "[filename1],[filename2],etc"
-			} else
+			} else {
 				window.alert("file already added!");
+			}
 		};
 
 		root.loadjscssfile = function (filename, filetype) {
