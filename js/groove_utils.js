@@ -151,7 +151,7 @@ function GrooveUtils() { "use strict";
 	            break;
 	    }    
 		
-		return {"browser": browser, "version": version};
+		return {"browser": browser, "version": version, "uastring": useragent};
 	}
 	
 	// every document click passes through here.
