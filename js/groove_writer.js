@@ -2369,8 +2369,11 @@ function GrooveWriter() { "use strict";
 			newTitle = class_app_title;
 
 		document.title = newTitle;
-		window.history.replaceState(null, newTitle, newURL);
-
+		try {
+			window.history.replaceState(null, newTitle, newURL);
+		} catch(err) {
+			/* empty */
+		}
 	};
 
 	// this is called by a bunch of places anytime we modify the musical notes on the page
@@ -2827,11 +2830,11 @@ function GrooveWriter() { "use strict";
 			window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + 'The Edge browser is currently unsupported due to a audio playback issue.   Please use Chrome or Firefox instead while we try to fix the problem.');
 		} else if (info.browser == "MSIE" && info.version < 10) {
 			window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + 'This version of IE is unsupported.   Please use Chrome or Firefox instead');
-		} else if (info.browser == "Safari" && info.version < 534) {
+		} else if (info.browser == "Safari" && info.platform == "windows" && info.version < 535) {
 			window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + 'This version of Safari is unsupported.   Please use Chrome instead');
 		} else {
 			if(root.myGrooveUtils.debugMode)
-				window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" = info.uastring);
+				window.alert("This browser has been detected as: " + info.browser + " ver: " + info.version + ".\n" + info.uastring);
 		}
 
 	};

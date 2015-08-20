@@ -11,7 +11,6 @@
 /*jslint browser:true */
 /*global Abc, MIDI, Midi */
 
-
 var global_num_GrooveUtilsCreated = 0;
 var global_grooveUtilsScriptSrc = "";
 if (document.currentScript)
@@ -19,7 +18,8 @@ if (document.currentScript)
 var global_midiInitialized = false;
 
 // GrooveUtils class.   The only one in this file.
-function GrooveUtils() { "use strict";
+function GrooveUtils() {
+	"use strict";
 
 	global_num_GrooveUtilsCreated++; // should increment on every new
 
@@ -112,48 +112,57 @@ function GrooveUtils() { "use strict";
 		return (root.getQueryVariableFromString(variable, def_value, window.location.search));
 	};
 
-	root.getBrowserInfo = function() {
+	root.getBrowserInfo = function () {
 		var browser = navigator.appName;
-	    var b_version = navigator.appVersion;
-	    var version = parseFloat(b_version);
-	    var useragent = navigator.userAgent;
-	    switch (browser){
-	        case 'Microsoft Internet Explorer':
-	            browser = "MSIE";
-	            version = useragent.substr(useragent.lastIndexOf('MSIE') + 5, 3);
-	            break;
-	        case 'Netscape':
-	            if (useragent.lastIndexOf('Edge/') > 0) {
-	                browser = "Edge";
-	                version = useragent.substr(useragent.lastIndexOf('Edge/') + 5, 4);
-	            } else if (useragent.lastIndexOf('Chrome/') > 0) {
-	                browser = "Chrome";
-	                version = useragent.substr(useragent.lastIndexOf('Chrome/') + 7, 4);
-	            }
-	            else if (useragent.lastIndexOf('Firefox/') > 0) {
-	                browser = "Firefox";
-	                version = useragent.substr(useragent.lastIndexOf('Firefox/') + 8, 5);
-	            }
-	            else if (useragent.lastIndexOf('Safari/') > 0) {
-	                browser = "Safari";
-	                version = useragent.substr(useragent.lastIndexOf('Safari/') + 7, 6);
-	            }
-				else if (useragent.lastIndexOf('Trident/') > 0) {
-	                browser = "MSIE";
-	                version = useragent.substr(useragent.lastIndexOf('rv:') + 3, 4);
-	            }
-				
-	            else
-	            { alert("undefined browser"); }
-	            break;
-	        case 'Opera':
-	            version = useragent.substr(useragent.lastIndexOf('Version/') + 8, 5);
-	            break;
-	    }    
-		
-		return {"browser": browser, "version": version, "uastring": useragent};
-	}
-	
+		var b_version = navigator.appVersion;
+		var version = parseFloat(b_version);
+		var useragent = navigator.userAgent;
+		switch (browser) {
+		case 'Microsoft Internet Explorer':
+			browser = "MSIE";
+			version = useragent.substr(useragent.lastIndexOf('MSIE') + 5, 3);
+			break;
+		case 'Netscape':
+			if (useragent.lastIndexOf('Edge/') > 0) {
+				browser = "Edge";
+				version = useragent.substr(useragent.lastIndexOf('Edge/') + 5, 4);
+			} else if (useragent.lastIndexOf('Chrome/') > 0) {
+				browser = "Chrome";
+				version = useragent.substr(useragent.lastIndexOf('Chrome/') + 7, 4);
+			} else if (useragent.lastIndexOf('Firefox/') > 0) {
+				browser = "Firefox";
+				version = useragent.substr(useragent.lastIndexOf('Firefox/') + 8, 5);
+			} else if (useragent.lastIndexOf('Safari/') > 0) {
+				browser = "Safari";
+				version = useragent.substr(useragent.lastIndexOf('Safari/') + 7, 6);
+			} else if (useragent.lastIndexOf('Trident/') > 0) {
+				browser = "MSIE";
+				version = useragent.substr(useragent.lastIndexOf('rv:') + 3, 4);
+			} else {
+				window.alert("undefined browser");
+			}
+			break;
+		case 'Opera':
+			version = useragent.substr(useragent.lastIndexOf('Version/') + 8, 5);
+			break;
+		}
+		var platform = "windows";
+		if (useragent.lastIndexOf('iPhone') > 0) {
+			platform = "iOS";
+		} else if (useragent.lastIndexOf('iPad') > 0) {
+			platform = "iOS";
+		} else if (useragent.lastIndexOf('Macintosh') > 0) {
+			platform = "mac";
+		}
+
+		return {
+			"browser" : browser,
+			"version" : version,
+			"platform" : platform,
+			"uastring" : useragent
+		};
+	};
+
 	// every document click passes through here.
 	// close a popup if one is up and we click off of it.
 	root.documentOnClickHanderCloseContextMenu = function (event) {
@@ -2120,26 +2129,26 @@ function GrooveUtils() { "use strict";
 		//	class_midi_note_num++;
 		/*
 		if (0 && data.message == 144) {
-			debug_note_count++;
-			// my debugging code for midi
-			var newHTML = "";
-			if (data.note != 60)
-				newHTML += "<b>";
+		debug_note_count++;
+		// my debugging code for midi
+		var newHTML = "";
+		if (data.note != 60)
+		newHTML += "<b>";
 
-			newHTML += note_type + " total notes: " + debug_note_count + " - count#: " + class_midi_note_num +
-			" now: " + data.now +
-			" note: " + data.note +
-			" message: " + data.message +
-			" channel: " + data.channel +
-			" velocity: " + data.velocity +
-			"<br>";
+		newHTML += note_type + " total notes: " + debug_note_count + " - count#: " + class_midi_note_num +
+		" now: " + data.now +
+		" note: " + data.note +
+		" message: " + data.message +
+		" channel: " + data.channel +
+		" velocity: " + data.velocity +
+		"<br>";
 
-			if (data.note != 60)
-				newHTML += "</b>";
+		if (data.note != 60)
+		newHTML += "</b>";
 
-			document.getElementById("midiTextOutput").innerHTML += newHTML;
+		document.getElementById("midiTextOutput").innerHTML += newHTML;
 		}
-		*/
+		 */
 	}
 
 	function midiLoaderCallback() {
