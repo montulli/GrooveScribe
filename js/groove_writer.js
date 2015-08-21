@@ -534,7 +534,7 @@ function GrooveWriter() { "use strict";
 		if (id < 0 || id >= class_notes_per_measure * class_number_of_measures)
 			return;
 
-		if (class_cur_all_notes_highlight_id == id)
+		if (class_cur_all_notes_highlight_id === id)
 			return; // already highligted
 
 		if (class_cur_all_notes_highlight_id !== false) {
