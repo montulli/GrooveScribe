@@ -3581,14 +3581,14 @@ function GrooveWriter() { "use strict";
 							'		.f1 {font-family:serif; font-style:italic; font-size:14px}' +
 							'	</style>' +
 							'	<defs>' +
-							'		<path id="ghd" class="fill" d="m1.7-1c-1-1.7-4.5 0.2-3.4 2 1 1.7 4.5-0.2 3.4-2"/>' +
-							'		<ellipse id="hd" rx="4.1" ry="2.9" transform="rotate(-20)" class="fill"/>' +
+							'		<path id="ghd" class="fill" d="m1.7-1c-1-1.7-4.5 0.2-3.4 2 1 1.7 4.5-0.2 3.4-2"></path>' +
+							'		<ellipse id="hd" rx="4.1" ry="2.9" transform="rotate(-20)" class="fill"></ellipse>' +
 							'	</defs>' +
 							'	<g id="note" transform="translate(-44 -35)">' +
-							'		<path class="stroke" d="m52.1 53.34v-14M52.1 39.34c0.6 3.4 5.6 3.8 3 10 1.2-4.4-1.4-7-3-7"/>' +
-							'		<use x="50.50" y="53.34" xlink:href="#ghd"/>' +
-							'		<path class="stroke" d="m49.5 49.34l9-5"/>' +
-							'		<path class="stroke" d="m50.5 58.34c2.9 3 11.6 3 14.5 0M69.5 53.34v-21"/><use x="66.00" y="53.34" xlink:href="#hd"/>' +
+							'		<path class="stroke" d="m52.1 53.34v-14M52.1 39.34c0.6 3.4 5.6 3.8 3 10 1.2-4.4-1.4-7-3-7"></path>' +
+							'		<use x="50.50" y="53.34" xlink:href="#ghd"></use>' +
+							'		<path class="stroke" d="m49.5 49.34l9-5"></path>' +
+							'		<path class="stroke" d="m50.5 58.34c2.9 3 11.6 3 14.5 0M69.5 53.34v-21"></path><use x="66.00" y="53.34" xlink:href="#hd"></use>' +
 							'	</g>' +
 							'</svg>' +
 						'</i></div>' +

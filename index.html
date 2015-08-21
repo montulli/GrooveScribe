@@ -93,7 +93,7 @@
 		<div id="RightHandContent">
 			<div class="nonPrintable">
 				<div id="musicalInput" class="fullWidthEle">
-					<span id="measureContainer">
+					<div id="measureContainer">
 						<script type="text/javascript">
 							var genHTML = "";
 							var cur_measure;
@@ -101,8 +101,9 @@
 								genHTML += myGrooveWriter.HTMLforStaffContainer(cur_measure, (cur_measure - 1) * myGrooveWriter.notesPerMeasure());
 							}
 							document.write(genHTML);
+							//console.log(genHTML);
 						</script>
-					</span>
+					</div>
 				</div>
 				<div id="PermutationOptions">
 					<script type="text/javascript">
@@ -183,7 +184,7 @@
 					<button type="button" onclick="myGrooveWriter.displayNewSVG();">Re-render the music</button>
 					<button type="button" onclick="myGrooveWriter.saveABCtoFile();">Save ABC to file</button>
 				</div>
-				<span id="debugOutput"><span>
+				<span id="debugOutput"></span>
 				
 				<div id="totalPlayTime">
 				</div>
