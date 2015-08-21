@@ -1,2 +1,2 @@
-robocopy "E:\Users\montulli\Documents\Groove Writer Working Directory"   "E:\Users\montulli\Google Drive\Drum Stuff\HTML_Music_composer\PublicView"  /e /xd .git
-robocopy "E:\Users\lou\Documents\GrooveScribeWorkingCopy"   "E:\Users\lou\Google Drive\Drum Stuff\HTML_Music_composer\PublicView"  /e /xd .git
+robocopy "E:\Users\montulli\Documents\GrooveScribeWorkingCopy"   "E:\Users\montulli\Google Drive\Drum Stuff\HTML_Music_composer\PublicView"  /e /xd .git
+robocopy "E:\Users\lou\Documents\GrooveScribeWorkingCopy"        "E:\Users\lou\Google Drive\Drum Stuff\HTML_Music_composer\PublicView"       /e /xd .git
