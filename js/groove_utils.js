@@ -743,8 +743,7 @@ function GrooveUtils() {
 		fullABC += "L:1/" + (timeSigBottom * 8) + "\n"; // 4/4 = 32,  6/8 = 64
 
 		if (isPermutation)
-			fullABC += "%%stretchlast 0\n" +
-			"%%stretchstaff 0\n";
+			fullABC += "%%stretchlast 0\n";
 		else
 			fullABC += "%%stretchlast 1\n";
 

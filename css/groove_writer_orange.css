@@ -16,6 +16,15 @@
 	}
 	#GrooveWriter {
 		/* tag surrounds entire app */
+		/* Use the following CSS to move the app down so a nav bar can be inserted above */
+		/* width and height can also be set here to fit within a page */
+		/* carefully set the height since a vertical scroll bar will be added to the right hand
+		 * content when the height of the content is more than the height specified here.
+		 * Usually set the height to 100vh - (the height of the top nav)
+		 */
+		position: relative;
+		width: 100%;
+		height: calc(100vh - 0px);
 	}
 	.warnings {
 		font-family: monospace;
@@ -31,17 +40,21 @@
 	#LeftHandNav {
 		width: 70px;
 		height: 100%;
-		position: fixed;
+		/position: fixed;
+		position: absolute;
+		top: 0px;
+		left: 0px;
 		border-right: 2px solid #000;
 		background: #393939;
 		z-index: 999;
 	}
 	#TopNav {
-		position: fixed;
-		z-index: 999;
-		left: 72px;
+		/position: fixed;
+		position: relative;
+		top: 0px;
+		left: 0px;
+		z-index: 998;
 		width: 100%;
-		width: calc(100% - 72px);
 		height: 48px;
 		border-bottom: 1px solid #000;
 		background: #E69D02;
@@ -51,16 +64,21 @@
 		width: 100%;
 		width: calc(100% - 72px);
 		height: 48px;
-		position: fixed;
-		z-index: 999;
+		/position: fixed;
+		position: relative;
 		left: 72px;
-		top: 49px;
+		z-index: 999;
 		border-bottom: 1px solid #000;
 		
 	}
 	#RightHandContent {
-		margin-left: 72px;
-		padding-top: 98px;
+		position: relative;
+		left: 72px;
+		/margin-left: 72px;
+		/padding-top: 98px;
+		height: calc(100% - 98px);
+		width: calc(100% - 72px);
+		overflow-y: auto;
 	}
 	#upperRight {
 		float: right;
@@ -76,7 +94,7 @@
 		display: inline-block;
 		height: 20px;
 		font-weight: 500;
-		margin: 12px 5px 0px 10px;
+		margin: 12px 5px 0px 82px;
 		text-align: center;
 		color: #EEF;
 	}
@@ -840,5 +858,7 @@
 		#RightHandContent {
 			margin-left: 0px;
 			padding-top: 0px;
+			top: 0px;
+			left: 0px;
 		}
 	}

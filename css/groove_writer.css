@@ -57,6 +57,7 @@
 	#RightHandContent {
 		margin-left: 72px;
 		padding-top: 98px;
+		overflow-y: auto;
 	}
 	#upperRight {
 		float: right;

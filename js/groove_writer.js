@@ -852,9 +852,9 @@ function GrooveWriter() { "use strict";
 		case "snare_16ths":
 			showHideCSS_ClassVisibility(".kick-container", true, true); // show it
 			showHideCSS_ClassVisibility(".snare-container", true, false); // hide it
-			if (class_number_of_measures > 1)
-				window.alert("Permutation patterns only use the first measure, the other measures will be ignored.");
-			selectButton(document.getElementById("permutationAnchor"));
+			while (class_number_of_measures > 1) {
+				root.closeMeasureButtonClick(2);
+			}selectButton(document.getElementById("permutationAnchor"));
 			document.getElementById("PermutationOptions").innerHTML = root.HTMLforPermutationOptions();
 			document.getElementById("PermutationOptions").className += " displayed";
 			break;

@@ -50,8 +50,9 @@
 						
     </head>
     <body>
+	
 	<div id="GrooveWriter">  
-		<div class="nonPrintable">
+		<div class="nonPrintable">	
 			<div id="LeftHandNav">
 				<span id="divisionButtonContainer">
 					<span id="timeLabel">TIME</span>
@@ -86,11 +87,11 @@
 					<span class="rightButtons" id="helpAnchor" onclick="myGrooveWriter.helpAnchorClick(event);"><i class="fa fa-bars"></i> Help</span>
 				</span>
 			</div>
+			<div id="midiPlayer" class="fullWidthEle"><!-- space for the midiplayer to be attached by the javascript --></div>
 		</div>  
 		
 		<div id="RightHandContent">
 			<div class="nonPrintable">
-				<div id="midiPlayer" class="fullWidthEle"><!-- space for the midiplayer to be attached by the javascript --></div>
 				<div id="musicalInput" class="fullWidthEle">
 					<span id="measureContainer">
 						<script type="text/javascript">
@@ -365,7 +366,9 @@
 				myGrooveWriter.runsOnPageLoad();   // Initialize the notes
 			};
 		</script>
+				
 			
 	</div>
+	
     </body>
 </html>
