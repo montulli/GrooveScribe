@@ -461,7 +461,7 @@
 		cursor: pointer;
 	}
 	.snare_flam {
-		position: absolute; top: 29px; left: 3px;
+		position: absolute; top: 29px; left: -3px;
 		font-size: 25px;
 		color: transparent;
 		cursor: pointer;

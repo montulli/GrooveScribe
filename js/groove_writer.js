@@ -3567,15 +3567,35 @@ function GrooveWriter() { "use strict";
 										<div class="snare-container">\
 											<div class="opening_note_space"> </div> ');
 		for (i = indexStartForNotes; i < class_notes_per_measure + indexStartForNotes; i++) {
-			newHTML += ('\
-														<div id="snare' + i + '" class="snare" onClick="myGrooveWriter.noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'snare\', ' + i + ')">\
-														<div class="snare_ghost note_part"  id="snare_ghost' + i + '">(<i class="fa fa-circle dot_in_snare_ghost_note"></i>)</div>\
-														<div class="snare_circle note_part" id="snare_circle' + i + '"></div>\
-														<div class="snare_xstick note_part" id="snare_xstick' + i + '"><i class="fa fa-times"></i></div>\
-														<div class="snare_flam note_part" id="snare_flam' + i + '"><i class="fa ">&#9835;</i></div>\
-														<div class="snare_accent note_part" id="snare_accent' + i + '"><i class="fa fa-angle-right"></i></div>\
-														</div> \n\
-														');
+			newHTML += ('' +
+						'<div id="snare' + i + '" class="snare" onClick="myGrooveWriter.noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'snare\', ' + i + ')">' +
+						'<div class="snare_ghost note_part"  id="snare_ghost' + i + '">(<i class="fa fa-circle dot_in_snare_ghost_note"></i>)</div>' +
+						'<div class="snare_circle note_part" id="snare_circle' + i + '"></div>' +
+						'<div class="snare_xstick note_part" id="snare_xstick' + i + '"><i class="fa fa-times"></i></div>' +
+						'<div class="snare_flam note_part" id="snare_flam' + i + '"><i class="fa ">' +
+							'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="30" height="30">' +
+							'	<title>Flam</title>' +
+							'	<style type="text/css">' +
+							'		.fill {fill: currentColor}' +
+							'		.stroke {stroke: currentColor; fill: none; stroke-width: .7}' +
+							'		.f1 {font-family:serif; font-style:italic; font-size:14px}' +
+							'	</style>' +
+							'	<defs>' +
+							'		<path id="ghd" class="fill" d="m1.7-1c-1-1.7-4.5 0.2-3.4 2 1 1.7 4.5-0.2 3.4-2"/>' +
+							'		<ellipse id="hd" rx="4.1" ry="2.9" transform="rotate(-20)" class="fill"/>' +
+							'	</defs>' +
+							'	<g id="note" transform="translate(-44 -35)">' +
+							'		<path class="stroke" d="m52.1 53.34v-14M52.1 39.34c0.6 3.4 5.6 3.8 3 10 1.2-4.4-1.4-7-3-7"/>' +
+							'		<use x="50.50" y="53.34" xlink:href="#ghd"/>' +
+							'		<path class="stroke" d="m49.5 49.34l9-5"/>' +
+							'		<rect class="abcr" id="abcNoteNum_1_0" x="42.00" y="35.34" width="21.50" height="42.00" fill="transparent"/>' +
+							'		<path class="stroke" d="m50.5 58.34c2.9 3 11.6 3 14.5 0M69.5 53.34v-21"/><use x="66.00" y="53.34" xlink:href="#hd"/>' +
+							'		<rect class="abcr" id="abcNoteNum_1_0" x="64.00" y="35.34" width="8.50" height="42.00" fill="transparent"/>' +
+							'	</g>' +
+							'</svg>' +
+						'</i></div>' +
+						'<div class="snare_accent note_part" id="snare_accent' + i + '"><i class="fa fa-angle-right"></i></div>' +
+						'</div> \n');
 
 			if ((i - (indexStartForNotes - 1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, 4, 4) === 0 && i < class_notes_per_measure + indexStartForNotes - 1) {
 				newHTML += ('<div class="space_between_note_groups"> </div> ');
