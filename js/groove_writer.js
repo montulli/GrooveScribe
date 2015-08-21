@@ -3588,9 +3588,7 @@ function GrooveWriter() { "use strict";
 							'		<path class="stroke" d="m52.1 53.34v-14M52.1 39.34c0.6 3.4 5.6 3.8 3 10 1.2-4.4-1.4-7-3-7"/>' +
 							'		<use x="50.50" y="53.34" xlink:href="#ghd"/>' +
 							'		<path class="stroke" d="m49.5 49.34l9-5"/>' +
-							'		<rect class="abcr" id="abcNoteNum_1_0" x="42.00" y="35.34" width="21.50" height="42.00" fill="transparent"/>' +
 							'		<path class="stroke" d="m50.5 58.34c2.9 3 11.6 3 14.5 0M69.5 53.34v-21"/><use x="66.00" y="53.34" xlink:href="#hd"/>' +
-							'		<rect class="abcr" id="abcNoteNum_1_0" x="64.00" y="35.34" width="8.50" height="42.00" fill="transparent"/>' +
 							'	</g>' +
 							'</svg>' +
 						'</i></div>' +
