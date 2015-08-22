@@ -13,6 +13,7 @@ if (typeof(grooves) === "undefined")
 	var root = grooves;
 
 	root.Rock_Grooves = {
+		'Empty 16th note groove' : '?TimeSig=4/4&Div=16&Tempo=80&Measures=1&H=|----------------|&S=|----------------|&K=|----------------|',
 		'8th Note Rock' : '?TimeSig=4/4&Div=8&Tempo=80&Measures=1&H=|xxxxxxxx|&S=|--O---O-|&K=|o---o--|',
 		'16th Note Rock' : '?TimeSig=4/4&Div=16&Tempo=80&Measures=1&H=|xxxxxxxxxxxxxxxx|&S=|----O-------O---|&K=|o-------o-------|',
 		'Syncopated Hi-hats #1' : '?TimeSig=4/4&Div=16&Title=Syncopated%20hi-hats%201&Tempo=80&Measures=1&H=|x-xxx-xxx-xxx-xx|&S=|----O-------O---|&K=|o-------o-------|',

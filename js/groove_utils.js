@@ -795,7 +795,7 @@ function GrooveUtils() {
 			'"^Crash"^A\'4 "^Ride"^f4 x2 "^Snare"c4 "^Accent"!accent!c4 "^Cross"^c4 "^Ghost"!(.!!).!c4 "^Flam"{/c}c4  x18 ||\n' +
 			'V:Feet stem=down \n' +
 			'%%voicemap drum\n' +
-			'x48 "^Kick"F4 "^Hi-Hat w/ foot"^d,4 "^Kick & Hi-Hat"[F^d,]4 x4 ||\n' +
+			'x48 "^Kick"F4 "^HH foot"^d,4 "^Kick & HH"[F^d,]4 x4 ||\n' +
 			'T:\n';
 		}
 
