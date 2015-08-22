@@ -55,6 +55,8 @@
 		left: 0px;
 		z-index: 998;
 		width: 100%;
+		width: calc(100% - 72px);
+		margin-left: 72px;
 		height: 48px;
 		border-bottom: 1px solid #000;
 		background: #E69D02;
@@ -94,7 +96,7 @@
 		display: inline-block;
 		height: 20px;
 		font-weight: 500;
-		margin: 12px 5px 0px 82px;
+		margin: 12px 5px 0px 10px;
 		text-align: center;
 		color: #EEF;
 	}
