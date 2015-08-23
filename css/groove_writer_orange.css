@@ -545,6 +545,9 @@
 	.closeMeasureButton:hover, #addMeasureButton:hover {
 		color: #000;
 	}
+	#permutationAnchor {
+		display: none;   /* disabled until it is done */
+	}
 	#PermutationOptions.displayed {
 		margin: 3px 0px -20px 10px;
 	}

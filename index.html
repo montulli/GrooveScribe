@@ -49,6 +49,9 @@
 			if (myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
 				document.write('<link rel="stylesheet" type="text/css" href="css/grooveDB_authoring.css">');
 			}
+			if (myGrooveWriter.myGrooveUtils.debugMode) {
+				document.write('<link rel="stylesheet" type="text/css" href="css/groove_debug.css">');
+			}
 		</script>
 						
     </head>
@@ -171,11 +174,8 @@
 				<span id="undoStack"></span>
 				<span id="redoStack"></span>
 				<!-- ABC notation -->
-				<script type="text/javascript">
-					if (myGrooveWriter.myGrooveUtils.debugMode) {
-						document.write('<A href="" id="showHideABC" onclick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation<\/a>');
-					}
-				</script>	
+				<A href="" id="showHideABC" onclick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a>
+
 				<div id="ABC_Results">
 					ABC Notation is used for rendering the music.  You can see what is being generated below.   
 					You can even edit it.  <br>
