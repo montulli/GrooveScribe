@@ -61,8 +61,8 @@ function GrooveUtils() {
 	var constant_ABC_STICK_R = '"R"x';
 	var constant_ABC_STICK_L = '"L"x';
 	var constant_ABC_STICK_OFF = '""x';
-	var constant_ABC_HH_Ride = "^f";
-	var constant_ABC_HH_Crash = "^A'";
+	var constant_ABC_HH_Ride = "^A'";
+	var constant_ABC_HH_Crash = "^c'";
 	var constant_ABC_HH_Open = "!open!^g";
 	var constant_ABC_HH_Close = "!plus!^g";
 	var constant_ABC_HH_Accent = "!accent!^g";
@@ -767,8 +767,8 @@ function GrooveUtils() {
 		' </defs>\n' +
 		'%%endsvg\n' +
 		'%%map drum ^g heads=Xhead print=g  % Hi-Hat\n' +
-		'%%map drum ^A\' heads=Xhead print=A\'  % Crash\n' +
-		'%%map drum ^f heads=Xhead print=f  % Ride\n' +
+		'%%map drum ^c\' heads=Xhead print=c\'  % Crash\n' +
+		'%%map drum ^A\' heads=Xhead print=A\'  % Ride\n' +
 		'%%map drum ^c heads=Xhead print=c  % Cross Stick\n' +
 		'%%map drum ^d, heads=Xhead print=d,  % Foot Splash\n';
 
@@ -792,7 +792,7 @@ function GrooveUtils() {
 			'V:Hands stem=up \n' +
 			'%%voicemap drum\n' +
 			'"^Hi-Hat"^g4 "^Open"!open!^g4 "^Close"!plus!^g4 "^Accent"!accent!^g4 ' +
-			'"^Crash"^A\'4 "^Ride"^f4 x2 "^Snare"c4 "^Accent"!accent!c4 "^Cross"^c4 "^Ghost"!(.!!).!c4 "^Flam"{/c}c4  x18 ||\n' +
+			'"^Crash"^c\'4 "^Ride"^A\'4 x2 "^Snare"c4 "^Accent"!accent!c4 "^Cross"^c4 "^Ghost"!(.!!).!c4 "^Flam"{/c}c4  x18 ||\n' +
 			'V:Feet stem=down \n' +
 			'%%voicemap drum\n' +
 			'x48 "^Kick"F4 "^HH foot"^d,4 "^Kick & HH"[F^d,]4 x4 ||\n' +
