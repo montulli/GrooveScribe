@@ -204,6 +204,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 
 				myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId, GrooveData.notesPerMeasure, true);
 				myGrooveUtils.expandOrRetractMIDI_playback(true, false); // make it small
+				myGrooveUtils.setTempo(GrooveData.tempo);
 				myGrooveUtils.oneTimeInitializeMidi();
 			}
 		};
