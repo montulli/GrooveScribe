@@ -87,7 +87,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 		// stylesheet
 		root.loadjscssfile("https://fonts.googleapis.com/css?family=Lato:400,700,300", "css");
 		root.loadjscssfile("../font-awesome/4.3.0/css/font-awesome.min.css", "css");
-		root.loadjscssfile("../css/groove_display.css", "css");
+		root.loadjscssfile("../css/groove_display_orange.css", "css");
 
 		root.GrooveDisplayUniqueCounter = 1;
 
@@ -140,8 +140,8 @@ if (typeof(GrooveDisplay) === "undefined") {
 
 			// spit out some HTML tags to hold the music and possibly the player
 			document.getElementById(HtmlTagId).innerHTML = '' +
-				'<div id="' + svgTargetId + '" class="svgTarget"></div>\n' +
-				'<div id="' + midiPlayerTargetId + '" ></div>\n';
+				'<div class="Printable"><div id="' + svgTargetId + '" class="svgTarget"></div></div>\n' +
+				'<div class="nonPrintable"><div id="' + midiPlayerTargetId + '" ></div></div>\n';
 
 			var svgTarget = document.getElementById(svgTargetId);
 			var renderWidth = svgTarget.offsetWidth - 100;
@@ -182,8 +182,8 @@ if (typeof(GrooveDisplay) === "undefined") {
 			var midiPlayerTargetId = "midiPlayerTarget" + root.GrooveDisplayUniqueCounter;
 
 			document.getElementById(HtmlTagId).innerHTML = '' +
-				'<div id="' + svgTargetId + '" class="svgTarget" style="display:inline-block"></div>\n' +
-				'<div id="' + midiPlayerTargetId + '"></div>\n';
+				'<div class="Printable"><div id="' + svgTargetId + '" class="svgTarget" style="display:inline-block"></div></div>\n' +
+				'<div class="nonPrintable"><div id="' + midiPlayerTargetId + '"></div></div>\n';
 
 			var svgTarget = document.getElementById(svgTargetId);
 			var renderWidth = svgTarget.offsetWidth - 100;

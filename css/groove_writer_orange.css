@@ -849,13 +849,7 @@
 	}
 	@media print {
 		/* keep at bottom so it overrides the styles above */
-		body {margin:0; padding:0; border:0; background-color: transparent}
-		div.newpage {page-break-before: always}
-		div.nobrk {page-break-inside: avoid}
-		
-		.nonPrintable {
-			display: none !important;
-		}
+		/* there is another definition in groove_display.css that adds more rules */
 		
 		#RightHandContent {
 			margin-left: 0px;

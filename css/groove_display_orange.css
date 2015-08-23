@@ -8,11 +8,7 @@
 		font-family: monospace;
 		display: none;
 	}
-	@media print {
-		body {margin:0; padding:0; border:0}
-		div.newpage {page-break-before: always}
-		div.nobrk {page-break-inside: avoid}
-	}
+
 	.Printable {
 		display: block;
 	}
@@ -300,4 +296,13 @@ input[type=range]:active::-moz-range-thumb {
 input[type=range]:active::-webkit-slider-thumb {
 	background: #fff;
 }
-
+@media print {
+	/* keep at bottom so it overrides the styles above */
+	body {margin:0; padding:0; border:0; background-color: transparent}
+	div.newpage {page-break-before: always}
+	div.nobrk {page-break-inside: avoid}
+	
+	.nonPrintable {
+		display: none !important;
+	}
+}
