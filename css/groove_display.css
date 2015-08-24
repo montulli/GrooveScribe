@@ -8,11 +8,6 @@
 		font-family: monospace;
 		display: none;
 	}
-	@media print {
-		body {margin:0; padding:0; border:0}
-		div.newpage {page-break-before: always}
-		div.nobrk {page-break-inside: avoid}
-	}
 	.Printable {
 		display: block;
 	}
@@ -31,11 +26,17 @@
 		width: 100%;  /* expand to the surounding element */
 		font-family: 'Lato', sans-serif;
 		white-space: nowrap;
+		margin-left: 42px;
 	}
 	.playerControl.large {
-		width: calc(100% - 140px);
+		display: block;
+		width: calc(100% - 83px);
 		border: 1px solid #009;
 		padding-left: 0px;
+		margin: 0px auto;
+	}
+	.svgTarget svg {
+		width: 100%;
 	}
 	.playerControl.small {
 		width: 90px;
@@ -300,5 +301,12 @@ input[type=range]:active::-webkit-slider-thumb {
 	
 	.nonPrintable {
 		display: none !important;
+	}
+	
+	/* if we don't reset the width from 100% extra space is added to the printout.
+	 * this also left aligns the measures, which is nice
+	 */
+	.svgTarget svg {
+		width: auto;
 	}
 }

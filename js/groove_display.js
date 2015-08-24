@@ -110,7 +110,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 		// stylesheet
 		root.loadjscssfile("https://fonts.googleapis.com/css?family=Lato:400,700,300", "css");
 		root.loadjscssfile("../font-awesome/4.3.0/css/font-awesome.min.css", "css");
-		root.loadjscssfile("../css/groove_display_orange.css", "css");
+		root.loadjscssfile("../css/groove_display.css", "css");
 
 		root.GrooveDisplayUniqueCounter = 1;
 
@@ -197,7 +197,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 			}, false);
 		};
 
-		root.displayGrooveInHTMLElementId = function (HtmlTagId, GrooveDefinition, showPlayer, linkToEditor) {
+		root.displayGrooveInHTMLElementId = function (HtmlTagId, GrooveDefinition, showPlayer, linkToEditor, expandPlayer) {
 			var myGrooveUtils = new GrooveUtils();
 			root.GrooveDisplayUniqueCounter++;
 
@@ -226,14 +226,18 @@ if (typeof(GrooveDisplay) === "undefined") {
 				myGrooveUtils.setGrooveData(GrooveData);
 
 				myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId, GrooveData.notesPerMeasure, true);
-				myGrooveUtils.expandOrRetractMIDI_playback(true, false); // make it small
+				myGrooveUtils.expandOrRetractMIDI_playback(true, expandPlayer); // make it small
 				myGrooveUtils.setTempo(GrooveData.tempo);
 				myGrooveUtils.oneTimeInitializeMidi();
 			}
 		};
 
 		// Add a groove to a page
-		root.AddGrooveDisplayToPage = function (URLEncodedGrooveData, showPlayer, linkToEditor) {
+		// URLEncodedGrooveData:  The URL Search data from the Groove Scribe application looks like ?TimeSig=4/4&Div=16&Title=Test...
+		// showPlayer:  true/false   true to add the sound player to the page along with the sheet music
+		// linkToEditor: true/false  true to add a link back to Groove Scribe on the sheet music
+		// expandPlayer: true/false  true to have the sound player be full width by default.
+		root.AddGrooveDisplayToPage = function (URLEncodedGrooveData, showPlayer, linkToEditor, expandPlayer) {
 			root.GrooveDisplayUniqueCounter++;
 
 			// add an html Element to hold the grooveDisplay
@@ -241,7 +245,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 			document.write('<div id="' + HTMLElementID + '"></div>');
 
 			window.addEventListener("load", function () {
-				root.displayGrooveInHTMLElementId(HTMLElementID, URLEncodedGrooveData, showPlayer, linkToEditor);
+				root.displayGrooveInHTMLElementId(HTMLElementID, URLEncodedGrooveData, showPlayer, linkToEditor, expandPlayer);
 			}, false);
 		};
 	})(); // end of class GrooveDisplay

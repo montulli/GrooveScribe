@@ -20,7 +20,9 @@
 	.svgTarget {
 		width: 100%;
 	}
-	
+	.svgTarget.svg {
+		width: 100%;
+	}
 	.playerControl {
 		display: inline-block;
 		background-color: #222222;
@@ -29,9 +31,11 @@
 		white-space: nowrap;
 	}
 	.playerControl.large {
-		width: calc(100% - 140px);
+		display: block;
+		width: calc(100% - 83px);
 		border: 1px solid #009;
 		padding-left: 0px;
+		margin: 0px auto;
 	}
 	.playerControl.small {
 		width: 90px;
@@ -304,5 +308,12 @@ input[type=range]:active::-webkit-slider-thumb {
 	
 	.nonPrintable {
 		display: none !important;
+	}
+	
+	/* if we don't reset the width from 100% extra space is added to the printout.
+	 * this also left aligns the measures, which is nice
+	 */
+	.svgTarget svg {
+		width: auto;
 	}
 }
