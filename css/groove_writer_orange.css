@@ -84,6 +84,7 @@
 	}
 	#upperRight {
 		float: right;
+		margin-right: 10px;
 	}
 	#divisionButtonContainer {
 		
@@ -791,6 +792,7 @@
 		position: fixed;
 		bottom: 3px;
 		right: 3px;
+		margin-right: 20px;
 		background-color: rgba(221, 221, 221, 0.3);
 	}
 	.totalTimeNum {
