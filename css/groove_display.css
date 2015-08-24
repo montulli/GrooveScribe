@@ -51,6 +51,8 @@
 		padding-left: 6px;
 		flex-flow: flex-start;
 		flex-wrap: nowrap;
+		-webkit-flex-flow: flex-start;
+		-webkit-flex-wrap: nowrap;
 	}
 	.playerControlsRow.large, .playerControlsRow.small {
 		padding-left: 0px;
@@ -60,6 +62,7 @@
 		height: 40px;
 		cursor: pointer;
 		flex: none;
+		-webkit-flex: none;
 		margin: 4px 0px 4px 0px;
 		border: 0px solid #000;
 		color: #005483;
@@ -102,6 +105,7 @@
 		width: 100%;
 		height: 46px;
 		flex: 1;
+		-webkit-flex: 1;
 	}
 	.tempoAndProgress.small {
 			display: none;
@@ -113,6 +117,8 @@
 		height: 22px;
 		flex-flow: flex-start;
 		flex-wrap: nowrap;
+		-webkit-flex-flow: flex-start;
+		-webkit-flex-wrap: nowrap;
 	}
 	.tempoInput, .swingInput {
 		background-color: 3f91e5;
@@ -122,6 +128,7 @@
 		color: #66c0fe;
 		width: 90%;
 		flex: 1;
+		-webkit-flex: 1;
 	}
 	.tempoSettings {
 		color: #FFF;
@@ -142,6 +149,7 @@
 		padding-left: 8px;
 		width: 34px;
 		flex: none;
+		-webkit-flex: none;
 	}
 	.swingSettings {
 		color: #FFF;
@@ -156,6 +164,8 @@
 		display: -webkit-flex;
 		flex-flow: flex-start;
 		flex-wrap: nowrap;
+		-webkit-flex-flow: flex-start;
+		-webkit-flex-wrap: nowrap;
 		white-space: nowrap;
 		height: 20px;
 	}
@@ -174,6 +184,7 @@
 		text-align: left;
 		line-height: 40px;
 		flex: none;
+		-webkit-flex: none;
 	}
 	.MIDIPlayTime.small {
 		display: none;
