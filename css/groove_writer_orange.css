@@ -591,6 +591,9 @@
 	}
 	#exportMidi {
 	}
+	#showHideABC {
+		display: none;
+	}
 	#ABC_Results {
 		display: none;
 	}
