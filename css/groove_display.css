@@ -26,14 +26,14 @@
 		width: 100%;  /* expand to the surounding element */
 		font-family: 'Lato', sans-serif;
 		white-space: nowrap;
-		margin-left: 42px;
 	}
 	.playerControl.large {
 		display: block;
-		width: calc(100% - 83px);
+		width: calc(50% - 83px);
+		min-width: 500px;
 		border: 1px solid #009;
 		padding-left: 0px;
-		margin: 0px auto;
+		margin: 0px 0px 0px 0px;
 	}
 	.svgTarget svg {
 		width: 100%;

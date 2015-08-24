@@ -750,8 +750,8 @@ function GrooveUtils() {
 
 		if (renderWidth < 400)
 			renderWidth = 400; // min-width
-		if (renderWidth > 1200)
-			renderWidth = 1200; // max-width
+		if (renderWidth > 3000)
+			renderWidth = 3000; // max-width
 		// the width of the music is always 25% bigger than what we pass in.   Go figure.
 		renderWidth = Math.floor(renderWidth * 0.75);
 

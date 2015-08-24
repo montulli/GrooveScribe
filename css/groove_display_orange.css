@@ -50,6 +50,8 @@
 		padding-left: 6px;
 		flex-flow: flex-start;
 		flex-wrap: nowrap;
+		-webkit-flex-flow: flex-start;
+		-webkit-flex-wrap: nowrap;
 	}
 	.playerControlsRow.large, .playerControlsRow.small {
 		padding-left: 0px;

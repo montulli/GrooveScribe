@@ -209,7 +209,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 				'<div class="nonPrintable"><div id="' + midiPlayerTargetId + '"></div></div>\n';
 
 			var svgTarget = document.getElementById(svgTargetId);
-			var renderWidth = svgTarget.offsetWidth - 100;
+			var renderWidth = svgTarget.offsetWidth;
 
 			// load the groove from the URL data if it was passed in.
 			var GrooveData = myGrooveUtils.getGrooveDataFromUrlString(GrooveDefinition);
@@ -222,6 +222,17 @@ if (typeof(GrooveDisplay) === "undefined") {
 			else
 				svgTarget.innerHTML = svgReturn.svg;
 
+			// resize SVG on window resize
+			window.addEventListener("resize", function() {
+				var renderWidth = svgTarget.offsetWidth;
+				var abcNotation = myGrooveUtils.createABCFromGrooveData(GrooveData, renderWidth);
+				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
+				if (linkToEditor)
+					svgTarget.innerHTML = '<a style="text-decoration: none" href="index.html' + GrooveDefinition + '">' + svgReturn.svg + '</a>';
+				else
+					svgTarget.innerHTML = svgReturn.svg;
+			});
+			
 			if (showPlayer) {
 				myGrooveUtils.setGrooveData(GrooveData);
 

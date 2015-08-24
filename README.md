@@ -27,8 +27,8 @@ Deploy the files to an HTTP server.
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+* File issues in github please:   https://github.com/montulli/GrooveScribe/issues
+* lou at montulli dot org is the admin and author.   He cannot answer every email, so please use good judgement before emailing.
 
 To edit this Readme:
 * [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
