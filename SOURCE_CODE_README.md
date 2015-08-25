@@ -14,9 +14,10 @@ Readme for Groove Scribe Source Code
 * Calls Groove Display functions to generate sheet music and midi play back
 * Puts an HTML grid on the screen that represents all the possible notes for a given division
 * Uses the grid to generate an array of notes that can be turned into music via the Groove Display functions
+* HTML
+    * index.html   -- main authoring view
 * Javascript files
-    * groove_display.js
-	* groove_utils.js
+    * groove_writer.js   -- the authoring code.   Makes calls to groove_utils.js to display
 
 ### Groove Display ###
 
@@ -26,6 +27,8 @@ Readme for Groove Scribe Source Code
 * Midi file generation
 * Midi playback control
 * HTML
-    * index.html
+    * GrooveEmbed.html   --  a simple test of embeding a single groove
+	* GrooveMultiDisplay.html  -- a multi test of embeding
 * Javascript files
-    * groove_writer.js
+    * groove_display.js   -- includes a function call to embed the groove display in an HTML page
+	* groove_utils.js   -- all the functions to display grooves and play them.
