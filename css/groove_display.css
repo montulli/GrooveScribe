@@ -75,14 +75,22 @@
 	.midiPlayImage, .midiRepeatImage {
 		background: #68c2ff;
 		margin: 4px 4px 4px 4px;
-		
 	}
 	.midiPlayImage:hover, .midiRepeatImage:hover {
 		color: #68c2ff;
 		background: #005483;
 	}
-	.midiExpandImage:hover {
+	.midiExpandImage {
+		font-size: 26px;
+		transition: all .6s ease-in-out;
+	}
+	.midiExpandImage.small:hover {
 		color: #68c2ff;
+		transform: scale(1.4);
+	}
+	.midiExpandImage.large:hover {
+		color: #68c2ff;
+		transform: scale(.8);
 	}
 	.midiPlayImage.Stopped:before ,  .midiPlayImage.Paused:before   { 
 	 	letter-spacing: -3px; 

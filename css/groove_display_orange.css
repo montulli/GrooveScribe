@@ -84,8 +84,17 @@
 		color: #ffffff;
 		background: #777777;
 	}
-	.midiExpandImage:hover {
-		color: #FFF;
+	.midiExpandImage {
+		font-size: 26px;
+		transition: all .6s ease-in-out;
+	}
+	.midiExpandImage.small:hover {
+		color: #68c2ff;
+		transform: scale(1.4);
+	}
+	.midiExpandImage.large:hover {
+		color: #68c2ff;
+		transform: scale(.8);
 	}
 	.midiPlayImage.Stopped:before ,  .midiPlayImage.Paused:before   { 
 	 	letter-spacing: -3px; 
