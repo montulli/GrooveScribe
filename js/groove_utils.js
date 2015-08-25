@@ -2342,7 +2342,7 @@ function GrooveUtils() {
 		var newHTML = '' +
 			'<div id="playerControl' + root.grooveUtilsUniqueIndex + '" class="playerControl">' +
 			'	<div class="playerControlsRow" id="playerControlsRow' + root.grooveUtilsUniqueIndex + '">' +
-			'		<span class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '"></span>' +
+			'		<span title="Play/Pause" class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '"></span>' +
 			'       <span class="MIDIPlayTime" id="MIDIPlayTime' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Midi_play_time_zero + '</span>' +
 			'		<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
 			'			<div class="tempoRow">' +
@@ -2358,7 +2358,7 @@ function GrooveUtils() {
 			'       </span>';
 
 		if (expandable)
-			newHTML += '<span class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '"></span>';
+			newHTML += '<span title="Expand/Retract player" class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '"></span>';
 
 		newHTML += '</div>';
 

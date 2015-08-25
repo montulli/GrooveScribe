@@ -32,17 +32,20 @@
 	}
 	.playerControl.large {
 		display: block;
-		width: calc(100% - 83px);
+		width: calc(50% - 83px);
+		min-width: 500px;
 		border: 1px solid #009;
 		padding-left: 0px;
-		margin: 0px auto;
+		margin: 0px 0px 0px 0px;
 	}
 	.playerControl.small {
 		width: 90px;
 		border: 1px solid #009;
 		padding-left: 0px;
 	}
-
+	.svgTarget svg {
+		width: 100%;
+	}
 	.playerControlsRow {
 		/border: 1px solid red;
 		display: flex;
@@ -83,7 +86,7 @@
 		background: #777777;
 	}
 	.midiExpandImage:hover {
-		color: #68c2ff;
+		color: #FFF;
 	}
 	.midiPlayImage.Stopped:before ,  .midiPlayImage.Paused:before   { 
 	 	letter-spacing: -3px; 

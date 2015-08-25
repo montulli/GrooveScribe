@@ -35,15 +35,14 @@
 		padding-left: 0px;
 		margin: 0px 0px 0px 0px;
 	}
-	.svgTarget svg {
-		width: 100%;
-	}
 	.playerControl.small {
 		width: 90px;
 		border: 1px solid #009;
 		padding-left: 0px;
 	}
-
+	.svgTarget svg {
+		width: 100%;
+	}
 	.playerControlsRow {
 		/border: 1px solid red;
 		display: flex;
