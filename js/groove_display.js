@@ -253,7 +253,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 
 			// add an html Element to hold the grooveDisplay
 			var HTMLElementID = 'GrooveDisplay' + root.GrooveDisplayUniqueCounter;
-			document.write('<div id="' + HTMLElementID + '"></div>');
+			document.write('<div class="GrooveDisplay" id="' + HTMLElementID + '"></div>');
 
 			window.addEventListener("load", function () {
 				root.displayGrooveInHTMLElementId(HTMLElementID, URLEncodedGrooveData, showPlayer, linkToEditor, expandPlayer);
