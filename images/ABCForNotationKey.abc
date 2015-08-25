@@ -34,7 +34,7 @@ V:Stickings
 x88 ||
 V:Hands stem=up 
 %%voicemap drum
-x8 "^Snare"c8 "^Cross"^c8 "^Tom 1"e8 "^Tom 2"d8 "^Floor Tom"B8 "^Hi-Hat"^g8 "^Open HH"!open!^g8 "^Ride"^A'8 x8 "^Crash"^c'8  ||
+x8 "^Snare"c8 "^Cross"^c8 "^Tom 1"e8 "^Tom 2"d8 "^Floor Tom"A8 "^Hi-Hat"^g8 "^Open HH"!open!^g8 "^Ride"^A'8 x8 "^Crash"^c'8  ||
 V:Feet stem=down 
 %%voicemap drum
  "^Kick"F8 x64 "^HH foot"^d,4 ||
