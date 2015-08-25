@@ -19,7 +19,9 @@
 	.svgTarget {
 		width: 100%;
 	}
-	
+	.svgTarget svg {
+		width: 100%;
+	}
 	.playerControl {
 		display: inline-block;
 		background-color: #2484c0;
@@ -39,9 +41,6 @@
 		width: 90px;
 		border: 1px solid #009;
 		padding-left: 0px;
-	}
-	.svgTarget svg {
-		width: 100%;
 	}
 	.playerControlsRow {
 		/border: 1px solid red;
