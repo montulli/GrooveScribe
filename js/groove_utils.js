@@ -2348,7 +2348,7 @@ function GrooveUtils() {
 			'			<div class="tempoRow">' +
 			'				<span class="tempoLabel">BPM</span>' +
 			'				<span for="tempo" class="tempoOutput" id="tempoOutput' + root.grooveUtilsUniqueIndex + '">80</span>' +
-			'				<input type=range min=40 max=240 value=90 class="tempoInput" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings">' +
+			'				<input type=range min=30 max=300 value=90 class="tempoInput" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings">' +
 			'			</div>' +
 			'			<div class="swingRow">' +
 			'				<span class="swingLabel">SWING</span>' +
