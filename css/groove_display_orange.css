@@ -20,7 +20,8 @@
 	.svgTarget {
 		width: 100%;
 	}
-	.svgTarget.svg {
+	.svgTarget svg {
+		width: 100%;
 	}
 	.playerControl {
 		display: inline-block;
@@ -41,9 +42,6 @@
 		width: 90px;
 		border: 1px solid #009;
 		padding-left: 0px;
-	}
-	.svgTarget svg {
-		width: 100%;
 	}
 	.playerControlsRow {
 		/border: 1px solid red;
