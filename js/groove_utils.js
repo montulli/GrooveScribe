@@ -1250,6 +1250,12 @@ function GrooveUtils() {
 				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
 			}
+			// add a line break every 2 measures
+			if (((i + 1) % (24 * 2)) === 0) {
+				stickings_voice_string += "\n";
+				hh_snare_voice_string += "\n";
+				kick_voice_string += "\n";
+			}
 		}
 
 		if (kick_stems_up)
@@ -1327,6 +1333,12 @@ function GrooveUtils() {
 				stickings_voice_string += "|";
 				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
+			}
+			// add a line break every 2 measures
+			if (((i + 1) % (8 * timeSigTop * 2)) === 0) {
+				stickings_voice_string += "\n";
+				hh_snare_voice_string += "\n";
+				kick_voice_string += "\n";
 			}
 		}
 
@@ -2260,6 +2272,8 @@ function GrooveUtils() {
 				note_type = "snare";
 			} else if (data.note == 35 || data.note == 44) {
 				note_type = "kick";
+			} else if (data.note == 43 || data.note == 44 || data.note == 47 || data.note == 48) {
+				note_type = "tom";
 			}
 			if (note_type) {
 				root.total_midi_notes++;
