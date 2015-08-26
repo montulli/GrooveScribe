@@ -1271,13 +1271,13 @@ function GrooveUtils() {
 			}
 
 			// add a bar line every measure
-			if (((i + 1) % notes_per_measure) === 0) {
+			if (((i + 1) % (6 * timeSigTop)) === 0) {
 				stickings_voice_string += "|";
 				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
 			}
 			// add a line break every 2 measures
-			if (((i + 1) % (notes_per_measure * 2)) === 0) {
+			if (((i + 1) % ((6 * timeSigTop) * 2)) === 0) {
 				stickings_voice_string += "\n";
 				hh_snare_voice_string += "\n";
 				kick_voice_string += "\n";
