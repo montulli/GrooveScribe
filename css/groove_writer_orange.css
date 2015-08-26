@@ -54,7 +54,6 @@
 		top: 0px;
 		left: 0px;
 		z-index: 998;
-		width: 100%;
 		width: calc(100% - 72px);
 		margin-left: 72px;
 		height: 48px;
@@ -63,7 +62,6 @@
 		background: linear-gradient(to right, #E69D02, #CC6500);
 	}
 	#midiPlayer {  /* more #midiPlayer css in groove_display.css */
-		width: 100%;
 		width: calc(100% - 72px);
 		height: 48px;
 		/position: fixed;
