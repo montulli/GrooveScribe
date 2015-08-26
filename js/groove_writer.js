@@ -2117,7 +2117,7 @@ function GrooveWriter() { "use strict";
 					if (class_notes_per_measure > 16)
 						num_notes_for_swing = class_notes_per_measure;
 
-					root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+					root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, null, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
 				}
 			}
 			break;
@@ -2140,7 +2140,7 @@ function GrooveWriter() { "use strict";
 					if (class_notes_per_measure > 16)
 						num_notes_for_swing = class_notes_per_measure;
 
-					root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
+					root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, null, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, 4, 4);
 				}
 			}
 			break;
@@ -2148,7 +2148,7 @@ function GrooveWriter() { "use strict";
 		case "none":
 			/* falls through */
 		default:
-			root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
+			root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, null, MIDI_type, metronomeFrequency, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
 
 			for (i = 1; i < class_number_of_measures; i++) {
 				// reset arrays
@@ -2160,7 +2160,7 @@ function GrooveWriter() { "use strict";
 				// get another measure
 				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, class_notes_per_measure * i);
 
-				root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, MIDI_type, metronomeFrequency, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
+				root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, null, MIDI_type, metronomeFrequency, num_notes, class_notes_per_measure, swing_percentage, 4, 4);
 			}
 			break;
 		}

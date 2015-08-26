@@ -1974,30 +1974,32 @@ function GrooveUtils() {
 					//prev_kick_splash_note = kick_splash_note;
 				}
 				
-				for(var which_array = 0; which_array < constant_NUMBER_OF_TOMS; which_array++) {
-					var tom_note = false;
-					switch (Toms_Array[which_array][i]) {
-					case constant_ABC_T1_Normal: // Tom 1
-						tom_note = 48;  // midi code High tom 2
-						break;
-					case constant_ABC_T2_Normal: // Midi code Mid tom 1
-						tom_note = 47;
-						break;
-					case constant_ABC_T3_Normal: // Midi code Mid tom 2
-						tom_note = 45;
-						break;
-					case constant_ABC_T4_Normal: // Midi code Low Tom 1
-						tom_note = 43;
-						break;
-					case false:
-						break;
-					default:
-						window.alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
-						break;
-					}
-					if (tom_note !== false) {
-						midiTrack.addNoteOn(midi_channel, tom_note, delay_for_next_note, velocity_normal);
-						delay_for_next_note = 0; // zero the delay
+				if(Toms_Array) {
+					for(var which_array = 0; which_array < constant_NUMBER_OF_TOMS; which_array++) {
+						var tom_note = false;
+						switch (Toms_Array[which_array][i]) {
+						case constant_ABC_T1_Normal: // Tom 1
+							tom_note = 48;  // midi code High tom 2
+							break;
+						case constant_ABC_T2_Normal: // Midi code Mid tom 1
+							tom_note = 47;
+							break;
+						case constant_ABC_T3_Normal: // Midi code Mid tom 2
+							tom_note = 45;
+							break;
+						case constant_ABC_T4_Normal: // Midi code Low Tom 1
+							tom_note = 43;
+							break;
+						case false:
+							break;
+						default:
+							window.alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+							break;
+						}
+						if (tom_note !== false) {
+							midiTrack.addNoteOn(midi_channel, tom_note, delay_for_next_note, velocity_normal);
+							delay_for_next_note = 0; // zero the delay
+						}
 					}
 				}
 				
