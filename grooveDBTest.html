@@ -70,6 +70,59 @@
 
 </script>
 
+<p>16th note Triplets in 2/4</p>
+
+<script>
+	
+	function generateGUID() {
+		var d = new Date().getTime();
+		var guid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			var r = (d + Math.random()*16)%16 | 0;
+			d = Math.floor(d/16);
+			return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+		});
+		return guid;
+	};
+
+	
+	var TabIn = {};
+	TabIn.tempo          =  70;
+	TabIn.div            =  24;
+	TabIn.measures       =  2;
+	TabIn.timeSignature  = "2/4";
+	TabIn.hihatTab       = 'x-xx-xx-xx-xx-xx-xx-xx-x';
+	TabIn.snareAccentTab = '------O-----------O-----';
+	TabIn.snareOtherTab  = '-g--g--g--g--g--g--g--g-';
+	TabIn.kickTab        = '------------------------';
+	TabIn.footOtherTab   = '------------------------';
+	TabIn.notesPerTabMeasure = 12;
+	
+		// put it on the page
+	GrooveDisplay.GrooveDBFormatPutGrooveOnPage(TabIn);
+
+</script>
+<p>16th note Triplets in 2/4</p>
+
+<script>
+	
+	
+	var TabIn = {};
+	TabIn.tempo          =  70;
+	TabIn.div            =  24;
+	TabIn.measures       =  1;
+	TabIn.timeSignature  = "2/4";
+	TabIn.hihatTab       = 'x-xx-xx-xx-x';
+	TabIn.snareAccentTab = '------O-----';
+	TabIn.snareOtherTab  = '-g--g--g--g-';
+	TabIn.kickTab        = '------------';
+	TabIn.footOtherTab   = '------------';
+	TabIn.notesPerTabMeasure = 12;
+	
+		// put it on the page
+	GrooveDisplay.GrooveDBFormatPutGrooveOnPage(TabIn);
+
+</script>
+
 5/4 groove
 <script>
 	

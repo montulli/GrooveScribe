@@ -171,6 +171,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 
 			var abcNotation = myGrooveUtils.createABCFromGrooveData(myGrooveData, renderWidth);
 			var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
+			//console.log(abcNotation);
 
 			svgTarget.innerHTML = svgReturn.svg;
 

@@ -104,8 +104,8 @@ function GrooveUtils() {
 	root.grooveData = function () {
 		this.notesPerMeasure = 8;
 		this.numberOfMeasures = 1;
-		this.numBeats = 4; // Top part of Time Signture 3/4, 4/4, 5/4, 6/8, etc...
-		this.noteValue = 4; // Bottom part of Time Sig   4 = quarter notes, 8 = 8th notes, 16ths, etc..
+		this.numBeats = 4;  // TimeSigTop: Top part of Time Signture 3/4, 4/4, 5/4, 6/8, etc...
+		this.noteValue = 4; // TimeSigBottom: Bottom part of Time Sig   4 = quarter notes, 8 = 8th notes, 16ths, etc..
 		this.sticking_array = class_empty_note_array.slice(0); // copy by value
 		this.hh_array = class_empty_note_array.slice(0);    // copy by value
 		this.snare_array = class_empty_note_array.slice(0); // copy by value
@@ -233,8 +233,9 @@ function GrooveUtils() {
 	};
 
 	// figure it out from the division  Division is number of notes per measure 4, 6, 8, 12, 16, 24, 32, etc...
+	// Triplets only support 4/4 and 2/4 time signatures for now
 	root.isTripletDivision = function (division, timeSigTop, timeSigBottom) {
-		if (timeSigTop == 4 && timeSigBottom == 4 && division % 6 === 0)
+		if ((timeSigTop == 4 || timeSigTop == 2) && timeSigBottom == 4 && division % 6 === 0)
 			return true;
 
 		return false;
@@ -668,6 +669,19 @@ function GrooveUtils() {
 		return returnTabLine;
 	};
 
+	// parse a string like "4/4", "5/4" or "2/4"
+	root.parseTimeSigString = function(timeSigString) {
+		var split_arr = timeSigString.split("/");
+		
+		if(split_arr.length != 2)
+			return [4, 4];
+			
+		var timeSigTop = parseInt(split_arr[0], 10);
+		var timeSigBottom = parseInt(split_arr[1], 10);
+		
+		return [timeSigTop, timeSigBottom];
+	}
+	
 	root.getGrooveDataFromUrlString = function (encodedURLData) {
 		var Stickings_string;
 		var HH_string;
@@ -681,6 +695,10 @@ function GrooveUtils() {
 
 		root.debugMode = parseInt(root.getQueryVariableFromString("Debug", 0, encodedURLData), 10);
 
+		var timeSigArray = root.parseTimeSigString(root.getQueryVariableFromString("TimeSig", "4/4", encodedURLData));
+		myGrooveData.numBeats = timeSigArray[0];
+		myGrooveData.noteValue = timeSigArray[1];
+		
 		myGrooveData.numberOfMeasures = parseInt(root.getQueryVariableFromString("measures", 1, encodedURLData), 10);
 		if (myGrooveData.numberOfMeasures < 1 || isNaN(myGrooveData.numberOfMeasures))
 			myGrooveData.numberOfMeasures = 1;
@@ -915,7 +933,7 @@ function GrooveUtils() {
 	function testArrayOfArraysForEquality(array_of_arrays, test_index, test_value) {
 	
 		for(var i = 0; i < array_of_arrays.length; i++) {
-			if(array_of_arrays[i][test_index] !== test_value)
+			if(array_of_arrays[i][test_index] != undefined && array_of_arrays[i][test_index] !== test_value)
 				return false;
 		}
 		
@@ -938,7 +956,7 @@ function GrooveUtils() {
 
 		for(var which_array=0; which_array < note_array_of_arrays.length; which_array++) {
 			
-			if(note_array_of_arrays[which_array][start_index] !== false) {
+			if(note_array_of_arrays[which_array][start_index] !== undefined && note_array_of_arrays[which_array][start_index] !== false) {
 				// look ahead and see when the next note is
 				// the length of this note is dependant on when the next note lands
 				// for every empty space we increment nextCount, and then make the note that long
@@ -1048,7 +1066,15 @@ function GrooveUtils() {
 		} else {
 			// figure it out from the time signature
 			// TODO: figure out what to do about timeSigBottom
-			note_grouping = notes_per_measure / timeSigTop;
+			if(root.isTripletDivision(notes_per_measure, timeSigTop, timeSigBottom)) {
+				// triplets  ( we only support 2/4 here )
+				if(timeSigTop != 2 && timeSigBottom != 4)
+					alert("Triplets are only supported in 2/4 and 4/4 time");
+				note_grouping = notes_per_measure / timeSigTop;
+			} else {
+				// not triplets
+				note_grouping = notes_per_measure / timeSigTop;
+			}
 		}
 		return note_grouping;
 	};
@@ -1061,14 +1087,7 @@ function GrooveUtils() {
 	function abc_gen_note_grouping_size(usingTriplets, timeSigTop, timeSigBottom) {
 		var note_grouping;
 
-		if (timeSigTop == 4 && timeSigBottom == 4) {
-
-			if (usingTriplets)
-				note_grouping = 6;
-			else
-				note_grouping = 8;
-
-		} else if (timeSigTop == 3 && timeSigBottom == 8) {
+		if (timeSigTop == 3 && timeSigBottom == 8) {
 			// 3/8
 			note_grouping = 12;
 
@@ -1082,7 +1101,10 @@ function GrooveUtils() {
 
 		} else {
 
-			note_grouping = 8;
+			if (usingTriplets)
+				note_grouping = 6;
+			else
+				note_grouping = 8;
 		}
 
 		return note_grouping;
@@ -1105,7 +1127,10 @@ function GrooveUtils() {
 			// a full measure will be defined as 8 * timeSigTop.   (4 = 32, 5 = 40, 6 = 48, etc.)
 			// that implies 32nd notes in quarter note beats
 			// TODO: should we support triplets here?
-			scaler = Math.ceil((8 * timeSigTop) / notes_per_measure);
+			if (root.isTripletDivision(notes_per_measure, timeSigTop, timeSigBottom))
+				scaler = Math.ceil((6 * timeSigTop) / notes_per_measure);
+			else
+				scaler = Math.ceil((8 * timeSigTop) / notes_per_measure);
 		}
 
 		return scaler;
@@ -1186,10 +1211,11 @@ function GrooveUtils() {
 
 			// triplets are special.  We want to output a note or a rest for every space of time
 			// 8th note triplets should always use rests
-			var end_of_group = 24 / notes_per_measure; // assuming we are always dealing with 24 notes
+			var end_of_group = (6 * timeSigTop) / notes_per_measure; 
 			var grouping_size_for_rests = end_of_group;
 
-			// this will remove rests and use different length notes to express triplets.   It is a little harder to decipher.
+			// this will remove rests and use different length notes to express triplets.   
+			// It can be little harder to decipher since you need to understand and process dotted eights and others
 			if (eliminate_rests_in_triplets) {
 				if (notes_per_measure != 12) {
 					var group_size = notes_per_measure / 4;
@@ -1244,14 +1270,14 @@ function GrooveUtils() {
 				kick_voice_string += " ";
 			}
 
-			// add a bar line every 24 notes
-			if (((i + 1) % 24) === 0) {
+			// add a bar line every measure
+			if (((i + 1) % notes_per_measure) === 0) {
 				stickings_voice_string += "|";
 				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
 			}
 			// add a line break every 2 measures
-			if (((i + 1) % (24 * 2)) === 0) {
+			if (((i + 1) % (notes_per_measure * 2)) === 0) {
 				stickings_voice_string += "\n";
 				hh_snare_voice_string += "\n";
 				kick_voice_string += "\n";
@@ -1381,7 +1407,7 @@ function GrooveUtils() {
 	// notes_per_measure denotes the number of notes that _should_ be in the measure even though the arrays are always large
 	root.create_ABC_from_snare_HH_kick_arrays = function (sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
 
-		if (timeSigTop == 4 && timeSigBottom == 4 && (notes_per_measure % 3) === 0) { // triplets
+		if ((timeSigTop == 2 || timeSigTop == 4)  && timeSigBottom == 4  && (notes_per_measure % 3) === 0) { // triplets
 			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);
 		} else {
 			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);
