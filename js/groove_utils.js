@@ -1940,18 +1940,17 @@ function GrooveUtils() {
 					//prev_snare_note = snare_note;
 				}
 
-				var kick_velocity = velocity_normal;
 				var kick_note = false;
 				var kick_splash_note = false;
 				switch (Kick_Array[i]) {
-				case constant_ABC_KI_Splash: // normal
+				case constant_ABC_KI_Splash: // just HH Foot
 					kick_splash_note = 44;
 					break;
-				case constant_ABC_KI_SandK: // normal
+				case constant_ABC_KI_SandK: // Kick & HH Foot
 					kick_splash_note = 44;
 					kick_note = 35;
 					break;
-				case constant_ABC_KI_Normal: // normal
+				case constant_ABC_KI_Normal: // just Kick
 					kick_note = 35;
 					break;
 				case false:
@@ -1963,17 +1962,45 @@ function GrooveUtils() {
 				if (kick_note !== false) {
 					//if(prev_kick_note != false)
 					//	midiTrack.addNoteOff(midi_channel, prev_kick_note, 0);
-					midiTrack.addNoteOn(midi_channel, kick_note, delay_for_next_note, kick_velocity);
+					midiTrack.addNoteOn(midi_channel, kick_note, delay_for_next_note, velocity_normal);
 					delay_for_next_note = 0; // zero the delay
 					//prev_kick_note = kick_note;
 				}
 				if (kick_splash_note !== false) {
 					//if(prev_kick_splash_note != false)
 					//	midiTrack.addNoteOff(midi_channel, prev_kick_splash_note, 0);
-					midiTrack.addNoteOn(midi_channel, kick_splash_note, delay_for_next_note, kick_velocity);
+					midiTrack.addNoteOn(midi_channel, kick_splash_note, delay_for_next_note, velocity_normal);
 					delay_for_next_note = 0; // zero the delay
 					//prev_kick_splash_note = kick_splash_note;
 				}
+				
+				for(var which_array = 0; which_array < constant_NUMBER_OF_TOMS; which_array++) {
+					var tom_note = false;
+					switch (Toms_Array[which_array][i]) {
+					case constant_ABC_T1_Normal: // Tom 1
+						tom_note = 48;  // midi code High tom 2
+						break;
+					case constant_ABC_T2_Normal: // Midi code Mid tom 1
+						tom_note = 47;
+						break;
+					case constant_ABC_T3_Normal: // Midi code Mid tom 2
+						tom_note = 45;
+						break;
+					case constant_ABC_T4_Normal: // Midi code Low Tom 1
+						tom_note = 43;
+						break;
+					case false:
+						break;
+					default:
+						window.alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+						break;
+					}
+					if (tom_note !== false) {
+						midiTrack.addNoteOn(midi_channel, tom_note, delay_for_next_note, velocity_normal);
+						delay_for_next_note = 0; // zero the delay
+					}
+				}
+				
 			} // end metronomeSolo
 
 			delay_for_next_note += duration;
