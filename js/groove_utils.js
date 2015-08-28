@@ -167,7 +167,7 @@ function GrooveUtils() {
 				browser = "MSIE";
 				version = useragent.substr(useragent.lastIndexOf('rv:') + 3, 4);
 			} else {
-				window.alert("undefined browser");
+				console.log("undefined browser");
 			}
 			break;
 		case 'Opera':
@@ -474,7 +474,7 @@ function GrooveUtils() {
 			break;
 		}
 
-		window.alert("Bad tablature note found in tablatureToABCNotationPerNote.  Tab: " + tablatureChar + " for drum type: " + drumType);
+		console.log("Bad tablature note found in tablatureToABCNotationPerNote.  Tab: " + tablatureChar + " for drum type: " + drumType);
 		return false;
 	}
 
@@ -536,7 +536,7 @@ function GrooveUtils() {
 			tabChar = "-";
 			break;
 		default:
-			window.alert("bad case in abcNotationToTablaturePerNote");
+			console.log("bad case in abcNotationToTablaturePerNote");
 			break;
 		}
 
@@ -1055,7 +1055,7 @@ function GrooveUtils() {
 				break;
 
 			default:
-				window.alert("bad switch in GrooveUtils.noteGroupingSize()");
+				console.log("bad switch in GrooveUtils.noteGroupingSize()");
 				note_grouping = Math.ceil(notes_per_measure / 4);
 				break;
 			}
@@ -1116,7 +1116,7 @@ function GrooveUtils() {
 		var scaler;
 
 		if (!timeSigTop || timeSigTop < 1 || timeSigTop > 36) {
-			window.alert("Error in getNoteScaler, out of range: " + timeSigTop);
+			console.log("Error in getNoteScaler, out of range: " + timeSigTop);
 			scaler = 1;
 		} else if (timeSigTop == 4) {
 			if (root.isTripletDivision(notes_per_measure, timeSigTop, timeSigBottom))
@@ -1647,7 +1647,7 @@ function GrooveUtils() {
 				root.loadMIDIFromURL(midiURL);
 				root.midiEventCallbacks.noteHasChangedSinceLastDataLoad = false;
 			} else {
-				window.alert("can't load midi song.   myGrooveData is empty");
+				console.log("can't load midi song.   myGrooveData is empty");
 			}
 		};
 		this.doesMidiDataNeedRefresh = function (root) {
@@ -1747,7 +1747,7 @@ function GrooveUtils() {
 		var midi_channel = 0;
 
 		if (swing_percentage < 0 || swing_percentage > 0.99) {
-			window.alert("Swing percentage out of range in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+			console.log("Swing percentage out of range in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
 			swing_percentage = 0;
 		}
 
@@ -1815,36 +1815,36 @@ function GrooveUtils() {
 					break;
 				case "E":
 					if (isTriplets)
-						window.alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by one sixteenth note
 					metronome_specific_index -= sixteenthNoteFrequency;
 					break;
 				case "AND":
 					if (isTriplets)
-						window.alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by two sixteenth notes
 					metronome_specific_index -= (2 * sixteenthNoteFrequency);
 					break;
 				case "A":
 					if (isTriplets)
-						window.alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by three sixteenth notes
 					metronome_specific_index -= (3 * sixteenthNoteFrequency);
 					break;
 				case "Ti":
 					if (!isTriplets)
-						window.alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by one sixteenth note
 					metronome_specific_index -= sixteenthNoteFrequency;
 					break;
 				case "Ta":
 					if (!isTriplets)
-						window.alert("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by two sixteenth notes
 					metronome_specific_index -= (2 * sixteenthNoteFrequency);
 					break;
 				default:
-					window.alert("bad case in MIDI_from_HH_Snare_Kick_Arrays");
+					console.log("bad case in MIDI_from_HH_Snare_Kick_Arrays");
 					break;
 				}
 
@@ -1909,7 +1909,7 @@ function GrooveUtils() {
 				case false:
 					break;
 				default:
-					window.alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+					console.log("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
 					break;
 				}
 
@@ -1966,7 +1966,7 @@ function GrooveUtils() {
 				case false:
 					break;
 				default:
-					window.alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+					console.log("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
 					break;
 				}
 
@@ -1994,7 +1994,7 @@ function GrooveUtils() {
 				case false:
 					break;
 				default:
-					window.alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+					console.log("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
 					break;
 				}
 				if (kick_note !== false) {
@@ -2032,7 +2032,7 @@ function GrooveUtils() {
 							case false:
 								break;
 							default:
-								window.alert("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
+								console.log("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
 								break;
 							}
 						}

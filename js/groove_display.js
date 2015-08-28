@@ -59,7 +59,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 				root.loadjscssfile(filename, filetype);
 				root.filesadded += "[" + filename + "]"; //List of files added in the form "[filename1],[filename2],etc"
 			} else {
-				window.alert("file already added!");
+				console.log("file already added!" + filename);
 			}
 		};
 

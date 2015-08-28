@@ -125,7 +125,7 @@ function GrooveWriter() { "use strict";
 	function get_snare_state(id, returnType) {
 
 		if (returnType != "ABC" && returnType != "URL") {
-			window.alert("bad returnType in get_snare_state()");
+			console.log("bad returnType in get_snare_state()");
 			returnType = "ABC";
 		}
 
@@ -187,7 +187,7 @@ function GrooveWriter() { "use strict";
 		var kickOn = (document.getElementById("kick_circle" + id).style.backgroundColor == constant_note_on_color_rgb);
 
 		if (returnType != "ABC" && returnType != "URL") {
-			window.alert("bad returnType in get_kick_state()");
+			console.log("bad returnType in get_kick_state()");
 			returnType = "ABC";
 		}
 
@@ -241,7 +241,7 @@ function GrooveWriter() { "use strict";
 			document.getElementById("kick_splash" + id).style.color = constant_note_on_color_hex;
 			break;
 		default:
-			window.alert("bad switch in set_kick_state");
+			console.log("bad switch in set_kick_state");
 			break;
 		}
 	}
@@ -283,7 +283,7 @@ function GrooveWriter() { "use strict";
 			document.getElementById("snare_xstick" + id).style.color = constant_note_on_color_hex;
 			break;
 		default:
-			window.alert("bad switch in set_snare_state");
+			console.log("bad switch in set_snare_state");
 			break;
 		}
 	}
@@ -303,7 +303,7 @@ function GrooveWriter() { "use strict";
 	function get_hh_state(id, returnType) {
 
 		if (returnType != "ABC" && returnType != "URL") {
-			window.alert("bad returnType in get_hh_state()");
+			console.log("bad returnType in get_hh_state()");
 			returnType = "ABC";
 		}
 
@@ -388,7 +388,7 @@ function GrooveWriter() { "use strict";
 			document.getElementById("hh_accent" + id).style.color = constant_note_on_color_hex;
 			break;
 		default:
-			window.alert("bad switch in set_hh_state");
+			console.log("bad switch in set_hh_state");
 			break;
 		}
 	}
@@ -412,7 +412,7 @@ function GrooveWriter() { "use strict";
 			document.getElementById("sticking_left" + id).style.color = constant_note_on_color_hex;
 			break;
 		default:
-			window.alert("Bad state in set_sticking_on");
+			console.log("Bad state in set_sticking_on");
 			break;
 		}
 	}
@@ -420,7 +420,7 @@ function GrooveWriter() { "use strict";
 	function get_sticking_state(id, returnType) {
 		var sticking_state = false;
 		if (returnType != "ABC" && returnType != "URL") {
-			window.alert("bad returnType in get_kick_state()");
+			console.log("bad returnType in get_kick_state()");
 			returnType = "ABC";
 		}
 
@@ -520,7 +520,7 @@ function GrooveWriter() { "use strict";
 			class_cur_kick_highlight_id = id;
 			break;
 		default:
-			window.alert("bad case in hilight_note");
+			console.log("bad case in hilight_note");
 			break;
 		}
 
@@ -791,7 +791,7 @@ function GrooveWriter() { "use strict";
 			break;
 
 		default:
-			window.alert("bad case in metronomeOptionsMenuPopupClick()");
+			console.log("bad case in metronomeOptionsMenuPopupClick()");
 			break;
 		}
 
@@ -897,7 +897,7 @@ function GrooveWriter() { "use strict";
 			break;
 
 		default:
-			window.alert("bad case in helpMenuPopupClick()");
+			console.log("bad case in helpMenuPopupClick()");
 			break;
 		}
 
@@ -937,7 +937,7 @@ function GrooveWriter() { "use strict";
 			contextMenu = document.getElementById("kickLabelContextMenu");
 			break;
 		default:
-			window.alert("bad case in noteLabelClick");
+			console.log("bad case in noteLabelClick");
 			break;
 		}
 
@@ -976,7 +976,7 @@ function GrooveWriter() { "use strict";
 			setFunction = set_kick_state;
 			break;
 		default:
-			window.alert("bad case in noteLabelPopupClick");
+			console.log("bad case in noteLabelPopupClick");
 			return false;
 		}
 
@@ -1005,7 +1005,7 @@ function GrooveWriter() { "use strict";
 			else if (action == "cancel")
 				continue; // do nothing.
 			else
-				window.alert("Bad IF case in noteLabelPopupClick");
+				console.log("Bad IF case in noteLabelPopupClick");
 		}
 
 		class_measure_for_note_label_click = 0; // reset
@@ -1035,7 +1035,7 @@ function GrooveWriter() { "use strict";
 			contextMenu = document.getElementById("kickContextMenu");
 			break;
 		default:
-			window.alert("Bad case in handleNotePopup");
+			console.log("Bad case in handleNotePopup");
 			break;
 		}
 
@@ -1077,7 +1077,7 @@ function GrooveWriter() { "use strict";
 				sticking_rotate_state(id);
 				break;
 			default:
-				window.alert("Bad case in noteLeftClick");
+				console.log("Bad case in noteLeftClick");
 				break;
 			}
 
@@ -1103,7 +1103,7 @@ function GrooveWriter() { "use strict";
 			set_kick_state(id, new_setting);
 			break;
 		default:
-			window.alert("Bad case in contextMenuClick");
+			console.log("Bad case in contextMenuClick");
 			break;
 		}
 
@@ -1133,7 +1133,7 @@ function GrooveWriter() { "use strict";
 				set_kick_state(id, action == "off" ? "off" : "normal");
 				break;
 			default:
-				window.alert("Bad case in noteOnMouseEnter");
+				console.log("Bad case in noteOnMouseEnter");
 				break;
 			}
 			create_ABC(); // update music
@@ -1556,7 +1556,7 @@ function GrooveWriter() { "use strict";
 		case 13: // 3nd triplet
 		case 14: // 4nd triplet
 		case 15: // 1st Quad
-			window.alert("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
+			console.log("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
 			break;
 
 		case 11: // first triplet
@@ -1632,7 +1632,7 @@ function GrooveWriter() { "use strict";
 		case 13: // 3nd triplet
 		case 14: // 4nd triplet
 		case 15: // 1st Quad
-			window.alert("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
+			console.log("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
 			break;
 
 		case 11: // first triplet
@@ -1708,7 +1708,7 @@ function GrooveWriter() { "use strict";
 		case 13: // 3nd triplet
 		case 14: // 4nd triplet
 		case 15: // 1st Quad
-			window.alert("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
+			console.log("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
 			break;
 
 		case 11: // first triplet
@@ -1960,7 +1960,7 @@ function GrooveWriter() { "use strict";
 				ret_val = true;
 			break;
 		default:
-			window.alert("bad case in groove_writer.js:shouldDisplayPermutationForSection()");
+			console.log("bad case in groove_writer.js:shouldDisplayPermutationForSection()");
 			return false;
 			//break;
 		}
@@ -2061,7 +2061,7 @@ function GrooveWriter() { "use strict";
 				break;
 
 			default:
-				window.alert("bad case in merge_kick_arrays()");
+				console.log("bad case in merge_kick_arrays()");
 				new_kick_array.push(primary_kick_array[i]);
 				break;
 			}
@@ -2793,9 +2793,9 @@ function GrooveWriter() { "use strict";
 
 		root.browserInfo = root.myGrooveUtils.getBrowserInfo();
 		if (root.browserInfo.browser == "MSIE" && root.browserInfo.version < 10) {
-			window.alert("This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".\n" + 'This version of IE is unsupported.   Please use Chrome or Firefox instead');
+			console.log("This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".\n" + 'This version of IE is unsupported.   Please use Chrome or Firefox instead');
 		} else if (root.browserInfo.browser == "Safari" && root.browserInfo.platform == "windows" && root.browserInfo.version < 535) {
-			window.alert("This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".\n" + 'This version of Safari is unsupported.   Please use Chrome instead');
+			console.log("This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".\n" + 'This version of Safari is unsupported.   Please use Chrome instead');
 		}
 		if(root.myGrooveUtils.debugMode) {
 			var debugOutput = document.getElementById("debugOutput");
@@ -2987,7 +2987,7 @@ function GrooveWriter() { "use strict";
 				setFunction(displayIndex, "off");
 				break;
 			default:
-				window.alert("Bad note in setNotesFromURLData: " + notes[i]);
+				console.log("Bad note in setNotesFromURLData: " + notes[i]);
 				break;
 			}
 		}
@@ -3080,7 +3080,7 @@ function GrooveWriter() { "use strict";
 				setFunction(displayIndex, "off");
 				break;
 			default:
-				window.alert("Bad note in setNotesFromABCArray: " + abcArray[i]);
+				console.log("Bad note in setNotesFromABCArray: " + abcArray[i]);
 				break;
 			}
 		}
@@ -3280,7 +3280,7 @@ function GrooveWriter() { "use strict";
 				}
 			});
 		} else {
-			window.alert("Error: URL Shortener API is not loaded");
+			console.log("Error: URL Shortener API is not loaded");
 		}
 
 	}
@@ -3373,7 +3373,7 @@ function GrooveWriter() { "use strict";
 
 		var myURL = 'data:text/plain;charset=utf-8;base64,' + btoa(myABC);
 
-		window.alert("Use \"Save As\" to save the new page to a local file");
+		console.log("Use \"Save As\" to save the new page to a local file");
 		window.open(myURL);
 
 	};
@@ -3758,7 +3758,7 @@ function GrooveWriter() { "use strict";
 				});
 			break;
 		default:
-			window.alert("Bad case in HTMLforPermutationOptions()");
+			console.log("Bad case in HTMLforPermutationOptions()");
 			break;
 		}
 
