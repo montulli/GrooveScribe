@@ -22,9 +22,10 @@
 //  along with Groove Scribe.  If not, see <http://www.gnu.org/licenses/>.
 
 /*jshint multistr: true */
-/*jslint browser:true */
+/*jslint browser:true devel:true */
 
 /*global gapi, GrooveUtils, Midi, Share */
+/*global constant_MAX_MEASURES, constant_DEFAULT_TEMPO, constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_OFF, constant_ABC_HH_Ride, constant_ABC_HH_Crash, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Flam, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T2_Normal, constant_ABC_T3_Normal, constant_ABC_T4_Normal, constant_NUMBER_OF_TOMS, constant_ABC_OFF */
 
 // GrooveWriter class.   The only one in this file.
 

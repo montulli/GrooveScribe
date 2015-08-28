@@ -25,7 +25,7 @@
 //  along with Groove Scribe.  If not, see <http://www.gnu.org/licenses/>.
 
 /*jshint multistr: true */
-/*jslint browser:true */
+/*jslint browser:true devel:true */
 /*jslint evil: true */
 /*global GrooveUtils, GrooveDisplay */
 
