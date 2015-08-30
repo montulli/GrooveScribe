@@ -220,7 +220,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 
 				renderWidth = 1000;
 				var abcNotation = myGrooveUtils.createABCFromGrooveData(GrooveData, renderWidth);
-				console.log(abcNotation);
+				//console.log(abcNotation);
 				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 
 				if (linkToEditor)
@@ -238,6 +238,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 			
 			if (showPlayer) {
 				myGrooveUtils.setGrooveData(GrooveData);
+				//console.log(GrooveData);
 
 				myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId, GrooveData.notesPerMeasure, true);
 				myGrooveUtils.expandOrRetractMIDI_playback(true, expandPlayer); // make it small
