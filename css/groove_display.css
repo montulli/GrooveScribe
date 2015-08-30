@@ -21,6 +21,7 @@
 	}
 	.svgTarget svg {
 		width: 100%;
+		height: auto;
 	}
 	.playerControl {
 		display: inline-block;
@@ -318,12 +319,5 @@ input[type=range]:active::-webkit-slider-thumb {
 	
 	.nonPrintable {
 		display: none !important;
-	}
-	
-	/* if we don't reset the width from 100% extra space is added to the printout.
-	 * this also left aligns the measures, which is nice
-	 */
-	.svgTarget svg {
-		width: auto;
 	}
 }

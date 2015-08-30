@@ -218,7 +218,9 @@ if (typeof(GrooveDisplay) === "undefined") {
 				var svgTarget = document.getElementById(svgTargetId);
 				var renderWidth = svgTarget.offsetWidth;
 
+				renderWidth = 1000;
 				var abcNotation = myGrooveUtils.createABCFromGrooveData(GrooveData, renderWidth);
+				console.log(abcNotation);
 				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 
 				if (linkToEditor)
@@ -229,9 +231,9 @@ if (typeof(GrooveDisplay) === "undefined") {
 			
 			layoutFunction();
 				
-			// resize SVG on window resize
-			window.addEventListener("resize", layoutFunction);
-			window.addEventListener("beforeprint", layoutFunction);
+			// resize SVG on window resize (not needed now.   We render to 1000 and scale in css)
+			//window.addEventListener("resize", layoutFunction);
+			//window.addEventListener("beforeprint", layoutFunction);
 			
 			
 			if (showPlayer) {

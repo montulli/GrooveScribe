@@ -1277,7 +1277,7 @@ function GrooveUtils() {
 				kick_voice_string += "|";
 			}
 			// add a line break every 2 measures
-			if (((i + 1) % ((6 * timeSigTop) * 2)) === 0) {
+			if (i < num_notes-1 && ((i + 1) % ((6 * timeSigTop) * 2)) === 0) {
 				stickings_voice_string += "\n";
 				hh_snare_voice_string += "\n";
 				kick_voice_string += "\n";
@@ -1360,8 +1360,8 @@ function GrooveUtils() {
 				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
 			}
-			// add a line break every 2 measures
-			if (((i + 1) % (8 * timeSigTop * 2)) === 0) {
+			// add a line break every 2 measures, except the last
+			if (i < num_notes-1 && ((i + 1) % (8 * timeSigTop * 2)) === 0) {
 				stickings_voice_string += "\n";
 				hh_snare_voice_string += "\n";
 				kick_voice_string += "\n";
