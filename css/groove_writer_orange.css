@@ -418,14 +418,14 @@
 		cursor: pointer;
 	}
 	.hh_crash {
-		position: absolute; top: 21px; left: 4px;
-		font-size: 22px;
+		position: absolute; top: 24px; left: 5px;
+		font-size: 20px;
 		color: transparent;
 		cursor: pointer;
 	}
 	.hh_ride {
-		position: absolute; top: 20px; left: 5px;
-		font-size: 24px;
+		position: absolute; top: 24px; left: 5px;
+		font-size: 18px;
 		color: transparent;
 		cursor: pointer;
 	}
