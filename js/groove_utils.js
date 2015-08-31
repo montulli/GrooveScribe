@@ -1774,7 +1774,13 @@ function GrooveUtils() {
 				// triplets are only supported in 4/4 time so the duration is constant
 				duration = 21.333; // "ticks"   16 for 32nd notes.  21.33 for 24th triplets
 			} else {
-				duration = 16; // todo: use time sig to determine duration of a 32nd note
+				// use time sig to determine duration of a 32nd note
+				// a 4/4 32 note is 16 ticks long
+				// x/2 should be 32 ticks
+				// x/8 should be 8 ticks
+				// x/16 would be 4 ticks
+				// anything over x/64 would be break
+				duration = 16 * (4/timeSigBottom);  // use sig to space notes.   
 			}
 
 			if (swing_percentage !== 0) {
