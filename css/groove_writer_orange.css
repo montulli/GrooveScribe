@@ -603,6 +603,7 @@
 		background: #FFF;
 		margin-left: 5%;
 		margin-right: 5%;
+		width: 90% !important;
 	}
 	.svgTarget svg {
 		width: 90% !important;
