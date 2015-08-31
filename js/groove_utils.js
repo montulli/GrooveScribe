@@ -841,7 +841,8 @@ function GrooveUtils() {
 		else
 			fullABC += "%%stretchlast 1\n";
 
-		fullABC += '%%flatbeams 1\n' +
+		fullABC += '%%fullsvg 1\n' +
+		'%%flatbeams 1\n' +
 		'%%ornament up\n' +
 		'%%pagewidth ' + renderWidth + 'px\n' +
 		'%%leftmargin 0cm\n' +
