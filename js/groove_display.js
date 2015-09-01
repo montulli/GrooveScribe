@@ -180,6 +180,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 			myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId, myGrooveData.notesPerMeasure, true);
 			myGrooveUtils.expandOrRetractMIDI_playback(true, false); // make it small
 			myGrooveUtils.setTempo(GrooveDBTabIn.tempo);
+			//myGrooveUtils.setSwing(GrooveDBTabIn.swingPercent);
 			myGrooveUtils.oneTimeInitializeMidi();
 
 			root.GrooveDisplayUniqueCounter++;
@@ -224,7 +225,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 
 				if (linkToEditor)
-					svgTarget.innerHTML = '<a style="text-decoration: none" href="index.html' + GrooveDefinition + '">' + svgReturn.svg + '</a>';
+					svgTarget.innerHTML = '<a style="text-decoration: none" href="http://mikeslessons.com/groove/' + GrooveDefinition + '">' + svgReturn.svg + '</a>';
 				else
 					svgTarget.innerHTML = svgReturn.svg;
 			};
@@ -243,6 +244,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 				myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId, GrooveData.notesPerMeasure, true);
 				myGrooveUtils.expandOrRetractMIDI_playback(true, expandPlayer); // make it small
 				myGrooveUtils.setTempo(GrooveData.tempo);
+				myGrooveUtils.setSwing(GrooveData.swingPercent);
 				myGrooveUtils.oneTimeInitializeMidi();
 			}
 		};
