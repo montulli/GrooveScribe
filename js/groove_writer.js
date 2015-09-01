@@ -25,7 +25,7 @@
 /*jslint browser:true devel:true */
 
 /*global gapi, GrooveUtils, Midi, Share */
-/*global constant_MAX_MEASURES, constant_DEFAULT_TEMPO, constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_OFF, constant_ABC_HH_Ride, constant_ABC_HH_Crash, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Flam, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T2_Normal, constant_ABC_T3_Normal, constant_ABC_T4_Normal, constant_NUMBER_OF_TOMS, constant_ABC_OFF */
+/*global constant_MAX_MEASURES, constant_DEFAULT_TEMPO, constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_BOTH, constant_ABC_STICK_OFF, constant_ABC_HH_Ride, constant_ABC_HH_Crash, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Flam, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T2_Normal, constant_ABC_T3_Normal, constant_ABC_T4_Normal, constant_NUMBER_OF_TOMS, constant_ABC_OFF */
 
 // GrooveWriter class.   The only one in this file.
 
@@ -42,7 +42,6 @@ function GrooveWriter() { "use strict";
 	// public class vars
 	var class_number_of_measures = 1;
 	var class_notes_per_measure = parseInt(root.myGrooveUtils.getQueryVariableFromURL("Div", "8"), 10); // default to 8ths
-	var class_metronome_interval = 0;
 	var class_metronome_auto_speed_up_active = false;
 
 	// set debugMode immediately so we can use it in index.html
@@ -68,6 +67,8 @@ function GrooveWriter() { "use strict";
 	var constant_hihat_note_off_color_hex = "#CCC";
 	var constant_hihat_note_off_color_rgb = 'rgb(204, 204, 204)'; // grey
 	var constant_note_hidden_color_rgb = "transparent";
+	var constant_sticking_right_on_color_rgb = "rgb(204, 101, 0)";
+	var constant_sticking_left_on_color_rgb =  "rgb(57, 57, 57)";
 	var constant_sticking_right_off_color_rgb = "rgb(204, 204, 204)";
 	var constant_sticking_left_off_color_rgb = "rgb(204, 204, 204)";
 
@@ -407,10 +408,14 @@ function GrooveWriter() { "use strict";
 			document.getElementById("sticking_left" + id).style.color = constant_sticking_left_off_color_rgb;
 			break;
 		case "right":
-			document.getElementById("sticking_right" + id).style.color = constant_note_on_color_hex;
+			document.getElementById("sticking_right" + id).style.color = constant_sticking_right_on_color_rgb;
 			break;
 		case "left":
-			document.getElementById("sticking_left" + id).style.color = constant_note_on_color_hex;
+			document.getElementById("sticking_left" + id).style.color = constant_sticking_left_on_color_rgb;
+			break;
+		case "both":
+			document.getElementById("sticking_right" + id).style.color = constant_sticking_right_on_color_rgb;
+			document.getElementById("sticking_left" + id).style.color = constant_sticking_left_on_color_rgb;
 			break;
 		default:
 			console.log("Bad state in set_sticking_on");
@@ -427,12 +432,13 @@ function GrooveWriter() { "use strict";
 
 		var element = document.getElementById("sticking_right" + id);
 
+		var right_ele = document.getElementById("sticking_right" + id);
+		var left_ele = document.getElementById("sticking_left" + id);
+		
 		// since colors are inherited, if we have not set a color it will be blank in the ID'd element
 		// we set all colors to off in the stylesheet, so it must be off.
-		if ((document.getElementById("sticking_right" + id).style.color === "" &&
-				document.getElementById("sticking_left" + id).style.color === "") ||
-			(document.getElementById("sticking_right" + id).style.color == constant_sticking_right_off_color_rgb &&
-				document.getElementById("sticking_left" + id).style.color == constant_sticking_left_off_color_rgb)) {
+		if ((right_ele.style.color === "" && left_ele.style.color === "") ||
+			(right_ele.style.color == constant_sticking_right_off_color_rgb && left_ele.style.color == constant_sticking_left_off_color_rgb)) {
 
 			// both are off.   Call it off
 			if (returnType == "ABC")
@@ -440,7 +446,14 @@ function GrooveWriter() { "use strict";
 			else if (returnType == "URL")
 				return "-"; // off (rest)
 
-		} else if (document.getElementById("sticking_right" + id).style.color == constant_note_on_color_rgb) {
+		} else if (right_ele.style.color == constant_sticking_right_on_color_rgb &&
+					left_ele.style.color == constant_sticking_left_on_color_rgb) {
+			// both L and R are on (Both)
+			if (returnType == "ABC")
+				return constant_ABC_STICK_BOTH;
+			else if (returnType == "URL")
+				return "B";
+		} else if (right_ele.style.color == constant_sticking_right_on_color_rgb) {
 
 			if (returnType == "ABC")
 				return constant_ABC_STICK_R;
@@ -464,12 +477,14 @@ function GrooveWriter() { "use strict";
 
 		// figure out the next state
 		// we could get fancy here and default down strokes to R and upstrokes to L
-		// for now we will rotate through (Off, R, L) in order
+		// for now we will rotate through (Off, R, L, BOTH) in order
 		if (sticking_state == constant_ABC_STICK_OFF) {
 			new_state = "right";
 		} else if (sticking_state == constant_ABC_STICK_R) {
 			new_state = "left";
 		} else if (sticking_state == constant_ABC_STICK_L) {
+			new_state = "both";
+		} else if (sticking_state == constant_ABC_STICK_BOTH) {
 			new_state = "off";
 		}
 
@@ -614,10 +629,9 @@ function GrooveWriter() { "use strict";
 			y : yVal
 		};
 	}
-
+	
 	root.setMetronomeButton = function (metronomeInterval) {
 
-		class_metronome_interval = metronomeInterval;
 		var id = "";
 		switch (metronomeInterval) {
 		case 4:
@@ -653,6 +667,19 @@ function GrooveWriter() { "use strict";
 		root.myGrooveUtils.midiNoteHasChanged(); // pretty likely the case
 	};
 
+	root.class_metronome_frequency = 0;  
+	root.getMetronomeFrequency = function () {
+		return root.class_metronome_frequency;
+	};
+	
+	root.setMetronomeFrequency = function (newFrequency) {
+		root.class_metronome_frequency = newFrequency;
+		root.setMetronomeButton(newFrequency);
+		
+		// update the current URL so that reloads and history traversal and link shares and bookmarks work correctly
+		root.updateCurrentURL();
+	};
+	
 	// the user has clicked on the metronome options button
 	root.metronomeOptionsAnchorClick = function (event) {
 
@@ -746,8 +773,8 @@ function GrooveWriter() { "use strict";
 			if (!current) {
 				root.myGrooveUtils.setMetronomeSolo(true);
 				document.getElementById("metronomeOptionsContextMenuSolo").className += " menuChecked";
-				if (class_metronome_interval === 0)
-					root.setMetronomeButton(4);
+				if (root.getMetronomeFrequency() === 0)
+					root.setMetronomeFrequency(4);
 			} else {
 				root.myGrooveUtils.setMetronomeSolo(false);
 				document.getElementById("metronomeOptionsContextMenuSolo").className = document.getElementById("metronomeOptionsContextMenuSolo").className.replace(new RegExp(' menuChecked', 'g'), "");
@@ -1001,6 +1028,8 @@ function GrooveWriter() { "use strict";
 				setFunction(i, "accent");
 			else if (instrument == "snare" && action == "all_on_normal")
 				setFunction(i, "normal");
+			else if (instrument == "snare" && action == "all_on_ghost")
+				setFunction(i, "ghost");
 			else if (action == "all_on")
 				setFunction(i, "normal");
 			else if (action == "cancel")
@@ -2080,7 +2109,7 @@ function GrooveWriter() { "use strict";
 		new_snare_array,
 		num_notes_for_swing;
 
-		var metronomeFrequency = class_metronome_interval;
+		var metronomeFrequency = root.getMetronomeFrequency();
 
 		// just the first measure
 		var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, 0);
@@ -2744,8 +2773,6 @@ function GrooveWriter() { "use strict";
 
 		root.setupWriterHotKeys(); // there are other hot keys in GrooveUtils for the midi player
 
-		root.setMetronomeButton(0);
-
 		setupPermutationMenu();
 
 		// set the background and text color of the current subdivision
@@ -3032,6 +3059,9 @@ function GrooveWriter() { "use strict";
 			case constant_ABC_STICK_L:
 				setFunction(displayIndex, "left");
 				break;
+			case constant_ABC_STICK_BOTH:
+				setFunction(displayIndex, "both");
+				break;
 			case constant_ABC_STICK_OFF:
 				setFunction(displayIndex, "off");
 				break;
@@ -3138,6 +3168,11 @@ function GrooveWriter() { "use strict";
 		// # of measures
 		fullURL += "&Measures=" + class_number_of_measures;
 
+		// # metronome setting
+		if(root.getMetronomeFrequency() !== 0) {
+			fullURL += "&MetronomeFreq=" + root.getMetronomeFrequency();
+		}
+		
 		// notes
 		var HH = "&H=|";
 		var Snare = "&S=|";
@@ -3352,6 +3387,8 @@ function GrooveWriter() { "use strict";
 		root.myGrooveUtils.setTempo(myGrooveData.tempo);
 
 		root.myGrooveUtils.swingUpdate(myGrooveData.swingPercent);
+		
+		root.setMetronomeFrequency(myGrooveData.metronomeFrequency);
 
 		create_ABC();
 	}

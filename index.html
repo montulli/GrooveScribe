@@ -80,10 +80,10 @@
 				<span id="upperLeft">
 					<span id="metronomeContainer">
 						<span id="metronomeLabel">METRONOME:</span>
-						<span class="metronomeButton" id="metronomeOff" onclick="myGrooveWriter.setMetronomeButton(0);">OFF</span>
-						<span class="metronomeButton" id="metronome4ths" onclick="myGrooveWriter.setMetronomeButton(4);">4th</span>
-						<span class="metronomeButton" id="metronome8ths" onclick="myGrooveWriter.setMetronomeButton(8);">8th</span>
-						<span class="metronomeButton" id="metronome16ths" onclick="myGrooveWriter.setMetronomeButton(16);">16th</span>
+						<span class="metronomeButton" id="metronomeOff" onclick="myGrooveWriter.setMetronomeFrequency(0);">OFF</span>
+						<span class="metronomeButton" id="metronome4ths" onclick="myGrooveWriter.setMetronomeFrequency(4);">4th</span>
+						<span class="metronomeButton" id="metronome8ths" onclick="myGrooveWriter.setMetronomeFrequency(8);">8th</span>
+						<span class="metronomeButton" id="metronome16ths" onclick="myGrooveWriter.setMetronomeFrequency(16);">16th</span>
 						<span class="metronomeButton Options grooveDB_hidden" id="metronomeOptionsAnchor" onclick="myGrooveWriter.metronomeOptionsAnchorClick(event);">Options</span>
 					</span>
 				</span>
@@ -226,6 +226,7 @@
 				<li onclick='myGrooveWriter.notePopupClick("sticking", "off");'>Off</li>
 				<li onclick='myGrooveWriter.notePopupClick("sticking","right");'><b>R</b>ight</li>
 				<li onclick='myGrooveWriter.notePopupClick("sticking","left");'><b>L</b>eft</li>
+				<li onclick='myGrooveWriter.notePopupClick("sticking","both");'><b>R/L</b></li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
@@ -280,6 +281,7 @@
 				<li onclick='myGrooveWriter.noteLabelPopupClick("snare", "all_off");'>all Snares <b>Off</b></li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("snare", "all_on");'>all <b>Accented</b></li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("snare", "all_on_normal");'>all <b>Normal</b></li>
+				<li onclick='myGrooveWriter.noteLabelPopupClick("snare", "all_on_ghost");'>all <b>Ghosts</b></li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("snare", "cancel");'>cancel</li>
 			</ul>
 		</div>

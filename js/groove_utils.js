@@ -37,6 +37,7 @@ var constant_MAX_MEASURES = 10;
 var constant_DEFAULT_TEMPO = 80;
 var constant_ABC_STICK_R = '"R"x';
 var constant_ABC_STICK_L = '"L"x';
+var constant_ABC_STICK_BOTH = '"R/L"x';
 var constant_ABC_STICK_OFF = '""x';
 var constant_ABC_HH_Ride = "^A'";
 var constant_ABC_HH_Crash = "^c'";
@@ -372,6 +373,11 @@ function GrooveUtils() {
 	function tablatureToABCNotationPerNote(drumType, tablatureChar) {
 
 		switch (tablatureChar) {
+		case "b":
+		case "B":
+			if (drumType == "Stickings")
+				return constant_ABC_STICK_BOTH;
+			break;
 		case "c":
 			if (drumType == "H")
 				return constant_ABC_HH_Crash;
@@ -487,7 +493,10 @@ function GrooveUtils() {
 			tabChar = "R";
 			break;
 		case constant_ABC_STICK_L:
-			tabChar = "R";
+			tabChar = "L";
+			break;
+		case constant_ABC_STICK_BOTH:
+			tabChar = "B";
 			break;
 		case constant_ABC_STICK_OFF:
 			tabChar = "-";
@@ -698,6 +707,8 @@ function GrooveUtils() {
 		var timeSigArray = root.parseTimeSigString(root.getQueryVariableFromString("TimeSig", "4/4", encodedURLData));
 		myGrooveData.numBeats = timeSigArray[0];
 		myGrooveData.noteValue = timeSigArray[1];
+		
+		myGrooveData.metronomeFrequency = parseInt(root.getQueryVariableFromString("MetronomeFreq", "0", encodedURLData), 10);
 		
 		myGrooveData.numberOfMeasures = parseInt(root.getQueryVariableFromString("measures", 1, encodedURLData), 10);
 		if (myGrooveData.numberOfMeasures < 1 || isNaN(myGrooveData.numberOfMeasures))
@@ -2348,9 +2359,14 @@ function GrooveUtils() {
 	}
 
 	root.getTempo = function () {
-		var tempo = parseInt(document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex).value, 10);
-		if (tempo < 19 && tempo > 281)
-			tempo = constant_DEFAULT_TEMPO;
+		var tempoInput = document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex);
+		var tempo = constant_DEFAULT_TEMPO;
+		
+		if(tempoInput) {
+			tempo = parseInt(tempoInput.value, 10);
+			if (tempo < 19 && tempo > 281)
+				tempo = constant_DEFAULT_TEMPO;
+		} 
 
 		return tempo;
 	};
@@ -2446,14 +2462,18 @@ function GrooveUtils() {
 	};
 
 	root.getSwing = function () {
-		var swing = parseInt(document.getElementById("swingInput" + root.grooveUtilsUniqueIndex).value, 10);
-		if (swing < 0 || swing > 60)
-			swing = 0;
+		var swingInput = document.getElementById("swingInput" + root.grooveUtilsUniqueIndex);
+		var swing = 0;
+		
+		if(swingInput) {
+			swing = parseInt(swingInput.value, 10);
+			if (swing < 0 || swing > 60)
+				swing = 0;
 
-		if (root.swingIsEnabled === false)
-			swing = 0;
+			if (root.swingIsEnabled === false)
+				swing = 0;
+		}
 
-		// our real swing value only goes to 60%.
 		return (swing);
 	};
 
