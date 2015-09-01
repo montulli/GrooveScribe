@@ -2442,6 +2442,8 @@ function GrooveUtils() {
 
 		if (root.isTripletDivision(division, 4, 4) || division == 4)
 			return false;
+			
+		return true;
 	};
 
 	root.setSwingSlider = function (newSetting) {
@@ -2454,37 +2456,32 @@ function GrooveUtils() {
 		root.swingIsEnabled = trueElseFalse;
 
 		if (root.swingIsEnabled === false) {
-			root.setSwingSlider(0);
+			root.setSwing(0);
+		} else {
+			root.swingUpdateText(root.getSwing()); // remove N/A label
 		}
-
-		root.swingUpdate(0); // update N/A label
-
 	};
 
 	root.getSwing = function () {
-		var swingInput = document.getElementById("swingInput" + root.grooveUtilsUniqueIndex);
 		var swing = 0;
 		
-		if(swingInput) {
-			swing = parseInt(swingInput.value, 10);
-			if (swing < 0 || swing > 60)
-				swing = 0;
-
-			if (root.swingIsEnabled === false)
-				swing = 0;
+		if(root.swingIsEnabled) {
+			var swingInput = document.getElementById("swingInput" + root.grooveUtilsUniqueIndex);
+			
+			if(swingInput) {
+				swing = parseInt(swingInput.value, 10);
+				if (swing < 0 || swing > 60)
+					swing = 0;
+			}
 		}
-
+		
 		return (swing);
 	};
 
 	// used to update the on screen swing display
 	// also the onClick handler for the swing slider
-	root.swingUpdate = function (swingAmount) {
-		if (!swingAmount) {
-			// grab the actual amount from the slider
-			swingAmount = parseInt(document.getElementById("swingInput" + root.grooveUtilsUniqueIndex).value, 10);
-		}
-
+	root.swingUpdateText = function (swingAmount) {
+		
 		if (root.swingIsEnabled === false) {
 			document.getElementById('swingOutput' + root.grooveUtilsUniqueIndex).innerHTML = "N/A";
 		} else {
@@ -2495,12 +2492,21 @@ function GrooveUtils() {
 
 	};
 
+	root.setSwing = function (swingAmount) {
+		if (root.swingIsEnabled === false)
+			swingAmount = 0;
+		
+		root.setSwingSlider(swingAmount);
+		
+		root.swingUpdateText(swingAmount);  // update the output
+	};
+	
 	root.swingUpdateEvent = function (event) {
 
 		if (root.swingIsEnabled === false) {
 			root.setSwingSlider(0);
 		} else {
-			root.swingUpdate(event.target.value);
+			root.swingUpdateText(event.target.value);
 			updateRangeSlider('swingInput' + root.grooveUtilsUniqueIndex);
 		}
 	};

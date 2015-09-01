@@ -3386,7 +3386,7 @@ function GrooveWriter() { "use strict";
 
 		root.myGrooveUtils.setTempo(myGrooveData.tempo);
 
-		root.myGrooveUtils.swingUpdate(myGrooveData.swingPercent);
+		root.myGrooveUtils.setSwing(myGrooveData.swingPercent);
 		
 		root.setMetronomeFrequency(myGrooveData.metronomeFrequency);
 
@@ -3459,8 +3459,6 @@ function GrooveWriter() { "use strict";
 
 		// enable or disable swing
 		root.myGrooveUtils.swingEnabled(root.myGrooveUtils.doesDivisionSupportSwing(newDivision));
-		// update the swing output display
-		root.myGrooveUtils.swingUpdate();
 	}
 
 	root.expandAuthoringViewWhenNecessary = function (numNotesPerMeasure, numberOfMeasures) {
