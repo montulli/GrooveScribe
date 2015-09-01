@@ -601,12 +601,12 @@
 	}
 	.svgTarget {
 		background: #FFF;
+	}
+	.svgTarget svg {
 		margin-left: 5%;
 		margin-right: 5%;
 		width: 90% !important;
-	}
-	.svgTarget svg {
-		width: 90% !important;
+		//height: auto;
 	}
 	#sheetMusicTextFields {
 		border-top: 1px solid #999;

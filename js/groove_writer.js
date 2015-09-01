@@ -2794,9 +2794,9 @@ function GrooveWriter() { "use strict";
 
 		root.browserInfo = root.myGrooveUtils.getBrowserInfo();
 		if (root.browserInfo.browser == "MSIE" && root.browserInfo.version < 10) {
-			console.log("This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".\n" + 'This version of IE is unsupported.   Please use Chrome or Firefox instead');
+			window.alert("This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".\n" + 'This version of IE is unsupported.   Please use Chrome or Firefox instead');
 		} else if (root.browserInfo.browser == "Safari" && root.browserInfo.platform == "windows" && root.browserInfo.version < 535) {
-			console.log("This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".\n" + 'This version of Safari is unsupported.   Please use Chrome instead');
+			window.alert("This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".\n" + 'This version of Safari is unsupported.   Please use Chrome instead');
 		}
 		if(root.myGrooveUtils.debugMode) {
 			var debugOutput = document.getElementById("debugOutput");

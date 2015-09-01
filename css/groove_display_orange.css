@@ -22,8 +22,7 @@
 	}
 	.svgTarget svg {
 		width: 100%;
-		height: auto;
-	
+		height: calc(100%);  /* hack, should really be auto, but that causes old webkit to go nuts */
 	}
 	.playerControl {
 		display: inline-block;
