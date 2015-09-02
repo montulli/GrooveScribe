@@ -685,13 +685,15 @@ function GrooveWriter() { "use strict";
 
 		var contextMenu = document.getElementById("metronomeOptionsContextMenu");
 		if (contextMenu) {
+			
 			var anchorPoint = document.getElementById("metronomeOptionsAnchor");
-			var anchorPos = getTagPosition(anchorPoint);
-
+			
 			if (anchorPoint) {
-				contextMenu.style.top = anchorPoint.offsetTop + anchorPoint.offsetHeight + "px";
+				var anchorPos = getTagPosition(anchorPoint);
+				contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + "px";
 				contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + "px";
 			}
+			
 			root.myGrooveUtils.showContextMenu(contextMenu);
 		}
 	};
@@ -702,10 +704,10 @@ function GrooveWriter() { "use strict";
 		var contextMenu = document.getElementById("permutationContextMenu");
 		if (contextMenu) {
 			var anchorPoint = document.getElementById("permutationAnchor");
-			var anchorPos = getTagPosition(anchorPoint);
-
+			
 			if (anchorPoint) {
-				contextMenu.style.top = anchorPoint.offsetTop + anchorPoint.offsetHeight + "px";
+				var anchorPos = getTagPosition(anchorPoint);
+				contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + "px";
 				contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + "px";
 			}
 			root.myGrooveUtils.showContextMenu(contextMenu);
@@ -718,12 +720,10 @@ function GrooveWriter() { "use strict";
 		var contextMenu = document.getElementById("grooveListWrapper");
 		if (contextMenu) {
 			var anchorPoint = document.getElementById("groovesAnchor");
-			var anchorPos = getTagPosition(anchorPoint);
-
-			if (!event)
-				event = window.event;
+			
 			if (anchorPoint) {
-				contextMenu.style.top = anchorPoint.offsetTop + anchorPoint.offsetHeight + "px";
+				var anchorPos = getTagPosition(anchorPoint);
+				contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + "px";
 				contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 283 + "px";
 			}
 			root.myGrooveUtils.showContextMenu(contextMenu);
@@ -736,12 +736,10 @@ function GrooveWriter() { "use strict";
 		var contextMenu = document.getElementById("helpContextMenu");
 		if (contextMenu) {
 			var anchorPoint = document.getElementById("helpAnchor");
-			var anchorPos = getTagPosition(anchorPoint);
-
-			if (!event)
-				event = window.event;
+			
 			if (anchorPoint) {
-				contextMenu.style.top = anchorPoint.offsetTop + anchorPoint.offsetHeight + "px";
+				var anchorPos = getTagPosition(anchorPoint);
+				contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + "px";
 				contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + "px";
 			}
 			root.myGrooveUtils.showContextMenu(contextMenu);
@@ -804,10 +802,10 @@ function GrooveWriter() { "use strict";
 				contextMenu = document.getElementById("metronomeOptionsOffsetClickContextMenu");
 			if (contextMenu) {
 				var anchorPoint = document.getElementById("metronomeOptionsContextMenuOffTheOne");
-				var anchorPos = getTagPosition(anchorPoint);
-
+				
 				if (anchorPoint) {
-					contextMenu.style.top = anchorPoint.offsetTop + anchorPoint.offsetHeight + "px";
+					var anchorPos = getTagPosition(anchorPoint);
+					contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + "px";
 					contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + "px";
 				}
 				root.myGrooveUtils.showContextMenu(contextMenu);
@@ -1070,12 +1068,14 @@ function GrooveWriter() { "use strict";
 		}
 
 		if (contextMenu) {
+			
 			if (!event)
 				event = window.event;
 			if (event.pageX || event.pageY) {
 				contextMenu.style.top = event.pageY - 30 + "px";
 				contextMenu.style.left = event.pageX - 75 + "px";
 			}
+			
 			root.myGrooveUtils.showContextMenu(contextMenu);
 		} else {
 			return true; //error

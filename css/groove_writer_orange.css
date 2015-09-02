@@ -7,7 +7,6 @@
 	body {
 		/* Use GrooveWriter instead of body for easy embedding */
 		margin: 0px;
-		font-family: 'Lato', Calibri, sans-serif;
 	}
 	.fullWidthEle {
 		max-width: 1478px; /* 1550 - 72 */
@@ -25,6 +24,8 @@
 		width: 100%;
 		/* to embed, add your header height here.  Replace 0px with your header height */
 		height: calc(100vh - 0px);
+		font-family: 'Lato', Calibri, sans-serif;
+
 	}
 	.warnings {
 		font-family: monospace;
@@ -644,7 +645,7 @@
 	} /* checked icon */
 	.noteContextMenu>ul.list  { 
 		display: none;
-		position:absolute; left:30px; top:-30px; z-index:999;
+		position:fixed; left:30px; top:-30px; z-index:999;
 		width:150px;
 		margin:0; padding:0px; list-style:none;
 		background: #eeeeee;
