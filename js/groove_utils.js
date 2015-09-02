@@ -702,7 +702,7 @@ function GrooveUtils() {
 
 		myGrooveData.notesPerMeasure = parseInt(root.getQueryVariableFromString("Div", 16, encodedURLData), 10);
 
-		root.debugMode = parseInt(root.getQueryVariableFromString("Debug", 0, encodedURLData), 10);
+		root.debugMode = parseInt(root.getQueryVariableFromString("Debug", root.debugMode, encodedURLData), 10);
 
 		var timeSigArray = root.parseTimeSigString(root.getQueryVariableFromString("TimeSig", "4/4", encodedURLData));
 		myGrooveData.numBeats = timeSigArray[0];
@@ -1556,6 +1556,17 @@ function GrooveUtils() {
 		};
 	};
 
+	root.isElementOnScreen = function(element){
+		var rect = element.getBoundingClientRect();
+
+		return (
+			rect.top >= 80 &&
+			rect.left >= 0 &&
+			rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+			rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+		);
+	};
+	
 	root.abcNoteNumCurrentlyHighlighted = -1;
 	root.clearHighlightNoteInABCSVG = function () {
 
@@ -1566,7 +1577,12 @@ function GrooveUtils() {
 				var class_name = myElements[i].getAttribute("class");
 				myElements[i].setAttribute("class", class_name.replace(new RegExp(' highlighted', 'g'), ""));
 				if(root.debugMode && i == 0) {
-					myElements[i].scrollIntoView({block: "end", behavior: "smooth"});   // autoscroll if necessary
+					if(!root.isElementOnScreen(myElements[i])) {
+						if(root.abcNoteNumCurrentlyHighlighted == 0)
+							myElements[i].scrollIntoView({block: "start", behavior: "smooth"});   // autoscroll if necessary
+						else
+							myElements[i].scrollIntoView({block: "end", behavior: "smooth"});   // autoscroll if necessary
+					}
 				}
 			}
 			root.abcNoteNumCurrentlyHighlighted = -1;
