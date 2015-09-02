@@ -60,6 +60,13 @@ var constant_ABC_T4_Normal = "A";
 var constant_NUMBER_OF_TOMS = 4;
 var constant_ABC_OFF = false;
 
+// make these global so that they are shared among all the GrooveUtils classes invoked
+var global_current_midi_start_time = 0;
+var global_last_midi_update_time = 0;
+var global_total_midi_play_time_msecs = 0;
+var global_total_midi_notes = 0;
+var global_total_midi_repeats = 0;
+
 // GrooveUtils class.   The only one in this file.
 function GrooveUtils() {
 	"use strict";
@@ -93,14 +100,6 @@ function GrooveUtils() {
 	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
 
 	root.visible_context_menu = false; // a single context menu can be visible at a time.
-
-	root.current_midi_start_time = 0;
-	root.last_midi_update_time = 0;
-	root.total_midi_play_time_msecs = 0;
-	root.total_midi_notes = 0;
-	root.total_midi_repeats = 0;
-
-	
 
 	root.grooveData = function () {
 		this.notesPerMeasure = 16;
@@ -2159,12 +2158,12 @@ function GrooveUtils() {
 		if (MIDI.Player.playing) {
 			return;
 		} else if (root.isMIDIPaused && false === root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot)) {
-			root.current_midi_start_time = new Date();
-			root.last_midi_update_time = 0;
+			global_current_midi_start_time = new Date();
+			global_last_midi_update_time = 0;
 			MIDI.Player.resume();
 		} else {
-			root.current_midi_start_time = new Date();
-			root.last_midi_update_time = 0;
+			global_current_midi_start_time = new Date();
+			global_last_midi_update_time = 0;
 			root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot, true);
 			MIDI.Player.stop();
 			MIDI.Player.loop(root.shouldMIDIRepeat); // set the loop parameter
@@ -2240,30 +2239,30 @@ function GrooveUtils() {
 	};
 
 	root.getMidiStartTime = function () {
-		return root.current_midi_start_time;
+		return global_current_midi_start_time;
 	};
 
 	// calculate how long the midi has been playing total (since the last play/pause press
 	// this is computationally expensive
 	root.getMidiPlayTime = function () {
 		var time_now = new Date();
-		var play_time_diff = new Date(time_now.getTime() - root.current_midi_start_time.getTime());
+		var play_time_diff = new Date(time_now.getTime() - global_current_midi_start_time.getTime());
 
 		var TotalPlayTime = document.getElementById("totalPlayTime");
 		if (TotalPlayTime) {
-			if (root.last_midi_update_time === 0)
-				root.last_midi_update_time = root.current_midi_start_time;
-			var delta_time_diff = new Date(time_now - root.last_midi_update_time);
-			root.total_midi_play_time_msecs += delta_time_diff.getTime();
-			var totalTime = new Date(root.total_midi_play_time_msecs);
+			if (global_last_midi_update_time === 0)
+				global_last_midi_update_time = global_current_midi_start_time;
+			var delta_time_diff = new Date(time_now - global_last_midi_update_time);
+			global_total_midi_play_time_msecs += delta_time_diff.getTime();
+			var totalTime = new Date(global_total_midi_play_time_msecs);
 			var time_string = "";
 			if (totalTime.getUTCHours() > 0)
 				time_string = totalTime.getUTCHours() + ":" + (totalTime.getUTCMinutes() < 10 ? "0" : "");
 			time_string += totalTime.getUTCMinutes() + ":" + (totalTime.getSeconds() < 10 ? "0" : "") + totalTime.getSeconds();
-			TotalPlayTime.innerHTML = 'Total Play Time: <span class="totalTimeNum">' + time_string + '</span> notes: <span class="totalTimeNum">' + root.total_midi_notes + '</span> repetitions: <span class="totalTimeNum">' + root.total_midi_repeats + '</span>';
+			TotalPlayTime.innerHTML = 'Total Play Time: <span class="totalTimeNum">' + time_string + '</span> notes: <span class="totalTimeNum">' + global_total_midi_notes + '</span> repetitions: <span class="totalTimeNum">' + global_total_midi_repeats + '</span>';
 		}
 
-		root.last_midi_update_time = time_now;
+		global_last_midi_update_time = time_now;
 
 		return play_time_diff; // a time struct that represents the total time played so far since the last play button push
 	};
@@ -2306,7 +2305,7 @@ function GrooveUtils() {
 
 			if (root.shouldMIDIRepeat) {
 
-				root.total_midi_repeats++;
+				global_total_midi_repeats++;
 				
 				if (root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot)) {
 					MIDI.Player.stop();
@@ -2340,7 +2339,7 @@ function GrooveUtils() {
 				note_type = "tom";
 			}
 			if (note_type) {
-				root.total_midi_notes++;
+				global_total_midi_notes++;
 				root.midiEventCallbacks.notePlaying(root.midiEventCallbacks.classRoot, note_type, percentComplete);
 				root.highlightNoteInABCSVGFromPercentComplete(percentComplete);
 			}
