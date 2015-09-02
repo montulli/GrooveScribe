@@ -2394,6 +2394,16 @@ function GrooveWriter() { "use strict";
 		} catch(err) {
 			/* empty */
 		}
+		
+		if(root.myGrooveUtils.debugMode) {
+			// put the search data on the bottom of the page to make it easy to cut & paste
+			var searchDataEle = document.getElementById("URLSearchData");
+			if(searchDataEle) {
+				var searchIndex = newURL.indexOf("?");
+				var searchURL = newURL.substring(searchIndex).replace("Debug=1&", "");
+				searchDataEle.innerHTML = '<p style="margin-left: 10px;"><b>' + searchURL + '</b><p>';
+			}
+		}
 	};
 
 	// this is called by a bunch of places anytime we modify the musical notes on the page
