@@ -2627,6 +2627,11 @@ function GrooveWriter() { "use strict";
 
 		changeDivisionWithNotes(class_notes_per_measure, uiStickings, uiHH, uiSnare, uiKick);
 
+		// reference the button and scroll it into view
+		var add_measure_button = document.getElementById("addMeasureButton");
+		if(add_measure_button)
+			add_measure_button.scrollIntoView({block: "start", behavior: "smooth"});
+		
 		create_ABC();
 	};
 
