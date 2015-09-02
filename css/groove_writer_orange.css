@@ -263,7 +263,7 @@
 	.hh-label {
 		display: block;
 		white-space:nowrap;
-		margin-top: 20px;
+		margin-top: 16px;
 		margin-left: 8px;
 		cursor: pointer;
 		text-align: center;
@@ -309,7 +309,7 @@
 		-ms-user-select: none;
 	}
 	.hi-hat-container {
-		height: 47px;
+		height: 43px;
 		white-space:nowrap;
 		border: 1px solid transparent;
 		-moz-user-select: none;
@@ -333,31 +333,31 @@
 		-ms-user-select: none;
 	}
 	.staff-line-1{
-		position: absolute; top: 46px;
+		position: absolute; top: 42px;
 		width:100%; 
 		height:0px; 
 		border-top:3px solid #cacaca; 
 	}
 	.staff-line-2{
-		position: absolute; top: 76px;
+		position: absolute; top: 72px;
 		width:100%; 
 		height:0px; 
 		border-top:3px solid #cacaca; 
 	}
 	.staff-line-3{
-		position: absolute; top: 107px;
+		position: absolute; top: 103px;
 		width:100%; 
 		height:0px; 
 		border-top:3px solid #cacaca; 
 	}
 	.staff-line-4{
-		position: absolute; top: 136px;
+		position: absolute; top: 132px;
 		width:100%; 
 		height:0px; 
 		border-top:3px solid #cacaca; 
 	}
 	.staff-line-5{
-		position: absolute; top: 167px;
+		position: absolute; top: 163px;
 		width:100%; 
 		height:0px; 
 		border-top:3px solid #cacaca; 
@@ -418,36 +418,36 @@
 		cursor: pointer;
 	}
 	.hh_crash {
-		position: absolute; top: 24px; left: 5px;
+		position: absolute; top: 19px; left: 5px;
 		font-size: 20px;
 		color: transparent;
 		cursor: pointer;
 	}
 	.hh_ride {
-		position: absolute; top: 23px; left: 6px;
+		position: absolute; top: 18px; left: 6px;
 		font-size: 20px;
 		color: transparent;
 		cursor: pointer;
 	}
 	.hh_cross {
-		position: absolute; top: 20px; left: 5px;
+		position: absolute; top: 15px; left: 5px;
 		font-size: 24px;
 		color: #CCCCCC;
 		cursor: pointer;
 	}
 	.hh_open {
-		position: absolute; top: 7px; left: 9px;
+		position: absolute; top: 3px; left: 9px;
 		font-size: 13px;
 		color: transparent;
 	}
 	.hh_close {
-		position: absolute; top: 7px; left: 9px;
+		position: absolute; top: 3px; left: 9px;
 		font-size: 13px;
 		color: transparent;
 		float:left;
 	}
 	.hh_accent {
-		position: absolute; top: 2px; left: 11px;
+		position: absolute; top: 0px; left: 11px;
 		font-size: 20px;
 		color: transparent;
 		float:left;
