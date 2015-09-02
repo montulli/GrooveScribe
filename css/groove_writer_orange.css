@@ -26,16 +26,6 @@
 		/* to embed, add your header height here.  Replace 0px with your header height */
 		height: calc(100vh - 0px);
 	}
-	#RightHandContent {
-		position: relative;
-		left: 72px;
-		/margin-left: 72px;
-		/padding-top: 98px;
-		/* to embed, add your header height here.  Replace 98px with your header height + 98px */
-		height: calc(100% - 98px);
-		width: calc(100% - 72px);
-		overflow-y: auto;
-	}
 	.warnings {
 		font-family: monospace;
 		display: none;
@@ -80,6 +70,15 @@
 		z-index: 999;
 		border-bottom: 1px solid #000;
 		
+	}
+	#RightHandContent {
+		position: relative;
+		left: 72px;
+		/margin-left: 72px;
+		/padding-top: 98px;
+		height: calc(100% - 98px);
+		width: calc(100% - 72px);
+		overflow-y: auto;
 	}
 	#upperRight {
 		float: right;
