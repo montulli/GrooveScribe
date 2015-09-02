@@ -7,9 +7,7 @@
 	body {
 		/* Use GrooveWriter instead of body for easy embedding */
 		margin: 0px;
-		background: #DDD;
-		/font-family: Calibri;
-		font-family: 'Lato', sans-serif;
+		font-family: 'Lato', Calibri, sans-serif;
 	}
 	.fullWidthEle {
 		max-width: 1478px; /* 1550 - 72 */
@@ -23,6 +21,7 @@
 		 * Usually set the height to 100vh - (the height of the top nav)
 		 */
 		position: relative;
+		background: #DDD;
 		width: 100%;
 		height: calc(100vh - 0px);
 	}
