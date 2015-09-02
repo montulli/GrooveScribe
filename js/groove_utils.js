@@ -103,7 +103,7 @@ function GrooveUtils() {
 	
 
 	root.grooveData = function () {
-		this.notesPerMeasure = 8;
+		this.notesPerMeasure = 16;
 		this.numberOfMeasures = 1;
 		this.numBeats = 4;  // TimeSigTop: Top part of Time Signture 3/4, 4/4, 5/4, 6/8, etc...
 		this.noteValue = 4; // TimeSigBottom: Bottom part of Time Sig   4 = quarter notes, 8 = 8th notes, 16ths, etc..
@@ -700,7 +700,7 @@ function GrooveUtils() {
 		var myGrooveData = new root.grooveData();
 		var i;
 
-		myGrooveData.notesPerMeasure = parseInt(root.getQueryVariableFromString("Div", 8, encodedURLData), 10);
+		myGrooveData.notesPerMeasure = parseInt(root.getQueryVariableFromString("Div", 16, encodedURLData), 10);
 
 		root.debugMode = parseInt(root.getQueryVariableFromString("Debug", 0, encodedURLData), 10);
 
@@ -1565,6 +1565,9 @@ function GrooveUtils() {
 				//note.className = note.className.replace(new RegExp(' highlighted', 'g'), "");
 				var class_name = myElements[i].getAttribute("class");
 				myElements[i].setAttribute("class", class_name.replace(new RegExp(' highlighted', 'g'), ""));
+				if(root.debugMode && i == 0) {
+					myElements[i].scrollIntoView({block: "end", behavior: "smooth"});   // autoscroll if necessary
+				}
 			}
 			root.abcNoteNumCurrentlyHighlighted = -1;
 		}
