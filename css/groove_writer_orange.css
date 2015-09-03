@@ -7,9 +7,8 @@
 	body {
 		/* Use GrooveWriter instead of body for easy embedding */
 		margin: 0px;
-	}
-	.fullWidthEle {
-		max-width: 1478px; /* 1550 - 72 */
+		height: calc(100vh - 60px);
+		padding-top: 60px;
 	}
 	#GrooveWriter {
 		/* tag surrounds entire app */
@@ -23,9 +22,12 @@
 		background: #DDD;
 		width: 100%;
 		/* to embed, add your header height here.  Replace 0px with your header height */
-		height: calc(100vh - 65px);
+		height: 100%;
 		font-family: 'Lato', Calibri, sans-serif;
 
+	}
+	.fullWidthEle {
+		max-width: 1478px; /* 1550 - 72 */
 	}
 	.warnings {
 		font-family: monospace;
