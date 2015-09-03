@@ -226,6 +226,9 @@
 		fill:#990000 !important; 
 		fill-opacity: 0.25;
 	}
+	#GrooveDB_MetaData , #debugDisplayArea {
+		background-color: #DDD;
+	}
  	
 input[type=range] {
   -webkit-appearance: none;
