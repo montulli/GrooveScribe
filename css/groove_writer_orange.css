@@ -40,7 +40,6 @@
 	}
 	.nonPrintable {
 		display: block;
-		background-color: #DDD;
 	}
 	#LeftHandNav {
 		width: 70px;
@@ -188,6 +187,8 @@
 		text-align: center;
 		padding-top: 13px;
 		border-bottom:1px solid #AAA;
+		background-color: #DDD;
+	
 	}
 	#NotationLabel {
 		display: inline-block;
@@ -627,6 +628,7 @@
 		display: -webkit-flex;
 		display: flex;
 		justify-content: space-around;
+		background-color: #DDD;
 	}
 	.sheetMusicTextField {
 		margin: 0px 10px;
