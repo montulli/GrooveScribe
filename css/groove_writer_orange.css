@@ -23,7 +23,7 @@
 		background: #DDD;
 		width: 100%;
 		/* to embed, add your header height here.  Replace 0px with your header height */
-		height: calc(100vh - 0px);
+		height: calc(100vh - 65px);
 		font-family: 'Lato', Calibri, sans-serif;
 
 	}
