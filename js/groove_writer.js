@@ -69,8 +69,10 @@ function GrooveWriter() { "use strict";
 	var constant_note_hidden_color_rgb = "transparent";
 	var constant_sticking_right_on_color_rgb = "rgb(204, 101, 0)";
 	var constant_sticking_left_on_color_rgb =  "rgb(57, 57, 57)";
+	var constant_sticking_both_on_color_rgb =  "rgb(57, 57, 57)";
 	var constant_sticking_right_off_color_rgb = "rgb(204, 204, 204)";
 	var constant_sticking_left_off_color_rgb = "rgb(204, 204, 204)";
+	var constant_sticking_both_off_color_rgb = "transparent";
 
 	// functions below
 
@@ -400,10 +402,11 @@ function GrooveWriter() { "use strict";
 		// turn both off
 		document.getElementById("sticking_right" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("sticking_left" + id).style.color = constant_note_hidden_color_rgb;
+		document.getElementById("sticking_both" + id).style.color = constant_note_hidden_color_rgb;
 
 		switch (new_state) {
 		case "off":
-			// show them both greyed out.
+			// show them all greyed out.
 			document.getElementById("sticking_right" + id).style.color = constant_sticking_right_off_color_rgb;
 			document.getElementById("sticking_left" + id).style.color = constant_sticking_left_off_color_rgb;
 			break;
@@ -414,8 +417,7 @@ function GrooveWriter() { "use strict";
 			document.getElementById("sticking_left" + id).style.color = constant_sticking_left_on_color_rgb;
 			break;
 		case "both":
-			document.getElementById("sticking_right" + id).style.color = constant_sticking_right_on_color_rgb;
-			document.getElementById("sticking_left" + id).style.color = constant_sticking_left_on_color_rgb;
+			document.getElementById("sticking_both" + id).style.color = constant_sticking_both_on_color_rgb;
 			break;
 		default:
 			console.log("Bad state in set_sticking_on");
@@ -434,21 +436,23 @@ function GrooveWriter() { "use strict";
 
 		var right_ele = document.getElementById("sticking_right" + id);
 		var left_ele = document.getElementById("sticking_left" + id);
+		var both_ele = document.getElementById("sticking_both" + id);
 		
 		// since colors are inherited, if we have not set a color it will be blank in the ID'd element
 		// we set all colors to off in the stylesheet, so it must be off.
-		if ((right_ele.style.color === "" && left_ele.style.color === "") ||
-			(right_ele.style.color == constant_sticking_right_off_color_rgb && left_ele.style.color == constant_sticking_left_off_color_rgb)) {
+		if ((right_ele.style.color === "" && left_ele.style.color === "" && both_ele.style.color === "") ||
+			(right_ele.style.color == constant_sticking_right_off_color_rgb && 
+			 left_ele.style.color == constant_sticking_left_off_color_rgb &&
+			 both_ele.style.color == constant_sticking_both_off_color_rgb)) {
 
-			// both are off.   Call it off
+			// all are off.   Call it off
 			if (returnType == "ABC")
 				return constant_ABC_STICK_OFF; // off (rest)
 			else if (returnType == "URL")
 				return "-"; // off (rest)
 
-		} else if (right_ele.style.color == constant_sticking_right_on_color_rgb &&
-					left_ele.style.color == constant_sticking_left_on_color_rgb) {
-			// both L and R are on (Both)
+		} else if (both_ele.style.color == constant_sticking_both_on_color_rgb) {
+			// both is on 
 			if (returnType == "ABC")
 				return constant_ABC_STICK_BOTH;
 			else if (returnType == "URL")
@@ -3560,6 +3564,7 @@ function GrooveWriter() { "use strict";
 														<div id="sticking' + i + '" class="sticking">\n\
 															<div class="sticking_right note_part"  id="sticking_right' + i + '"  onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'sticking\'">R</div>\n\
 															<div class="sticking_left note_part"   id="sticking_left' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">L</div>\n\
+															<div class="sticking_both note_part"   id="sticking_both' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">R/L</div>\n\
 														</div>\n\
 													');
 

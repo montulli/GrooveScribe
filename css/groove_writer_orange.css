@@ -421,6 +421,12 @@
 		color: #CCCCCC;
 		cursor: pointer;
 	}
+	.sticking_both {
+		position: absolute; top: 5px; left: 0px;
+		font-size: 18px;
+		color: transparent;
+		cursor: pointer;
+	}
 	.hh_crash {
 		position: absolute; top: 19px; left: 5px;
 		font-size: 20px;
@@ -759,13 +765,13 @@
 	}
 	#showHideStickingsButton:before  { 
 		font-family: FontAwesome;
-		font-size: 30px;
+		font-size: 2em;
 		letter-spacing: -3px; 
 		content: "\f065";
 	}
 	#showHideStickingsButton.ClickToHide:before {
 		font-family: FontAwesome;
-		font-size: 30px;
+		font-size: 2em;
 		letter-spacing: -3px; 
 		content: "\f066";
 	}
