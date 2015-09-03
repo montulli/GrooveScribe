@@ -18,7 +18,8 @@
 		 * Usually set the height to 100vh - (the height of the top nav)
 		 */
 		position: relative;
-		background: #DDD;
+		background-color: #393939;
+		//background-color: #DDD;
 		width: 100%;
 		/* to embed, add your header height here.  Replace 0px with your header height */
 		height: 100%;
@@ -38,6 +39,7 @@
 	}
 	.nonPrintable {
 		display: block;
+		background-color: #DDD;
 	}
 	#LeftHandNav {
 		width: 70px;
@@ -651,12 +653,12 @@
 		margin:0; padding:0px; list-style:none;
 		background: #eeeeee;
 		color: #000;
-		border: 1px solid #333333;
+		border: 1px solid #393939;
 		list-style:none;
 	}
 	.noteContextMenu>ul.list li {
 		padding:10px;
-		border-bottom: solid 1px #333333;
+		border-bottom: solid 1px #393939;
 		text-decoration: none;
 	}
 	.noteContextMenu>ul.list li:hover, ul.list a:hover {
@@ -675,7 +677,7 @@
 		height: 300px;
 		overflow: auto;
 		background: #eeeeee;
-		border: 1px solid #333;
+		border: 1px solid #393939;
 	}
 	.grooveListUL {
 		margin:0; padding:0px; list-style:none;
@@ -691,7 +693,7 @@
 	.grooveListLI {
 		padding: 10px;
 		padding-left: 15px;
-		border-bottom: solid 1px #333333;
+		border-bottom: solid 1px #393939;
 	}
 	.grooveListLI:hover {
 		background: #cccccc;
@@ -834,7 +836,7 @@
 	}
 	#bottomButtonRow {
 		padding: 20px 0px;
-		background: #333333;
+		background: #393939;
 		text-align: center;
 		color: #888888;
 		-webkit-justify-content: space-around;
