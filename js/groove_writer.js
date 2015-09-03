@@ -3252,8 +3252,8 @@ function GrooveWriter() { "use strict";
 	};
 	
 	root.fillInFullURLInFullURLPopup = function () {
-		document.getElementById("embedCodeCheckbox").checked = false;  // uncheck embedCodeCheckbox, because it is not compatible
-		document.getElementById("shortenerCheckbox").checked = false;  // uncheck shortenerCheckbox, because it is not compatible	
+		document.getElementById("embedCodeCheckbox").checked = false;  // uncheck embedCodeCheckbox
+		document.getElementById("shortenerCheckbox").checked = false;  // uncheck shortenerCheckbox
 		
 		var popup = document.getElementById("fullURLPopup");
 		if (popup) {
@@ -3308,7 +3308,10 @@ function GrooveWriter() { "use strict";
 				}
 			});
 
-		root.fillInFullURLInFullURLPopup();
+			// open the popup with full url and try to load short in the background
+			root.fillInFullURLInFullURLPopup();
+			// default is to use shortened url
+			fillInShortenedURLInFullURLPopup(get_FullURLForPage(), 'fullURLTextField');
 	};
 
 	root.close_FullURLPopup = function () {
@@ -3318,8 +3321,9 @@ function GrooveWriter() { "use strict";
 			popup.style.display = "none";
 	};
 
-	function get_ShortendURL(fullURL, cssIdOfTextFieldToFill) {
-
+	function fillInShortenedURLInFullURLPopup(fullURL, cssIdOfTextFieldToFill) {
+		document.getElementById("embedCodeCheckbox").checked = false;  // uncheck embedCodeCheckbox, because it is not compatible
+			
 		if (gapi.client.urlshortener) {
 			var request = gapi.client.urlshortener.url.insert({
 					'resource' : {
@@ -3327,13 +3331,18 @@ function GrooveWriter() { "use strict";
 					}
 				});
 			request.execute(function (response) {
-				if ((response.id !== null)) {
+				if (response.id !== null && response.id !== undefined) {
+					
+					document.getElementById("shortenerCheckbox").checked = true;  // this is now true if isn't already
+		
 					var textField = document.getElementById(cssIdOfTextFieldToFill);
 					textField.value = response.id;
 
 					// select the URL for copy/paste
 					textField.focus();
 					textField.select();
+				} else {
+					document.getElementById("shortenerCheckbox").checked = false;  // request failed
 				}
 			});
 		} else {
@@ -3344,7 +3353,9 @@ function GrooveWriter() { "use strict";
 	
 	// embed looks something like this:
 	// <iframe width="100%" height="240" src="https://hosting.com/path/GrooveDisplay.html?Div=16&Title=Example..." frameborder="0" ></iframe>
-	function get_embedURL(fullURL, cssIdOfTextFieldToFill) {
+	function fillInEmbedURLInFullURLPopup(fullURL, cssIdOfTextFieldToFill) {
+		document.getElementById("shortenerCheckbox").checked = false;  // uncheck shortenerCheckbox, because it is not compatible
+		document.getElementById("embedCodeCheckbox").checked = true;  // this will be true if isn't already
 			
 		var embedText = '<iframe width="100%" height="240" src="' + fullURL + '" frameborder="0" ></iframe>	';
 			
@@ -3358,8 +3369,7 @@ function GrooveWriter() { "use strict";
 
 	root.shortenerCheckboxChanged = function () {
 		if (document.getElementById("shortenerCheckbox").checked) {
-			document.getElementById("embedCodeCheckbox").checked = false;  // uncheck embedCodeCheckbox, because it is not compatible
-			get_ShortendURL(get_FullURLForPage(), 'fullURLTextField');
+			fillInShortenedURLInFullURLPopup(get_FullURLForPage(), 'fullURLTextField');
 		} else {
 			root.fillInFullURLInFullURLPopup();
 		}
@@ -3367,10 +3377,9 @@ function GrooveWriter() { "use strict";
 	
 	root.embedCodeCheckboxChanged = function () {
 		if (document.getElementById("embedCodeCheckbox").checked) {
-			document.getElementById("shortenerCheckbox").checked = false;  // uncheck shortenerCheckbox, because it is not compatible
-			get_embedURL(get_FullURLForPage("display"), 'fullURLTextField');
+			fillInEmbedURLInFullURLPopup(get_FullURLForPage("display"), 'fullURLTextField');
 		} else {
-			root.fillInFullURLInFullURLPopup();
+			fillInShortenedURLInFullURLPopup(get_FullURLForPage(), 'fullURLTextField');
 		}
 	};
 
