@@ -2433,8 +2433,10 @@ function GrooveWriter() { "use strict";
 
 		var renderWidth = 600;
 		var svgTarget = document.getElementById("svgTarget");
-		if (svgTarget)
+		if (svgTarget) {
 			renderWidth = svgTarget.offsetWidth - 100;
+			renderWidth = Math.floor(renderWidth * .8);  // reduce width by 20% (This actually makes the notes bigger, because we scale up everything to max width)
+		}
 
 		switch (class_permutation_type) {
 		case "kick_16ths": // use the hh & snare from the user
