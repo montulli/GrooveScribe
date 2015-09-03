@@ -21,6 +21,7 @@
 		background-color: #393939;
 		//background-color: #DDD;
 		width: 100%;
+		min-width: 800px;
 		/* to embed, add your header height here.  Replace 0px with your header height */
 		height: 100%;
 		font-family: 'Lato', Calibri, sans-serif;
