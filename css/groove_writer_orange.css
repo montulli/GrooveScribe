@@ -769,12 +769,14 @@
 		font-size: 2em;
 		letter-spacing: -3px; 
 		content: "\f065";
+		line-height: 32px;
 	}
 	#showHideStickingsButton.ClickToHide:before {
 		font-family: FontAwesome;
 		font-size: 2em;
 		letter-spacing: -3px; 
 		content: "\f066";
+		line-height: 32px;
 	}
 	#printButton {
 	}
@@ -861,10 +863,10 @@
 	}
 	.bottomButtonIcon {
 		display:block;
-		margin-bottom: 2px;
 	}
 	
 	.bottomButtonLabel {
+		margin-top: 2px;
 		display: block;
 	}
 	@media print {
