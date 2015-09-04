@@ -825,7 +825,7 @@ function GrooveUtils() {
 	root.get_top_ABC_BoilerPlate = function (isPermutation, tuneTitle, tuneAuthor, tuneComments, showLegend, isTriplets, kick_stems_up, timeSigTop, timeSigBottom, renderWidth) {
 
 		// boiler plate
-		var fullABC = '%abc\n%%fullsvg a' + root.grooveUtilsUniqueIndex + '\nX:6\n';
+		var fullABC = '%abc\n%%fullsvg _' + root.grooveUtilsUniqueIndex + '\nX:6\n';
 
 		fullABC += "M:" + timeSigTop + "/" + timeSigBottom + "\n";
 
