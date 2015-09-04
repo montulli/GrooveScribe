@@ -60,47 +60,46 @@
 		z-index: 998;
 		width: calc(100% - 72px);
 		margin-left: 72px;
-		height: 48px;
+		height: 36px;  /* total 48 */
+		padding-top: 12px;
 		border-bottom: 1px solid #000;
 		background: #E69D02;
 		background: linear-gradient(to right, #E69D02, #CC6500);
+		display: block;
+		display: -webkit-flex;
+		display: flex;
+		justify-content: space-between;
+		-webkit-justify-content: space-between;
 	}
-	#midiPlayer {  /* more #midiPlayer css in groove_display.css */
-		width: calc(100% - 72px);
-		height: 48px;
-		/position: fixed;
-		position: relative;
-		left: 72px;
-		z-index: 999;
-		border-bottom: 1px solid #000;
-		
+	.GSlogoTextColor {
+		color: orange;
+	}
+	#upperLeft  {
+		display: inline-block;
+		white-space: nowrap;
+		vertical-align: top;
+	}
+	#upperLogo {
+		display: inline-block;
+		height: calc(100%);
+		margin: 0px 15px;
+		width: 174px;
+	}
+	#upperRight {
+		display: inline-block;
+		margin-right: 10px;
+		white-space: nowrap;
+		vertical-align: top;
 	}
 	#RightHandContent {
 		position: relative;
 		left: 72px;
-		/margin-left: 72px;
-		/padding-top: 98px;
 		height: calc(100% - 98px);
 		width: calc(100% - 72px);
 		overflow-y: auto;
 	}
-	#upperRight {
-		float: right;
-		margin-right: 10px;
-	}
-	#upperLogo {
-		position: absolute;
-		height: 28px;
-		width: 174px;
-		margin-left: calc(50% - 87px);
-		margin-top: 10px;
-		background: url('../images/GrooveScribeLogo.svg') no-repeat;
-	}
 	#divisionButtonContainer {
 		
-	}
-	#upperLeft  {
-		position: absolute;
 	}
 	#metronomeContainer {
 	}
@@ -108,7 +107,7 @@
 		display: inline-block;
 		height: 20px;
 		font-weight: 500;
-		margin: 12px 5px 0px 10px;
+		margin: 0px 5px 0px 10px;
 		text-align: center;
 		color: #EEF;
 	}
@@ -122,7 +121,7 @@
 		text-align: center;
 		border-radius: 20px;
 		/width: 50px;
-		margin: 12px 5px;
+		margin: 0px 5px;
 		height: 20px;
 		transition: all .1s ease-in-out;
 	}
@@ -139,6 +138,16 @@
 		font-weight: 700;
 		/background: #68c2ff;
 	}
+	#midiPlayer {  /* more #midiPlayer css in groove_display.css */
+		width: calc(100% - 72px);
+		height: 48px;
+		/position: fixed;
+		position: relative;
+		left: 72px;
+		z-index: 999;
+		border-bottom: 1px solid #000;
+		
+	}
 	#timeLabel, .subdivision, #advancedEditAnchor {
 		display: block;
 		cursor: pointer;
@@ -154,7 +163,7 @@
 		align-items: center;
 		-webkit-align-items: center;
 		justify-content: center;
-		-webkit-justify-content: space-around;
+		-webkit-justify-content: center;
 		transition: all .1s ease-in-out;
 	}
 	.subdivision.buttonSelected, .subdivision.buttonSelected:hover {  /* is subdivision and is selected */
@@ -636,10 +645,10 @@
 		border-top: 1px solid #999;
 		padding: 8px 0px;
 		text-align: center;
-		-webkit-justify-content: space-around;
 		display: -webkit-flex;
 		display: flex;
 		justify-content: space-around;
+		-webkit-justify-content: space-around;
 		background-color: #DDD;
 	}
 	.sheetMusicTextField {
@@ -862,10 +871,10 @@
 		background: #393939;
 		text-align: center;
 		color: #888888;
-		-webkit-justify-content: space-around;
 		display: -webkit-flex;
 		display: flex;
 		justify-content: space-around;
+		-webkit-justify-content: space-around;
 	}
 	.pageBottomButton {
 		display: inline-block;
