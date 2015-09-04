@@ -60,8 +60,8 @@
 		z-index: 998;
 		width: calc(100% - 72px);
 		margin-left: 72px;
-		height: 36px;  /* total 48 */
-		padding-top: 12px;
+		height: 42px;  /* total 48 */
+		padding-top: 6px;
 		border-bottom: 1px solid #000;
 		background: #E69D02;
 		background: linear-gradient(to right, #E69D02, #CC6500);
@@ -75,6 +75,7 @@
 		color: orange;
 	}
 	#upperLeft  {
+		margin-top: 6px;
 		display: inline-block;
 		white-space: nowrap;
 		vertical-align: top;
@@ -82,11 +83,13 @@
 	#upperLogo {
 		display: inline-block;
 		height: calc(100%);
-		margin: 0px 15px;
+		margin: 0px 37px 0px 15px;
 		width: 174px;
 	}
 	#upperRight {
+		margin-top: 6px;
 		display: inline-block;
+		float: right;
 		margin-right: 10px;
 		white-space: nowrap;
 		vertical-align: top;
@@ -121,9 +124,12 @@
 		text-align: center;
 		border-radius: 20px;
 		/width: 50px;
-		margin: 0px 5px;
+		margin: 0px 1px;
 		height: 20px;
 		transition: all .1s ease-in-out;
+	}
+	.rightButtons {
+		margin: 0px 6px;
 	}
 	.metronomeButton:hover, .rightButtons:hover, .metronomeButton.selected:hover, .rightButtons.selected:hover, .rightButtons.buttonSelected:hover {
 		/color: #3b5166;
