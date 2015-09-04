@@ -88,10 +88,19 @@
 		float: right;
 		margin-right: 10px;
 	}
+	#upperLogo {
+		position: absolute;
+		height: 28px;
+		width: 174px;
+		margin-left: calc(50% - 87px);
+		margin-top: 10px;
+		background: url('../images/GrooveScribeLogo.svg') no-repeat;
+	}
 	#divisionButtonContainer {
 		
 	}
 	#upperLeft  {
+		position: absolute;
 	}
 	#metronomeContainer {
 	}
@@ -471,6 +480,7 @@
 	.snare_ghost {
 		position: absolute; top: 25px; left: 1px;
 		font-size: 26px;
+		line-height: 30px;
 		color: transparent;
 		cursor: pointer;
 	}
