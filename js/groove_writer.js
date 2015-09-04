@@ -41,8 +41,12 @@ function GrooveWriter() { "use strict";
 
 	// public class vars
 	var class_number_of_measures = 1;
-	var class_notes_per_measure = parseInt(root.myGrooveUtils.getQueryVariableFromURL("Div", "8"), 10); // default to 8ths
+	var class_time_division = parseInt(root.myGrooveUtils.getQueryVariableFromURL("Div", "16"), 10); // default to 16ths
+	var class_num_beats_per_measure  = 4;     // TimeSigTop
+	var class_note_value_per_measure = 4;   // TimeSigBottom
+	var class_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure(class_time_division, class_num_beats_per_measure, class_note_value_per_measure);
 	var class_metronome_auto_speed_up_active = false;
+	
 
 	// set debugMode immediately so we can use it in index.html
 	root.myGrooveUtils.debugMode = parseInt(root.myGrooveUtils.getQueryVariableFromURL("Debug", "0"), 10);
@@ -442,8 +446,8 @@ function GrooveWriter() { "use strict";
 		// we set all colors to off in the stylesheet, so it must be off.
 		if ((right_ele.style.color === "" && left_ele.style.color === "" && both_ele.style.color === "") ||
 			(right_ele.style.color == constant_sticking_right_off_color_rgb && 
-			 left_ele.style.color == constant_sticking_left_off_color_rgb &&
-			 both_ele.style.color == constant_sticking_both_off_color_rgb)) {
+			left_ele.style.color == constant_sticking_left_off_color_rgb &&
+			both_ele.style.color == constant_sticking_both_off_color_rgb)) {
 
 			// all are off.   Call it off
 			if (returnType == "ABC")
@@ -2439,7 +2443,7 @@ function GrooveWriter() { "use strict";
 		var svgTarget = document.getElementById("svgTarget");
 		if (svgTarget) {
 			renderWidth = svgTarget.offsetWidth - 100;
-			renderWidth = Math.floor(renderWidth * .8);  // reduce width by 20% (This actually makes the notes bigger, because we scale up everything to max width)
+			renderWidth = Math.floor(renderWidth * 0.8);  // reduce width by 20% (This actually makes the notes bigger, because we scale up everything to max width)
 		}
 
 		switch (class_permutation_type) {
@@ -3393,6 +3397,9 @@ function GrooveWriter() { "use strict";
 
 		var myGrooveData = root.myGrooveUtils.getGrooveDataFromUrlString(encodedURLData);
 
+		class_num_beats_per_measure = myGrooveData.numBeats;     // TimeSigTop
+		class_note_value_per_measure = myGrooveData.noteValue;   // TimeSigBottom
+		
 		if (myGrooveData.notesPerMeasure != class_notes_per_measure || class_number_of_measures != myGrooveData.numberOfMeasures) {
 			class_number_of_measures = myGrooveData.numberOfMeasures;
 			changeDivisionWithNotes(myGrooveData.notesPerMeasure);

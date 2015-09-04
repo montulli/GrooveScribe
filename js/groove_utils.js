@@ -103,6 +103,7 @@ function GrooveUtils() {
 
 	root.grooveData = function () {
 		this.notesPerMeasure = 16;
+		this.timeDivision = 16;
 		this.numberOfMeasures = 1;
 		this.numBeats = 4;  // TimeSigTop: Top part of Time Signture 3/4, 4/4, 5/4, 6/8, etc...
 		this.noteValue = 4; // TimeSigBottom: Bottom part of Time Sig   4 = quarter notes, 8 = 8th notes, 16ths, etc..
@@ -193,6 +194,18 @@ function GrooveUtils() {
 		};
 	};
 
+	
+	// the notes per measure is calculated from the note division and the time signature
+	// in 4/4 time the division is the division (as well as any time signature x/x)
+	// in 4/8 the num notes is half as many, etc
+	root.calc_notes_per_measure = function(division, time_sig_top, time_sig_bottom) {
+		
+		var numNotes = (division/time_sig_bottom) * time_sig_top;
+		
+		return numNotes;
+	};
+	
+	
 	// every document click passes through here.
 	// close a popup if one is up and we click off of it.
 	root.documentOnClickHanderCloseContextMenu = function (event) {
@@ -699,13 +712,14 @@ function GrooveUtils() {
 		var myGrooveData = new root.grooveData();
 		var i;
 
-		myGrooveData.notesPerMeasure = parseInt(root.getQueryVariableFromString("Div", 16, encodedURLData), 10);
-
 		root.debugMode = parseInt(root.getQueryVariableFromString("Debug", root.debugMode, encodedURLData), 10);
 
 		var timeSigArray = root.parseTimeSigString(root.getQueryVariableFromString("TimeSig", "4/4", encodedURLData));
 		myGrooveData.numBeats = timeSigArray[0];
 		myGrooveData.noteValue = timeSigArray[1];
+		
+		myGrooveData.timeDivision = parseInt(root.getQueryVariableFromString("Div", 16, encodedURLData), 10);
+		myGrooveData.notesPerMeasure = root.calc_notes_per_measure(myGrooveData.timeDivision, myGrooveData.numBeats, myGrooveData.noteValue);
 		
 		myGrooveData.metronomeFrequency = parseInt(root.getQueryVariableFromString("MetronomeFreq", "0", encodedURLData), 10);
 		
