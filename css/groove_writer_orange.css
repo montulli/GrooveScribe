@@ -88,10 +88,19 @@
 		float: right;
 		margin-right: 10px;
 	}
+	#upperLogo {
+		position: absolute;
+		height: 28px;
+		width: 174px;
+		margin-left: calc(50% - 87px);
+		margin-top: 10px;
+		background: url('../images/GrooveScribeLogo.svg') no-repeat;
+	}
 	#divisionButtonContainer {
 		
 	}
 	#upperLeft  {
+		position: absolute;
 	}
 	#metronomeContainer {
 	}
