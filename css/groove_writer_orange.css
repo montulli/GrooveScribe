@@ -471,6 +471,7 @@
 	.snare_ghost {
 		position: absolute; top: 25px; left: 1px;
 		font-size: 26px;
+		line-height: 30px;
 		color: transparent;
 		cursor: pointer;
 	}
