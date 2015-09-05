@@ -1100,7 +1100,7 @@ function GrooveUtils() {
 			if(root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom)) {
 				// triplets  ( we only support 2/4 here )
 				if(timeSigTop != 2 && timeSigBottom != 4)
-					alert("Triplets are only supported in 2/4 and 4/4 time");
+					console.log("Triplets are only supported in 2/4 and 4/4 time");
 				note_grouping = notes_per_measure / timeSigTop;
 			} else {
 				// not triplets
