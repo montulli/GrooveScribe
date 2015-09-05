@@ -270,74 +270,95 @@ function GrooveUtils() {
 		root.metronomeClickStart = value;
 	};
 
-	root.GetDefaultStickingsGroove = function (division, numMeasures) {
+	// build a string that looks like this
+	//  |----------------|----------------|
+	root.GetEmptyGroove = function (notes_per_measure, numMeasures) {
 		var retString = "";
-		if (root.isTripletDivision(division, 4, 4)) {
-			for (var i = 0; i < numMeasures; i++)
-				retString += "|------------------------";
-			retString += "|";
-		} else {
-			for (var j = 0; j < numMeasures; j++)
-				retString += "|--------------------------------";
-			retString += "|";
+		var oneMeasureString = "|";
+		var i;
+		
+		for(i = 0; i < notes_per_measure; i++) {
+			oneMeasureString += "-";
 		}
-		return retString;
-	};
-
-	root.GetDefaultHHGroove = function (division, numMeasures) {
-		var retString = "";
-		if (root.isTripletDivision(division, 4, 4)) {
-			for (var i = 0; i < numMeasures; i++)
-				retString += "|xxxxxxxxxxxxxxxxxxxxxxxx";
+		for (i = 0; i < numMeasures; i++)
+				retString += oneMeasureString;
 			retString += "|";
-		} else {
-			for (var j = 0; j < numMeasures; j++)
-				retString += "|x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-";
-			retString += "|";
-		}
-		return retString;
-	};
-
-	root.GetDefaultSnareGroove = function (division, numMeasures) {
-		var retString = "";
-		if (root.isTripletDivision(division, 4, 4)) {
-			for (var i = 0; i < numMeasures; i++)
-				retString += "|---O-----O--";
-			retString += "|";
-		} else {
-			for (var j = 0; j < numMeasures; j++)
-				retString += "|--------O---------------O-------";
-			retString += "|";
-		}
-		return retString;
-	};
-
-	root.GetDefaultKickGroove = function (division, numMeasures) {
-		var retString = "";
-		if (root.isTripletDivision(division, 4, 4)) {
-			for (var i = 0; i < numMeasures; i++)
-				retString += "|o-----o-----";
-			retString += "|";
-		} else {
-			for (var j = 0; j < numMeasures; j++)
-				retString += "|o---------------o---------------";
-			retString += "|";
-		}
+		
 		return retString;
 	};
 	
-	root.GetDefaultTomGroove = function (division, numMeasures) {
+	root.GetDefaultStickingsGroove = function (notes_per_measure, timeSigTop, timeSigBottom, numMeasures) {
+		
+		return root.GetEmptyGroove(notes_per_measure, numMeasures);
+	};
+
+	// build a string that looks like this
+    // "|x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-|";
+	root.GetDefaultHHGroove = function (notes_per_measure, timeSigTop, timeSigBottom, numMeasures) {
 		var retString = "";
-		if (root.isTripletDivision(division, 4, 4)) {
-			for (var i = 0; i < numMeasures; i++)
-				retString += "|------------";
-			retString += "|";
-		} else {
-			for (var j = 0; j < numMeasures; j++)
-				retString += "|--------------------------------";
-			retString += "|";
+		var oneMeasureString = "|";
+		var i;
+		
+		for(i = 0; i < notes_per_measure; i++) {
+				oneMeasureString += "x";
 		}
+		for (i = 0; i < numMeasures; i++)
+				retString += oneMeasureString;
+			retString += "|";
+		
 		return retString;
+	};
+
+	// build a string that looks like this
+    // |--------O---------------O-------|
+	root.GetDefaultSnareGroove = function (notes_per_measure, timeSigTop, timeSigBottom, numMeasures) {
+		var retString = "";
+		var oneMeasureString = "|";
+		var i;
+		var notes_per_grouping = (notes_per_measure / timeSigTop);
+		
+		for(i = 0; i < notes_per_measure; i++) {
+			// if the note falls on the beginning of a group
+			// and the group is odd
+			if(i % notes_per_grouping === 0 && (i / notes_per_grouping) % 2 !== 0)
+				oneMeasureString += "O";
+			else
+				oneMeasureString += "-";
+		}
+		for (i = 0; i < numMeasures; i++)
+				retString += oneMeasureString;
+			retString += "|";
+		
+		return retString;
+		
+	};
+
+	// build a string that looks like this
+    // |o---------------o---------------|
+	root.GetDefaultKickGroove = function (notes_per_measure, timeSigTop, timeSigBottom, numMeasures) {
+		var retString = "";
+		var oneMeasureString = "|";
+		var i;
+		var notes_per_grouping = (notes_per_measure / timeSigTop);
+		
+		for(i = 0; i < notes_per_measure; i++) {
+			// if the note falls on the beginning of a group
+			// and the group is even
+			if(i % notes_per_grouping === 0 && (i / notes_per_grouping) % 2 === 0)
+				oneMeasureString += "o";
+			else
+				oneMeasureString += "-";
+		}
+		for (i = 0; i < numMeasures; i++)
+				retString += oneMeasureString;
+			retString += "|";
+		
+		return retString;
+	};
+	
+	root.GetDefaultTomGroove = function (notes_per_measure, timeSigTop, timeSigBottom, numMeasures) {
+
+		return root.GetEmptyGroove(notes_per_measure, numMeasures);
 	};
 
 	// takes a character from tablature form and converts it to our ABC Notation form.
@@ -731,7 +752,7 @@ function GrooveUtils() {
 
 		Stickings_string = root.getQueryVariableFromString("Stickings", false, encodedURLData);
 		if (!Stickings_string) {
-			Stickings_string = root.GetDefaultStickingsGroove(myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+			Stickings_string = root.GetDefaultStickingsGroove(myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue, myGrooveData.numberOfMeasures);
 			myGrooveData.showStickings = false;
 		} else {
 			myGrooveData.showStickings = true;
@@ -741,20 +762,20 @@ function GrooveUtils() {
 		if (!HH_string) {
 			root.getQueryVariableFromString("HH", false, encodedURLData);
 			if (!HH_string) {
-				HH_string = root.GetDefaultHHGroove(myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+				HH_string = root.GetDefaultHHGroove(myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue, myGrooveData.numberOfMeasures);
 			}
 		}
 
 		Snare_string = root.getQueryVariableFromString("S", false, encodedURLData);
 		if (!Snare_string) {
-			Snare_string = root.GetDefaultSnareGroove(myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+			Snare_string = root.GetDefaultSnareGroove(myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue, myGrooveData.numberOfMeasures);
 		}
 
 		Kick_string = root.getQueryVariableFromString("K", false, encodedURLData);
 		if (!Kick_string) {
 			root.getQueryVariableFromString("B", false, encodedURLData);
 			if (!Kick_string) {
-				Kick_string = root.GetDefaultKickGroove(myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+				Kick_string = root.GetDefaultKickGroove(myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue, myGrooveData.numberOfMeasures);
 			}
 		}
 		
@@ -763,7 +784,7 @@ function GrooveUtils() {
 			// toms are named T1, T2, T3, T4
 			var Tom_string = root.getQueryVariableFromString("T" + (i+1), false, encodedURLData);
 			if (!Tom_string) {
-				Tom_string = root.GetDefaultTomGroove(myGrooveData.notesPerMeasure, myGrooveData.numberOfMeasures);
+				Tom_string = root.GetDefaultTomGroove(myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue, myGrooveData.numberOfMeasures);
 			}
 
 			/// the toms array index starts at zero (0) the first one is T1
