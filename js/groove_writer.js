@@ -3423,8 +3423,10 @@ function GrooveWriter() { "use strict";
 
 		var myGrooveData = root.myGrooveUtils.getGrooveDataFromUrlString(encodedURLData);
 
-		class_num_beats_per_measure = myGrooveData.numBeats;     // TimeSigTop
-		class_note_value_per_measure = myGrooveData.noteValue;   // TimeSigBottom
+		if(root.myGrooveUtils.debugMode) {
+			class_num_beats_per_measure = myGrooveData.numBeats;     // TimeSigTop
+			class_note_value_per_measure = myGrooveData.noteValue;   // TimeSigBottom
+		}
 		
 		if (myGrooveData.notesPerMeasure != class_notes_per_measure || class_number_of_measures != myGrooveData.numberOfMeasures) {
 			class_number_of_measures = myGrooveData.numberOfMeasures;
