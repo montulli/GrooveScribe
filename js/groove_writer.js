@@ -2243,6 +2243,8 @@ function GrooveWriter() { "use strict";
 
 		myGrooveData.notesPerMeasure = class_notes_per_measure;
 		myGrooveData.numberOfMeasures = class_number_of_measures;
+		myGrooveData.numBeats = class_num_beats_per_measure;
+		myGrooveData.noteValue = class_note_value_per_measure;
 		myGrooveData.showStickings = isStickingsVisible();
 		myGrooveData.title = document.getElementById("tuneTitle").value;
 		myGrooveData.author = document.getElementById("tuneAuthor").value;
@@ -2312,7 +2314,7 @@ function GrooveWriter() { "use strict";
 		DBString += "\n|HasDivision=" + myGrooveData.notesPerMeasure;
 		DBString += "\n|HasMeasures=" + myGrooveData.numberOfMeasures;
 		DBString += "\n|HasNotesPerMeasure=" + notesPerMeasureInTab;
-		DBString += "\n|HasTimeSignature=4/4";
+		DBString += "\n|HasTimeSignature=" + myGrooveData.numBeats + "/" + myGrooveData.noteValue;
 		DBString += "\n|HasHiHatTab=" + root.myGrooveUtils.tabLineFromAbcNoteArray("H", myGrooveData.hh_array, true, true, maxNotesInTab, 0);
 		DBString += "\n|HasSnareAccentTab=" + root.myGrooveUtils.tabLineFromAbcNoteArray("S", myGrooveData.snare_array, true, false, maxNotesInTab, 0);
 		DBString += "\n|HasSnareOtherTab=" + root.myGrooveUtils.tabLineFromAbcNoteArray("S", myGrooveData.snare_array, false, true, maxNotesInTab, 0);
