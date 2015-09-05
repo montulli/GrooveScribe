@@ -1119,15 +1119,17 @@ function GrooveUtils() {
 		var note_grouping;
 
 		if ((timeSigTop % 3) === 0 && timeSigBottom == 8) {
-			// 6/8, 9/8
-			note_grouping = 6;
+			// 3/8 == 3
+			// 6/8, 9/8 == 6
+			// 12/8, 15/8, 18/8 == 12
+			note_grouping = 3 * Math.floor(timeSigTop / 3);
 
 		} else {
 
 			if (usingTriplets)
 				note_grouping = 6;
 			else
-				note_grouping = 8;
+				note_grouping = 8 * (4/timeSigBottom);
 		}
 
 		return note_grouping;
