@@ -883,7 +883,7 @@ function GrooveUtils() {
 		// the width of the music is always 25% bigger than what we pass in.   Go figure.
 		renderWidth = Math.floor(renderWidth * 0.75);
 
-		fullABC += "L:1/" + (timeSigBottom * 8) + "\n"; // 4/4 = 32,  6/8 = 64
+		fullABC += "L:1/" + (32) + "\n"; // 4/4 = 32,  6/8 = 64
 
 		if (isPermutation)
 			fullABC += "%%stretchlast 0\n";
@@ -1167,19 +1167,14 @@ function GrooveUtils() {
 		if (!timeSigTop || timeSigTop < 1 || timeSigTop > 36) {
 			console.log("Error in getNoteScaler, out of range: " + timeSigTop);
 			scaler = 1;
-		} else if (timeSigTop == 4) {
-			if (root.isTripletDivision(notes_per_measure, timeSigTop, timeSigBottom))
-				scaler = Math.ceil(24 / notes_per_measure);
-			else
-				scaler = Math.ceil(32 / notes_per_measure);
 		} else {
 			// a full measure will be defined as 8 * timeSigTop.   (4 = 32, 5 = 40, 6 = 48, etc.)
 			// that implies 32nd notes in quarter note beats
 			// TODO: should we support triplets here?
 			if (root.isTripletDivision(notes_per_measure, timeSigTop, timeSigBottom))
-				scaler = Math.ceil((6 * timeSigTop) / notes_per_measure);
+				scaler = Math.ceil(((24/timeSigBottom) * timeSigTop) / notes_per_measure);
 			else
-				scaler = Math.ceil((8 * timeSigTop) / notes_per_measure);
+				scaler = Math.ceil(((32/timeSigBottom) * timeSigTop) / notes_per_measure);
 		}
 
 		return scaler;
@@ -1403,14 +1398,14 @@ function GrooveUtils() {
 				kick_voice_string += " ";
 			}
 
-			// add a bar line every meausre.   32 notes in 4/4 time.   (8 * timeSigTop)
-			if (((i + 1) % (8 * timeSigTop)) === 0) {
+			// add a bar line every meausre.   32 notes in 4/4 time.   (32/timeSigBottom * timeSigTop)
+			if (((i + 1) % ((32/timeSigBottom) * timeSigTop)) === 0) {
 				stickings_voice_string += "|";
 				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
 			}
 			// add a line break every 2 measures, except the last
-			if (i < num_notes-1 && ((i + 1) % (8 * timeSigTop * 2)) === 0) {
+			if (i < num_notes-1 && ((i + 1) % ((32/timeSigBottom) * timeSigTop * 2)) === 0) {
 				stickings_voice_string += "\n";
 				hh_snare_voice_string += "\n";
 				kick_voice_string += "\n";
