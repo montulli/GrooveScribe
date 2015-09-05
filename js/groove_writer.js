@@ -89,7 +89,7 @@ function GrooveWriter() { "use strict";
 
 	// is the division a triplet groove?   6, 12, or 24 notes
 	function usingTriplets() {
-		if (root.myGrooveUtils.isTripletDivision(class_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure))
+		if (root.myGrooveUtils.isTripletDivision(class_time_division))
 			return true;
 
 		return false;
@@ -2831,7 +2831,7 @@ function GrooveWriter() { "use strict";
 		selectButton(document.getElementById("subdivision_" + class_notes_per_measure + "ths"));
 
 		// add html for the midi player
-		root.myGrooveUtils.AddMidiPlayerToPage("midiPlayer");
+		root.myGrooveUtils.AddMidiPlayerToPage("midiPlayer", class_time_division);
 
 		// load the groove from the URL data if it was passed in.
 		set_Default_notes(window.location.search);
@@ -3550,7 +3550,7 @@ function GrooveWriter() { "use strict";
 		var uiSnare = "|";
 		var uiKick = "|";
 
-		var isNewDivisionTriplets = root.myGrooveUtils.isTripletDivision(newDivision, class_num_beats_per_measure, class_note_value_per_measure);
+		var isNewDivisionTriplets = root.myGrooveUtils.isTripletDivision(newDivision);
 		var new_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure((isNewDivisionTriplets ? 24 : 32), class_num_beats_per_measure, class_note_value_per_measure);
 			
 		if (usingTriplets() === isNewDivisionTriplets) {

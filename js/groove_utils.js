@@ -251,12 +251,21 @@ function GrooveUtils() {
 
 	// figure it out from the division  Division is number of notes per measure 4, 6, 8, 12, 16, 24, 32, etc...
 	// Triplets only support 4/4 and 2/4 time signatures for now
-	root.isTripletDivision = function (division, timeSigTop, timeSigBottom) {
-		if ((timeSigTop == 4 || timeSigTop == 2) && timeSigBottom == 4 && division % 6 === 0)
+	root.isTripletDivision = function (division) {
+		if(division % 12 === 0)  // we only support 12 & 24   1/8th and 1/16 note triplets
 			return true;
 
 		return false;
 	};
+	
+	// figure out if it is triplets from the number of notes (implied division)
+	root.isTripletDivisionFromNotesPerMeasure = function (notesPerMeasure, timeSigTop, timeSigBottom) {
+		var division = (notesPerMeasure/timeSigTop) * timeSigBottom;
+		
+		return root.isTripletDivision(division);
+	
+	};	
+	
 
 	root.getMetronomeSolo = function () {
 		return root.metronomeSolo;
@@ -1081,41 +1090,14 @@ function GrooveUtils() {
 	root.noteGroupingSize = function (notes_per_measure, timeSigTop, timeSigBottom) {
 		var note_grouping = 4;
 
-		if (timeSigTop == 4 && timeSigBottom == 4) {
-
-			switch (notes_per_measure) {
-				// triplets
-			case 6:
-				note_grouping = 3;
-				break;
-			case 12:
-				note_grouping = 3;
-				break;
-			case 24:
-				note_grouping = 6;
-				break;
-
-				// quads
-			case 4:
-			case 8:
-			case 16:
-			case 32:
-				note_grouping = notes_per_measure / 4;
-				break;
-
-			default:
-				console.log("bad switch in GrooveUtils.noteGroupingSize()");
-				note_grouping = Math.ceil(notes_per_measure / 4);
-				break;
-			}
-		} else if ((timeSigTop % 3) === 0) {
-			// 3/4, 6/8, 12/8, etc
+		if ((timeSigTop % 6) === 0) {
+			// 6/8, 12/8, etc   Group it like triplets
 			note_grouping = notes_per_measure / 4;
 
 		} else {
 			// figure it out from the time signature
 			// TODO: figure out what to do about timeSigBottom
-			if(root.isTripletDivision(notes_per_measure, timeSigTop, timeSigBottom)) {
+			if(root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom)) {
 				// triplets  ( we only support 2/4 here )
 				if(timeSigTop != 2 && timeSigBottom != 4)
 					alert("Triplets are only supported in 2/4 and 4/4 time");
@@ -1136,17 +1118,9 @@ function GrooveUtils() {
 	function abc_gen_note_grouping_size(usingTriplets, timeSigTop, timeSigBottom) {
 		var note_grouping;
 
-		if (timeSigTop == 3 && timeSigBottom == 8) {
-			// 3/8
-			note_grouping = 12;
-
-		} else if ((timeSigTop % 3) === 0 && timeSigBottom == 8) {
+		if ((timeSigTop % 3) === 0 && timeSigBottom == 8) {
 			// 6/8, 9/8
-			note_grouping = 24;
-
-		} else if (timeSigBottom == 8) {
-
-			note_grouping = 16;
+			note_grouping = 6;
 
 		} else {
 
@@ -1171,7 +1145,7 @@ function GrooveUtils() {
 			// a full measure will be defined as 8 * timeSigTop.   (4 = 32, 5 = 40, 6 = 48, etc.)
 			// that implies 32nd notes in quarter note beats
 			// TODO: should we support triplets here?
-			if (root.isTripletDivision(notes_per_measure, timeSigTop, timeSigBottom))
+			if (root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom))
 				scaler = Math.ceil(((24/timeSigBottom) * timeSigTop) / notes_per_measure);
 			else
 				scaler = Math.ceil(((32/timeSigBottom) * timeSigTop) / notes_per_measure);
@@ -1186,7 +1160,7 @@ function GrooveUtils() {
 	function scaleNoteArrayToFullSize(note_array, num_measures, notes_per_measure, timeSigTop, timeSigBottom) {
 		var scaler = root.getNoteScaler(notes_per_measure, timeSigTop, timeSigBottom); // fill proportionally
 		var retArray = [];
-		var isTriplets = root.isTripletDivision(notes_per_measure, timeSigTop, timeSigBottom);
+		var isTriplets = root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom);
 		var i;
 
 		if (scaler == 1)
@@ -1478,7 +1452,7 @@ function GrooveUtils() {
 				myGrooveData.author,
 				myGrooveData.comments,
 				myGrooveData.showLegend,
-				root.isTripletDivision(myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue),
+				root.isTripletDivisionFromNotesPerMeasure(myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue),
 				myGrooveData.kickStemsUp,
 				myGrooveData.numBeats,
 				myGrooveData.noteValue,
@@ -1823,7 +1797,7 @@ function GrooveUtils() {
 			midiTrack.addNoteOff(midi_channel, 60, 1); // add a blank note for spacing
 		}
 
-		var isTriplets = root.isTripletDivision(num_notes, timeSigTop, timeSigBottom);
+		var isTriplets = root.isTripletDivisionFromNotesPerMeasure(num_notes, timeSigTop, timeSigBottom);
 		var delay_for_next_note = 0;
 
 		for (var i = 0; i < num_notes; i++) {
@@ -2492,7 +2466,7 @@ function GrooveUtils() {
 
 	root.doesDivisionSupportSwing = function (division) {
 
-		if (root.isTripletDivision(division, 4, 4) || division == 4)
+		if (root.isTripletDivision(division) || division == 4)
 			return false;
 			
 		return true;
