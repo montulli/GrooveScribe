@@ -3572,8 +3572,8 @@ function GrooveWriter() { "use strict";
 
 			// override the hi-hat if we are going to a higher division.
 			// otherwise the notes get lost in translation (not enough)
-			if (newDivision > class_notes_per_measure)
-				uiHH = root.myGrooveUtils.GetDefaultHHGroove(new_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure, class_number_of_measures);
+			//if (newDivision > class_notes_per_measure)
+			//	uiHH = root.myGrooveUtils.GetDefaultHHGroove(new_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure, class_number_of_measures);
 		} else {
 			// changing from or changing to a triplet division
 			// triplets don't scale well, so use defaults when we change
