@@ -1817,7 +1817,7 @@ function GrooveUtils() {
 				// x/8 should be 8 ticks
 				// x/16 would be 4 ticks
 				// anything over x/64 would be break
-				duration = 16 * (4/timeSigBottom);  // use sig to space notes.   
+				duration = 64 / (16/timeSigBottom);  // use sig to space notes.   
 			}
 
 			if (swing_percentage !== 0) {
@@ -1847,9 +1847,9 @@ function GrooveUtils() {
 			var metronome_note = false;
 			var metronome_velocity = velocity_accent;
 			if (metronome_frequency > 0) {
-				var quarterNoteFrequency = (isTriplets ? 6 : 8);
-				var eighthNoteFrequency = (isTriplets ? 2 : 4);
-				var sixteenthNoteFrequency = (isTriplets ? 1 : 2);
+				var quarterNoteFrequency = (isTriplets ? 6 : 8)
+				var eighthNoteFrequency = (isTriplets ? 2 : 4)
+				var sixteenthNoteFrequency = (isTriplets ? 1 : 2)
 
 				var metronome_specific_index = i;
 				switch (root.getMetronomeClickStart()) {
@@ -1893,7 +1893,7 @@ function GrooveUtils() {
 
 				if (metronome_specific_index >= 0) { // can go negative due to MetronomeClickStart shift above
 					// Special sound on the one
-					if (metronome_specific_index === 0 || (metronome_specific_index % (quarterNoteFrequency * timeSigTop)) === 0) {
+					if (metronome_specific_index === 0 || (metronome_specific_index % (quarterNoteFrequency * timeSigTop * (4/timeSigBottom))) === 0) {
 						metronome_note = 76; // 1 count
 
 					} else if ((metronome_specific_index % quarterNoteFrequency) === 0) {
