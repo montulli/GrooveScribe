@@ -194,6 +194,10 @@ function GrooveUtils() {
 		};
 	};
 
+	// is the browser a touch device.   Usually this means no right click
+	root.is_touch_device = function () {
+		return (('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
+	};
 	
 	// the notes per measure is calculated from the note division and the time signature
 	// in 4/4 time the division is the division (as well as any time signature x/x)
@@ -2600,12 +2604,12 @@ function GrooveUtils() {
 			'			<div class="tempoRow">' +
 			'				<span class="tempoLabel">BPM</span>' +
 			'				<span for="tempo" class="tempoOutput" id="tempoOutput' + root.grooveUtilsUniqueIndex + '">80</span>' +
-			'				<input type=range min=30 max=300 value=90 class="tempoInput" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings">' +
+			'				<input type=range min=30 max=300 value=90 class="tempoInput' + (root.is_touch_device() ? ' touch' : '') + '" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings">' +
 			'			</div>' +
 			'			<div class="swingRow">' +
 			'				<span class="swingLabel">SWING</span>' +
 			'				<span for="swingAmount" class="swingOutput" id="swingOutput' + root.grooveUtilsUniqueIndex + '">0% swing</span>' +
-			'				<input type=range min=0 max=50 value=0 class="swingInput" id="swingInput' + root.grooveUtilsUniqueIndex + '" list="swingSettings" step=5 >' +
+			'				<input type=range min=0 max=50 value=0 class="swingInput' + (root.is_touch_device() ? ' touch' : '') + '" id="swingInput' + root.grooveUtilsUniqueIndex + '" list="swingSettings" step=5 >' +
 			'			</div>' +
 			'       </span>';
 

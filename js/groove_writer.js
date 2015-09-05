@@ -95,12 +95,6 @@ function GrooveWriter() { "use strict";
 		return false;
 	}
 
-	// public function
-	// is the browser a touch device.   Usually this means no right click
-	root.is_touch_device = function () {
-		return (('ontouchstart' in window) || (navigator.MaxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
-	};
-
 	function selectButton(element) {
 		// highlight the new div by adding selected css class
 		if (element)
