@@ -71,9 +71,6 @@
 		justify-content: space-between;
 		-webkit-justify-content: space-between;
 	}
-	.GSlogoTextColor {
-		color: orange;
-	}
 	#upperLeft  {
 		margin-top: 6px;
 		display: inline-block;
@@ -83,9 +80,9 @@
 	#upperLogo {
 		display: inline-block;
 		height: calc(100%);
-		margin: 0px 37px 0px 15px;
+		margin: 4px 37px 0px 15px;
 		width: 174px;
-		font-size: 1.8em;
+		font-size: 1.2em;
 	}
 	#upperRight {
 		margin-top: 6px;
