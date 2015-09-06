@@ -82,8 +82,11 @@
 		height: calc(100%);
 		margin: 4px 37px 0px 15px;
 		width: 174px;
-		font-size: 1.2em;
+		font-size: 1.3em;
 		white-space: nowrap;
+		text-shadow: .5px .5px 0px #D59D02;
+		color: #903500;
+	
 	}
 	#upperRight {
 		margin-top: 6px;
