@@ -1090,7 +1090,7 @@ function GrooveUtils() {
 	root.noteGroupingSize = function (notes_per_measure, timeSigTop, timeSigBottom) {
 		var note_grouping = 4;
 
-		if ((timeSigTop % 6) === 0) {
+		if ((timeSigTop % 6) === 0 && timeSigBottom == 8) {
 			// 6/8, 12/8, etc   Group it like triplets
 			note_grouping = notes_per_measure / 4;
 
@@ -1118,10 +1118,10 @@ function GrooveUtils() {
 	function abc_gen_note_grouping_size(usingTriplets, timeSigTop, timeSigBottom) {
 		var note_grouping;
 
-		if ((timeSigTop % 3) === 0 && timeSigBottom == 8) {
-			// 3/8 == 3
-			// 6/8, 9/8 == 6
-			// 12/8, 15/8, 18/8 == 12
+		if ((timeSigTop % 6) === 0 && timeSigBottom == 8) {
+			// 6/8 == 6
+			// 12/8 == 12
+			// 18/8 == 18
 			note_grouping = 3 * Math.floor(timeSigTop / 3);
 
 		} else {
