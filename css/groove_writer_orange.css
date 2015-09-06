@@ -83,6 +83,7 @@
 		margin: 4px 37px 0px 15px;
 		width: 174px;
 		font-size: 1.2em;
+		white-space: nowrap;
 	}
 	#upperRight {
 		margin-top: 6px;
