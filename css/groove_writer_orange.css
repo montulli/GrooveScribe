@@ -455,6 +455,12 @@
 		color: transparent;
 		cursor: pointer;
 	}
+	.sticking_1, .sticking_e, .sticking_and, .sticking_a {
+		position: absolute; top: 0px; left: 6px;
+		font-size: 24px;
+		color: #CCCCCC;
+		cursor: pointer;
+	}
 	.hh_crash {
 		position: absolute; top: 19px; left: 5px;
 		font-size: 20px;

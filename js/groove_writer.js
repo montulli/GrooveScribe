@@ -73,10 +73,10 @@ function GrooveWriter() { "use strict";
 	var constant_sticking_right_on_color_rgb = "rgb(204, 101, 0)";
 	var constant_sticking_left_on_color_rgb =  "rgb(57, 57, 57)";
 	var constant_sticking_both_on_color_rgb =  "rgb(57, 57, 57)";
+	var constant_sticking_count_on_color_rgb =  "rgb(57, 57, 57)";
 	var constant_sticking_right_off_color_rgb = "rgb(204, 204, 204)";
 	var constant_sticking_left_off_color_rgb = "rgb(204, 204, 204)";
-	var constant_sticking_both_off_color_rgb = "transparent";
-
+	
 	// functions below
 
 	root.numberOfMeasures = function () {
@@ -400,6 +400,10 @@ function GrooveWriter() { "use strict";
 		document.getElementById("sticking_right" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("sticking_left" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("sticking_both" + id).style.color = constant_note_hidden_color_rgb;
+		document.getElementById("sticking_1" + id).style.color = constant_note_hidden_color_rgb;
+		document.getElementById("sticking_e" + id).style.color = constant_note_hidden_color_rgb;
+		document.getElementById("sticking_and" + id).style.color = constant_note_hidden_color_rgb;
+		document.getElementById("sticking_a" + id).style.color = constant_note_hidden_color_rgb;
 
 		switch (new_state) {
 		case "off":
@@ -416,8 +420,20 @@ function GrooveWriter() { "use strict";
 		case "both":
 			document.getElementById("sticking_both" + id).style.color = constant_sticking_both_on_color_rgb;
 			break;
+		case "1":
+			document.getElementById("sticking_1" + id).style.color = constant_sticking_count_on_color_rgb;
+			break;
+		case "e":
+			document.getElementById("sticking_e" + id).style.color = constant_sticking_count_on_color_rgb;
+			break;
+		case "and":
+			document.getElementById("sticking_and" + id).style.color = constant_sticking_count_on_color_rgb;
+			break;
+		case "a":
+			document.getElementById("sticking_a" + id).style.color = constant_sticking_count_on_color_rgb;
+			break;
 		default:
-			console.log("Bad state in set_sticking_on");
+			console.log("Bad state in set_sticking_on: " + new_state);
 			break;
 		}
 	}
@@ -434,21 +450,12 @@ function GrooveWriter() { "use strict";
 		var right_ele = document.getElementById("sticking_right" + id);
 		var left_ele = document.getElementById("sticking_left" + id);
 		var both_ele = document.getElementById("sticking_both" + id);
+		var count_1_ele = document.getElementById("sticking_1" + id);
+		var count_e_ele = document.getElementById("sticking_e" + id);
+		var count_and_ele = document.getElementById("sticking_and" + id);
+		var count_a_ele = document.getElementById("sticking_a" + id);
 		
-		// since colors are inherited, if we have not set a color it will be blank in the ID'd element
-		// we set all colors to off in the stylesheet, so it must be off.
-		if ((right_ele.style.color === "" && left_ele.style.color === "" && both_ele.style.color === "") ||
-			(right_ele.style.color == constant_sticking_right_off_color_rgb && 
-			left_ele.style.color == constant_sticking_left_off_color_rgb &&
-			both_ele.style.color == constant_sticking_both_off_color_rgb)) {
-
-			// all are off.   Call it off
-			if (returnType == "ABC")
-				return constant_ABC_STICK_OFF; // off (rest)
-			else if (returnType == "URL")
-				return "-"; // off (rest)
-
-		} else if (both_ele.style.color == constant_sticking_both_on_color_rgb) {
+		if (both_ele.style.color == constant_sticking_both_on_color_rgb) {
 			// both is on 
 			if (returnType == "ABC")
 				return constant_ABC_STICK_BOTH;
@@ -461,12 +468,42 @@ function GrooveWriter() { "use strict";
 			else if (returnType == "URL")
 				return "R";
 
-		} else { // assume left is on, because it's a logic error if it isn't
+		} else  if(left_ele.style.color == constant_sticking_left_on_color_rgb) { 
 
 			if (returnType == "ABC")
 				return constant_ABC_STICK_L;
 			else if (returnType == "URL")
 				return "L";
+		} else  if(count_1_ele.style.color == constant_sticking_count_on_color_rgb) { 
+
+			if (returnType == "ABC")
+				return constant_ABC_STICK_1;
+			else if (returnType == "URL")
+				return "1";
+		} else  if(count_e_ele.style.color == constant_sticking_count_on_color_rgb) { 
+
+			if (returnType == "ABC")
+				return constant_ABC_STICK_E;
+			else if (returnType == "URL")
+				return "e";
+		} else  if(count_and_ele.style.color == constant_sticking_count_on_color_rgb) { 
+
+			if (returnType == "ABC")
+				return constant_ABC_STICK_AND;
+			else if (returnType == "URL")
+				return "$";
+		} else  if(count_a_ele.style.color == constant_sticking_count_on_color_rgb) { 
+
+			if (returnType == "ABC")
+				return constant_ABC_STICK_A;
+			else if (returnType == "URL")
+				return "a";
+		} else {
+			// none selected.  Call it off
+			if (returnType == "ABC")
+				return constant_ABC_STICK_OFF; // off (rest)
+			else if (returnType == "URL")
+				return "-"; // off (rest)
 		}
 
 		return false; // should never get here
@@ -485,7 +522,7 @@ function GrooveWriter() { "use strict";
 			new_state = "left";
 		} else if (sticking_state == constant_ABC_STICK_L) {
 			new_state = "both";
-		} else if (sticking_state == constant_ABC_STICK_BOTH) {
+		} else {
 			new_state = "off";
 		}
 
@@ -3018,8 +3055,20 @@ function GrooveWriter() { "use strict";
 		for (var i = 0; i < notes.length && displayIndex < topDisplay; i += noteStringScaler, displayIndex += displayScaler) {
 
 			switch (notes[i]) {
+			case "$":
+				setFunction(displayIndex, "and");
+				break;
+			case "1":
+				setFunction(displayIndex, "1");
+				break;
+			case "a":
+				setFunction(displayIndex, "a");
+				break;
 			case "c":
 				setFunction(displayIndex, "crash");
+				break;
+			case "e":
+				setFunction(displayIndex, "e");
 				break;
 			case "g":
 				setFunction(displayIndex, "ghost");
@@ -3115,6 +3164,18 @@ function GrooveWriter() { "use strict";
 				break;
 			case constant_ABC_STICK_BOTH:
 				setFunction(displayIndex, "both");
+				break;
+			case constant_ABC_STICK_1:
+				setFunction(displayIndex, "1");
+				break;
+			case constant_ABC_STICK_E:
+				setFunction(displayIndex, "e");
+				break;
+			case constant_ABC_STICK_AND:
+				setFunction(displayIndex, "and");
+				break;
+			case constant_ABC_STICK_A:
+				setFunction(displayIndex, "a");
 				break;
 			case constant_ABC_STICK_OFF:
 				setFunction(displayIndex, "off");
@@ -3616,6 +3677,10 @@ function GrooveWriter() { "use strict";
 															<div class="sticking_right note_part"  id="sticking_right' + i + '"  onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'sticking\'">R</div>\n\
 															<div class="sticking_left note_part"   id="sticking_left' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">L</div>\n\
 															<div class="sticking_both note_part"   id="sticking_both' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">R/L</div>\n\
+															<div class="sticking_1 note_part"   id="sticking_1' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">1</div>\n\
+															<div class="sticking_e note_part"   id="sticking_e' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">e</div>\n\
+															<div class="sticking_and note_part"   id="sticking_and' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">&amp;</div>\n\
+															<div class="sticking_a note_part"   id="sticking_a' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">a</div>\n\
 														</div>\n\
 													');
 
