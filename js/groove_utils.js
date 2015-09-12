@@ -38,6 +38,10 @@ var constant_DEFAULT_TEMPO = 80;
 var constant_ABC_STICK_R = '"R"x';
 var constant_ABC_STICK_L = '"L"x';
 var constant_ABC_STICK_BOTH = '"R/L"x';
+var constant_ABC_STICK_1 = '"1"x';
+var constant_ABC_STICK_E = '"e"x';
+var constant_ABC_STICK_AND = '"&"x';
+var constant_ABC_STICK_A = '"a"x';
 var constant_ABC_STICK_OFF = '""x';
 var constant_ABC_HH_Ride = "^A'";
 var constant_ABC_HH_Crash = "^c'";
@@ -419,6 +423,18 @@ function GrooveUtils() {
 	function tablatureToABCNotationPerNote(drumType, tablatureChar) {
 
 		switch (tablatureChar) {
+		case "1":
+			if (drumType == "Stickings")
+				return constant_ABC_STICK_1;
+			break;
+		case "$":
+			if (drumType == "Stickings")
+				return constant_ABC_STICK_AND;
+			break;
+		case "a":
+			if (drumType == "Stickings")
+				return constant_ABC_STICK_A;
+			break;
 		case "b":
 		case "B":
 			if (drumType == "Stickings")
@@ -427,6 +443,10 @@ function GrooveUtils() {
 		case "c":
 			if (drumType == "H")
 				return constant_ABC_HH_Crash;
+			break;
+		case "e":
+			if (drumType == "Stickings")
+				return constant_ABC_STICK_E;
 			break;
 		case "f":
 			if (drumType == "S")
@@ -546,6 +566,18 @@ function GrooveUtils() {
 			break;
 		case constant_ABC_STICK_OFF:
 			tabChar = "-";
+			break;
+		case constant_ABC_STICK_1:
+			tabChar = "1";
+			break;
+		case constant_ABC_STICK_E:
+			tabChar = "e";
+			break;
+		case constant_ABC_STICK_AND:
+			tabChar = "$";
+			break;
+		case constant_ABC_STICK_A:
+			tabChar = "a";
 			break;
 		case constant_ABC_HH_Ride:
 			tabChar = "r";
@@ -1090,7 +1122,7 @@ function GrooveUtils() {
 	root.noteGroupingSize = function (notes_per_measure, timeSigTop, timeSigBottom) {
 		var note_grouping = 4;
 
-		if ((timeSigTop % 6) === 0) {
+		if ((timeSigTop % 6) === 0 && timeSigBottom == 8) {
 			// 6/8, 12/8, etc   Group it like triplets
 			note_grouping = notes_per_measure / 4;
 
@@ -1118,10 +1150,10 @@ function GrooveUtils() {
 	function abc_gen_note_grouping_size(usingTriplets, timeSigTop, timeSigBottom) {
 		var note_grouping;
 
-		if ((timeSigTop % 3) === 0 && timeSigBottom == 8) {
-			// 3/8 == 3
-			// 6/8, 9/8 == 6
-			// 12/8, 15/8, 18/8 == 12
+		if ((timeSigTop % 6) === 0 && timeSigBottom == 8) {
+			// 6/8 == 6
+			// 12/8 == 12
+			// 18/8 == 18
 			note_grouping = 3 * Math.floor(timeSigTop / 3);
 
 		} else {

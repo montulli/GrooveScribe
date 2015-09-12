@@ -71,9 +71,6 @@
 		justify-content: space-between;
 		-webkit-justify-content: space-between;
 	}
-	.GSlogoTextColor {
-		color: orange;
-	}
 	#upperLeft  {
 		margin-top: 6px;
 		display: inline-block;
@@ -85,7 +82,11 @@
 		height: calc(100%);
 		margin: 0px 27px 0px 15px;
 		width: 174px;
-		font-size: 1.8em;
+		font-size: 1.4em;
+		white-space: nowrap;
+		text-shadow: .5px .5px 0px #D59D02;
+		color: #903500;
+	
 	}
 	#upperRight {
 		margin-top: 6px;
@@ -452,6 +453,12 @@
 		position: absolute; top: 5px; left: 0px;
 		font-size: 18px;
 		color: transparent;
+		cursor: pointer;
+	}
+	.sticking_1, .sticking_e, .sticking_and, .sticking_a {
+		position: absolute; top: 0px; left: 6px;
+		font-size: 24px;
+		color: #CCCCCC;
 		cursor: pointer;
 	}
 	.hh_crash {
