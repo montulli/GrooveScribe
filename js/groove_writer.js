@@ -943,12 +943,12 @@ function GrooveWriter() { "use strict";
 
 		switch (help_type) {
 		case "help":
-			win = window.open("help.html", '_blank');
+			win = window.open("./gscribe_help.html", '_blank');
 			win.focus();
 			break;
 
 		case "about":
-			win = window.open("about.html", '_blank');
+			win = window.open("./gscribe_about.html", '_blank');
 			win.focus();
 			break;
 
