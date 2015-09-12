@@ -6,6 +6,10 @@ Readme for Groove Scribe
 
 * Groove Scribe is an HTML application for drummers.    Groove Scribe is a point and click authoring system to create drum sheet music as well as a practice tool for learning and practicing grooves and exercises.
 
+### How do I use it ###
+
+* Hosted here: http://www.mikeslessons.com/gscribe/
+
 ### How do I get set up? ###
 
 * Summary of set up:  Just host all the files on a web server.   The application runs entirely in the browser with Javascript, HTML & CSS.

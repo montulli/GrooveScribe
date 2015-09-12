@@ -2082,6 +2082,11 @@ function GrooveUtils() {
 					//prev_kick_note = kick_note;
 				}
 				if (kick_splash_note !== false) {
+					if (prev_hh_note !== false) {
+						midiTrack.addNoteOff(midi_channel, prev_hh_note, delay_for_next_note);
+						prev_hh_note = false;
+						delay_for_next_note = 0; // zero the delay
+					}
 					//if(prev_kick_splash_note != false)
 					//	midiTrack.addNoteOff(midi_channel, prev_kick_splash_note, 0);
 					midiTrack.addNoteOn(midi_channel, kick_splash_note, delay_for_next_note, velocity_normal);
