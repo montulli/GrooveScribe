@@ -883,7 +883,8 @@ function GrooveUtils() {
 			 */
 			// only accept the event if it not going to an INPUT field
 			// otherwise we can't use spacebar in text fields :(
-			if (e.which == 32 && e.target.type != "text" && e.target.tagName != "TEXTAREA") {
+			if (e.which == 32 && (e.target.type == "range" || (e.target.tagName.toUpperCase() != "INPUT" && e.target.tagName.toUpperCase() != "TEXTAREA"))) {
+			
 				// spacebar
 				root.startOrStopMIDI_playback();
 				return false;

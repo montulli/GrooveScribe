@@ -2810,8 +2810,8 @@ function GrooveWriter() { "use strict";
 
 		document.addEventListener("keydown", function (e) {
 
-			// only accept the event if it not going to an INPUT field
-			if (e.target.tagName != "TEXTAREA") {
+			// only accept the event if it not going to an INPUT field   (allow for range types)
+			if (e.target.type == "range" || (e.target.tagName.toUpperCase() != "INPUT" && e.target.tagName.toUpperCase() != "TEXTAREA")) {
 				switch (e.which) {
 				case 90: // ctrl-z
 					if (e.ctrlKey) {
