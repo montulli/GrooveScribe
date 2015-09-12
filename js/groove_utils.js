@@ -1811,18 +1811,16 @@ function GrooveUtils() {
 	 */
 	root.MIDI_from_HH_Snare_Kick_Arrays = function (midiTrack, HH_Array, Snare_Array, Kick_Array, Toms_Array, midi_output_type, metronome_frequency, num_notes, num_notes_for_swing, swing_percentage, timeSigTop, timeSigBottom) {
 		var prev_metronome_note = false;
-		var prev_hh_note = false;
+		var prev_hh_note = 46;  // default to open hi-hat so that the first hi-hat note also mutes any previous hh open.
 		var prev_snare_note = false;
 		var prev_kick_note = false;
 		var prev_kick_splash_note = false;
-		var midi_channel = 0;
+		var midi_channel = 9;  // percussion
 
 		if (swing_percentage < 0 || swing_percentage > 0.99) {
 			console.log("Swing percentage out of range in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
 			swing_percentage = 0;
 		}
-
-		midi_channel = 9; // Percussion
 
 		// start of midi track
 		// Some sort of bug in the midi player makes it skip the first note without a blank
