@@ -2825,6 +2825,10 @@ function GrooveWriter() { "use strict";
 	root.printMusic = function () {
 
 		var oldMethod = true;
+		
+		if (root.browserInfo.browser == "Chrome" && root.browserInfo.platform == "windows") {
+			oldMethod = false;
+		}
 
 		if (oldMethod) {
 			// css media queries wiil hide all but the music 
