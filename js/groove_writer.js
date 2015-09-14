@@ -2826,7 +2826,8 @@ function GrooveWriter() { "use strict";
 
 		var oldMethod = true;
 		
-		if (root.browserInfo.browser == "Chrome" && root.browserInfo.platform == "windows") {
+		if ((root.browserInfo.browser == "Chrome" && root.browserInfo.platform == "windows") ||
+			(root.browserInfo.browser == "MSIE" && root.browserInfo.platform == "windows")) {
 			oldMethod = false;
 		}
 
