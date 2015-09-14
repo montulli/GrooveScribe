@@ -25,7 +25,7 @@
 /*jslint browser:true devel:true */
 
 /*global gapi, GrooveUtils, Midi, Share */
-/*global constant_MAX_MEASURES, constant_DEFAULT_TEMPO, constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_BOTH, constant_ABC_STICK_OFF, constant_ABC_HH_Ride, constant_ABC_HH_Crash, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Flam, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T2_Normal, constant_ABC_T3_Normal, constant_ABC_T4_Normal, constant_NUMBER_OF_TOMS, constant_ABC_OFF */
+/*global MIDI, constant_MAX_MEASURES, constant_DEFAULT_TEMPO, constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_BOTH, constant_ABC_STICK_OFF, constant_ABC_STICK_1, constant_ABC_STICK_E, constant_ABC_STICK_AND, constant_ABC_STICK_A, constant_ABC_HH_Ride, constant_ABC_HH_Crash, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Flam, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T2_Normal, constant_ABC_T3_Normal, constant_ABC_T4_Normal, constant_NUMBER_OF_TOMS, constant_ABC_OFF, constant_OUR_MIDI_VELOCITY_NORMAL, constant_OUR_MIDI_VELOCITY_ACCENT, constant_OUR_MIDI_VELOCITY_GHOST, constant_OUR_MIDI_METRONOME_1, constant_OUR_MIDI_METRONOME_NORMAL, constant_OUR_MIDI_HIHAT_NORMAL, constant_OUR_MIDI_HIHAT_OPEN, constant_OUR_MIDI_HIHAT_ACCENT, constant_OUR_MIDI_HIHAT_CRASH, constant_OUR_MIDI_HIHAT_RIDE, constant_OUR_MIDI_HIHAT_FOOT, constant_OUR_MIDI_SNARE_NORMAL, constant_OUR_MIDI_SNARE_ACCENT, constant_OUR_MIDI_SNARE_GHOST, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_FLAM, constant_OUR_MIDI_KICK_NORMAL, constant_OUR_MIDI_TOM1_NORMAL, constant_OUR_MIDI_TOM2_NORMAL, constant_OUR_MIDI_TOM3_NORMAL, constant_OUR_MIDI_TOM4_NORMAL */
 
 // GrooveWriter class.   The only one in this file.
 
@@ -116,6 +116,10 @@ function GrooveWriter() { "use strict";
 		return false;
 	}
 
+	function play_single_note_for_note_setting(note_val) {
+		MIDI.WebAudio.noteOn(9, note_val, constant_OUR_MIDI_VELOCITY_NORMAL, 0);	
+	}
+	
 	// returns the ABC notation for the snare state
 	// false = off
 	//
@@ -216,7 +220,7 @@ function GrooveWriter() { "use strict";
 	}
 
 	// set the kick note on with type
-	function set_kick_state(id, mode) {
+	function set_kick_state(id, mode, make_sound) {
 
 		// hide everything optional
 		document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_hidden_color_rgb;
@@ -231,15 +235,22 @@ function GrooveWriter() { "use strict";
 		case "normal":
 			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_on_color_hex;
 			document.getElementById("kick_circle" + id).style.borderColor = constant_note_border_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_KICK_NORMAL);
 			break;
 		case "splash":
 			document.getElementById("kick_splash" + id).style.color = constant_note_on_color_hex;
 			document.getElementById("kick_circle" + id).style.borderColor = constant_note_hidden_color_rgb;
-
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_FOOT);
 			break;
 		case "kick_and_splash":
 			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_on_color_hex;
 			document.getElementById("kick_splash" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_FOOT);
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_KICK_NORMAL);
 			break;
 		default:
 			console.log("bad switch in set_kick_state");
@@ -247,7 +258,7 @@ function GrooveWriter() { "use strict";
 		}
 	}
 
-	function set_snare_state(id, mode) {
+	function set_snare_state(id, mode, make_sound) {
 
 		// hide everything optional
 		document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_hidden_color_rgb;
@@ -266,27 +277,39 @@ function GrooveWriter() { "use strict";
 		case "normal":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
 			document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_NORMAL);
 			break;
 		case "flam":
 			//document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
 			//document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
 			document.getElementById("snare_flam" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_FLAM);
 			break;
 		case "ghost":
 			document.getElementById("snare_ghost" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_GHOST);
 			break;
 		case "accent":
 			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
 			document.getElementById("snare_accent" + id).style.color = constant_note_on_color_hex;
 			document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_ACCENT);
 			break;
 		case "xstick":
 			document.getElementById("snare_xstick" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_XSTICK);
 			break;
 		default:
 			console.log("bad switch in set_snare_state");
 			break;
 		}
+		
+
 	}
 
 	function is_hh_on(id) {
@@ -352,7 +375,7 @@ function GrooveWriter() { "use strict";
 			return "-"; // off (rest)
 	}
 
-	function set_hh_state(id, mode) {
+	function set_hh_state(id, mode, make_sound) {
 
 		// hide everything optional
 		document.getElementById("hh_cross" + id).style.color = constant_note_hidden_color_rgb;
@@ -369,24 +392,36 @@ function GrooveWriter() { "use strict";
 			break;
 		case "normal":
 			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_NORMAL);
 			break;
 		case "ride":
 			document.getElementById("hh_ride" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_RIDE);
 			break;
 		case "crash":
 			document.getElementById("hh_crash" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_CRASH);
 			break;
 		case "open":
 			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
 			document.getElementById("hh_open" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_OPEN);
 			break;
 		case "close":
 			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
 			document.getElementById("hh_close" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_NORMAL);
 			break;
 		case "accent":
 			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
 			document.getElementById("hh_accent" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_ACCENT);
 			break;
 		default:
 			console.log("bad switch in set_hh_state");
@@ -394,7 +429,7 @@ function GrooveWriter() { "use strict";
 		}
 	}
 
-	function set_sticking_state(id, new_state) {
+	function set_sticking_state(id, new_state, make_sound) {
 
 		// turn both off
 		document.getElementById("sticking_right" + id).style.color = constant_note_hidden_color_rgb;
@@ -526,7 +561,7 @@ function GrooveWriter() { "use strict";
 			new_state = "off";
 		}
 
-		set_sticking_state(id, new_state);
+		set_sticking_state(id, new_state, true);
 	}
 
 	// highlight the note, this is used to play along with the midi track
@@ -1046,28 +1081,29 @@ function GrooveWriter() { "use strict";
 
 		// start at the first note of the measure we want to effect.   Only fill in the
 		// notes for that measure
+		// the last boolean in the setFunction should only be true on the first call (plays a sound)
 		var startIndex = class_notes_per_measure * (class_measure_for_note_label_click - 1);
 		for (var i = startIndex; i - startIndex < class_notes_per_measure; i++) {
 			if (action == "all_off")
-				setFunction(i, "off");
+				setFunction(i, "off", i == startIndex);
 			else if (instrument == "stickings" && action == "all_right")
-				setFunction(i, "right");
+				setFunction(i, "right", i == startIndex);
 			else if (instrument == "stickings" && action == "all_left")
-				setFunction(i, "left");
+				setFunction(i, "left", i == startIndex);
 			else if (instrument == "stickings" && action == "alternate")
-				setFunction(i, (i % 2 === 0 ? "right" : "left"));
+				setFunction(i, (i % 2 === 0 ? "right" : "left"), i == startIndex);
 			else if (instrument == "hh" && action == "downbeats")
-				setFunction(i, (i % 2 === 0 ? "normal" : "off"));
+				setFunction(i, (i % 2 === 0 ? "normal" : "off"), i == startIndex);
 			else if (instrument == "hh" && action == "upbeats")
-				setFunction(i, (i % 2 === 0 ? "off" : "normal"));
+				setFunction(i, (i % 2 === 0 ? "off" : "normal"), i == (startIndex + 1));
 			else if (instrument == "snare" && action == "all_on")
-				setFunction(i, "accent");
+				setFunction(i, "accent", i == startIndex);
 			else if (instrument == "snare" && action == "all_on_normal")
-				setFunction(i, "normal");
+				setFunction(i, "normal", i == startIndex);
 			else if (instrument == "snare" && action == "all_on_ghost")
-				setFunction(i, "ghost");
+				setFunction(i, "ghost", i == startIndex);
 			else if (action == "all_on")
-				setFunction(i, "normal");
+				setFunction(i, "normal", i == startIndex);
 			else if (action == "cancel")
 				continue; // do nothing.
 			else
@@ -1133,13 +1169,13 @@ function GrooveWriter() { "use strict";
 			// this is a non advanced edit left click
 			switch (type) {
 			case "hh":
-				set_hh_state(id, is_hh_on(id) ? "off" : "normal");
+				set_hh_state(id, is_hh_on(id) ? "off" : "normal", true);
 				break;
 			case "snare":
-				set_snare_state(id, is_snare_on(id) ? "off" : "accent");
+				set_snare_state(id, is_snare_on(id) ? "off" : "accent", true);
 				break;
 			case "kick":
-				set_kick_state(id, is_kick_on(id) ? "off" : "normal");
+				set_kick_state(id, is_kick_on(id) ? "off" : "normal", true);
 				break;
 			case "sticking":
 				sticking_rotate_state(id);
@@ -1159,16 +1195,16 @@ function GrooveWriter() { "use strict";
 
 		switch (type) {
 		case "sticking":
-			set_sticking_state(id, new_setting);
+			set_sticking_state(id, new_setting, true);
 			break;
 		case "hh":
-			set_hh_state(id, new_setting);
+			set_hh_state(id, new_setting, true);
 			break;
 		case "snare":
-			set_snare_state(id, new_setting);
+			set_snare_state(id, new_setting, true);
 			break;
 		case "kick":
-			set_kick_state(id, new_setting);
+			set_kick_state(id, new_setting, true);
 			break;
 		default:
 			console.log("Bad case in contextMenuClick");
@@ -1192,13 +1228,13 @@ function GrooveWriter() { "use strict";
 		if (action) {
 			switch (instrument) {
 			case "hh":
-				set_hh_state(id, action == "off" ? "off" : "normal");
+				set_hh_state(id, action == "off" ? "off" : "normal", true);
 				break;
 			case "snare":
-				set_snare_state(id, action == "off" ? "off" : "accent");
+				set_snare_state(id, action == "off" ? "off" : "accent", true);
 				break;
 			case "kick":
-				set_kick_state(id, action == "off" ? "off" : "normal");
+				set_kick_state(id, action == "off" ? "off" : "normal", true);
 				break;
 			default:
 				console.log("Bad case in noteOnMouseEnter");
@@ -3056,66 +3092,66 @@ function GrooveWriter() { "use strict";
 
 			switch (notes[i]) {
 			case "$":
-				setFunction(displayIndex, "and");
+				setFunction(displayIndex, "and", false);
 				break;
 			case "1":
-				setFunction(displayIndex, "1");
+				setFunction(displayIndex, "1", false);
 				break;
 			case "a":
-				setFunction(displayIndex, "a");
+				setFunction(displayIndex, "a", false);
 				break;
 			case "c":
-				setFunction(displayIndex, "crash");
+				setFunction(displayIndex, "crash", false);
 				break;
 			case "e":
-				setFunction(displayIndex, "e");
+				setFunction(displayIndex, "e", false);
 				break;
 			case "g":
-				setFunction(displayIndex, "ghost");
+				setFunction(displayIndex, "ghost", false);
 				break;
 			case "f":
-				setFunction(displayIndex, "flam");
+				setFunction(displayIndex, "flam", false);
 				break;
 			case "l":
 			case "L":
 				if (drumType == "Stickings")
-					setFunction(displayIndex, "left");
+					setFunction(displayIndex, "left", false);
 				break;
 			case "O":
-				setFunction(displayIndex, "accent");
+				setFunction(displayIndex, "accent", false);
 				break;
 			case "o":
 				if (drumType == "H")
-					setFunction(displayIndex, "open");
+					setFunction(displayIndex, "open", false);
 				else
-					setFunction(displayIndex, "normal");
+					setFunction(displayIndex, "normal", false);
 				break;
 			case "r":
 			case "R":
 				if (drumType == "H")
-					setFunction(displayIndex, "ride");
+					setFunction(displayIndex, "ride", false);
 				else if (drumType == "Stickings")
-					setFunction(displayIndex, "right");
+					setFunction(displayIndex, "right", false);
 				break;
 			case "x":
 				if (drumType == "S")
-					setFunction(displayIndex, "xstick");
+					setFunction(displayIndex, "xstick", false);
 				else if (drumType == "K")
-					setFunction(displayIndex, "splash");
+					setFunction(displayIndex, "splash", false);
 				else
-					setFunction(displayIndex, "normal");
+					setFunction(displayIndex, "normal", false);
 				break;
 			case "X":
 				if (drumType == "K")
-					setFunction(displayIndex, "kick_and_splash");
+					setFunction(displayIndex, "kick_and_splash", false);
 				else
-					setFunction(displayIndex, "accent");
+					setFunction(displayIndex, "accent", false);
 				break;
 			case "+":
-				setFunction(displayIndex, "close");
+				setFunction(displayIndex, "close", false);
 				break;
 			case "-":
-				setFunction(displayIndex, "off");
+				setFunction(displayIndex, "off", false);
 				break;
 			default:
 				console.log("Bad note in setNotesFromURLData: " + notes[i]);
@@ -3157,73 +3193,73 @@ function GrooveWriter() { "use strict";
 
 			switch (abcArray[i]) {
 			case constant_ABC_STICK_R:
-				setFunction(displayIndex, "right");
+				setFunction(displayIndex, "right", false);
 				break;
 			case constant_ABC_STICK_L:
-				setFunction(displayIndex, "left");
+				setFunction(displayIndex, "left", false);
 				break;
 			case constant_ABC_STICK_BOTH:
-				setFunction(displayIndex, "both");
+				setFunction(displayIndex, "both", false);
 				break;
 			case constant_ABC_STICK_1:
-				setFunction(displayIndex, "1");
+				setFunction(displayIndex, "1", false);
 				break;
 			case constant_ABC_STICK_E:
-				setFunction(displayIndex, "e");
+				setFunction(displayIndex, "e", false);
 				break;
 			case constant_ABC_STICK_AND:
-				setFunction(displayIndex, "and");
+				setFunction(displayIndex, "and", false);
 				break;
 			case constant_ABC_STICK_A:
-				setFunction(displayIndex, "a");
+				setFunction(displayIndex, "a", false);
 				break;
 			case constant_ABC_STICK_OFF:
-				setFunction(displayIndex, "off");
+				setFunction(displayIndex, "off", false);
 				break;
 			case constant_ABC_HH_Ride:
-				setFunction(displayIndex, "ride");
+				setFunction(displayIndex, "ride", false);
 				break;
 			case constant_ABC_HH_Crash:
-				setFunction(displayIndex, "crash");
+				setFunction(displayIndex, "crash", false);
 				break;
 			case constant_ABC_HH_Open:
-				setFunction(displayIndex, "open");
+				setFunction(displayIndex, "open", false);
 				break;
 			case constant_ABC_HH_Close:
-				setFunction(displayIndex, "close");
+				setFunction(displayIndex, "close", false);
 				break;
 			case constant_ABC_HH_Accent:
-				setFunction(displayIndex, "accent");
+				setFunction(displayIndex, "accent", false);
 				break;
 			case constant_ABC_HH_Normal:
-				setFunction(displayIndex, "normal");
+				setFunction(displayIndex, "normal", false);
 				break;
 			case constant_ABC_SN_Ghost:
-				setFunction(displayIndex, "ghost");
+				setFunction(displayIndex, "ghost", false);
 				break;
 			case constant_ABC_SN_Accent:
-				setFunction(displayIndex, "accent");
+				setFunction(displayIndex, "accent", false);
 				break;
 			case constant_ABC_SN_Normal:
-				setFunction(displayIndex, "normal");
+				setFunction(displayIndex, "normal", false);
 				break;
 			case constant_ABC_SN_Flam:
-				setFunction(displayIndex, "flam");
+				setFunction(displayIndex, "flam", false);
 				break;
 			case constant_ABC_SN_XStick:
-				setFunction(displayIndex, "xstick");
+				setFunction(displayIndex, "xstick", false);
 				break;
 			case constant_ABC_KI_SandK:
-				setFunction(displayIndex, "kick_and_splash");
+				setFunction(displayIndex, "kick_and_splash", false);
 				break;
 			case constant_ABC_KI_Splash:
-				setFunction(displayIndex, "splash");
+				setFunction(displayIndex, "splash", false);
 				break;
 			case constant_ABC_KI_Normal:
-				setFunction(displayIndex, "normal");
+				setFunction(displayIndex, "normal", false);
 				break;
 			case false:
-				setFunction(displayIndex, "off");
+				setFunction(displayIndex, "off", false);
 				break;
 			default:
 				console.log("Bad note in setNotesFromABCArray: " + abcArray[i]);
