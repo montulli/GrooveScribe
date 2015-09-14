@@ -916,6 +916,7 @@
 			top: 0px;
 			left: 0px;
 			overflow-y: visible;
+			width: 100% !important;
 		}
 		
 		.svgTarget svg {
