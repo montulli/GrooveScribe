@@ -766,6 +766,13 @@ function GrooveUtils() {
 		var timeSigTop = parseInt(split_arr[0], 10);
 		var timeSigBottom = parseInt(split_arr[1], 10);
 		
+		if(timeSigTop < 1 || timeSigTop > 32)
+			timeSigTop = 4;
+		
+		// only valid if 2,4,8, or 16
+		if(timeSigBottom != 2 && timeSigBottom != 4 && timeSigBottom != 8 && timeSigBottom != 16)
+			timeSigBottom = 4;
+		
 		return [timeSigTop, timeSigBottom];
 	};
 	
