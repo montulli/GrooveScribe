@@ -440,36 +440,39 @@ function GrooveWriter() { "use strict";
 		document.getElementById("sticking_and" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("sticking_a" + id).style.color = constant_note_hidden_color_rgb;
 
-		switch (new_state) {
-		case "off":
-			// show them all greyed out.
-			document.getElementById("sticking_right" + id).style.color = constant_sticking_right_off_color_rgb;
-			document.getElementById("sticking_left" + id).style.color = constant_sticking_left_off_color_rgb;
-			break;
-		case "right":
-			document.getElementById("sticking_right" + id).style.color = constant_sticking_right_on_color_rgb;
-			break;
-		case "left":
-			document.getElementById("sticking_left" + id).style.color = constant_sticking_left_on_color_rgb;
-			break;
-		case "both":
-			document.getElementById("sticking_both" + id).style.color = constant_sticking_both_on_color_rgb;
-			break;
-		case "1":
+		if(!isNaN(new_state) && (new_state % 1 === 0)) {
+			// is a number and an integer
 			document.getElementById("sticking_1" + id).style.color = constant_sticking_count_on_color_rgb;
-			break;
-		case "e":
-			document.getElementById("sticking_e" + id).style.color = constant_sticking_count_on_color_rgb;
-			break;
-		case "and":
-			document.getElementById("sticking_and" + id).style.color = constant_sticking_count_on_color_rgb;
-			break;
-		case "a":
-			document.getElementById("sticking_a" + id).style.color = constant_sticking_count_on_color_rgb;
-			break;
-		default:
-			console.log("Bad state in set_sticking_on: " + new_state);
-			break;
+
+		} else { 
+			switch (new_state) {
+			case "off":
+				// show them all greyed out.
+				document.getElementById("sticking_right" + id).style.color = constant_sticking_right_off_color_rgb;
+				document.getElementById("sticking_left" + id).style.color = constant_sticking_left_off_color_rgb;
+				break;
+			case "right":
+				document.getElementById("sticking_right" + id).style.color = constant_sticking_right_on_color_rgb;
+				break;
+			case "left":
+				document.getElementById("sticking_left" + id).style.color = constant_sticking_left_on_color_rgb;
+				break;
+			case "both":
+				document.getElementById("sticking_both" + id).style.color = constant_sticking_both_on_color_rgb;
+				break;
+			case "e":
+				document.getElementById("sticking_e" + id).style.color = constant_sticking_count_on_color_rgb;
+				break;
+			case "and":
+				document.getElementById("sticking_and" + id).style.color = constant_sticking_count_on_color_rgb;
+				break;
+			case "a":
+				document.getElementById("sticking_a" + id).style.color = constant_sticking_count_on_color_rgb;
+				break;
+			default:
+				console.log("Bad state in set_sticking_state: " + new_state);
+				break;
+			}
 		}
 	}
 
@@ -557,6 +560,47 @@ function GrooveWriter() { "use strict";
 			new_state = "left";
 		} else if (sticking_state == constant_ABC_STICK_L) {
 			new_state = "both";
+		} else if (0 && sticking_state == constant_ABC_STICK_BOTH) {
+			// figure out the count state by looking at the id and the subdivision
+			var note_index = id % class_notes_per_measure;
+			switch(class_time_division) {
+				case 4:
+					new_state = note_index;   // 1,2,3,4,5, etc.
+					break;
+				case 8:
+					if(note_index % 2 === 0)
+						new_state = Math.floor(note_index / 2) + 1;  // 1,2,3,4,5, etc.
+					else
+						new_state = "and";
+					break;
+				case 16:
+				case 32:  // 32nd notes are the same
+					if(note_index % 4 === 0)
+						new_state = Math.floor(note_index / 4) + 1;  // 1,2,3,4,5, etc.
+					else if(note_index % 4 === 1)
+						new_state = "e";
+					else if(note_index % 4 === 2)
+						new_state = "and";
+					else
+						new_state = "a";
+					break;
+				case 12:  // 8th triplets
+					if(note_index % 3 === 0)
+						new_state = Math.floor(note_index / 3) + 1;  // 1,2,3,4,5, etc.
+					else if(note_index % 3 == 1)
+						new_state = "e";
+					else
+						new_state = "and";
+					break;
+				case 24:  // 16th triplets
+					if(note_index % 3 === 0)
+						new_state = Math.floor(note_index / 6) + 1;  // 1,2,3,4,5, etc.
+					else if(note_index % 3 == 1)
+						new_state = "e";
+					else
+						new_state = "and";
+					break;
+			}
 		} else {
 			new_state = "off";
 		}
