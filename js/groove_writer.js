@@ -2868,11 +2868,17 @@ function GrooveWriter() { "use strict";
 
 	root.printMusic = function () {
 
-		var oldMethod = true;
+		var oldMethod = false;
 		
+		/*
 		if ((root.browserInfo.browser == "Chrome" && root.browserInfo.platform == "windows") ||
 			(root.browserInfo.browser == "MSIE" && root.browserInfo.platform == "windows")) {
 			oldMethod = false;
+		}
+		*/
+		if ((root.browserInfo.browser == "Firefox" && root.browserInfo.platform == "windows") ) {
+
+			oldMethod = true;
 		}
 
 		if (oldMethod) {
@@ -2884,8 +2890,9 @@ function GrooveWriter() { "use strict";
 		} else {
 			// open a new window just for printing   (new method)
 			var win = window.open("", class_app_title + " Print");
-			win.document.body.innerHTML = "<title>" + class_app_title + "</title>\n";
+			win.document.body.innerHTML = "<title>" + class_app_title + "</title>\n<center>\n";
 			win.document.body.innerHTML += document.getElementById("svgTarget").innerHTML;
+			win.document.body.innerHTML += "\n</center>";
 			win.print();
 		}
 
