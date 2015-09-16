@@ -910,7 +910,7 @@
 		/* keep at bottom so it overrides the styles above */
 		/* there is another definition in groove_display.css that adds more rules */
 		#GrooveWriter {
-			min-width: 800px;
+			min-width: 10px;
 		}
 		
 		#RightHandContent {
