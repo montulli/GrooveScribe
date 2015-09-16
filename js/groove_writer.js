@@ -2868,19 +2868,13 @@ function GrooveWriter() { "use strict";
 
 	root.printMusic = function () {
 
-		var oldMethod = false;
+		var oldMethod = true;
 		
-		/*
 		if ((root.browserInfo.browser == "Chrome" && root.browserInfo.platform == "windows") ||
 			(root.browserInfo.browser == "MSIE" && root.browserInfo.platform == "windows")) {
 			oldMethod = false;
 		}
-		*/
-		if ((root.browserInfo.browser == "Firefox" && root.browserInfo.platform == "windows") ) {
-
-			oldMethod = true;
-		}
-
+		
 		if (oldMethod) {
 			// css media queries wiil hide all but the music 
 			// force a print
