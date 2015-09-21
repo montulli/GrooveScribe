@@ -3457,7 +3457,7 @@ function GrooveWriter() { "use strict";
 							this.url = document.getElementById("fullURLTextField").value;
 							this.description = "Check out this groove.";
 						},
-						app_id : "839699029418014"
+						app_id : "1499163983742002"
 					},
 					google_plus : {
 						before : function () {
