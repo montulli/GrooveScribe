@@ -67,11 +67,11 @@
 		display: block;
 	}
 	#logoTextUpperLeft {
-		padding: 4px 10px 4px 5px;
+		padding: 8px 10px 4px 5px;
 		display: inline-block;
 	}
 	#logoTextUpperLeft img {
-		height: 40px;
+		height: 32px;
 	}
 	#upperLeft  {
 		margin-top: 12px;
@@ -171,6 +171,9 @@
 		justify-content: center;
 		-webkit-justify-content: center;
 		transition: all .1s ease-in-out;
+	}
+	#logoInSubdivision {
+		background: #000;
 	}
 	#logoInSubdivision img {
 		height: 90%;
