@@ -79,14 +79,9 @@
 	}
 	#upperLogo {
 		display: inline-block;
-		height: calc(100%);
+		height: calc(100% - 6px);
 		margin: 0px 27px 0px 15px;
-		width: 174px;
-		font-size: 1.6em;
 		white-space: nowrap;
-		text-shadow: .5px .5px 0px #D59D02;
-		color: #903500;
-	
 	}
 	#upperRight {
 		margin-top: 6px;
