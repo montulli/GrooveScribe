@@ -60,31 +60,34 @@
 		z-index: 998;
 		width: calc(100% - 72px);
 		margin-left: 72px;
-		height: 42px;  /* total 48 */
-		padding-top: 6px;
+		height: 48px;  /* total 48 */
 		border-bottom: 1px solid #000;
 		background: #E69D02;
 		background: linear-gradient(to right, #E69D02, #CC6500);
 		display: block;
-		display: -webkit-flex;
-		display: flex;
-		justify-content: space-between;
-		-webkit-justify-content: space-between;
+	}
+	#logoTextUpperLeft {
+		padding: 4px 10px 4px 5px;
+		display: inline-block;
+	}
+	#logoTextUpperLeft img {
+		height: 40px;
 	}
 	#upperLeft  {
-		margin-top: 6px;
+		margin-top: 12px;
 		display: inline-block;
 		white-space: nowrap;
 		vertical-align: top;
 	}
 	#upperLogo {
 		display: inline-block;
+		height: 90%
 		height: calc(100% - 6px);
 		margin: 0px 27px 0px 15px;
 		white-space: nowrap;
 	}
 	#upperRight {
-		margin-top: 6px;
+		margin-top: 12px;
 		display: inline-block;
 		float: right;
 		margin-right: 10px;
@@ -151,7 +154,7 @@
 		border-bottom: 1px solid #000;
 		
 	}
-	#timeLabel, .subdivision, #advancedEditAnchor {
+	#logoInSubdivision, #timeLabel, .subdivision, #advancedEditAnchor {
 		display: block;
 		cursor: pointer;
 		font-size: 12px;
@@ -168,6 +171,10 @@
 		justify-content: center;
 		-webkit-justify-content: center;
 		transition: all .1s ease-in-out;
+	}
+	#logoInSubdivision img {
+		height: 90%;
+		height: calc(100% - 6px);
 	}
 	.subdivision.buttonSelected, .subdivision.buttonSelected:hover {  /* is subdivision and is selected */
 		background: #2484C0;
@@ -464,6 +471,12 @@
 	}
 	.hh_ride {
 		position: absolute; top: 18px; left: 6px;
+		font-size: 20px;
+		color: transparent;
+		cursor: pointer;
+	}
+	.hh_stacker {
+		position: absolute; top: 18px; left: 5px;
 		font-size: 20px;
 		color: transparent;
 		cursor: pointer;

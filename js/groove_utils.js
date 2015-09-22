@@ -45,6 +45,7 @@ var constant_ABC_STICK_A = '"a"x';
 var constant_ABC_STICK_OFF = '""x';
 var constant_ABC_HH_Ride = "^A'";
 var constant_ABC_HH_Crash = "^c'";
+var constant_ABC_HH_Stacker = "^d'";
 var constant_ABC_HH_Open = "!open!^g";
 var constant_ABC_HH_Close = "!plus!^g";
 var constant_ABC_HH_Accent = "!accent!^g";
@@ -73,6 +74,7 @@ var constant_OUR_MIDI_HIHAT_NORMAL = 42;
 var constant_OUR_MIDI_HIHAT_OPEN = 46;
 var constant_OUR_MIDI_HIHAT_ACCENT = 108;
 var constant_OUR_MIDI_HIHAT_CRASH = 49;
+var constant_OUR_MIDI_HIHAT_STACKER = 52;
 var constant_OUR_MIDI_HIHAT_RIDE = 51;
 var constant_OUR_MIDI_HIHAT_FOOT = 44;
 var constant_OUR_MIDI_SNARE_NORMAL = 38;
@@ -414,6 +416,7 @@ function GrooveUtils() {
 	//		+: close
 	//		c: crash
 	//		r: ride
+	//      s: stacker
 	//		-: off
 	//
 	//   Snare support:
@@ -528,6 +531,10 @@ function GrooveUtils() {
 				break;
 			}
 			break;
+		case "s":
+			if (drumType == "H")
+				return constant_ABC_HH_Stacker;
+			break;
 		case "x":
 			switch (drumType) {
 			case "S":
@@ -606,6 +613,9 @@ function GrooveUtils() {
 			break;
 		case constant_ABC_HH_Crash:
 			tabChar = "c";
+			break;
+		case constant_ABC_HH_Stacker:
+			tabChar = "s";
 			break;
 		case constant_ABC_HH_Open:
 			tabChar = "o";
@@ -982,6 +992,7 @@ function GrooveUtils() {
 		'%%endsvg\n' +
 		'%%map drum ^g heads=Xhead print=g  % Hi-Hat\n' +
 		'%%map drum ^c\' heads=Xhead print=c\'  % Crash\n' +
+		'%%map drum ^d\' heads=Xhead print=d\'  % Stacker\n' +
 		'%%map drum ^A\' heads=Xhead print=A\'  % Ride\n' +
 		'%%map drum ^c heads=Xhead print=c  % Cross Stick\n' +
 		'%%map drum ^d, heads=Xhead print=d,  % Foot Splash\n';
@@ -1005,11 +1016,11 @@ function GrooveUtils() {
 			'x8 x8 x8 x8 x8 x8 x8 x8 ||\n' +
 			'V:Hands stem=up \n' +
 			'%%voicemap drum\n' +
-			'"^Hi-Hat"^g4 "^Open"!open!^g4 "^Close"!plus!^g4 "^Accent"!accent!^g4 ' +
-			'"^Crash"^c\'4 "^Ride"^A\'4 x2 "^Snare"c4 "^Accent"!accent!c4 "^Cross"^c4 "^Ghost"!(.!!).!c4 "^Flam"{/c}c4  x18 ||\n' +
+			'"^Hi-Hat"^g4 "^Open"!open!^g4 "^Accent"!accent!^g4 ' +
+			'"^Crash"^c\'4 "^Stacker"^d\'4 "^Ride"^A\'4 x2 "^Snare"c4 "^Accent "!accent!c4 "^Cross"^c4 "^Ghost  "!(.!!).!c4 "^Flam"{/c}c4  x18 ||\n' +
 			'V:Feet stem=down \n' +
 			'%%voicemap drum\n' +
-			'x48 "^Kick"F4 "^HH foot"^d,4 "^Kick & HH"[F^d,]4 x4 ||\n' +
+			'x48 "^Kick"F4 "^HH foot"^d,4 x8 ||\n' +
 			'T:\n';
 		}
 
@@ -2008,6 +2019,9 @@ function GrooveUtils() {
 				case constant_ABC_HH_Crash: // crash
 					hh_note = constant_OUR_MIDI_HIHAT_CRASH;
 					break;
+				case constant_ABC_HH_Stacker: // stacker
+					hh_note = constant_OUR_MIDI_HIHAT_STACKER;
+					break;
 				case false:
 					break;
 				default:
@@ -2403,7 +2417,7 @@ function GrooveUtils() {
 				note_type = "metronome";
 			} else if (data.note == constant_OUR_MIDI_HIHAT_NORMAL || data.note == constant_OUR_MIDI_HIHAT_OPEN || 
 						data.note == constant_OUR_MIDI_HIHAT_ACCENT || data.note == constant_OUR_MIDI_HIHAT_CRASH || 
-						data.note == constant_OUR_MIDI_HIHAT_RIDE) {
+						data.note == constant_OUR_MIDI_HIHAT_RIDE || data.note == constant_OUR_MIDI_HIHAT_STACKER) {
 				note_type = "hi-hat";
 			} else if (data.note == constant_OUR_MIDI_SNARE_NORMAL || data.note == constant_OUR_MIDI_SNARE_ACCENT || 
 						data.note == constant_OUR_MIDI_SNARE_GHOST || data.note == constant_OUR_MIDI_SNARE_XSTICK || 

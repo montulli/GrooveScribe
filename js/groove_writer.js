@@ -25,7 +25,7 @@
 /*jslint browser:true devel:true */
 
 /*global gapi, GrooveUtils, Midi, Share */
-/*global MIDI, constant_MAX_MEASURES, constant_DEFAULT_TEMPO, constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_BOTH, constant_ABC_STICK_OFF, constant_ABC_STICK_1, constant_ABC_STICK_E, constant_ABC_STICK_AND, constant_ABC_STICK_A, constant_ABC_HH_Ride, constant_ABC_HH_Crash, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Flam, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T2_Normal, constant_ABC_T3_Normal, constant_ABC_T4_Normal, constant_NUMBER_OF_TOMS, constant_ABC_OFF, constant_OUR_MIDI_VELOCITY_NORMAL, constant_OUR_MIDI_VELOCITY_ACCENT, constant_OUR_MIDI_VELOCITY_GHOST, constant_OUR_MIDI_METRONOME_1, constant_OUR_MIDI_METRONOME_NORMAL, constant_OUR_MIDI_HIHAT_NORMAL, constant_OUR_MIDI_HIHAT_OPEN, constant_OUR_MIDI_HIHAT_ACCENT, constant_OUR_MIDI_HIHAT_CRASH, constant_OUR_MIDI_HIHAT_RIDE, constant_OUR_MIDI_HIHAT_FOOT, constant_OUR_MIDI_SNARE_NORMAL, constant_OUR_MIDI_SNARE_ACCENT, constant_OUR_MIDI_SNARE_GHOST, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_FLAM, constant_OUR_MIDI_KICK_NORMAL, constant_OUR_MIDI_TOM1_NORMAL, constant_OUR_MIDI_TOM2_NORMAL, constant_OUR_MIDI_TOM3_NORMAL, constant_OUR_MIDI_TOM4_NORMAL */
+/*global MIDI, constant_MAX_MEASURES, constant_DEFAULT_TEMPO, constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_BOTH, constant_ABC_STICK_OFF, constant_ABC_STICK_1, constant_ABC_STICK_E, constant_ABC_STICK_AND, constant_ABC_STICK_A, constant_ABC_HH_Ride, constant_ABC_HH_Crash, constant_ABC_HH_Stacker, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Flam, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T2_Normal, constant_ABC_T3_Normal, constant_ABC_T4_Normal, constant_NUMBER_OF_TOMS, constant_ABC_OFF, constant_OUR_MIDI_VELOCITY_NORMAL, constant_OUR_MIDI_VELOCITY_ACCENT, constant_OUR_MIDI_VELOCITY_GHOST, constant_OUR_MIDI_METRONOME_1, constant_OUR_MIDI_METRONOME_NORMAL, constant_OUR_MIDI_HIHAT_NORMAL, constant_OUR_MIDI_HIHAT_OPEN, constant_OUR_MIDI_HIHAT_ACCENT, constant_OUR_MIDI_HIHAT_CRASH, constant_OUR_MIDI_HIHAT_STACKER, constant_OUR_MIDI_HIHAT_RIDE, constant_OUR_MIDI_HIHAT_FOOT, constant_OUR_MIDI_SNARE_NORMAL, constant_OUR_MIDI_SNARE_ACCENT, constant_OUR_MIDI_SNARE_GHOST, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_FLAM, constant_OUR_MIDI_KICK_NORMAL, constant_OUR_MIDI_TOM1_NORMAL, constant_OUR_MIDI_TOM2_NORMAL, constant_OUR_MIDI_TOM3_NORMAL, constant_OUR_MIDI_TOM4_NORMAL */
 
 // GrooveWriter class.   The only one in this file.
 
@@ -343,6 +343,12 @@ function GrooveWriter() { "use strict";
 			else if (returnType == "URL")
 				return "c"; // crash
 		}
+		if (document.getElementById("hh_stacker" + id).style.color == constant_note_on_color_rgb) {
+			if (returnType == "ABC")
+				return constant_ABC_HH_Stacker; // crash
+			else if (returnType == "URL")
+				return "s"; // stacker
+		}
 		if (document.getElementById("hh_open" + id).style.color == constant_note_on_color_rgb) {
 			if (returnType == "ABC")
 				return constant_ABC_HH_Open; // hh Open
@@ -381,6 +387,7 @@ function GrooveWriter() { "use strict";
 		document.getElementById("hh_cross" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("hh_ride" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("hh_crash" + id).style.color = constant_note_hidden_color_rgb;
+		document.getElementById("hh_stacker" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("hh_open" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("hh_close" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("hh_accent" + id).style.color = constant_note_hidden_color_rgb;
@@ -404,6 +411,11 @@ function GrooveWriter() { "use strict";
 			document.getElementById("hh_crash" + id).style.color = constant_note_on_color_hex;
 			if(make_sound)
 				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_CRASH);
+			break;
+		case "stacker":
+			document.getElementById("hh_stacker" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_STACKER);
 			break;
 		case "open":
 			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
@@ -3078,6 +3090,7 @@ function GrooveWriter() { "use strict";
 	//		+: close
 	//      c: crash
 	//      r: ride
+	//      s: stacker
 	//      -: off
 	//
 	//   Snare support:
@@ -3182,6 +3195,9 @@ function GrooveWriter() { "use strict";
 				else if (drumType == "Stickings")
 					setFunction(displayIndex, "right", false);
 				break;
+			case "s":
+				setFunction(displayIndex, "stacker", false);
+				break;
 			case "x":
 				if (drumType == "S")
 					setFunction(displayIndex, "xstick", false);
@@ -3270,6 +3286,9 @@ function GrooveWriter() { "use strict";
 				break;
 			case constant_ABC_HH_Crash:
 				setFunction(displayIndex, "crash", false);
+				break;
+			case constant_ABC_HH_Stacker:
+				setFunction(displayIndex, "stacker", false);
 				break;
 			case constant_ABC_HH_Open:
 				setFunction(displayIndex, "open", false);
@@ -3806,6 +3825,7 @@ function GrooveWriter() { "use strict";
 														<div id="hi-hat' + i + '" class="hi-hat" onClick="myGrooveWriter.noteLeftClick(event, \'hh\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'hh\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'hh\', ' + i + ')">\
 															<div class="hh_crash note_part"  id="hh_crash' + i + '"><i class="fa fa-asterisk"></i></div>\
 															<div class="hh_ride note_part"   id="hh_ride' + i + '"><i class="fa fa-dot-circle-o"></i></div>\
+															<div class="hh_stacker note_part"   id="hh_stacker' + i + '"><i class="fa fa-bars"></i></div>\
 															<div class="hh_cross note_part"  id="hh_cross' + i + '"><i class="fa fa-times"></i></div>\
 															<div class="hh_open note_part"   id="hh_open' + i + '"><i class="fa fa-circle-o"></i></div>\
 															<div class="hh_close note_part"  id="hh_close' + i + '"><i class="fa fa-plus"></i></div>\

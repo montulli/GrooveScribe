@@ -65,6 +65,7 @@
 		<div class="nonPrintable">	
 			<div id="LeftHandNav">
 				<span id="divisionButtonContainer">
+					<span id="logoInSubdivision"><img src="images/GScribe_Logo_lone_g.svg"></span>
 					<span id="timeLabel">TIME</span>
 					<span class="subdivision" id="subdivision_4ths"  onclick="myGrooveWriter.changeDivision(4);"><span class="buttonFraction"><sup>1</sup>/<sub>4</sub></span></span>
 					<span class="subdivision" id="subdivision_8ths"  onclick="myGrooveWriter.changeDivision(8);"><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span></span>
@@ -81,6 +82,7 @@
 				</script>
 			</div>
 			<div id="TopNav" class="fullWidthEle">	
+				<span id="logoTextUpperLeft"><img src="images/GScribe_Logo_word_stack.svg"></span>
 				<span id="upperLeft">
 					<span id="metronomeContainer">
 						<span id="metronomeLabel">METRONOME:</span>
@@ -91,7 +93,6 @@
 						<span class="metronomeButton Options grooveDB_hidden" id="metronomeOptionsAnchor" onclick="myGrooveWriter.metronomeOptionsAnchorClick(event);">Options</span>
 					</span>
 				</span>
-				<img id="upperLogo" src="images/GScribe_Logo_white_text.svg">
 				<span id="upperRight">
 					<span class="rightButtons grooveDB_hidden" id="permutationAnchor" onclick="myGrooveWriter.permutationAnchorClick(event);"><i class="fa fa-bars"></i> Permutations</span>
 					<span class="rightButtons" id="groovesAnchor" onclick="myGrooveWriter.groovesAnchorClick(event);"><i class="fa fa-bars"></i> Grooves</span>
@@ -246,6 +247,7 @@
 				<li onclick='myGrooveWriter.notePopupClick("hh","accent");'>Hi-hat accent</li>
 				<li onclick='myGrooveWriter.notePopupClick("hh","crash");'>Crash</li>
 				<li onclick='myGrooveWriter.notePopupClick("hh","ride");'>Ride</li>
+				<li onclick='myGrooveWriter.notePopupClick("hh","stacker");'>Stacker</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
