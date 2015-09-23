@@ -73,13 +73,16 @@
 					<span class="subdivision" id="subdivision_32ths" onclick="myGrooveWriter.changeDivision(32);"><span class="buttonFraction"><sup>1</sup>/<sub>32</sub></span></span>
 					<span class="subdivision" id="subdivision_12ths" onclick="myGrooveWriter.changeDivision(12);"><span><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>TRIPLETS</span></span>
 					<span class="subdivision" id="subdivision_24ths" onclick="myGrooveWriter.changeDivision(24);"><span><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>TRIPLETS</span></span>
+				
+					<script>
+						if (myGrooveWriter.myGrooveUtils.is_touch_device()) {
+							document.write('<div id="advancedEditAnchor" onclick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">Advanced Edit<\/div>');
+						}
+					</script>
+				
+					<span class="subdivision" id="undoButton" onclick="myGrooveWriter.undoCommand();"><i class="fa fa-undo"></i>&nbsp;&nbsp;Undo</span>
 				</span>
 				
-				<script>
-					if (myGrooveWriter.myGrooveUtils.is_touch_device()) {
-						document.write('<div id="advancedEditAnchor" onclick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">Advanced Edit<\/div>');
-					}
-				</script>
 			</div>
 			<div id="TopNav" class="fullWidthEle">	
 				<span id="logoTextUpperLeft"><img src="images/GScribe_Logo_word_stack.svg"></span>

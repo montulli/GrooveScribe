@@ -204,7 +204,9 @@
 	}
 	.buttonText {
 	}
-	
+	#undoButton {
+		font-size: 14px;
+	}
 	#NotationLine {
 		height: 35px;
 		text-align: center;
