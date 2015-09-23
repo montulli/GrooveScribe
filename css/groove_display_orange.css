@@ -45,10 +45,10 @@
 		padding-left: 0px;
 	}
 	.playerControlsRow {
-		/border: 1px solid red;
-		display: flex;
-		display: -webkit-flex;
+		/display: flex;
+		/display: -webkit-flex;
 		padding-left: 6px;
+		height: 48px;
 		flex-flow: flex-start;
 		flex-wrap: nowrap;
 		-webkit-flex-flow: flex-start;
@@ -56,6 +56,11 @@
 	}
 	.playerControlsRow.large, .playerControlsRow.small {
 		padding-left: 0px;
+	}
+	.midiPlayImageHolder {
+		display: inline-block;
+		height: 48px;
+		width: 48px;
 	}
 	.midiPlayImage, .midiRepeatImage, .midiExpandImage {
 		display: inline-block;
@@ -69,7 +74,7 @@
 		font-family: FontAwesome;
 		text-align: center;
 		line-height: 40px;
-		vertical-align: middle;
+		vertical-align: top;
 		border-radius: 50%;
 		-webkit-flex: none;
 		flex: none;
@@ -113,8 +118,10 @@
 	.tempoAndProgress {
 		display: inline-block;
 		padding-top: 2px;
-		width: 50%;
+		width: 60%;
+		width: calc(100% - 190px);
 		height: 46px;
+		vertical-align: top;
 		flex: 1;
 		-webkit-flex: 1;
 	}
@@ -126,14 +133,16 @@
 		display: flex;
 		display: -webkit-flex;
 		height: 22px;
+		vertical-align: top;
 		flex-flow: flex-start;
 		flex-wrap: nowrap;
 	}
 	.tempoInput, .swingInput {
 		background-color: 3f91e5;
+		vertical-align: top;
 		padding: 0px;
 		margin-top: 4px;
-		margin-right: 2%;
+		margin-right: 10px;
 		color: #66c0fe;
 		/width: 90%;
 		flex: 1;
@@ -145,6 +154,7 @@
 	.tempoLabel, .swingLabel {
 		text-align: right;
 		padding-top: 0px;
+		vertical-align: top;
 		font-size: 16px;
 		width: 60px;
 		color: #999999;
@@ -153,6 +163,7 @@
 	}
 	.tempoOutput, .swingOutput {
 		display: inline-block;
+		vertical-align: top;
 		text-align: left;
 		padding-top: 0px;
 		font-size: 16px;
@@ -192,6 +203,7 @@
 		padding-top: 4px;
 		text-align: left;
 		line-height: 40px;
+		vertical-align: top;
 		flex: none;
 	}
 	.MIDIPlayTime.small {
@@ -310,11 +322,12 @@ input[type=range]::-ms-fill-upper {
 }
 input[type=range]::-ms-thumb {
   border: 1px solid #444444;
-  height: 18px;
-  width: 18px;
-  border-radius: 20px;
+  height: 16px;
+  width: 16px;
+  border-radius: 18px;
   background: #888888;
   cursor: pointer;
+  margin-top: 0px;
 }
 input[type=range]:active::-moz-range-thumb {
 	background: #fff;

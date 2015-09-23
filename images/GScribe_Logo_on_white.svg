@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<svg width="360" height="125" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+<svg width="360" height="125" viewbox="0 0 360 125" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
  <g>
   <title>Layer 1</title>
   <rect fill="black" id="svg_1" height="125" width="125" y="0" x="0"/>
