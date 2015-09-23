@@ -242,7 +242,15 @@ input[type=range] {
   border-radius: 8px;
 }
 
+/* MSIE hacks for range sliders */
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+	input[type=range] { 
+		margin-top: 0px; 
+		background: #222222;
+		height: 24px; 
+	}
+}
+@supports (-ms-accelerator:true) {
 	input[type=range] { 
 		margin-top: 0px; 
 		background: #222222;
