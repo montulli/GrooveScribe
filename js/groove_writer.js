@@ -117,7 +117,11 @@ function GrooveWriter() { "use strict";
 	}
 
 	function play_single_note_for_note_setting(note_val) {
-		MIDI.WebAudio.noteOn(9, note_val, constant_OUR_MIDI_VELOCITY_NORMAL, 0);	
+		if(MIDI.WebAudio) {
+			MIDI.WebAudio.noteOn(9, note_val, constant_OUR_MIDI_VELOCITY_NORMAL, 0);	
+		} else if(MIDI.AudioTag) {
+			MIDI.AudioTag.noteOn(9, note_val, constant_OUR_MIDI_VELOCITY_NORMAL, 0);	
+		}
 	}
 	
 	// returns the ABC notation for the snare state
