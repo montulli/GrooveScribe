@@ -57,11 +57,6 @@
 	.playerControlsRow.large, .playerControlsRow.small {
 		padding-left: 0px;
 	}
-	.midiPlayImageHolder {
-		display: inline-block;
-		height: 48px;
-		width: 48px;
-	}
 	.midiPlayImage, .midiRepeatImage, .midiExpandImage {
 		display: inline-block;
 		width: 40px;
