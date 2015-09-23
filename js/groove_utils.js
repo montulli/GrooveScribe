@@ -2679,15 +2679,27 @@ function GrooveUtils() {
 		if (html_element)
 			html_element.innerHTML = root.HTMLForMidiPlayer(expandable);
 
+		var browserInfo = root.getBrowserInfo();
+		var isIE10 = false;
+		if(browserInfo.browser == "MSIE" && browserInfo.version < 12)
+			isIE10 = true;
+			
 		// now attach the onclicks
 		html_element = document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex);
 		if (html_element) {
-			html_element.addEventListener("input", root.tempoUpdateEvent, false);
+			
+			if(isIE10)
+				html_element.addEventListener("click", root.tempoUpdateEvent, false);
+			else
+				html_element.addEventListener("input", root.tempoUpdateEvent, false);
 		}
 
 		html_element = document.getElementById("swingInput" + root.grooveUtilsUniqueIndex);
 		if (html_element) {
-			html_element.addEventListener("input", root.swingUpdateEvent, false);
+			if(isIE10)
+				html_element.addEventListener("click", root.swingUpdateEvent, false);
+			else
+				html_element.addEventListener("input", root.swingUpdateEvent, false);
 		}
 
 		html_element = document.getElementById("midiRepeatImage" + root.grooveUtilsUniqueIndex);
