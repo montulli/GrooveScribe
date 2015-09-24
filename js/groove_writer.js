@@ -3023,6 +3023,12 @@ function GrooveWriter() { "use strict";
 				debugOutput.innerHTML += "<div>This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".<br>" + root.browserInfo.uastring + "<br>Running on: " + root.browserInfo.platform + "</div>";
 			}
 		}
+		
+		if(root.myGrooveUtils.is_touch_device()) {
+			setTimeout(function () {
+				window.scrollTo(0, 1);
+			}, 1000);
+		}
 	};
 
 	// called right before the midi reloads for the next replay
