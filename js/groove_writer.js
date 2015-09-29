@@ -3486,8 +3486,8 @@ function GrooveWriter() { "use strict";
 							this.url = document.getElementById("fullURLTextField").value;
 							this.description = "Check out this groove.";
 						},
-						app_id : "839699029418014"    // staging id
-						//app_id : "1499163983742002"   // MLDC id
+						//app_id : "839699029418014"    // staging id
+						app_id : "1499163983742002"   // MLDC id
 					},
 					google_plus : {
 						before : function () {
