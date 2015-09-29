@@ -6,9 +6,14 @@
     <head>
 		<title>Groove Scribe</title>
 		
-		<meta property="og:image" content="https://mikeslessons.com/groove/images/GScribe_Logo_on_orange.png">
+		<!--meta property="og:image" content="https://mikeslessons.com/groove/images/GScribe_Logo_on_orange.png"> -->
 		<meta property="og:description" content="Groove Scribe allows drummers to easily create grooves, listen, share, print sheet music, and more. Use the Groove Scribe to create new grooves, figure out the groove to your favorite song, or write down the groove to your latest tune."/>
 		<meta property="og:site_name" content="GrooveScribe at MikesLessons.com"/>
+		
+		<script>
+			document.write('<meta property="og:image" content="https://gentle-spire-7544.herokuapp.com/' + window.location.search + '">');
+		</script>
+		<meta property="og:image" content="https://mikeslessons.com/groove/images/GScribe_Logo_on_orange.png">
 		
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.3.0/css/font-awesome.min.css">
 	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css">
