@@ -6,10 +6,12 @@
 			body {
 				padding: 0px;
 				margin: 0px;
+				width: 1200px;
+				height: 600px;
 			}
 			.svgTarget svg {
-				width: 1200px !important;
-				height: 501px !important;
+				width: 100% !important;
+				height: 220px !important;
 				vertical-align: bottom;
 			}
 			#imgContainer {
@@ -23,9 +25,11 @@
     <body>
 	<img src="images/GScribe_Logo_on_white.svg" width="360" height="125">
 	<div id="imgContainer">
-	<script>
-		GrooveDisplay.AddGrooveDisplayToPage(location.search, false, false);
-	</script>
+		<div id="heightNotKnown">
+			<script>
+				GrooveDisplay.AddGrooveDisplayToPage(location.search, false, false);
+			</script>
+		</div>
 	</div>
 </html>
 	
