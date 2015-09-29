@@ -3,17 +3,29 @@
     <head>
 		<title>Groove Scribe Image</title>
 		<style>
+			body {
+				padding: 0px;
+				margin: 0px;
+			}
 			.svgTarget svg {
 				width: 100% !important;
 				height: 100% !important;
+				vertical-align: bottom;
+			}
+			#imgContainer {
+				height: 1200px;
+				height: 501px;
 			}
 		</style>
 		<script src="./js/groove_display.js"></script>
 		
     </head>
     <body>
+	<img src="images/GScribe_Logo_on_white.svg" width="360" height="125">
+	<div id="imgContainer">
 	<script>
 		GrooveDisplay.AddGrooveDisplayToPage(location.search, false, false);
 	</script>
+	</div>
 </html>
 	
