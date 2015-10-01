@@ -454,7 +454,7 @@
 		color: transparent;
 		cursor: pointer;
 	}
-	.sticking_1, .sticking_e, .sticking_and, .sticking_a {
+	.sticking_count {
 		position: absolute; top: 0px; left: 6px;
 		font-size: 24px;
 		color: transparent;

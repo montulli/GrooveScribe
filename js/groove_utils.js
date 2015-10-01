@@ -38,10 +38,7 @@ var constant_DEFAULT_TEMPO = 80;
 var constant_ABC_STICK_R = '"R"x';
 var constant_ABC_STICK_L = '"L"x';
 var constant_ABC_STICK_BOTH = '"R/L"x';
-var constant_ABC_STICK_1 = '"1"x';
-var constant_ABC_STICK_E = '"e"x';
-var constant_ABC_STICK_AND = '"&"x';
-var constant_ABC_STICK_A = '"a"x';
+var constant_ABC_STICK_COUNT = '"count"x';
 var constant_ABC_STICK_OFF = '""x';
 var constant_ABC_HH_Ride = "^A'";
 var constant_ABC_HH_Crash = "^c'";
@@ -448,30 +445,16 @@ function GrooveUtils() {
 	function tablatureToABCNotationPerNote(drumType, tablatureChar) {
 
 		switch (tablatureChar) {
-		case "1":
-			if (drumType == "Stickings")
-				return constant_ABC_STICK_1;
-			break;
-		case "$":
-			if (drumType == "Stickings")
-				return constant_ABC_STICK_AND;
-			break;
-		case "a":
-			if (drumType == "Stickings")
-				return constant_ABC_STICK_A;
-			break;
 		case "b":
 		case "B":
 			if (drumType == "Stickings")
 				return constant_ABC_STICK_BOTH;
 			break;
 		case "c":
-			if (drumType == "H")
-				return constant_ABC_HH_Crash;
-			break;
-		case "e":
 			if (drumType == "Stickings")
-				return constant_ABC_STICK_E;
+				return constant_ABC_STICK_COUNT;
+			else if (drumType == "H")
+				return constant_ABC_HH_Crash;
 			break;
 		case "f":
 			if (drumType == "S")
@@ -596,17 +579,8 @@ function GrooveUtils() {
 		case constant_ABC_STICK_OFF:
 			tabChar = "-";
 			break;
-		case constant_ABC_STICK_1:
-			tabChar = "1";
-			break;
-		case constant_ABC_STICK_E:
-			tabChar = "e";
-			break;
-		case constant_ABC_STICK_AND:
-			tabChar = "$";
-			break;
-		case constant_ABC_STICK_A:
-			tabChar = "a";
+		case constant_ABC_STICK_COUNT:
+			tabChar = "c";
 			break;
 		case constant_ABC_HH_Ride:
 			tabChar = "r";
@@ -1494,13 +1468,97 @@ function GrooveUtils() {
 
 		return mapping_array;
 	};
+	
+	// function to return 1,e,&,a or 2,3,4,5,6, etc...
+	root.figure_out_sticking_count_for_index = function(index, notes_per_measure, sub_division) {
+		
+		// figure out the count state by looking at the id and the subdivision
+		var note_index = index % notes_per_measure;
+		var new_state = 0;
+		switch(sub_division) {
+			case 4:
+				new_state = note_index;   // 1,2,3,4,5, etc.
+				break;
+			case 8:
+				if(note_index % 2 === 0)
+					new_state = Math.floor(note_index / 2) + 1;  // 1,2,3,4,5, etc.
+				else
+					new_state = "&";
+				break;
+			case 16:
+				if(note_index % 4 === 0)
+					new_state = Math.floor(note_index / 4) + 1;  // 1,2,3,4,5, etc.
+				else if(note_index % 4 === 1)
+					new_state = "e";
+				else if(note_index % 4 === 2)
+					new_state = "&";
+				else
+					new_state = "a";
+				break;
+			case 32: 
+				if(note_index % 4 === 0)
+					new_state = Math.floor(note_index / 8) + 1;  // 1,1,2,2,3,3,4,4,5,5, etc.
+				else if(note_index % 4 === 1)
+					new_state = "e";
+				else if(note_index % 4 === 2)
+					new_state = "&";
+				else
+					new_state = "a";
+				break;
+			case 12:  // 8th triplets
+				if(note_index % 3 === 0)
+					new_state = Math.floor(note_index / 3) + 1;  // 1,2,3,4,5, etc.
+				else if(note_index % 3 == 1)
+					new_state = "e";
+				else
+					new_state = "&";
+				break;
+			case 24:  // 16th triplets
+				if(note_index % 3 === 0)
+					new_state = Math.floor(note_index / 6) + 1;  // 1,2,3,4,5, etc.
+				else if(note_index % 3 == 1)
+					new_state = "e";
+				else
+					new_state = "&";
+				break;
+		}
+		
+		return new_state;
+	};
+	
+	// converts the symbol for a sticking count to an actual count based on the time signature
+	root.convert_sticking_counts_to_actual_counts = function(sticking_array, notes_per_measure, timeSigTop, timeSigBottom) {
+		
+		var cur_div_of_array = 32;
+		if(root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom))
+			cur_div_of_array = 24;
+		
+		var actual_notes_per_measure_in_this_array = root.calc_notes_per_measure(cur_div_of_array, timeSigTop, timeSigBottom);
+		
+		var sub_division = (notes_per_measure / timeSigTop ) * timeSigBottom;
+		
+		for(var i in sticking_array) {
+			if(sticking_array[i] == constant_ABC_STICK_COUNT) {
+				// convert the COUNT into an actual letter or number
+				// convert the index into what it would have been if the array was "notes_per_measure" sized
+				var adjusted_index = Math.floor(i / (actual_notes_per_measure_in_this_array/notes_per_measure));
+				var new_count = root.figure_out_sticking_count_for_index(adjusted_index, notes_per_measure, sub_division);
+				var new_count_string = '"' + new_count + '"x';
+				sticking_array[i] = new_count_string;
+			}
+		}
+	};
 
 	// create ABC from note arrays
 	// The Arrays passed in must be 32 or 24 notes long
-	// notes_per_measure denotes the number of notes that _should_ be in the measure even though the arrays are always large
+	// notes_per_measure denotes the number of notes that _should_ be in the measure even though the arrays are always scaled up and large (24 or 32)
 	root.create_ABC_from_snare_HH_kick_arrays = function (sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
 
-		if ((timeSigTop == 2 || timeSigTop == 4)  && timeSigBottom == 4  && (notes_per_measure % 3) === 0) { // triplets
+		// convert sticking count symbol to the actual count
+		// do this right before ABC output so it can't every get encoded into something that gets saved.
+		root.convert_sticking_counts_to_actual_counts(sticking_array, notes_per_measure, timeSigTop, timeSigBottom);
+	
+		if(root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom)) {
 			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);
 		} else {
 			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);

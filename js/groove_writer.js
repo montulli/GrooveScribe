@@ -25,7 +25,7 @@
 /*jslint browser:true devel:true */
 
 /*global gapi, GrooveUtils, Midi, Share */
-/*global MIDI, constant_MAX_MEASURES, constant_DEFAULT_TEMPO, constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_BOTH, constant_ABC_STICK_OFF, constant_ABC_STICK_1, constant_ABC_STICK_E, constant_ABC_STICK_AND, constant_ABC_STICK_A, constant_ABC_HH_Ride, constant_ABC_HH_Crash, constant_ABC_HH_Stacker, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Flam, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T2_Normal, constant_ABC_T3_Normal, constant_ABC_T4_Normal, constant_NUMBER_OF_TOMS, constant_ABC_OFF, constant_OUR_MIDI_VELOCITY_NORMAL, constant_OUR_MIDI_VELOCITY_ACCENT, constant_OUR_MIDI_VELOCITY_GHOST, constant_OUR_MIDI_METRONOME_1, constant_OUR_MIDI_METRONOME_NORMAL, constant_OUR_MIDI_HIHAT_NORMAL, constant_OUR_MIDI_HIHAT_OPEN, constant_OUR_MIDI_HIHAT_ACCENT, constant_OUR_MIDI_HIHAT_CRASH, constant_OUR_MIDI_HIHAT_STACKER, constant_OUR_MIDI_HIHAT_RIDE, constant_OUR_MIDI_HIHAT_FOOT, constant_OUR_MIDI_SNARE_NORMAL, constant_OUR_MIDI_SNARE_ACCENT, constant_OUR_MIDI_SNARE_GHOST, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_FLAM, constant_OUR_MIDI_KICK_NORMAL, constant_OUR_MIDI_TOM1_NORMAL, constant_OUR_MIDI_TOM2_NORMAL, constant_OUR_MIDI_TOM3_NORMAL, constant_OUR_MIDI_TOM4_NORMAL */
+/*global MIDI, constant_MAX_MEASURES, constant_DEFAULT_TEMPO, constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_BOTH, constant_ABC_STICK_OFF, constant_ABC_STICK_COUNT, constant_ABC_HH_Ride, constant_ABC_HH_Crash, constant_ABC_HH_Stacker, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Flam, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T2_Normal, constant_ABC_T3_Normal, constant_ABC_T4_Normal, constant_NUMBER_OF_TOMS, constant_ABC_OFF, constant_OUR_MIDI_VELOCITY_NORMAL, constant_OUR_MIDI_VELOCITY_ACCENT, constant_OUR_MIDI_VELOCITY_GHOST, constant_OUR_MIDI_METRONOME_1, constant_OUR_MIDI_METRONOME_NORMAL, constant_OUR_MIDI_HIHAT_NORMAL, constant_OUR_MIDI_HIHAT_OPEN, constant_OUR_MIDI_HIHAT_ACCENT, constant_OUR_MIDI_HIHAT_CRASH, constant_OUR_MIDI_HIHAT_STACKER, constant_OUR_MIDI_HIHAT_RIDE, constant_OUR_MIDI_HIHAT_FOOT, constant_OUR_MIDI_SNARE_NORMAL, constant_OUR_MIDI_SNARE_ACCENT, constant_OUR_MIDI_SNARE_GHOST, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_FLAM, constant_OUR_MIDI_KICK_NORMAL, constant_OUR_MIDI_TOM1_NORMAL, constant_OUR_MIDI_TOM2_NORMAL, constant_OUR_MIDI_TOM3_NORMAL, constant_OUR_MIDI_TOM4_NORMAL */
 
 // GrooveWriter class.   The only one in this file.
 
@@ -451,17 +451,9 @@ function GrooveWriter() { "use strict";
 		document.getElementById("sticking_right" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("sticking_left" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("sticking_both" + id).style.color = constant_note_hidden_color_rgb;
-		document.getElementById("sticking_1" + id).style.color = constant_note_hidden_color_rgb;
-		document.getElementById("sticking_e" + id).style.color = constant_note_hidden_color_rgb;
-		document.getElementById("sticking_and" + id).style.color = constant_note_hidden_color_rgb;
-		document.getElementById("sticking_a" + id).style.color = constant_note_hidden_color_rgb;
-
-		if(!isNaN(new_state) && (new_state % 1 === 0)) {
-			// is a number and an integer
-			document.getElementById("sticking_1" + id).style.color = constant_sticking_count_on_color_rgb;
-
-		} else { 
-			switch (new_state) {
+		document.getElementById("sticking_count" + id).style.color = constant_note_hidden_color_rgb;
+		
+		switch (new_state) {
 			case "off":
 				// show them all greyed out.
 				document.getElementById("sticking_right" + id).style.color = constant_sticking_right_off_color_rgb;
@@ -476,19 +468,16 @@ function GrooveWriter() { "use strict";
 			case "both":
 				document.getElementById("sticking_both" + id).style.color = constant_sticking_both_on_color_rgb;
 				break;
-			case "e":
-				document.getElementById("sticking_e" + id).style.color = constant_sticking_count_on_color_rgb;
+			case "count":
+				var count_state = root.myGrooveUtils.figure_out_sticking_count_for_index(id, class_notes_per_measure, class_time_division);
+				
+				document.getElementById("sticking_count" + id).style.color = constant_sticking_count_on_color_rgb;
+				document.getElementById("sticking_count" + id).innerHTML = "" + count_state;
 				break;
-			case "and":
-				document.getElementById("sticking_and" + id).style.color = constant_sticking_count_on_color_rgb;
-				break;
-			case "a":
-				document.getElementById("sticking_a" + id).style.color = constant_sticking_count_on_color_rgb;
-				break;
+				
 			default:
 				console.log("Bad state in set_sticking_state: " + new_state);
 				break;
-			}
 		}
 	}
 
@@ -504,10 +493,7 @@ function GrooveWriter() { "use strict";
 		var right_ele = document.getElementById("sticking_right" + id);
 		var left_ele = document.getElementById("sticking_left" + id);
 		var both_ele = document.getElementById("sticking_both" + id);
-		var count_1_ele = document.getElementById("sticking_1" + id);
-		var count_e_ele = document.getElementById("sticking_e" + id);
-		var count_and_ele = document.getElementById("sticking_and" + id);
-		var count_a_ele = document.getElementById("sticking_a" + id);
+		var count_ele = document.getElementById("sticking_count" + id);
 		
 		if (both_ele.style.color == constant_sticking_both_on_color_rgb) {
 			// both is on 
@@ -528,30 +514,12 @@ function GrooveWriter() { "use strict";
 				return constant_ABC_STICK_L;
 			else if (returnType == "URL")
 				return "L";
-		} else  if(count_1_ele.style.color == constant_sticking_count_on_color_rgb) { 
+		} else  if(count_ele.style.color == constant_sticking_count_on_color_rgb) { 
 
 			if (returnType == "ABC")
-				return constant_ABC_STICK_1;
+				return constant_ABC_STICK_COUNT;
 			else if (returnType == "URL")
-				return "1";
-		} else  if(count_e_ele.style.color == constant_sticking_count_on_color_rgb) { 
-
-			if (returnType == "ABC")
-				return constant_ABC_STICK_E;
-			else if (returnType == "URL")
-				return "e";
-		} else  if(count_and_ele.style.color == constant_sticking_count_on_color_rgb) { 
-
-			if (returnType == "ABC")
-				return constant_ABC_STICK_AND;
-			else if (returnType == "URL")
-				return "$";
-		} else  if(count_a_ele.style.color == constant_sticking_count_on_color_rgb) { 
-
-			if (returnType == "ABC")
-				return constant_ABC_STICK_A;
-			else if (returnType == "URL")
-				return "a";
+				return "c";
 		} else {
 			// none selected.  Call it off
 			if (returnType == "ABC")
@@ -562,6 +530,8 @@ function GrooveWriter() { "use strict";
 
 		return false; // should never get here
 	}
+	
+	
 
 	function sticking_rotate_state(id) {
 		var new_state = false;
@@ -576,47 +546,8 @@ function GrooveWriter() { "use strict";
 			new_state = "left";
 		} else if (sticking_state == constant_ABC_STICK_L) {
 			new_state = "both";
-		} else if (0 && sticking_state == constant_ABC_STICK_BOTH) {
-			// figure out the count state by looking at the id and the subdivision
-			var note_index = id % class_notes_per_measure;
-			switch(class_time_division) {
-				case 4:
-					new_state = note_index;   // 1,2,3,4,5, etc.
-					break;
-				case 8:
-					if(note_index % 2 === 0)
-						new_state = Math.floor(note_index / 2) + 1;  // 1,2,3,4,5, etc.
-					else
-						new_state = "and";
-					break;
-				case 16:
-				case 32:  // 32nd notes are the same
-					if(note_index % 4 === 0)
-						new_state = Math.floor(note_index / 4) + 1;  // 1,2,3,4,5, etc.
-					else if(note_index % 4 === 1)
-						new_state = "e";
-					else if(note_index % 4 === 2)
-						new_state = "and";
-					else
-						new_state = "a";
-					break;
-				case 12:  // 8th triplets
-					if(note_index % 3 === 0)
-						new_state = Math.floor(note_index / 3) + 1;  // 1,2,3,4,5, etc.
-					else if(note_index % 3 == 1)
-						new_state = "e";
-					else
-						new_state = "and";
-					break;
-				case 24:  // 16th triplets
-					if(note_index % 3 === 0)
-						new_state = Math.floor(note_index / 6) + 1;  // 1,2,3,4,5, etc.
-					else if(note_index % 3 == 1)
-						new_state = "e";
-					else
-						new_state = "and";
-					break;
-			}
+		} else if (sticking_state == constant_ABC_STICK_BOTH) {
+			new_state = "count";
 		} else {
 			new_state = "off";
 		}
@@ -1144,30 +1075,52 @@ function GrooveWriter() { "use strict";
 		// the last boolean in the setFunction should only be true on the first call (plays a sound)
 		var startIndex = class_notes_per_measure * (class_measure_for_note_label_click - 1);
 		for (var i = startIndex; i - startIndex < class_notes_per_measure; i++) {
-			if (action == "all_off")
+			if (action == "all_off") {
 				setFunction(i, "off", i == startIndex);
-			else if (instrument == "stickings" && action == "all_right")
-				setFunction(i, "right", i == startIndex);
-			else if (instrument == "stickings" && action == "all_left")
-				setFunction(i, "left", i == startIndex);
-			else if (instrument == "stickings" && action == "alternate")
-				setFunction(i, (i % 2 === 0 ? "right" : "left"), i == startIndex);
-			else if (instrument == "hh" && action == "downbeats")
+			
+			} else if (instrument == "stickings") {
+				switch(action) {
+					case "all_right":
+						set_sticking_state(i, "right", i == startIndex);
+						break;
+					case "all_left":
+						set_sticking_state(i, "left", i == startIndex);
+						break;
+					case "alternate":
+						set_sticking_state(i, (i % 2 === 0 ? "right" : "left"), i == startIndex);
+						break;
+					case "all_count":
+						set_sticking_state(i, "count", i == startIndex);
+						break;
+					default:
+						console.log("Bad sticking case in noteLabelPopupClick");
+						break;
+				}
+			} else if (instrument == "hh" && action == "downbeats") {
 				setFunction(i, (i % 2 === 0 ? "normal" : "off"), i == startIndex);
-			else if (instrument == "hh" && action == "upbeats")
+				
+			} else if (instrument == "hh" && action == "upbeats") {
 				setFunction(i, (i % 2 === 0 ? "off" : "normal"), i == (startIndex + 1));
-			else if (instrument == "snare" && action == "all_on")
+				
+			} else if (instrument == "snare" && action == "all_on") {
 				setFunction(i, "accent", i == startIndex);
-			else if (instrument == "snare" && action == "all_on_normal")
+				
+			} else if (instrument == "snare" && action == "all_on_normal") {
 				setFunction(i, "normal", i == startIndex);
-			else if (instrument == "snare" && action == "all_on_ghost")
+				
+			} else if (instrument == "snare" && action == "all_on_ghost") {
 				setFunction(i, "ghost", i == startIndex);
-			else if (action == "all_on")
+				
+			} else if (action == "all_on") {
 				setFunction(i, "normal", i == startIndex);
-			else if (action == "cancel")
+				
+			} else if (action == "cancel") {
 				continue; // do nothing.
-			else
+				
+			} else {
 				console.log("Bad IF case in noteLabelPopupClick");
+				
+			}
 		}
 
 		class_measure_for_note_label_click = 0; // reset
@@ -3173,7 +3126,10 @@ function GrooveWriter() { "use strict";
 				setFunction(displayIndex, "a", false);
 				break;
 			case "c":
-				setFunction(displayIndex, "crash", false);
+				if (drumType == "Stickings")
+					setFunction(displayIndex, "count", false);
+				else
+					setFunction(displayIndex, "crash", false);
 				break;
 			case "e":
 				setFunction(displayIndex, "e", false);
@@ -3276,17 +3232,8 @@ function GrooveWriter() { "use strict";
 			case constant_ABC_STICK_BOTH:
 				setFunction(displayIndex, "both", false);
 				break;
-			case constant_ABC_STICK_1:
-				setFunction(displayIndex, "1", false);
-				break;
-			case constant_ABC_STICK_E:
-				setFunction(displayIndex, "e", false);
-				break;
-			case constant_ABC_STICK_AND:
-				setFunction(displayIndex, "and", false);
-				break;
-			case constant_ABC_STICK_A:
-				setFunction(displayIndex, "a", false);
+			case constant_ABC_STICK_COUNT:
+				setFunction(displayIndex, "count", false);
 				break;
 			case constant_ABC_STICK_OFF:
 				setFunction(displayIndex, "off", false);
@@ -3792,10 +3739,7 @@ function GrooveWriter() { "use strict";
 															<div class="sticking_right note_part"  id="sticking_right' + i + '"  onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'sticking\'">R</div>\n\
 															<div class="sticking_left note_part"   id="sticking_left' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">L</div>\n\
 															<div class="sticking_both note_part"   id="sticking_both' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">R/L</div>\n\
-															<div class="sticking_1 note_part"   id="sticking_1' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">1</div>\n\
-															<div class="sticking_e note_part"   id="sticking_e' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">e</div>\n\
-															<div class="sticking_and note_part"   id="sticking_and' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">&amp;</div>\n\
-															<div class="sticking_a note_part"   id="sticking_a' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">a</div>\n\
+															<div class="sticking_count note_part"   id="sticking_count' + i + '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' + i + ')">C</div>\n\
 														</div>\n\
 													');
 
