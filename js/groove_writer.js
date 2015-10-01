@@ -469,7 +469,7 @@ function GrooveWriter() { "use strict";
 				document.getElementById("sticking_both" + id).style.color = constant_sticking_both_on_color_rgb;
 				break;
 			case "count":
-				var count_state = root.myGrooveUtils.figure_out_sticking_count_for_index(id, class_notes_per_measure, class_time_division);
+				var count_state = root.myGrooveUtils.figure_out_sticking_count_for_index(id, class_notes_per_measure, class_time_division, class_note_value_per_measure);
 				
 				document.getElementById("sticking_count" + id).style.color = constant_sticking_count_on_color_rgb;
 				document.getElementById("sticking_count" + id).innerHTML = "" + count_state;

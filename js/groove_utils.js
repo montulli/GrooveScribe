@@ -1470,12 +1470,15 @@ function GrooveUtils() {
 	};
 	
 	// function to return 1,e,&,a or 2,3,4,5,6, etc...
-	root.figure_out_sticking_count_for_index = function(index, notes_per_measure, sub_division) {
+	root.figure_out_sticking_count_for_index = function(index, notes_per_measure, sub_division, time_sig_bottom) {
 		
 		// figure out the count state by looking at the id and the subdivision
 		var note_index = index % notes_per_measure;
 		var new_state = 0;
-		switch(sub_division) {
+		// 4/2 time changes the implied time from 4 up to 8, etc
+		// 6/8 time changes the implied time from 8 down to 4
+		var implied_sub_division = sub_division * (4/time_sig_bottom);
+		switch(implied_sub_division) {
 			case 4:
 				new_state = note_index + 1;   // 1,2,3,4,5, etc.
 				break;
@@ -1484,26 +1487,6 @@ function GrooveUtils() {
 					new_state = Math.floor(note_index / 2) + 1;  // 1,2,3,4,5, etc.
 				else
 					new_state = "&";
-				break;
-			case 16:
-				if(note_index % 4 === 0)
-					new_state = Math.floor(note_index / 4) + 1;  // 1,2,3,4,5, etc.
-				else if(note_index % 4 === 1)
-					new_state = "e";
-				else if(note_index % 4 === 2)
-					new_state = "&";
-				else
-					new_state = "a";
-				break;
-			case 32: 
-				if(note_index % 4 === 0)
-					new_state = Math.floor(note_index / 8) + 1;  // 1,1,2,2,3,3,4,4,5,5, etc.
-				else if(note_index % 4 === 1)
-					new_state = "e";
-				else if(note_index % 4 === 2)
-					new_state = "&";
-				else
-					new_state = "a";
 				break;
 			case 12:  // 8th triplets
 				if(note_index % 3 === 0)
@@ -1520,6 +1503,19 @@ function GrooveUtils() {
 					new_state = "e";
 				else
 					new_state = "&";
+				break;
+			case 16:
+			case 32:
+			default: 
+				var whole_note_interval = implied_sub_division/4;
+				if(note_index % 4 === 0)
+					new_state = Math.floor(note_index / whole_note_interval) + 1;  // 1,1,2,2,3,3,4,4,5,5, etc.
+				else if(note_index % 4 === 1)
+					new_state = "e";
+				else if(note_index % 4 === 2)
+					new_state = "&";
+				else
+					new_state = "a";
 				break;
 		}
 		
@@ -1542,7 +1538,7 @@ function GrooveUtils() {
 				// convert the COUNT into an actual letter or number
 				// convert the index into what it would have been if the array was "notes_per_measure" sized
 				var adjusted_index = Math.floor(i / (actual_notes_per_measure_in_this_array/notes_per_measure));
-				var new_count = root.figure_out_sticking_count_for_index(adjusted_index, notes_per_measure, sub_division);
+				var new_count = root.figure_out_sticking_count_for_index(adjusted_index, notes_per_measure, sub_division, timeSigBottom);
 				var new_count_string = '"' + new_count + '"x';
 				sticking_array[i] = new_count_string;
 			}
