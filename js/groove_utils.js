@@ -1477,7 +1477,7 @@ function GrooveUtils() {
 		var new_state = 0;
 		switch(sub_division) {
 			case 4:
-				new_state = note_index;   // 1,2,3,4,5, etc.
+				new_state = note_index + 1;   // 1,2,3,4,5, etc.
 				break;
 			case 8:
 				if(note_index % 2 === 0)
