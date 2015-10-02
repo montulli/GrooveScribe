@@ -150,6 +150,7 @@
 	#logoInSubdivision, #timeLabel, .subdivision, #advancedEditAnchor {
 		display: block;
 		cursor: pointer;
+		white-space: nowrap;
 		font-size: 12px;
 		font-weight: bold;
 		height: 48px;
@@ -756,7 +757,7 @@
 		font-family: monospace; 
 		font-size: 14px;
 	}
-	#fullURLPopup, #metronomeAutoSpeedupConfiguration {
+	#fullURLPopup, #metronomeAutoSpeedupConfiguration, #timeSigPopup {
 		/visibility: hidden;
 		display: none;
 		position:absolute; left:250px; top:250px; z-index:999;
@@ -764,6 +765,29 @@
 		width: 500px;
 		padding: 10px;
 		border: solid 5px #000;
+	}
+	#timeSigPopup {
+		font-size: 24px;
+	}
+	#timeSigPopupOptions {
+		margin-left: 30px;		
+	}
+	#timeSigPopupTimeSigTop {
+		font-size: 24px;
+		vertical-align: top;
+	}
+	#timeSigPopupTimeSigBottom {
+		font-size: 24px;
+	}
+	#timeSigPopupSlash {
+		font-size: 60px;
+	}
+	#timeSigPopupCancel {
+		font-size: 20px;
+	}
+	#timeSigPopupOK {
+		font-size: 20px;
+		float: right;
 	}
 	#fullURLCloseButton {
 		font-size: 120%;

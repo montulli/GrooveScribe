@@ -3396,6 +3396,34 @@ function GrooveWriter() { "use strict";
 		if (popup)
 			popup.style.display = "none";
 	};
+	
+	root.timeSigPopupOpen = function(type) {
+		if(root.myGrooveUtils.debugMode) {
+			var popup = document.getElementById("timeSigPopup");
+
+			if (popup)
+				popup.style.display = "block";
+		}
+	};
+	
+	root.timeSigPopupClose = function(type) {
+		var popup = document.getElementById("timeSigPopup");
+
+		if (popup)
+			popup.style.display = "none";
+		
+		// ignore type "cancel"
+		if(type == "ok") {
+			var newTimeSigTop = document.getElementById("timeSigPopupTimeSigTop").value;
+			var newTimeSigBottom = document.getElementById("timeSigPopupTimeSigBottom").value;
+
+			class_num_beats_per_measure = newTimeSigTop;
+			class_note_value_per_measure = newTimeSigBottom;
+			root.changeDivision(class_time_division);   // use this function because it will relayout everything
+			
+			document.getElementById("timeLabel").innerHTML = "<sup>" + newTimeSigTop + "</sup>/<sub>" + newTimeSigBottom + "</sup> TIME";
+		}
+	};
 
 	root.updateRangeLabel = function (event, idToUpdate) {
 		var element = document.getElementById(idToUpdate);

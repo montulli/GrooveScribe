@@ -71,7 +71,7 @@
 			<div id="LeftHandNav">
 				<span id="divisionButtonContainer">
 					<span id="logoInSubdivision"><img src="images/GScribe_Logo_lone_g.svg"></span>
-					<span id="timeLabel">TIME</span>
+					<span id="timeLabel" onclick="myGrooveWriter.timeSigPopupOpen();">TIME</span>
 					<span class="subdivision" id="subdivision_4ths"  onclick="myGrooveWriter.changeDivision(4);"><span class="buttonFraction"><sup>1</sup>/<sub>4</sub></span></span>
 					<span class="subdivision" id="subdivision_8ths"  onclick="myGrooveWriter.changeDivision(8);"><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span></span>
 					<span class="subdivision" id="subdivision_16ths" onclick="myGrooveWriter.changeDivision(16);"><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span></span>
@@ -211,7 +211,7 @@
 		</div>
 
 		
-		<!-- context menu that will pop up over notes in advaced edit more -->
+		<!-- context menu that will pop up over notes in advaced edit mode or right click -->
 		<div class="noteContextMenu">
 			<ul id="metronomeOptionsContextMenu" class="list">
 				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuSolo"      onclick='myGrooveWriter.metronomeOptionsMenuPopupClick("Solo");'     >Solo</li>
@@ -332,6 +332,40 @@
 			</script>
 		</div>	
 		
+		<!-- dialog for the TIME label, hidden by default -->
+		<div id="timeSigPopup">
+			<br>
+			<b>Choose a <a href="https://en.wikipedia.org/wiki/Time_signature" target="_blank">time signature</a>: </b> 
+			<span id="timeSigPopupOptions">
+			 <select id="timeSigPopupTimeSigTop">
+			  <option value="2">2</option>
+			  <option value="3">3</option>
+			  <option selected value="4">4</option>
+			  <option value="5">5</option>
+			  <option value="6">6</option>
+			  <option value="7">7</option>
+			  <option value="8">8</option>
+			  <option value="9">9</option>
+			  <option value="10">10</option>
+			  <option value="11">11</option>
+			  <option value="12">12</option>
+			  <option value="13">13</option>
+			  <option value="14">14</option>
+			  <option value="15">15</option>
+			</select> 
+			<b id="timeSigPopupSlash">/</b>
+			<select id="timeSigPopupTimeSigBottom">
+			  <option value="2">2</option>
+			  <option selected value="4">4</option>
+			  <option value="8">8</option>
+			  <option value="16">16</option>
+			</select> 
+			</span>
+			<br>
+			<br>
+			<button id="timeSigPopupCancel" onclick="myGrooveWriter.timeSigPopupClose('cancel');">CANCEL</button>
+			<button id="timeSigPopupOK" onclick="myGrooveWriter.timeSigPopupClose('ok');">OK</button>
+		</div>
 		
 		<!-- this is used by the share/save button, and is hidden by default -->
 		<div id="fullURLPopup">
