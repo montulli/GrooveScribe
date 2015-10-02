@@ -95,11 +95,17 @@
 		color: #68c2ff;
 		transform: scale(.8);
 	}
+	.midiPlayImage:before   { 
+		color: #DD4444;
+	 	content: "\f05e";
+	} 
 	.midiPlayImage.Stopped:before ,  .midiPlayImage.Paused:before   { 
-	 	letter-spacing: -3px; 
+	 	color: #FFF;
+		letter-spacing: -3px; 
 		content: "\f04b";
 	} 
 	.midiPlayImage.Playing:before  { 
+		color: #FFF;
 		content: "\f04c"; 
 	} 
 	.midiExpandImage.small:before   { 
