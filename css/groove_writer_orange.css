@@ -150,7 +150,6 @@
 	#logoInSubdivision, #timeLabel, .subdivision, #advancedEditAnchor {
 		display: block;
 		cursor: pointer;
-		white-space: nowrap;
 		font-size: 12px;
 		font-weight: bold;
 		height: 48px;
@@ -597,6 +596,10 @@
 	}
 	#permutationAnchor {
 		display: none;   /* disabled until it is done */
+		color: #555;
+	}
+	#permutationAnchor.enabled {
+		color: #FFF;
 	}
 	#PermutationOptions.displayed {
 		padding: 3px 0px 0px 10px;

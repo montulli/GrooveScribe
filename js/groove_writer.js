@@ -97,7 +97,7 @@ function GrooveWriter() { "use strict";
 
 	function selectButton(element) {
 		// highlight the new div by adding selected css class
-		if (element)
+		if (element && element.className.indexOf("buttonSelected") < 0 )
 			element.className += " buttonSelected";
 	}
 
@@ -765,6 +765,9 @@ function GrooveWriter() { "use strict";
 	// the user has clicked on the permutation menu
 	root.permutationAnchorClick = function (event) {
 
+		if(class_num_beats_per_measure != 4 || class_note_value_per_measure != 4)
+			return;   // permutations disabled except in 4/4 time
+	
 		var contextMenu = document.getElementById("permutationContextMenu");
 		if (contextMenu) {
 			var anchorPoint = document.getElementById("permutationAnchor");
@@ -920,7 +923,20 @@ function GrooveWriter() { "use strict";
 	};
 
 	function setupPermutationMenu() {
-		// do nothing for now
+		
+		if(class_num_beats_per_measure == 4 && class_note_value_per_measure == 4) {
+			
+			var anchorPoint = document.getElementById("permutationAnchor");			
+			if (anchorPoint && anchorPoint.className.indexOf("enabled") < 0 ) 
+				anchorPoint.className += " enabled";
+		
+		} else {
+			 // permutations disabled except in 4/4 time
+		 	var anchorPoint = document.getElementById("permutationAnchor");			
+			if (anchorPoint)
+				anchorPoint.className = anchorPoint.className.replace(" enabled", "");
+			root.permutationPopupClick("none");  // make sure permutation is off
+		}
 	}
 
 	root.permutationPopupClick = function (perm_type) {
@@ -2919,6 +2935,7 @@ function GrooveWriter() { "use strict";
 		root.setupWriterHotKeys(); // there are other hot keys in GrooveUtils for the midi player
 
 		setupPermutationMenu();
+		root.setTimeSigLabel();
 
 		// set the background and text color of the current subdivision
 		selectButton(document.getElementById("subdivision_" + class_notes_per_measure + "ths"));
@@ -3406,6 +3423,19 @@ function GrooveWriter() { "use strict";
 		}
 	};
 	
+	root.setTimeSigLabel = function() {
+		
+		
+		// turn on/off special features that are only available in 4/4 time
+		if(class_num_beats_per_measure == 4 && class_note_value_per_measure == 4 ) {
+			document.getElementById("timeLabel").innerHTML = "TIME";
+		
+		} else {
+			document.getElementById("timeLabel").innerHTML = '<span><span class="buttonFraction"><sup>' + class_num_beats_per_measure + "</sup>/<sub>" + class_note_value_per_measure + "</sup></span>TIME</span>";
+		
+		}
+	}
+	
 	root.timeSigPopupClose = function(type) {
 		var popup = document.getElementById("timeSigPopup");
 
@@ -3420,8 +3450,6 @@ function GrooveWriter() { "use strict";
 			class_num_beats_per_measure = newTimeSigTop;
 			class_note_value_per_measure = newTimeSigBottom;
 			root.changeDivision(class_time_division);   // use this function because it will relayout everything
-			
-			document.getElementById("timeLabel").innerHTML = "<sup>" + newTimeSigTop + "</sup>/<sub>" + newTimeSigBottom + "</sup> TIME";
 		}
 	};
 
@@ -3673,9 +3701,11 @@ function GrooveWriter() { "use strict";
 		// highlight the new div
 		selectButton(document.getElementById("subdivision_" + class_time_division + "ths"));
 
-		// if the permutation menu is not "none" this will change the layout
-		// otherwise it should do nothing
+		// This may disable or enable the menu
 		setupPermutationMenu();
+		
+		// change the time label
+		root.setTimeSigLabel();
 
 		// enable or disable swing
 		root.myGrooveUtils.swingEnabled(root.myGrooveUtils.doesDivisionSupportSwing(newDivision));
