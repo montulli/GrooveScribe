@@ -2006,13 +2006,13 @@ function GrooveUtils() {
 					if (!isTriplets)
 						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by one sixteenth note
-					metronome_specific_index -= sixteenthNoteFrequency;
+					metronome_specific_index -= sixteenthNoteFrequency * 2;
 					break;
 				case "TA":
 					if (!isTriplets)
 						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by two sixteenth notes
-					metronome_specific_index -= (2 * sixteenthNoteFrequency);
+					metronome_specific_index -= (2 * (sixteenthNoteFrequency * 2));
 					break;
 				default:
 					console.log("bad case in MIDI_from_HH_Snare_Kick_Arrays");
