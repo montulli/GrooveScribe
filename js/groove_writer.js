@@ -94,17 +94,48 @@ function GrooveWriter() { "use strict";
 
 		return false;
 	}
+	
+	function addOrRemoveKeywordFromClass(tag_class, keyword, addElseRemove) {
+		var return_val = true;
+		
+		if (tag_class) {
+			
+			if(tag_class.className != undefined) {
+				if(addElseRemove) {
+					if( tag_class.className.indexOf(keyword) < 0 ) {
+						tag_class.className += " " + keyword;
+					}
+				} else {
+					tag_class.className = tag_class.className.replace(" " + keyword, "");
+				}
+			} else {
+				console.log("Warning in addOrRemoveKeywordFromClassName: null className for tag id: " + tag_class.id);
+				console.trace();
+				return_val = false;
+			}
+		} else {
+			console.log("Warning in addOrRemoveKeywordFromClassName: null tag_class passed in");
+			return_val = false;
+		}
+	
+		return return_val;
+	}
+	
+	function addOrRemoveKeywordFromClassById(tagId, keyword, addElseRemove) {
+		var tag_class = document.getElementById(tagId);
+		
+		if(!addOrRemoveKeywordFromClass(tag_class, keyword, addElseRemove))
+			console.log("Warning in addOrRemoveKeywordFromClassById bad ID: " + tagId);
+	}
 
 	function selectButton(element) {
 		// highlight the new div by adding selected css class
-		if (element && element.className.indexOf("buttonSelected") < 0 )
-			element.className += " buttonSelected";
+		addOrRemoveKeywordFromClass(element, "buttonSelected", true);
 	}
 
 	function unselectButton(element) {
 		// remove selected class if it exists
-		if (element)
-			element.className = element.className.replace(" buttonSelected", "");
+		addOrRemoveKeywordFromClass(element, "buttonSelected", false);
 	}
 
 	function is_snare_on(id) {
@@ -815,18 +846,15 @@ function GrooveWriter() { "use strict";
 
 	// figure out if the metronome options menu should be selected and change the UI
 	root.metronomeOptionsMenuSetSelectedState = function () {
-		var anchor = document.getElementById("metronomeOptionsAnchor");
-
-		if (anchor) {
-			if (root.myGrooveUtils.getMetronomeSolo() ||
-				class_metronome_auto_speed_up_active ||
-				root.myGrooveUtils.getMetronomeClickStart() != "1") {
-				// make menu look active
-				anchor.className += " selected";
-			} else {
-				// inactive
-				anchor.className = anchor.className.replace(new RegExp(' selected', 'g'), "");
-			}
+		
+		if (root.myGrooveUtils.getMetronomeSolo() ||
+			class_metronome_auto_speed_up_active ||
+			root.myGrooveUtils.getMetronomeClickStart() != "1") {
+			// make menu look active
+			addOrRemoveKeywordFromClassById("metronomeOptionsAnchor", "selected", true)
+		} else {
+			// inactive
+			addOrRemoveKeywordFromClassById("metronomeOptionsAnchor", "selected", false)
 		}
 	};
 
@@ -837,12 +865,12 @@ function GrooveWriter() { "use strict";
 			var current = root.myGrooveUtils.getMetronomeSolo();
 			if (!current) {
 				root.myGrooveUtils.setMetronomeSolo(true);
-				document.getElementById("metronomeOptionsContextMenuSolo").className += " menuChecked";
+				addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSolo", "menuChecked", true);
 				if (root.getMetronomeFrequency() === 0)
 					root.setMetronomeFrequency(4);
 			} else {
 				root.myGrooveUtils.setMetronomeSolo(false);
-				document.getElementById("metronomeOptionsContextMenuSolo").className = document.getElementById("metronomeOptionsContextMenuSolo").className.replace(new RegExp(' menuChecked', 'g'), "");
+				addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSolo", "menuChecked", false);
 			}
 			root.myGrooveUtils.midiNoteHasChanged(); // if playing need to refresh
 			break;
@@ -851,10 +879,10 @@ function GrooveWriter() { "use strict";
 			if (class_metronome_auto_speed_up_active) {
 				// just turn it off if it is on, don't show the configurator
 				class_metronome_auto_speed_up_active = false;
-				document.getElementById("metronomeOptionsContextMenuSpeedUp").className = document.getElementById("metronomeOptionsContextMenuSpeedUp").className.replace(new RegExp(' menuChecked', 'g'), "");
+				addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSpeedUp", "menuChecked", false);
 			} else {
 				class_metronome_auto_speed_up_active = true;
-				document.getElementById("metronomeOptionsContextMenuSpeedUp").className += " menuChecked";
+				addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSpeedUp", "menuChecked", true);
 				root.show_MetronomeAutoSpeedupConfiguration();
 			}
 			break;
@@ -900,17 +928,20 @@ function GrooveWriter() { "use strict";
 		for (var i = 0; i < myElements.length; i++) {
 			var thisItem = myElements[i];
 			// remove active status
-			thisItem.className = thisItem.className.replace(new RegExp(' menuChecked', 'g'), "");
+			addOrRemoveKeywordFromClass(thisItem, "menuChecked", false);
+		
 		}
-		var selectedItem = document.getElementById("metronomeOptionsOffsetClickContextMenuOnThe" + option_type);
-		if (selectedItem)
-			selectedItem.className += " menuChecked";
+		
+		// turn on the new one selected
+		addOrRemoveKeywordFromClassById("metronomeOptionsOffsetClickContextMenuOnThe" + option_type, "menuChecked", true);
+		
 
 		if (option_type != "1") { // 1 is the default state
 			// add a check to the menu
-			document.getElementById("metronomeOptionsContextMenuOffTheOne").className += " menuChecked";
+			addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuOffTheOne", "menuChecked", true);
 		} else {
-			document.getElementById("metronomeOptionsContextMenuOffTheOne").className = document.getElementById("metronomeOptionsContextMenuOffTheOne").className.replace(new RegExp(' menuChecked', 'g'), "");
+		
+			addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuOffTheOne", "menuChecked", false);
 		}
 
 		root.myGrooveUtils.midiNoteHasChanged();
@@ -926,15 +957,11 @@ function GrooveWriter() { "use strict";
 		
 		if(class_num_beats_per_measure == 4 && class_note_value_per_measure == 4) {
 			
-			var anchorPoint = document.getElementById("permutationAnchor");			
-			if (anchorPoint && anchorPoint.className.indexOf("enabled") < 0 ) 
-				anchorPoint.className += " enabled";
-		
+			addOrRemoveKeywordFromClassById("permutationAnchor", "enabled", true);
+			
 		} else {
-			 // permutations disabled except in 4/4 time
-		 	var anchorPoint = document.getElementById("permutationAnchor");			
-			if (anchorPoint)
-				anchorPoint.className = anchorPoint.className.replace(" enabled", "");
+			// permutations disabled except in 4/4 time
+			addOrRemoveKeywordFromClassById("permutationAnchor", "enabled", false);
 			root.permutationPopupClick("none");  // make sure permutation is off
 		}
 	}
@@ -973,7 +1000,7 @@ function GrooveWriter() { "use strict";
 
 			unselectButton(document.getElementById("permutationAnchor"));
 			document.getElementById("PermutationOptions").innerHTML = root.HTMLforPermutationOptions();
-			document.getElementById("PermutationOptions").className = document.getElementById("PermutationOptions").className.replace(new RegExp(' displayed', 'g'), "");
+			addOrRemoveKeywordFromClassById("PermutationOptions", "displayed", false);
 			break;
 		}
 
@@ -2837,13 +2864,10 @@ function GrooveWriter() { "use strict";
 
 		var OnElseOff = showHideCSS_ClassDisplay(".stickings-container", force, showElseHide, "block");
 		showHideCSS_ClassDisplay(".stickings-label", force, showElseHide, "block");
-		var stickingsButton = document.getElementById("showHideStickingsButton");
-		if (stickingsButton) {
-			if (OnElseOff)
-				stickingsButton.className += " ClickToHide";
-			else
-				stickingsButton.className = stickingsButton.className.replace(" ClickToHide", "");
-		}
+		if (OnElseOff)
+			addOrRemoveKeywordFromClassById("showHideStickingsButton", "ClickToHide", true);
+		else
+			addOrRemoveKeywordFromClassById("showHideStickingsButton", "ClickToHide", false);
 
 		if (!dontRefreshScreen)
 			create_ABC();
@@ -3423,10 +3447,29 @@ function GrooveWriter() { "use strict";
 		}
 	};
 	
+	// turns on or off triplet selection based on the current time sig setting
+	root.setTripletsSelectionOnOrOff = function() {
+		
+		if(class_note_value_per_measure != 4) {
+			// triplets are too complicated right now outside of x/4 time.
+			// disable them
+			
+			addOrRemoveKeywordFromClassById("subdivision_12ths", "disabled", true);
+			addOrRemoveKeywordFromClassById("subdivision_24ths", "disabled", true);
+		
+		} else {
+			addOrRemoveKeywordFromClassById("subdivision_12ths", "disabled", false);
+			addOrRemoveKeywordFromClassById("subdivision_24ths", "disabled", false);
+		
+		}
+	};
+	
 	root.setTimeSigLabel = function() {
 		
 		
 		// turn on/off special features that are only available in 4/4 time
+				
+		// set the label
 		if(class_num_beats_per_measure == 4 && class_note_value_per_measure == 4 ) {
 			document.getElementById("timeLabel").innerHTML = "TIME";
 		
@@ -3434,7 +3477,7 @@ function GrooveWriter() { "use strict";
 			document.getElementById("timeLabel").innerHTML = '<span><span class="buttonFraction"><sup>' + class_num_beats_per_measure + "</sup>/<sub>" + class_note_value_per_measure + "</sup></span>TIME</span>";
 		
 		}
-	}
+	};
 	
 	root.timeSigPopupClose = function(type) {
 		var popup = document.getElementById("timeSigPopup");
@@ -3447,6 +3490,10 @@ function GrooveWriter() { "use strict";
 			var newTimeSigTop = document.getElementById("timeSigPopupTimeSigTop").value;
 			var newTimeSigBottom = document.getElementById("timeSigPopupTimeSigBottom").value;
 
+			if(usingTriplets() && newTimeSigBottom != 4) {
+				root.changeDivision(16);  // switch to a non triplet division since they are not supported in this time signature
+			}
+			
 			class_num_beats_per_measure = newTimeSigTop;
 			class_note_value_per_measure = newTimeSigBottom;
 			root.changeDivision(class_time_division);   // use this function because it will relayout everything
@@ -3704,6 +3751,9 @@ function GrooveWriter() { "use strict";
 		// This may disable or enable the menu
 		setupPermutationMenu();
 		
+		// may turn on or off triplets
+		root.setTripletsSelectionOnOrOff();
+		
 		// change the time label
 		root.setTimeSigLabel();
 
@@ -3712,17 +3762,16 @@ function GrooveWriter() { "use strict";
 	}
 
 	root.expandAuthoringViewWhenNecessary = function (numNotesPerMeasure, numberOfMeasures) {
-		var musicalInput = document.getElementById("musicalInput");
-
+		
 		// set the size of the musicalInput authoring element based on the number of notes
 		if (numNotesPerMeasure > 16 ||
 			(numNotesPerMeasure > 4 && class_number_of_measures > 1) ||
 			(class_number_of_measures > 2)) {
-			if (musicalInput)
-				musicalInput.className += " expanded";
+			addOrRemoveKeywordFromClassById("musicalInput", "expanded", true);
+		
 		} else {
-			if (musicalInput)
-				musicalInput.className = musicalInput.className.replace(new RegExp(' expanded', 'g'), "");
+			addOrRemoveKeywordFromClassById("musicalInput", "expanded", false);
+
 		}
 	};
 
@@ -3737,6 +3786,11 @@ function GrooveWriter() { "use strict";
 
 		var isNewDivisionTriplets = root.myGrooveUtils.isTripletDivision(newDivision);
 		var new_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure((isNewDivisionTriplets ? 24 : 32), class_num_beats_per_measure, class_note_value_per_measure);
+			
+		if(isNewDivisionTriplets && class_note_value_per_measure != 4) {
+			alert("Triplets are disabled in " + class_num_beats_per_measure + "/" + class_note_value_per_measure + " time.  Use x/4 time for triplets.");
+			return;
+		}	
 			
 		if (usingTriplets() === isNewDivisionTriplets) {
 			// get the encoded notes out of the UI.

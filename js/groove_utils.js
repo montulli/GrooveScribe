@@ -1341,16 +1341,17 @@ function GrooveUtils() {
 			}
 
 			// add a bar line every measure
-			if (((i + 1) % (6 * timeSigTop)) === 0) {
+			if (((i + 1) % (6 * timeSigTop * (4/timeSigBottom))) === 0) {
 				stickings_voice_string += "|";
 				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
-			}
-			// add a line break every 2 measures
-			if (i < num_notes-1 && ((i + 1) % ((6 * timeSigTop) * 2)) === 0) {
-				stickings_voice_string += "\n";
-				hh_snare_voice_string += "\n";
-				kick_voice_string += "\n";
+			
+				// add a line break every 2 measures
+				if (i < num_notes-1 && ((i + 1) % ((6 * timeSigTop * (4/timeSigBottom)) * 2)) === 0) {
+					stickings_voice_string += "\n";
+					hh_snare_voice_string += "\n";
+					kick_voice_string += "\n";
+				}
 			}
 		}
 
@@ -2001,13 +2002,13 @@ function GrooveUtils() {
 					// shift by three sixteenth notes
 					metronome_specific_index -= (3 * sixteenthNoteFrequency);
 					break;
-				case "Ti":
+				case "TI":
 					if (!isTriplets)
 						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by one sixteenth note
 					metronome_specific_index -= sixteenthNoteFrequency;
 					break;
-				case "Ta":
+				case "TA":
 					if (!isTriplets)
 						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by two sixteenth notes
