@@ -1136,23 +1136,23 @@ function GrooveUtils() {
 	// see abc_gen_note_grouping_size for the sheet music layout grouping size
 	root.noteGroupingSize = function (notes_per_measure, timeSigTop, timeSigBottom) {
 		var note_grouping = 4;
-
-		if ((timeSigTop % 6) === 0 && timeSigBottom == 8) {
-			// 6/8, 12/8, etc   Group it like triplets
+		var usingTriplets = root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom);
+		
+		if(usingTriplets) {
+				// triplets  ( we only support 2/4 here )
+				if(timeSigTop != 2 && timeSigBottom != 4)
+					console.log("Triplets are only supported in 2/4 and 4/4 time");
+				note_grouping = notes_per_measure / (timeSigTop * (4/timeSigBottom));
+			
+		} else if ((timeSigTop % 6) === 0 && timeSigBottom == 8) {
+			// 6/8, 12/8, etc (non triplets)  Group it like triplets
 			note_grouping = notes_per_measure / 4;
 
 		} else {
 			// figure it out from the time signature
 			// TODO: figure out what to do about timeSigBottom
-			if(root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom)) {
-				// triplets  ( we only support 2/4 here )
-				if(timeSigTop != 2 && timeSigBottom != 4)
-					console.log("Triplets are only supported in 2/4 and 4/4 time");
-				note_grouping = notes_per_measure / timeSigTop;
-			} else {
-				// not triplets
-				note_grouping = notes_per_measure / timeSigTop;
-			}
+			// not triplets
+			note_grouping = notes_per_measure / timeSigTop;
 		}
 		return note_grouping;
 	};
@@ -1165,18 +1165,19 @@ function GrooveUtils() {
 	function abc_gen_note_grouping_size(usingTriplets, timeSigTop, timeSigBottom) {
 		var note_grouping;
 
-		if ((timeSigTop % 6) === 0 && timeSigBottom == 8) {
+		if (usingTriplets) {
+				note_grouping = 6;
+				
+		} else if ((timeSigTop % 6) === 0 && timeSigBottom == 8) {
+			// non-triplets
 			// 6/8 == 6
 			// 12/8 == 12
 			// 18/8 == 18
 			note_grouping = 3 * Math.floor(timeSigTop / 3);
 
 		} else {
-
-			if (usingTriplets)
-				note_grouping = 6;
-			else
-				note_grouping = 8 * (4/timeSigBottom);
+			note_grouping = 8 * (4/timeSigBottom);
+			
 		}
 
 		return note_grouping;
@@ -1278,7 +1279,9 @@ function GrooveUtils() {
 
 			// triplets are special.  We want to output a note or a rest for every space of time
 			// 8th note triplets should always use rests
-			var end_of_group = (6 * timeSigTop) / notes_per_measure; 
+			// end_of_group should always be "1" for 1/8 th note triplets
+			//                           and "2" for 1/16th note triplets.    
+			var end_of_group = (6 * timeSigTop) * (4/timeSigBottom) / notes_per_measure; 
 			var grouping_size_for_rests = end_of_group;
 
 			// this will remove rests and use different length notes to express triplets.   
