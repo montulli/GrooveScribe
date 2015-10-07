@@ -3439,7 +3439,7 @@ function GrooveWriter() { "use strict";
 	};
 	
 	root.timeSigPopupOpen = function(type) {
-		if(root.myGrooveUtils.debugMode) {
+		if(root.myGrooveUtils.debugMode || root.myGrooveUtils.grooveDBAuthoring) {
 			var popup = document.getElementById("timeSigPopup");
 
 			if (popup)
