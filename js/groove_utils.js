@@ -1496,17 +1496,17 @@ function GrooveUtils() {
 				if(note_index % 3 === 0)
 					new_state = Math.floor(note_index / 3) + 1;  // 1,2,3,4,5, etc.
 				else if(note_index % 3 == 1)
-					new_state = "e";
-				else
 					new_state = "&";
+				else
+					new_state = "a";
 				break;
 			case 24:  // 16th triplets
 				if(note_index % 3 === 0)
 					new_state = Math.floor(note_index / 6) + 1;  // 1,2,3,4,5, etc.
 				else if(note_index % 3 == 1)
-					new_state = "e";
-				else
 					new_state = "&";
+				else
+					new_state = "a";
 				break;
 			case 16:
 			case 32:
