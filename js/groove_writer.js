@@ -3515,7 +3515,7 @@ function GrooveWriter() { "use strict";
 		var popup = document.getElementById("fullURLPopup");
 		if (popup) {
 			var fullURL = get_FullURLForPage();
-			var textField = document.getElementById("fullURLTextField");
+			var textField = document.getElementById("fullURLPopupTextField");
 			textField.value = fullURL;
 
 			popup.style.display = "block";
@@ -3533,7 +3533,7 @@ function GrooveWriter() { "use strict";
 				networks : {
 					facebook : {
 						before : function () {
-							this.url = document.getElementById("fullURLTextField").value;
+							this.url = document.getElementById("fullURLPopupTextField").value;
 							this.description = "Check out this groove.";
 						},
 						//app_id : "839699029418014"    // staging id
@@ -3542,14 +3542,14 @@ function GrooveWriter() { "use strict";
 					},
 					google_plus : {
 						before : function () {
-							this.url = encodeURIComponent(document.getElementById("fullURLTextField").value);
+							this.url = encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
 							this.description = "Check out this groove.";
 						}
 					},
 					twitter : {
 						before : function () {
-							this.url = encodeURIComponent(document.getElementById("fullURLTextField").value);
-							this.description = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLTextField").value);
+							this.url = encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
+							this.description = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
 						}
 					},
 					pinterest : {
@@ -3557,8 +3557,8 @@ function GrooveWriter() { "use strict";
 					},
 					email : {
 						before : function () {
-							this.url = document.getElementById("fullURLTextField").value;
-							this.description = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLTextField").value);
+							this.url = document.getElementById("fullURLPopupTextField").value;
+							this.description = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
 						},
 						after : function () {
 							//console.log("User shared:", this.url);
@@ -3570,7 +3570,7 @@ function GrooveWriter() { "use strict";
 			// open the popup with full url and try to load short in the background
 			root.fillInFullURLInFullURLPopup();
 			// default is to use shortened url
-			fillInShortenedURLInFullURLPopup(get_FullURLForPage(), 'fullURLTextField');
+			fillInShortenedURLInFullURLPopup(get_FullURLForPage(), 'fullURLPopupTextField');
 	};
 
 	root.close_FullURLPopup = function () {
@@ -3628,7 +3628,7 @@ function GrooveWriter() { "use strict";
 
 	root.shortenerCheckboxChanged = function () {
 		if (document.getElementById("shortenerCheckbox").checked) {
-			fillInShortenedURLInFullURLPopup(get_FullURLForPage(), 'fullURLTextField');
+			fillInShortenedURLInFullURLPopup(get_FullURLForPage(), 'fullURLPopupTextField');
 		} else {
 			root.fillInFullURLInFullURLPopup();
 		}
@@ -3636,9 +3636,9 @@ function GrooveWriter() { "use strict";
 	
 	root.embedCodeCheckboxChanged = function () {
 		if (document.getElementById("embedCodeCheckbox").checked) {
-			fillInEmbedURLInFullURLPopup(get_FullURLForPage("display"), 'fullURLTextField');
+			fillInEmbedURLInFullURLPopup(get_FullURLForPage("display"), 'fullURLPopupTextField');
 		} else {
-			fillInShortenedURLInFullURLPopup(get_FullURLForPage(), 'fullURLTextField');
+			fillInShortenedURLInFullURLPopup(get_FullURLForPage(), 'fullURLPopupTextField');
 		}
 	};
 

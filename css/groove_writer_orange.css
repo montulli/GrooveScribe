@@ -767,71 +767,156 @@
 	#fullURLPopup, #metronomeAutoSpeedupConfiguration, #timeSigPopup {
 		/visibility: hidden;
 		display: none;
-		position:absolute; left:250px; top:250px; z-index:999;
-		background-color: #CCCC52;
-		width: 500px;
+		position:absolute; left:300px; top:250px; z-index:999;
+		background-color: #FFF;
+		width: 400px;
 		padding: 10px;
-		border: solid 5px #000;
+		border: solid 2px #999;
+		border-radius: 5px;
 	}
 	#timeSigPopup {
 		font-size: 24px;
 	}
+	#timeSigPopupTitle {
+		text-align: center;
+		margin-top: 8px;
+		margin-bottom: 30px;
+	}
 	#timeSigPopupOptions {
-		margin-left: 30px;		
+		text-align: center;
 	}
-	#timeSigPopupTimeSigTop {
+	#timeSigPopupTimeSigTop, #timeSigPopupTimeSigBottom {
 		font-size: 24px;
+		font-weight: 500;
+		color: #666;
+		background-color: #EEE;
 		vertical-align: top;
-	}
-	#timeSigPopupTimeSigBottom {
-		font-size: 24px;
+		padding-left: 20px;
+		width: 80px;
 	}
 	#timeSigPopupSlash {
-		font-size: 60px;
+		font-size: 24px;
+		margin: 0px 10px;
 	}
 	#timeSigPopupCancel {
-		font-size: 20px;
+		font-size: 16px;
+		font-weight: 500;
+		background: #FFF;
+		color: #CCC;
+		border: 0px;
+		border-radius: 5px;
+		padding: 5px 10px;
 	}
 	#timeSigPopupOK {
-		font-size: 20px;
-		float: right;
+		font-size: 16px;
+		font-weight: 500;
+		background: #E79700;
+		color: #FFF;
+		border: 0px;
+		border-radius: 5px;
+		padding: 5px 10px;
 	}
-	#fullURLCloseButton {
-		font-size: 120%;
+	#timeSigPopupButtons {
+		margin-top: 30px;
+		text-align: center;
+	}
+	#fullURLPopupCloseButton {
+		font-size: 100%;
 		float: right;
 		cursor: pointer;
 	}
-	#fullURLCloseButton:hover {
+	#fullURLPopupCloseButton:hover {
 		color: #444;
 	}
-	#fullURLTextField {
-		width: 495px;
+	#fullURLPopupTitle {
+		font-size: 18px;
+		font-weight: 700;
+		text-align: center;
 	}
-	#embedCodeLabel {
-		float: right;
+	#fullURLPopupSubTitle {
+		color: #E79700;
+		font-size: 14px;
+		font-weight: 700;
+		text-align: center;
+	}
+	#fullURLPopupSubSubTitle {
+		font-size: 12px;
+		text-align: center;
+	}
+	#fullURLPopupCheckboxes {
+		display: -webkit-flex;
+		display: flex;
+		width: 300px;
+		margin: 10px auto;
+		justify-content: space-around;
+		-webkit-justify-content: space-around;
+	}
+	.fullURLPopupCheckboxLabel {
+		font-size: 12px;
+	}
+	.fullURLPopupCheckboxLabel input[type="checkbox"] {
+		vertical-align: middle;
+	}
+	#fullURLPopupTextFieldContainer {
+		margin: 0px auto;
+		width: 366px;
+	}
+	#fullURLPopupTextField {
+		width: 350px;
+		padding: 8px;
+		background: #ffe9b7;
+		border: 0px;
+		border-radius: 5px;
+		text-align: center;
+	}
+	#shareButton {
+		margin: 0px auto;
+	}
+	.sharer-0 label {
+		background: #E79700 !important;	
+		color: #FFF !important;
 	}
 	.metronomeAutoSpeedupInputRow {
 		vertical-align: text-bottom;
 	}
+	#metronomeAutoSpeedupConfigurationSliders {
+		width: 370px;
+		margin: 0px auto;
+	}
 	#metronomeAutoSpeedupTempoIncreaseAmount, #metronomeAutoSpeedupTempoIncreaseInterval {
 		background: #CCCC52;
-		width: 300px;
-	}
-	#metronomeAutoSpeedupInputTable {
-		margin-left: 20px;
+		width: 365px;
 	}
 	#metronomeAutoSpeedupOutputText {
-		font-size: 30px;
-		margin-left: 20px;
-		margin-top: 20px;
+		font-size: 25px;
+		text-align: center;
 	}
 	#metronomeAutoSpeedupTempoIncreaseAmountOutput, #metronomeAutoSpeedupTempoIncreaseIntervalOutput {
-		color: #2484c0;
+		color: #E79700;
 		font-weight: 700;
 	}
+	#metronomeAutoSpeedupConfigurationAmountLable, #metronomeAutoSpeedupConfigurationIntervalLable {
+		font-size: 12px;
+	}
+	#metronomeAutoSpeedupConfigurationKeepIncreasing {
+		font-size: 12px;
+		color: #E79700;
+		text-align: center;
+		vertical-align: middle;
+		margin-bottom: 10px;
+	}
+	#metronomeAutoSpeedupCloseButtonDiv {
+		text-align: center;
+		margin-top: 15px;
+	}
 	#metronomeAutoSpeedupConfigurationCloseButton {
-		float: right;
-		font-size: 20px;
+		font-size: 16px;
+		font-weight: 500;
+		background: #E79700;
+		color: #FFF;
+		border: 0px;
+		border-radius: 5px;
+		padding: 5px 10px;
 	}
 	#showHideSecondMeasureButton {
 	}

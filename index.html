@@ -334,9 +334,8 @@
 		
 		<!-- dialog for the TIME label, hidden by default -->
 		<div id="timeSigPopup">
-			<br>
-			<b>Choose a <a href="https://en.wikipedia.org/wiki/Time_signature" target="_blank">time signature</a>: </b> 
-			<span id="timeSigPopupOptions">
+			<div id="timeSigPopupTitle">Choose a <a href="https://en.wikipedia.org/wiki/Time_signature" target="_blank">Time Signature</a></div> 
+			<div id="timeSigPopupOptions">
 			 <select id="timeSigPopupTimeSigTop">
 			  <option value="2">2</option>
 			  <option value="3">3</option>
@@ -360,23 +359,24 @@
 			  <option value="8">8</option>
 			  <option value="16">16</option>
 			</select> 
-			</span>
-			<br>
-			<br>
-			<button id="timeSigPopupCancel" onclick="myGrooveWriter.timeSigPopupClose('cancel');">CANCEL</button>
-			<button id="timeSigPopupOK" onclick="myGrooveWriter.timeSigPopupClose('ok');">OK</button>
+			</div>
+			<div id="timeSigPopupButtons">
+			<button id="timeSigPopupCancel" onclick="myGrooveWriter.timeSigPopupClose('cancel');">Cancel</button>
+			<button id="timeSigPopupOK" onclick="myGrooveWriter.timeSigPopupClose('ok');">Done</button>
+			</div>
 		</div>
 		
 		<!-- this is used by the share/save button, and is hidden by default -->
 		<div id="fullURLPopup">
-			<span id="fullURLCloseButton" onclick="myGrooveWriter.close_FullURLPopup();"><i class="fa fa-lg fa-times-circle"></i></span>
-			<b>Use this URL to share or save this groove<br></b>
-			(You can also bookmark this page)<br>
-			<br>
-			<input type="text" id="fullURLTextField"><br>
-			<label>Short URL:<input type="checkbox" id="shortenerCheckbox" onchange="myGrooveWriter.shortenerCheckboxChanged();"></label>
-			<label id="embedCodeLabel">Embed Code:<input type="checkbox" id="embedCodeCheckbox" onchange="myGrooveWriter.embedCodeCheckboxChanged();"></label>
-			<br>
+			<span id="fullURLPopupCloseButton" onclick="myGrooveWriter.close_FullURLPopup();"><i class="fa fa-lg fa-times-circle"></i></span>
+			<div id="fullURLPopupTitle">Share Your Groove</div>
+			<div id="fullURLPopupSubTitle">Use this URL to share or save this groove</div>
+			<div id="fullURLPopupSubSubTitle">(You can also bookmark this page)</div>
+			<div id="fullURLPopupCheckboxes">
+				<span><label  id="shortURLLabel" class="fullURLPopupCheckboxLabel"><input type="checkbox" id="shortenerCheckbox" onchange="myGrooveWriter.shortenerCheckboxChanged();">Short URL</label></span>
+				<span><label id="embedCodeLabel" class="fullURLPopupCheckboxLabel"><input type="checkbox" id="embedCodeCheckbox" onchange="myGrooveWriter.embedCodeCheckboxChanged();">Embed Code</label></span>
+			</div>
+			<div id="fullURLPopupTextFieldContainer"><input type="text" id="fullURLPopupTextField"></div>
 			<br>
 			<div id="shareButton"></div>
 		</div>
@@ -384,34 +384,22 @@
 	
 		<!-- this is used by the metronome auto speed up option menu, and is hidden by default -->
 		<div id="metronomeAutoSpeedupConfiguration">
-			<table id="metronomeAutoSpeedupInputTable" >
-			<tr class="metronomeAutoSpeedupInputRow">
-				<td>
-				Amount:
-				</td><td>
-				<input type=range min=1 max=100 value=5 class="metronomeAutoSpeedUpRange" id="metronomeAutoSpeedupTempoIncreaseAmount" oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseAmountOutput');"> 
-				</td><td>
-				 BPM
-				</td>
-			</tr>	
-			<tr class="metronomeAutoSpeedupInputRow">
-				<td>
-				Interval:
-				</td><td>
-				<input type=range min=1 max=20 value=2 class="metronomeAutoSpeedUpRange" id="metronomeAutoSpeedupTempoIncreaseInterval" step="1" oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseIntervalOutput');"> 
-				</td><td>
-				  Minutes
-				</td>
-			</tr>	
-			</table>
 			<div id="metronomeAutoSpeedupOutputText">
-				Increase <span id="metronomeAutoSpeedupTempoIncreaseAmountOutput">5</span> BPM in 
-				<span id="metronomeAutoSpeedupTempoIncreaseIntervalOutput">2</span> Minutes
+				Increase <span id="metronomeAutoSpeedupTempoIncreaseAmountOutput">5</span> bpm in 
+				<span id="metronomeAutoSpeedupTempoIncreaseIntervalOutput">2</span> min
 			</div>
-			<br>
-			<br>
-			<input type="checkbox" checked id="metronomeAutoSpeedUpKeepGoingForever"><label for="metronomeAutoSpeedUpKeepGoingForever">Keep increasing after the first interval</label>
-			<button id="metronomeAutoSpeedupConfigurationCloseButton" onclick="myGrooveWriter.close_MetronomeAutoSpeedupConfiguration('ok');">OK</button>
+			<div id="metronomeAutoSpeedupConfigurationKeepIncreasing">
+				<input type="checkbox" checked id="metronomeAutoSpeedUpKeepGoingForever"><label for="metronomeAutoSpeedUpKeepGoingForever">Keep increasing after the first interval</label>
+			</div>
+			<div id="metronomeAutoSpeedupConfigurationSliders">
+				<div id="metronomeAutoSpeedupConfigurationAmountLable">Amount in BPM</div>
+				<input type=range min=1 max=100 value=5 class="metronomeAutoSpeedUpRange" id="metronomeAutoSpeedupTempoIncreaseAmount" oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseAmountOutput');"> 
+				<div id="metronomeAutoSpeedupConfigurationIntervalLable">Interval in Minutes</div>
+				<input type=range min=1 max=20 value=2 class="metronomeAutoSpeedUpRange" id="metronomeAutoSpeedupTempoIncreaseInterval" step="1" oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseIntervalOutput');"> 
+			</div>
+			<div id="metronomeAutoSpeedupCloseButtonDiv">
+				<button id="metronomeAutoSpeedupConfigurationCloseButton" onclick="myGrooveWriter.close_MetronomeAutoSpeedupConfiguration('ok');">Done</button>
+			</div>
 		</div>
 			
 		
