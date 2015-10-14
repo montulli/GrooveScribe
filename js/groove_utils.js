@@ -2113,7 +2113,7 @@ function GrooveUtils() {
 						snare_note = constant_OUR_MIDI_SNARE_NORMAL;
 						snare_velocity = constant_OUR_MIDI_VELOCITY_ACCENT;
 					} else {
-						snare_note = constant_OUR_MIDI_SNARE_ACCENT;
+						snare_note = constant_OUR_MIDI_SNARE_FLAM;
 						snare_velocity = constant_OUR_MIDI_VELOCITY_NORMAL;
 					}
 					break;
