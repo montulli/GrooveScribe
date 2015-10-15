@@ -144,6 +144,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 			var combinedSnareTab = myGrooveUtils.mergeDrumTabLines(GrooveDBTabIn.snareAccentTab, GrooveDBTabIn.snareOtherTab);
 			var combinedKickTab = myGrooveUtils.mergeDrumTabLines(GrooveDBTabIn.kickTab, GrooveDBTabIn.footOtherTab);
 
+			if(GrooveDBTabIn.div !== undefined) myGrooveData.timeDivision = GrooveDBTabIn.div;
 			if(GrooveDBTabIn.tempo !== undefined) myGrooveData.tempo = GrooveDBTabIn.tempo;
 			if(GrooveDBTabIn.measures !== undefined) myGrooveData.numberOfMeasures = GrooveDBTabIn.measures;
 			if(GrooveDBTabIn.notesPerTabMeasure !== undefined) myGrooveData.notesPerMeasure = GrooveDBTabIn.notesPerTabMeasure;
