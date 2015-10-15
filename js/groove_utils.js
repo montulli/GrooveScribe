@@ -1084,6 +1084,8 @@ function GrooveUtils() {
 			// look for any accents that are delimited by "!"  (eg !accent!  or !plus!)
 			// move the accents to the front
 			ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!accent!");
+			// in case there are two accents (on both snare and hi-hat) we remove the second one
+			moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!accent!");
 			ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!plus!");
 			ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!open!");
 
@@ -1947,7 +1949,8 @@ function GrooveUtils() {
 				// x/8 should be 8 ticks
 				// x/16 would be 4 ticks
 				// anything over x/64 would be break
-				duration = 64 / (16/timeSigBottom);  // use sig to space notes.   
+				//duration = 64 / (16/timeSigBottom);  // use sig to space notes.   
+				duration = 16;
 			}
 
 			if (swing_percentage !== 0) {
