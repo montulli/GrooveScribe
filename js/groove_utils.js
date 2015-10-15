@@ -1144,15 +1144,12 @@ function GrooveUtils() {
 					console.log("Triplets are only supported in 2/4 and 4/4 time");
 				note_grouping = notes_per_measure / (timeSigTop * (4/timeSigBottom));
 			
-		} else if ((timeSigTop % 6) === 0 && timeSigBottom == 8) {
-			// 6/8, 12/8, etc (non triplets)  Group it like triplets
-			note_grouping = notes_per_measure / 4;
-
 		} else {
 			// figure it out from the time signature
 			// TODO: figure out what to do about timeSigBottom
 			// not triplets
-			note_grouping = notes_per_measure / timeSigTop;
+			//note_grouping = notes_per_measure / timeSigTop;
+			note_grouping = (notes_per_measure / timeSigTop) * (timeSigBottom/4);
 		}
 		return note_grouping;
 	};
@@ -1168,15 +1165,9 @@ function GrooveUtils() {
 		if (usingTriplets) {
 				note_grouping = 6;
 				
-		} else if ((timeSigTop % 6) === 0 && timeSigBottom == 8) {
-			// non-triplets
-			// 6/8 == 6
-			// 12/8 == 12
-			// 18/8 == 18
-			note_grouping = 3 * Math.floor(timeSigTop / 3);
-
 		} else {
-			note_grouping = 8 * (4/timeSigBottom);
+			//note_grouping = 8 * (4/timeSigBottom);
+			note_grouping = 8;
 			
 		}
 
@@ -1257,7 +1248,7 @@ function GrooveUtils() {
 	// We output 24 notes in the ABC rather than the traditional 16 or 32 for 4/4 time.
 	// This is because of the stickings above the bar are a separate voice and should not have the "3" above them
 	// This could be changed to using the normal number and moving all the stickings down to be comments on each note in one voice (But is a pretty big change)
-	function snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
+	function snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, sub_division, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
 
 		var scaler = 2; // we are always in 24 notes here, and the ABC needs to think we are in 48 since the specified division is 1/32
 		var ABC_String = "";
@@ -1279,35 +1270,40 @@ function GrooveUtils() {
 
 			// triplets are special.  We want to output a note or a rest for every space of time
 			// 8th note triplets should always use rests
-			// end_of_group should always be "1" for 1/8 th note triplets
-			//                           and "2" for 1/16th note triplets.    
-			var end_of_group = (6 * timeSigTop) * (4/timeSigBottom) / notes_per_measure; 
+			// end_of_group should always be "2" for 1/8th note triplets
+			//                           and "1" for 1/16th note triplets.    
+			var end_of_group = sub_division == 12 ? 2 : 1; 
 			var grouping_size_for_rests = end_of_group;
 
+			if((i % num_notes) + end_of_group > notes_per_measure) {
+				// if we are in an odd time signature then the last few notes will have a different grouping to reach the end of the measure	
+				end_of_group = notes_per_measure - (i % num_notes);
+			}
+			
 			// this will remove rests and use different length notes to express triplets.   
 			// It can be little harder to decipher since you need to understand and process dotted eights and others
 			if (eliminate_rests_in_triplets) {
-				if (notes_per_measure != 12) {
-					var group_size = notes_per_measure / 4;
+				if (sub_division != 12) {
+					var group_size = sub_division / 4;
 					end_of_group = group_size - (i % group_size); // assuming we are always dealing with 24 notes
 					grouping_size_for_rests = group_size; // we scale up the notes to fit a 24 length array.  This will be 1 or 2
 				}
 			}
 
 			if (i % abc_gen_note_grouping_size(true, timeSigTop, timeSigBottom) === 0) {
-				var num_notes_in_next_group = root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom);
+				var notes_in_triplet_group = sub_division == 12 ? 3 : 6;
+				var num_notes_in_next_group = notes_in_triplet_group;
 				// creates the 3 or the 6 over the note grouping
 				// looks like (3:3:3 or (6:6:6
 
 				// used for elemintating rests in triplets.
 				if (eliminate_rests_in_triplets) {
-					if (notes_per_measure != 12) {
+					if (sub_division != 12) {
 						num_notes_in_next_group = count_active_notes_in_arrays(all_drum_array_of_array, i, 6);
 					}
 				}
-				hh_snare_voice_string += "(" + root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom) +
-				":" + root.noteGroupingSize(notes_per_measure, timeSigTop, timeSigBottom) +
-				":" + num_notes_in_next_group;
+				
+				hh_snare_voice_string += "(" + notes_in_triplet_group +	":" + notes_in_triplet_group + ":" + num_notes_in_next_group;
 			}
 
 			if (i % grouping_size_for_rests === 0) {
@@ -1368,7 +1364,7 @@ function GrooveUtils() {
 	// translates them to an ABC string in 3 voices
 	// post_voice_abc is a string added to the end of each voice line that can end the line
 	//
-	function snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
+	function snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, sub_division, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
 
 		var scaler = 1; // we are always in 32ths notes here
 		var ABC_String = "";
@@ -1394,9 +1390,14 @@ function GrooveUtils() {
 				end_of_group = abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom);
 			else
 				end_of_group = (abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom) - ((i) % abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom)));
-
+			
+			if((i % num_notes) + end_of_group > notes_per_measure) {
+				// if we are in an odd time signature then the last few notes will have a different grouping to reach the end of the measure	
+				end_of_group = notes_per_measure - (i % num_notes);
+			}
+			
 			if (i % abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom) === 0) {
-				// we will only output a rest at the beginning of a beat phrase, or if triplets for every space
+				// we will only output a rest at the beginning of a beat phrase
 				stickings_voice_string += getABCforRest([sticking_array], i, grouping_size_for_rests, scaler, true);
 
 				if (kick_stems_up) {
@@ -1552,16 +1553,16 @@ function GrooveUtils() {
 	// create ABC from note arrays
 	// The Arrays passed in must be 32 or 24 notes long
 	// notes_per_measure denotes the number of notes that _should_ be in the measure even though the arrays are always scaled up and large (24 or 32)
-	root.create_ABC_from_snare_HH_kick_arrays = function (sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
+	root.create_ABC_from_snare_HH_kick_arrays = function (sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, time_division, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
 
 		// convert sticking count symbol to the actual count
 		// do this right before ABC output so it can't every get encoded into something that gets saved.
 		root.convert_sticking_counts_to_actual_counts(sticking_array, notes_per_measure, timeSigTop, timeSigBottom);
 	
 		if(root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom)) {
-			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);
+			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, time_division, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);
 		} else {
-			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);
+			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, time_division, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);
 		}
 	};
 
@@ -1598,6 +1599,7 @@ function GrooveUtils() {
 			FullNoteTomsArray,
 			"|\n",
 			FullNoteHHArray.length,
+			myGrooveData.timeDivision,
 			myGrooveData.notesPerMeasure,
 			myGrooveData.kickStemsUp,
 			myGrooveData.numBeats,

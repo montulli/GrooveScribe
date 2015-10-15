@@ -2623,7 +2623,7 @@ function GrooveWriter() { "use strict";
 					post_abc = get_permutation_post_ABC(i);
 
 					fullABC += get_permutation_pre_ABC(i);
-					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, null, post_abc, num_notes, class_notes_per_measure, true, class_num_beats_per_measure, class_note_value_per_measure);
+					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, null, post_abc, num_notes, class_time_division, num_notes, true, class_num_beats_per_measure, class_note_value_per_measure);
 					root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, new_kick_array, null, num_notes));
 				}
 			}
@@ -2649,7 +2649,7 @@ function GrooveWriter() { "use strict";
 					post_abc = get_permutation_post_ABC(i);
 
 					fullABC += get_permutation_pre_ABC(i);
-					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, null, post_abc, num_notes, class_notes_per_measure, true, class_num_beats_per_measure, class_note_value_per_measure);
+					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, null, post_abc, num_notes, class_time_division, num_notes, true, class_num_beats_per_measure, class_note_value_per_measure);
 					root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, new_snare_array, Kick_Array, null, num_notes));
 				}
 			}
@@ -2683,7 +2683,7 @@ function GrooveWriter() { "use strict";
 					// odd measure
 					addon_abc = "\n";
 				}
-				fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, null, addon_abc, num_notes, class_notes_per_measure, true, class_num_beats_per_measure, class_note_value_per_measure);
+				fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, null, addon_abc, num_notes, class_time_division, num_notes, true, class_num_beats_per_measure, class_note_value_per_measure);
 				root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, Kick_Array, null, num_notes));
 			}
 
