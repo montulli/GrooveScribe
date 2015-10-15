@@ -144,11 +144,11 @@ if (typeof(GrooveDisplay) === "undefined") {
 			var combinedSnareTab = myGrooveUtils.mergeDrumTabLines(GrooveDBTabIn.snareAccentTab, GrooveDBTabIn.snareOtherTab);
 			var combinedKickTab = myGrooveUtils.mergeDrumTabLines(GrooveDBTabIn.kickTab, GrooveDBTabIn.footOtherTab);
 
-			if(GrooveDBTabIn.div !== undefined) myGrooveData.timeDivision = GrooveDBTabIn.div;
-			if(GrooveDBTabIn.tempo !== undefined) myGrooveData.tempo = GrooveDBTabIn.tempo;
-			if(GrooveDBTabIn.swingPercent !== undefined) myGrooveData.swingPercent = GrooveDBTabIn.swingPercent;
-			if(GrooveDBTabIn.measures !== undefined) myGrooveData.numberOfMeasures = GrooveDBTabIn.measures;
-			if(GrooveDBTabIn.notesPerTabMeasure !== undefined) myGrooveData.notesPerMeasure = GrooveDBTabIn.notesPerTabMeasure;
+			if(GrooveDBTabIn.div !== undefined && !isNaN(GrooveDBTabIn.div)) myGrooveData.timeDivision = GrooveDBTabIn.div;
+			if(GrooveDBTabIn.tempo !== undefined && !isNaN(GrooveDBTabIn.tempo)) myGrooveData.tempo = GrooveDBTabIn.tempo;
+			if(GrooveDBTabIn.swingPercent !== undefined && !isNaN(GrooveDBTabIn.swingPercent)) myGrooveData.swingPercent = GrooveDBTabIn.swingPercent;
+			if(GrooveDBTabIn.measures !== undefined && !isNaN(GrooveDBTabIn.measures)) myGrooveData.numberOfMeasures = GrooveDBTabIn.measures;
+			if(GrooveDBTabIn.notesPerTabMeasure !== undefined && !isNaN(GrooveDBTabIn.notesPerTabMeasure)) myGrooveData.notesPerMeasure = GrooveDBTabIn.notesPerTabMeasure;
 			if(GrooveDBTabIn.stickingTab !== undefined) myGrooveData.sticking_array = myGrooveUtils.noteArraysFromURLData("Stickings", GrooveDBTabIn.stickingTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
 			if(GrooveDBTabIn.hihatTab !== undefined) myGrooveData.hh_array = myGrooveUtils.noteArraysFromURLData("H", GrooveDBTabIn.hihatTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
 			myGrooveData.snare_array = myGrooveUtils.noteArraysFromURLData("S", combinedSnareTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
