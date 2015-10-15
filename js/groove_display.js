@@ -146,6 +146,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 
 			if(GrooveDBTabIn.div !== undefined) myGrooveData.timeDivision = GrooveDBTabIn.div;
 			if(GrooveDBTabIn.tempo !== undefined) myGrooveData.tempo = GrooveDBTabIn.tempo;
+			if(GrooveDBTabIn.swingPercent !== undefined) myGrooveData.swingPercent = GrooveDBTabIn.swingPercent;
 			if(GrooveDBTabIn.measures !== undefined) myGrooveData.numberOfMeasures = GrooveDBTabIn.measures;
 			if(GrooveDBTabIn.notesPerTabMeasure !== undefined) myGrooveData.notesPerMeasure = GrooveDBTabIn.notesPerTabMeasure;
 			if(GrooveDBTabIn.stickingTab !== undefined) myGrooveData.sticking_array = myGrooveUtils.noteArraysFromURLData("Stickings", GrooveDBTabIn.stickingTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
@@ -182,8 +183,8 @@ if (typeof(GrooveDisplay) === "undefined") {
 
 			myGrooveUtils.AddMidiPlayerToPage(midiPlayerTargetId, myGrooveData.notesPerMeasure, true);
 			myGrooveUtils.expandOrRetractMIDI_playback(true, false); // make it small
-			myGrooveUtils.setTempo(GrooveDBTabIn.tempo);
-			//myGrooveUtils.setSwing(GrooveDBTabIn.swingPercent);
+			myGrooveUtils.setTempo(myGrooveData.tempo);
+			myGrooveUtils.setSwing(myGrooveData.swingPercent);
 			myGrooveUtils.oneTimeInitializeMidi();
 
 			root.GrooveDisplayUniqueCounter++;
