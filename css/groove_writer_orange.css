@@ -777,6 +777,12 @@
 	#timeSigPopup {
 		font-size: 24px;
 	}
+	#timeSigPopupBeta {
+		text-align: center;
+		margin-top: 8px;
+		margin-bottom: 30px;
+		color: #CC0000;
+	}
 	#timeSigPopupTitle {
 		text-align: center;
 		margin-top: 8px;
