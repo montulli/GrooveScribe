@@ -2269,7 +2269,7 @@ function GrooveUtils() {
 			MIDI_type,
 			myGrooveData.metronomeFrequency,
 			total_notes,
-			myGrooveData.notesPerMeasure,
+			myGrooveData.timeDivision,
 			swing_percentage,
 			myGrooveData.numBeats,
 			myGrooveData.noteValue);
