@@ -144,26 +144,28 @@ if (typeof(GrooveDisplay) === "undefined") {
 			var combinedSnareTab = myGrooveUtils.mergeDrumTabLines(GrooveDBTabIn.snareAccentTab, GrooveDBTabIn.snareOtherTab);
 			var combinedKickTab = myGrooveUtils.mergeDrumTabLines(GrooveDBTabIn.kickTab, GrooveDBTabIn.footOtherTab);
 
-			myGrooveData.tempo = GrooveDBTabIn.tempo;
-			myGrooveData.numberOfMeasures = GrooveDBTabIn.measures;
-			myGrooveData.notesPerMeasure = GrooveDBTabIn.notesPerTabMeasure;
-			myGrooveData.sticking_array = myGrooveUtils.noteArraysFromURLData("Stickings", "", GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
-			myGrooveData.hh_array = myGrooveUtils.noteArraysFromURLData("H", GrooveDBTabIn.hihatTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
+			if(GrooveDBTabIn.tempo !== undefined) myGrooveData.tempo = GrooveDBTabIn.tempo;
+			if(GrooveDBTabIn.measures !== undefined) myGrooveData.numberOfMeasures = GrooveDBTabIn.measures;
+			if(GrooveDBTabIn.notesPerTabMeasure !== undefined) myGrooveData.notesPerMeasure = GrooveDBTabIn.notesPerTabMeasure;
+			if(GrooveDBTabIn.stickingTab !== undefined) myGrooveData.sticking_array = myGrooveUtils.noteArraysFromURLData("Stickings", GrooveDBTabIn.stickingTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
+			if(GrooveDBTabIn.hihatTab !== undefined) myGrooveData.hh_array = myGrooveUtils.noteArraysFromURLData("H", GrooveDBTabIn.hihatTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
 			myGrooveData.snare_array = myGrooveUtils.noteArraysFromURLData("S", combinedSnareTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
 			myGrooveData.kick_array = myGrooveUtils.noteArraysFromURLData("K", combinedKickTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
 
-			var timeSig = parseTimeSignature(GrooveDBTabIn.timeSignature);
-			myGrooveData.numBeats = timeSig[0];
-			myGrooveData.noteValue = timeSig[1];
-
+			if(GrooveDBTabIn.timeSignature !== undefined) {
+				var timeSig = parseTimeSignature(GrooveDBTabIn.timeSignature);
+				myGrooveData.numBeats = timeSig[0];
+				myGrooveData.noteValue = timeSig[1];
+			}
+			
 			//console.log(myGrooveData);
 
-			var svgTargetId = "SVG-" + root.GrooveDisplayUniqueCounter;
-			var midiPlayerTargetId = "Player-" + root.GrooveDisplayUniqueCounter;
+			var svgTargetId = "svgTarget" + root.GrooveDisplayUniqueCounter;
+			var midiPlayerTargetId = "midiPlayerTarget" + root.GrooveDisplayUniqueCounter;
 
 			// spit out some HTML tags to hold the music and possibly the player
 			document.getElementById(HtmlTagId).innerHTML = '' +
-				'<div class="Printable"><div id="' + svgTargetId + '" class="svgTarget"></div></div>\n' +
+				'<div class="Printable"><div id="' + svgTargetId + '" class="svgTarget"  style="display:inline-block"></div></div>\n' +
 				'<div class="nonPrintable"><div id="' + midiPlayerTargetId + '" ></div></div>\n';
 
 			var svgTarget = document.getElementById(svgTargetId);

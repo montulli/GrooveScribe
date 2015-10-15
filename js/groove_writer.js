@@ -2416,6 +2416,7 @@ function GrooveWriter() { "use strict";
 	//
 	// {{GrooveTab
 	// |HasTempo=90
+	// |HasSwingPercent=0
 	// |HasDivision=16
 	// |HasMeasures=2
 	// |HasNotesPerMeasure=32
@@ -2440,6 +2441,7 @@ function GrooveWriter() { "use strict";
 		var DBString = "{{GrooveTab";
 
 		DBString += "\n|HasTempo=" + myGrooveData.tempo;
+		DBString += "\n|HasSwingPercent=" + myGrooveData.swingPercent;
 		DBString += "\n|HasDivision=" + myGrooveData.notesPerMeasure;
 		DBString += "\n|HasMeasures=" + myGrooveData.numberOfMeasures;
 		DBString += "\n|HasNotesPerMeasure=" + notesPerMeasureInTab;
