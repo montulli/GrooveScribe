@@ -476,6 +476,18 @@
 		color: transparent;
 		cursor: pointer;
 	}
+	.hh_ride_bell {
+		position: absolute; top: 18px; left: 6px;
+		font-size: 20px;
+		color: transparent;
+		cursor: pointer;
+	}
+	.hh_cow_bell {
+		position: absolute; top: 18px; left: 6px;
+		font-size: 20px;
+		color: transparent;
+		cursor: pointer;
+	}
 	.hh_stacker {
 		position: absolute; top: 18px; left: 5px;
 		font-size: 20px;

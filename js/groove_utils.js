@@ -41,6 +41,8 @@ var constant_ABC_STICK_BOTH = '"R/L"x';
 var constant_ABC_STICK_COUNT = '"count"x';
 var constant_ABC_STICK_OFF = '""x';
 var constant_ABC_HH_Ride = "^A'";
+var constant_ABC_HH_Ride_Bell = "^B'";
+var constant_ABC_HH_Cow_Bell = "^D'";
 var constant_ABC_HH_Crash = "^c'";
 var constant_ABC_HH_Stacker = "^d'";
 var constant_ABC_HH_Open = "!open!^g";
@@ -73,6 +75,8 @@ var constant_OUR_MIDI_HIHAT_ACCENT = 108;
 var constant_OUR_MIDI_HIHAT_CRASH = 49;
 var constant_OUR_MIDI_HIHAT_STACKER = 52;
 var constant_OUR_MIDI_HIHAT_RIDE = 51;
+var constant_OUR_MIDI_HIHAT_RIDE_BELL = 53;
+var constant_OUR_MIDI_HIHAT_COW_BELL = 105;
 var constant_OUR_MIDI_HIHAT_FOOT = 44;
 var constant_OUR_MIDI_SNARE_NORMAL = 38;
 var constant_OUR_MIDI_SNARE_ACCENT = 22;
@@ -413,6 +417,8 @@ function GrooveUtils() {
 	//		+: close
 	//		c: crash
 	//		r: ride
+	//		b: ride bell
+	//		m: (more) cow bell
 	//      s: stacker
 	//		-: off
 	//
@@ -421,6 +427,7 @@ function GrooveUtils() {
 	//		O: accent
 	//		g: ghost
 	//		x: cross stick
+	//		f: flam
 	//		-: off
 	//
 	//   Kick support:
@@ -449,6 +456,8 @@ function GrooveUtils() {
 		case "B":
 			if (drumType == "Stickings")
 				return constant_ABC_STICK_BOTH;
+			else if (drumType == "H")
+				return constant_ABC_HH_Ride_Bell;
 			break;
 		case "c":
 			if (drumType == "Stickings")
@@ -468,6 +477,10 @@ function GrooveUtils() {
 		case "L":
 			if (drumType == "Stickings")
 				return constant_ABC_STICK_L;
+			break;
+		case "m":  // (more) cow bell
+			if (drumType == "H")
+				return constant_ABC_HH_Cow_Bell;
 			break;
 		case "O":
 			if (drumType == "S")
@@ -584,6 +597,12 @@ function GrooveUtils() {
 			break;
 		case constant_ABC_HH_Ride:
 			tabChar = "r";
+			break;
+		case constant_ABC_HH_Ride_Bell:
+			tabChar = "b";
+			break;
+		case constant_ABC_HH_Cow_Bell:
+			tabChar = "m";
 			break;
 		case constant_ABC_HH_Crash:
 			tabChar = "c";
@@ -961,13 +980,16 @@ function GrooveUtils() {
 		'%%deco ). 0 a 5 1 1 "@4,-3)"\n' +
 		'%%beginsvg\n' +
 		' <defs>\n' +
-		' <path id="Xhead" d="m-3 -3l6 6m0 -6l-6 6" class="stroke" style="stroke-width:1.2"/>\n' +
+		' <path id="Xhead" d="m-3,-3 l6,6 m0,-6 l-6,6" class="stroke" style="stroke-width:1.2"/>\n' +
+		' <path id="Trihead" d="m-3,3 l 6,0 l-3,-6 l-3,6 l6,0" class="stroke" style="stroke-width:1.2"/>\n' +
 		' </defs>\n' +
 		'%%endsvg\n' +
-		'%%map drum ^g heads=Xhead print=g  % Hi-Hat\n' +
-		'%%map drum ^c\' heads=Xhead print=c\'  % Crash\n' +
-		'%%map drum ^d\' heads=Xhead print=d\'  % Stacker\n' +
-		'%%map drum ^A\' heads=Xhead print=A\'  % Ride\n' +
+		'%%map drum ^g heads=Xhead print=g       % Hi-Hat\n' +
+		'%%map drum ^c\' heads=Xhead print=c\'   % Crash\n' +
+		'%%map drum ^d\' heads=Xhead print=d\'   % Stacker\n' +
+		'%%map drum ^A\' heads=Xhead print=A\'   % Ride\n' +
+		'%%map drum ^B\' heads=Trihead print=A\' % Ride Bell\n' +
+		'%%map drum ^D\' heads=Trihead print=g   % Cow Bell\n' +
 		'%%map drum ^c heads=Xhead print=c  % Cross Stick\n' +
 		'%%map drum ^d, heads=Xhead print=d,  % Foot Splash\n';
 
@@ -2079,6 +2101,12 @@ function GrooveUtils() {
 				case constant_ABC_HH_Ride: // ride
 					hh_note = constant_OUR_MIDI_HIHAT_RIDE;
 					break;
+				case constant_ABC_HH_Ride_Bell: // ride bell
+					hh_note = constant_OUR_MIDI_HIHAT_RIDE_BELL;
+					break;
+				case constant_ABC_HH_Cow_Bell: // cow bell
+					hh_note = constant_OUR_MIDI_HIHAT_COW_BELL;
+					break;
 				case constant_ABC_HH_Crash: // crash
 					hh_note = constant_OUR_MIDI_HIHAT_CRASH;
 					break;
@@ -2480,7 +2508,8 @@ function GrooveUtils() {
 				note_type = "metronome";
 			} else if (data.note == constant_OUR_MIDI_HIHAT_NORMAL || data.note == constant_OUR_MIDI_HIHAT_OPEN || 
 						data.note == constant_OUR_MIDI_HIHAT_ACCENT || data.note == constant_OUR_MIDI_HIHAT_CRASH || 
-						data.note == constant_OUR_MIDI_HIHAT_RIDE || data.note == constant_OUR_MIDI_HIHAT_STACKER) {
+						data.note == constant_OUR_MIDI_HIHAT_RIDE || data.note == constant_OUR_MIDI_HIHAT_STACKER ||
+						data.note == constant_OUR_MIDI_HIHAT_RIDE_BELL || data.note == constant_OUR_MIDI_HIHAT_COW_BELL ) {
 				note_type = "hi-hat";
 			} else if (data.note == constant_OUR_MIDI_SNARE_NORMAL || data.note == constant_OUR_MIDI_SNARE_ACCENT || 
 						data.note == constant_OUR_MIDI_SNARE_GHOST || data.note == constant_OUR_MIDI_SNARE_XSTICK || 
