@@ -489,7 +489,7 @@
 		cursor: pointer;
 	}
 	.hh_stacker {
-		position: absolute; top: 18px; left: 5px;
+		position: absolute; top: 17px; left: 5px;
 		font-size: 20px;
 		color: transparent;
 		cursor: pointer;
@@ -542,6 +542,12 @@
 	.snare_xstick {
 		position: absolute; top: 26px; left: 3px;
 		font-size: 30px;
+		color: transparent;
+		cursor: pointer;
+	}
+	.snare_buzz {
+		position: absolute; top: 31px; left: 3px;
+		font-size: 22px;
 		color: transparent;
 		cursor: pointer;
 	}

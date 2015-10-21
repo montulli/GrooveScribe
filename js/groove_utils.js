@@ -53,6 +53,7 @@ var constant_ABC_SN_Ghost = "!(.!!).!c";
 var constant_ABC_SN_Accent = "!accent!c";
 var constant_ABC_SN_Normal = "c";
 var constant_ABC_SN_XStick = "^c";
+var constant_ABC_SN_Buzz = "!///!c";
 var constant_ABC_SN_Flam = "{/c}c";
 var constant_ABC_KI_SandK = "[F^d,]"; // kick & splash
 var constant_ABC_KI_Splash = "^d,"; // splash only
@@ -82,6 +83,7 @@ var constant_OUR_MIDI_SNARE_NORMAL = 38;
 var constant_OUR_MIDI_SNARE_ACCENT = 22;
 var constant_OUR_MIDI_SNARE_GHOST = 21;
 var constant_OUR_MIDI_SNARE_XSTICK = 37;
+var constant_OUR_MIDI_SNARE_BUZZ = 104;
 var constant_OUR_MIDI_SNARE_FLAM = 107;
 var constant_OUR_MIDI_KICK_NORMAL = 35;
 var constant_OUR_MIDI_TOM1_NORMAL = 48;
@@ -458,6 +460,8 @@ function GrooveUtils() {
 				return constant_ABC_STICK_BOTH;
 			else if (drumType == "H")
 				return constant_ABC_HH_Ride_Bell;
+			else if (drumType == "S")
+				return constant_ABC_SN_Buzz;
 			break;
 		case "c":
 			if (drumType == "Stickings")
@@ -618,6 +622,9 @@ function GrooveUtils() {
 			break;
 		case constant_ABC_SN_Accent:
 			tabChar = "O";
+			break;
+		case constant_ABC_SN_Buzz:
+			tabChar = "b";
 			break;
 		case constant_ABC_HH_Normal:
 		case constant_ABC_SN_XStick:
@@ -1110,6 +1117,7 @@ function GrooveUtils() {
 			moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!accent!");
 			ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!plus!");
 			ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!open!");
+			ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "!///!");
 
 			// Look for '[' and ']'.   They are added on to the the kick and splash and could be added to other notes
 			// in the future.   They imply that the notes are on the same beat.   Since we are already putting multiple
@@ -1534,7 +1542,7 @@ function GrooveUtils() {
 					new_state = "a";
 				break;
 			case 16:
-			case 32:
+			case 32:  // fall through
 			default: 
 				var whole_note_interval = implied_sub_division/4;
 				if(note_index % 4 === 0)
@@ -2170,6 +2178,9 @@ function GrooveUtils() {
 				case constant_ABC_SN_XStick: // xstick
 					snare_note = constant_OUR_MIDI_SNARE_XSTICK;
 					break;
+				case constant_ABC_SN_Buzz: // xstick
+					snare_note = constant_OUR_MIDI_SNARE_BUZZ;
+					break;
 				case false:
 					break;
 				default:
@@ -2513,7 +2524,7 @@ function GrooveUtils() {
 				note_type = "hi-hat";
 			} else if (data.note == constant_OUR_MIDI_SNARE_NORMAL || data.note == constant_OUR_MIDI_SNARE_ACCENT || 
 						data.note == constant_OUR_MIDI_SNARE_GHOST || data.note == constant_OUR_MIDI_SNARE_XSTICK || 
-						data.note == constant_OUR_MIDI_SNARE_FLAM) {
+						data.note == constant_OUR_MIDI_SNARE_FLAM || data.note == constant_OUR_MIDI_SNARE_BUZZ) {
 				note_type = "snare";
 			} else if (data.note == constant_OUR_MIDI_KICK_NORMAL || data.note == constant_OUR_MIDI_HIHAT_FOOT) {
 				note_type = "kick";
