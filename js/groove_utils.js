@@ -1560,22 +1560,23 @@ function GrooveUtils() {
 	};
 	
 	// converts the symbol for a sticking count to an actual count based on the time signature
-	root.convert_sticking_counts_to_actual_counts = function(sticking_array, notes_per_measure, timeSigTop, timeSigBottom) {
+	root.convert_sticking_counts_to_actual_counts = function(sticking_array, time_division, timeSigTop, timeSigBottom) {
 		
 		var cur_div_of_array = 32;
-		if(root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom))
+		if(root.isTripletDivision(time_division))
 			cur_div_of_array = 24;
 		
 		var actual_notes_per_measure_in_this_array = root.calc_notes_per_measure(cur_div_of_array, timeSigTop, timeSigBottom);
 		
-		var sub_division = (notes_per_measure / timeSigTop ) * timeSigBottom;
+		// Time division is 4, 8, 16, 32, 12, or 24
+		var notes_per_measure_in_time_division = ((time_division / 4) * timeSigTop) * (4/timeSigBottom);
 		
 		for(var i in sticking_array) {
 			if(sticking_array[i] == constant_ABC_STICK_COUNT) {
 				// convert the COUNT into an actual letter or number
 				// convert the index into what it would have been if the array was "notes_per_measure" sized
-				var adjusted_index = Math.floor(i / (actual_notes_per_measure_in_this_array/notes_per_measure));
-				var new_count = root.figure_out_sticking_count_for_index(adjusted_index, notes_per_measure, sub_division, timeSigBottom);
+				var adjusted_index = Math.floor(i / (actual_notes_per_measure_in_this_array/notes_per_measure_in_time_division));
+				var new_count = root.figure_out_sticking_count_for_index(adjusted_index, notes_per_measure_in_time_division, time_division, timeSigBottom);
 				var new_count_string = '"' + new_count + '"x';
 				sticking_array[i] = new_count_string;
 			}
@@ -1589,7 +1590,7 @@ function GrooveUtils() {
 
 		// convert sticking count symbol to the actual count
 		// do this right before ABC output so it can't every get encoded into something that gets saved.
-		root.convert_sticking_counts_to_actual_counts(sticking_array, notes_per_measure, timeSigTop, timeSigBottom);
+		root.convert_sticking_counts_to_actual_counts(sticking_array, time_division, timeSigTop, timeSigBottom);
 	
 		if(root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom)) {
 			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, time_division, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);
