@@ -3500,12 +3500,11 @@ function GrooveWriter() { "use strict";
 	};
 	
 	root.timeSigPopupOpen = function(type) {
-		if(root.myGrooveUtils.debugMode || root.myGrooveUtils.grooveDBAuthoring) {
-			var popup = document.getElementById("timeSigPopup");
+		var popup = document.getElementById("timeSigPopup");
 
-			if (popup)
-				popup.style.display = "block";
-		}
+		if (popup)
+			popup.style.display = "block";
+
 	};
 	
 	// turns on or off triplet selection based on the current time sig setting
@@ -3526,18 +3525,10 @@ function GrooveWriter() { "use strict";
 	};
 	
 	root.setTimeSigLabel = function() {
-		
-		
 		// turn on/off special features that are only available in 4/4 time
-				
+
 		// set the label
-		if(class_num_beats_per_measure == 4 && class_note_value_per_measure == 4 ) {
-			document.getElementById("timeLabel").innerHTML = "TIME";
-		
-		} else {
-			document.getElementById("timeLabel").innerHTML = '<span><span class="buttonFraction"><sup>' + class_num_beats_per_measure + "</sup>/<sub>" + class_note_value_per_measure + "</sup></span>TIME</span>";
-		
-		}
+		document.getElementById("timeSigLabel").innerHTML = '<sup>' + class_num_beats_per_measure + "</sup>/<sub>" + class_note_value_per_measure + "</sub>";
 	};
 	
 	root.timeSigPopupClose = function(type) {

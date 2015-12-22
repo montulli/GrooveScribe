@@ -71,7 +71,7 @@
 			<div id="LeftHandNav">
 				<span id="divisionButtonContainer">
 					<span id="logoInSubdivision"><img src="images/GScribe_Logo_lone_g.svg"></span>
-					<span id="timeLabel" onclick="myGrooveWriter.timeSigPopupOpen();">TIME</span>
+					<span id="timeLabel" onclick="myGrooveWriter.timeSigPopupOpen();"><span><span id="timeSigLabel" class="buttonFraction"><sup>4</sup>/<sub>4</sub></span><span id="timeSubLabel">TIME</span></span></span>
 					<span class="subdivision" id="subdivision_4ths"  onclick="myGrooveWriter.changeDivision(4);"><span class="buttonFraction"><sup>1</sup>/<sub>4</sub></span></span>
 					<span class="subdivision" id="subdivision_8ths"  onclick="myGrooveWriter.changeDivision(8);"><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span></span>
 					<span class="subdivision" id="subdivision_16ths" onclick="myGrooveWriter.changeDivision(16);"><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span></span>
@@ -337,11 +337,7 @@
 		
 		<!-- dialog for the TIME label, hidden by default -->
 		<div id="timeSigPopup">
-			<div id="timeSigPopupBeta">
-				Time Signature support is in Beta.
-				<br>If you find problems, please check the help menu for instructions on reporting bugs
-			</div>
-			<div id="timeSigPopupTitle">Choose a <a href="https://en.wikipedia.org/wiki/Time_signature" target="_blank">Time Signature</a></div> 
+			<div id="timeSigPopupTitle">Choose a Time Signature</div> 
 			<div id="timeSigPopupOptions">
 			 <select id="timeSigPopupTimeSigTop">
 			  <option value="2">2</option>

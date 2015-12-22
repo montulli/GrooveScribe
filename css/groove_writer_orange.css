@@ -165,6 +165,18 @@
 		-webkit-justify-content: center;
 		transition: all .1s ease-in-out;
 	}
+	#timeLabel {
+		height: 48px;  /* Override from above */
+	}
+	#timeSigLabel {
+		color: #E69D02;
+		font-size: 20px;
+		margin-bottom: -5px;
+	}
+	#timeSubLabel {
+		color: #E69D02;
+		font-size: 12px;
+	}
 	#logoInSubdivision {
 		background: #000;
 	}
@@ -181,7 +193,7 @@
 		cursor: auto;
 		transform: scale(1.1);
 	}	
-	.myButton:hover, .subdivision:hover {
+	.myButton:hover, .subdivision:hover, #timeLabel:hover {
 	   border-top-color: #28597a;
 	   background: #555555;
 	   color: #ccc;
@@ -194,12 +206,6 @@
 	.buttonFraction {  /* The number above "triplet" in the .subdivision 1/4, 1/8, etc */
 		display: block;
 		font-size: 18px;
-	}
-	#timeLabel {
-		cursor: auto;
-		font-size: 16px;
-		font-weight: 700;
-		height: 48px;  /* Override from above */
 	}
 	#advancedEditAnchor.buttonSelected {
 		background: #009ffa;
