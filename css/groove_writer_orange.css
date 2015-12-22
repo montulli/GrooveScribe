@@ -8,6 +8,7 @@
 		/* Use GrooveWriter instead of body for easy embedding */
 		margin: 0px;
 		height: 100vh;
+		background-color: #393939;
 	}
 	#GrooveWriter {
 		/* tag surrounds entire app */
@@ -23,7 +24,7 @@
 		width: 100%;
 		min-width: 800px;
 		/* to embed, add your header height here.  Replace 0px with your header height */
-		height: 100%;
+		//height: 100%;
 		font: 100%/normal 'Lato', Calibri, sans-serif;
 
 	}
@@ -44,8 +45,8 @@
 	#LeftHandNav {
 		width: 70px;
 		height: 100%;
-		/position: fixed;
-		position: absolute;
+		position: fixed;
+		/position: absolute;
 		top: 0px;
 		left: 0px;
 		border-right: 2px solid #000;
@@ -53,8 +54,8 @@
 		z-index: 999;
 	}
 	#TopNav {
-		/position: fixed;
-		position: relative;
+		position: fixed;
+		/position: relative;
 		top: 0px;
 		left: 0px;
 		z-index: 998;
@@ -89,6 +90,7 @@
 	}
 	#RightHandContent {
 		position: relative;
+		top: 98px;
 		left: 72px;
 		height: calc(100% - 98px);
 		width: calc(100% - 72px);
@@ -140,8 +142,9 @@
 	#midiPlayer {  /* more #midiPlayer css in groove_display.css */
 		width: calc(100% - 72px);
 		height: 48px;
-		/position: fixed;
-		position: relative;
+		position: fixed;
+		top: 49px;
+		/position: relative;
 		left: 72px;
 		z-index: 999;
 		border-bottom: 1px solid #000;
