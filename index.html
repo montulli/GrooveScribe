@@ -157,12 +157,12 @@
 					<span class="sheetMusicTextField"><b>Comment:</b> <input class="sheetMusicInputField" id="tuneComments" onchange="myGrooveWriter.refresh_ABC();"  type="text"></span>
 				</div>
 
-				<div id="bottomButtonRow" class="fullWidthEle grooveDB_hidden">
+				<div id="bottomButtonRow" class="fullWidthEle">
 					<span class="pageBottomButton" id="showHideTomsButton" onclick="event.preventDefault(); myGrooveWriter.showHideToms(false, false);"><span class="bottomButtonIcon"><i id="icon-tom1" class="fa fa-circle"></i><i id="icon-tom2" class="fa fa-circle-o"></i><i id="icon-tom3" class="fa fa-circle-o"></i></span><span class="bottomButtonLabel">TOMS</span></span>
-					<span class="pageBottomButton" id="showHideStickingsButton" onclick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);"><span class="bottomButtonLabel">STICKINGS</span></span>
-					<span class="pageBottomButton" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as();"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></i></span><span class="bottomButtonLabel">MIDI</span></span>
-					<span class="pageBottomButton" id="printButton" onclick="myGrooveWriter.printMusic();"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
-					<span class="pageBottomButton" id="shareSaveButton" onclick="event.preventDefault(); myGrooveWriter.show_FullURLPopup();"><span class="bottomButtonIcon"><i class="fa fa-share fa-2x"></i></span><span class="bottomButtonLabel">SHARE</span></span>
+					<span class=" grooveDB_hidden pageBottomButton" id="showHideStickingsButton" onclick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);"><span class="bottomButtonLabel">STICKINGS</span></span>
+					<span class=" grooveDB_hidden pageBottomButton" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as();"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></i></span><span class="bottomButtonLabel">MIDI</span></span>
+					<span class=" grooveDB_hidden pageBottomButton" id="printButton" onclick="myGrooveWriter.printMusic();"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
+					<span class=" grooveDB_hidden pageBottomButton" id="shareSaveButton" onclick="event.preventDefault(); myGrooveWriter.show_FullURLPopup();"><span class="bottomButtonIcon"><i class="fa fa-share fa-2x"></i></span><span class="bottomButtonLabel">SHARE</span></span>
 				</div>
 				
 				<div id="midiTextOutput">
@@ -176,13 +176,13 @@
 				
 				<!-- GrooveDB output area -->
 				<div id="GrooveDB_MetaData" class="grooveDB_show" style="display:none;">
-					<p>
-					This is the text that should be added to the grooveDB for this groove.  <br>
+					<div id="grooveDBInstructions">
+					This is the text that should be added to the GrooveDB for this groove.  <br>
 					<b>Copy and paste it into the GrooveDB edit window </b>
-					</p>
-					<p>
+					</div>
+					<div>
 					<textarea id="GrooveDB_source" class="fullWidthEle"></textarea>
-					</p>
+					</div>
 				</div>
 				
 				<div id="debugDisplayArea">

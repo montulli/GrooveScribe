@@ -2614,6 +2614,9 @@ function GrooveWriter() { "use strict";
 	// |HasSnareOtherTab=--------------g-------------------g-----------g-----------------
 	// |HasKickTab=o---------------o---o---------------o-----------o---o---------o-
 	// |HasFootOtherTab=----------------------------------------------------------------
+	// |HasTom1Tab=--------------------------------------------------------o-------
+    // |HasTom4Tab=----------------o---------------------------------------o-------
+    // |HasEditData=?GDB_Author=1&TimeSig=4/4&Div=32&Tempo=80&Measures=2&H=|--x-----x---x-------------------|--x-----x---x-------------------|&S=|----g-----g-------------ooo-o-o-|----g-----g-----------------gggg|&K=|o-----x-------o-o---------------|o-----x-------o-o---------------|&T1=|--------------------------------|------------------------x-------|&T4=|----------------x---------------|------------------------x-------|
 	// }}
 	//
 	root.updateGrooveDBSource = function () {
@@ -2639,6 +2642,9 @@ function GrooveWriter() { "use strict";
 		DBString += "\n|HasSnareOtherTab=" + root.myGrooveUtils.tabLineFromAbcNoteArray("S", myGrooveData.snare_array, false, true, maxNotesInTab, 0);
 		DBString += "\n|HasKickTab=" + root.myGrooveUtils.tabLineFromAbcNoteArray("K", myGrooveData.kick_array, true, false, maxNotesInTab, 0);
 		DBString += "\n|HasFootOtherTab=" + root.myGrooveUtils.tabLineFromAbcNoteArray("K", myGrooveData.kick_array, false, true, maxNotesInTab, 0);
+		DBString += "\n|HasTom1Tab=" + root.myGrooveUtils.tabLineFromAbcNoteArray("T1", myGrooveData.toms_array[0], false, true, maxNotesInTab, 0);
+		DBString += "\n|HasTom4Tab=" + root.myGrooveUtils.tabLineFromAbcNoteArray("T4", myGrooveData.toms_array[3], false, true, maxNotesInTab, 0);
+		DBString += "\n|HasEditData=" + class_undo_stack[class_undo_stack.length - 1]
 
 		DBString += "\n}}";
 
