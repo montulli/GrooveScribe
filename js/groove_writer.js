@@ -784,25 +784,15 @@ function GrooveWriter() { "use strict";
 
 		if (class_cur_all_notes_highlight_id !== false) {
 			// turn off old highlighting
-			if (document.getElementById("sticking" + class_cur_all_notes_highlight_id)) {
-				document.getElementById("sticking" + class_cur_all_notes_highlight_id).style.background = "transparent";
-				document.getElementById("hi-hat" + class_cur_all_notes_highlight_id).style.background = "transparent";
-				document.getElementById("tom1-" + class_cur_all_notes_highlight_id).style.background = "transparent";
-				document.getElementById("tom4-" + class_cur_all_notes_highlight_id).style.background = "transparent";
-				document.getElementById("snare" + class_cur_all_notes_highlight_id).style.background = "transparent";
-				document.getElementById("kick" + class_cur_all_notes_highlight_id).style.background = "transparent";
+			var bg_ele = document.getElementById("bg-highlight" + class_cur_all_notes_highlight_id)
+			if (bg_ele) {
+				bg_ele.style.background = "transparent";
 			}
 		}
 
 		// turn this one on;
 		class_cur_all_notes_highlight_id = id;
-		document.getElementById("sticking" + class_cur_all_notes_highlight_id).style.background = "rgba(255,0,0,0.2)";
-		document.getElementById("hi-hat" + class_cur_all_notes_highlight_id).style.background = "rgba(255,0,0,0.2)";
-		document.getElementById("tom1-" + class_cur_all_notes_highlight_id).style.background = "rgba(255,0,0,0.2)";
-		document.getElementById("tom4-" + class_cur_all_notes_highlight_id).style.background = "rgba(255,0,0,0.2)";
-		document.getElementById("snare" + class_cur_all_notes_highlight_id).style.background = "rgba(255,0,0,0.2)";
-		document.getElementById("kick" + class_cur_all_notes_highlight_id).style.background = "rgba(255,0,0,0.2)";
-
+		document.getElementById("bg-highlight" + class_cur_all_notes_highlight_id).style.background = "rgba(255,0,0,0.2)";
 	}
 
 	function hilight_note(instrument, percent_complete) {
@@ -830,6 +820,14 @@ function GrooveWriter() { "use strict";
 			document.getElementById("hi-hat" + class_cur_hh_highlight_id).style.borderColor = "transparent";
 			class_cur_hh_highlight_id = false;
 		}
+		if (class_cur_tom1_highlight_id !== false) {
+			document.getElementById("tom1-" + class_cur_tom1_highlight_id).style.borderColor = "transparent";
+			class_cur_tom1_highlight_id = false;
+		}
+		if (class_cur_tom4_highlight_id !== false) {
+			document.getElementById("tom4-" + class_cur_tom4_highlight_id).style.borderColor = "transparent";
+			class_cur_tom4_highlight_id = false;
+		}
 		if (class_cur_snare_highlight_id !== false) {
 			document.getElementById("snare" + class_cur_snare_highlight_id).style.borderColor = "transparent";
 			class_cur_snare_highlight_id = false;
@@ -841,10 +839,10 @@ function GrooveWriter() { "use strict";
 
 		if (class_cur_all_notes_highlight_id !== false) {
 			// turn off old highlighting
-			document.getElementById("sticking" + class_cur_all_notes_highlight_id).style.background = "transparent";
-			document.getElementById("hi-hat" + class_cur_all_notes_highlight_id).style.background = "transparent";
-			document.getElementById("snare" + class_cur_all_notes_highlight_id).style.background = "transparent";
-			document.getElementById("kick" + class_cur_all_notes_highlight_id).style.background = "transparent";
+			var bg_ele = document.getElementById("bg-highlight" + class_cur_all_notes_highlight_id)
+			if (bg_ele) {
+				bg_ele.style.background = "transparent";
+			}
 			class_cur_all_notes_highlight_id = false;
 		}
 
@@ -4170,6 +4168,20 @@ function GrooveWriter() { "use strict";
 									<div class="staff-line-4"></div>\
 									<div class="staff-line-5"></div>\n');
 
+		// backgrounds for highlighting.  Evenly spaced cols of space
+		newHTML += ('\
+										<div class="background-highlight-container">\
+											<div class="opening_note_space"> </div>');
+		for (i = indexStartForNotes; i < class_notes_per_measure + indexStartForNotes; i++) {
+			newHTML += ('						<div id="bg-highlight' + i + '" class="bg-highlight" >\
+												</div>\n');
+
+			if ((i - (indexStartForNotes - 1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure) === 0 && i < class_notes_per_measure + indexStartForNotes - 1) {
+				newHTML += ('<div class="space_between_note_groups"> </div> \n');
+			}
+		}
+		newHTML += ('<div class="end_note_space"></div>\n</div>\n');
+		
 		// Hi-hats
 		newHTML += ('\
 										<div class="hi-hat-container">\

@@ -370,6 +370,12 @@
 		-webkit-user-select: none;
 		-ms-user-select: none;
 	}
+	.background-highlight-container {
+		position: absolute; 
+		height: 190px;
+		white-space:nowrap;
+		border: 1px solid transparent;
+	}
 	.hi-hat-container {
 		height: 42px;
 		white-space:nowrap;
@@ -452,7 +458,12 @@
 		margin-right: 2px;
 		margin-left: 2px;
 		margin-bottom: -1;
-		}
+	}
+	.bg-highlight {
+		display: inline-block;
+		width: 35px;
+		height: 192px;
+	}
 	.hi-hat {
 		display: inline-block;
 		position: relative;
