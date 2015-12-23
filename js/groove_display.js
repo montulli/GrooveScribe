@@ -203,7 +203,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 			}, false);
 		};
 
-		root.displayGrooveInHTMLElementId = function (HtmlTagId, GrooveDefinition, showPlayer, linkToEditor, expandPlayer) {
+		root.AddGrooveDisplayToElementId = function (HtmlTagId, GrooveDefinition, showPlayer, linkToEditor, expandPlayer) {
 			var myGrooveUtils = new GrooveUtils();
 			root.GrooveDisplayUniqueCounter++;
 
@@ -266,7 +266,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 			document.write('<div class="GrooveDisplay" id="' + HTMLElementID + '"></div>');
 
 			window.addEventListener("load", function () {
-				root.displayGrooveInHTMLElementId(HTMLElementID, URLEncodedGrooveData, showPlayer, linkToEditor, expandPlayer);
+				root.AddGrooveDisplayToElementId(HTMLElementID, URLEncodedGrooveData, showPlayer, linkToEditor, expandPlayer);
 			}, false);
 		};
 	})(); // end of class GrooveDisplay
