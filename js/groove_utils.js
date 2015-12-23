@@ -144,6 +144,7 @@ function GrooveUtils() {
 		this.kick_array = class_empty_note_array.slice(0);  // copy by value
 		// toms_array contains 4 toms  T1, T2, T3, T4 index starting at zero
 		this.toms_array = [class_empty_note_array.slice(0), class_empty_note_array.slice(0), class_empty_note_array.slice(0), class_empty_note_array.slice(0)];
+		this.showToms = false;
 		this.showStickings = false;
 		this.title = "";
 		this.author = "";
@@ -353,6 +354,16 @@ function GrooveUtils() {
 		return retString;
 	};
 
+	root.GetDefaultTom1Groove = function (notes_per_measure, timeSigTop, timeSigBottom, numMeasures) {
+		
+		return root.GetEmptyGroove(notes_per_measure, numMeasures);
+	};
+	
+	root.GetDefaultTom4Groove = function (notes_per_measure, timeSigTop, timeSigBottom, numMeasures) {
+		
+		return root.GetEmptyGroove(notes_per_measure, numMeasures);
+	};
+	
 	// build a string that looks like this
     // |--------O---------------O-------|
 	root.GetDefaultSnareGroove = function (notes_per_measure, timeSigTop, timeSigBottom, numMeasures) {
@@ -547,6 +558,12 @@ function GrooveUtils() {
 			case "H":
 				return constant_ABC_HH_Normal;
 				//break;
+			case "T1":
+				return constant_ABC_T1_Normal;
+				//break;
+			case "T4":
+				return constant_ABC_T4_Normal;
+				//break;	
 			default:
 				break;
 			}
@@ -869,6 +886,8 @@ function GrooveUtils() {
 			var Tom_string = root.getQueryVariableFromString("T" + (i+1), false, encodedURLData);
 			if (!Tom_string) {
 				Tom_string = root.GetDefaultTomGroove(myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue, myGrooveData.numberOfMeasures);
+			} else {
+				myGrooveData.showToms = true;
 			}
 
 			/// the toms array index starts at zero (0) the first one is T1
@@ -1020,10 +1039,10 @@ function GrooveUtils() {
 			'V:Hands stem=up \n' +
 			'%%voicemap drum\n' +
 			'"^Hi-Hat"^g4 "^Open"!open!^g4 ' +
-			'"^Crash"^c\'4 "^Stacker"^d\'4 "^Ride"^A\'4 "^Ride Bell"^B\'4 x2 "^Snare"c4  "^Buzz"!///!c4 "^Cross"^c4 "^Ghost  "!(.!!).!c4 "^Flam"{/c}c4  x18 ||\n' +
+			'"^Crash"^c\'4 "^Stacker"^d\'4 "^Ride"^A\'4 "^Ride Bell"^B\'4 x2 "^Tom"e4 "^Tom"A4 "^Snare"c4 "^Buzz"!///!c4 "^Cross"^c4 "^Ghost  "!(.!!).!c4 "^Flam"{/c}c4  x10 ||\n' +
 			'V:Feet stem=down \n' +
 			'%%voicemap drum\n' +
-			'x48 "^Kick"F4 "^HH foot"^d,4 x8 ||\n' +
+			'x52 "^Kick"F4 "^HH foot"^d,4 x4 ||\n' +
 			'T:\n';
 		}
 
@@ -1718,7 +1737,7 @@ function GrooveUtils() {
 	root.renderABCtoSVG = function (abc_source) {
 		root.abc_obj = new Abc(abcToSVGCallback);
 		if ((root.myGrooveData && root.myGrooveData.showLegend) || root.isLegendVisable)
-			root.abcNoteNumIndex = -14; // subtract out the legend notes for a proper index.
+			root.abcNoteNumIndex = -15; // subtract out the legend notes for a proper index.
 		else
 			root.abcNoteNumIndex = 0;
 		abcToSVGCallback.abc_svg_output = ''; // clear
@@ -2529,7 +2548,7 @@ function GrooveUtils() {
 				note_type = "snare";
 			} else if (data.note == constant_OUR_MIDI_KICK_NORMAL || data.note == constant_OUR_MIDI_HIHAT_FOOT) {
 				note_type = "kick";
-			} else if (data.note == constant_OUR_MIDI_TOM1_NORMAL || data.note == constant_OUR_MIDI_TOM2_NORMAL || data.note == constant_OUR_MIDI_TOM2_NORMAL || data.note == constant_OUR_MIDI_TOM3_NORMAL) {
+			} else if (data.note == constant_OUR_MIDI_TOM1_NORMAL || data.note == constant_OUR_MIDI_TOM2_NORMAL || data.note == constant_OUR_MIDI_TOM3_NORMAL || data.note == constant_OUR_MIDI_TOM4_NORMAL) {
 				note_type = "tom";
 			}
 			if (note_type) {

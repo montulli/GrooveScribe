@@ -158,6 +158,7 @@
 				</div>
 
 				<div id="bottomButtonRow" class="fullWidthEle grooveDB_hidden">
+					<span class="pageBottomButton" id="showHideTomsButton" onclick="event.preventDefault(); myGrooveWriter.showHideToms(false, false);"><span class="bottomButtonIcon"><i id="icon-tom1" class="fa fa-circle"></i><i id="icon-tom2" class="fa fa-circle-o"></i><i id="icon-tom3" class="fa fa-circle-o"></i></span><span class="bottomButtonLabel">TOMS</span></span>
 					<span class="pageBottomButton" id="showHideStickingsButton" onclick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);"><span class="bottomButtonLabel">STICKINGS</span></span>
 					<span class="pageBottomButton" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as();"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></i></span><span class="bottomButtonLabel">MIDI</span></span>
 					<span class="pageBottomButton" id="printButton" onclick="myGrooveWriter.printMusic();"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
@@ -261,6 +262,18 @@
 			</ul>
 		</div>
 		<div class="noteContextMenu">
+			<ul id="tom1ContextMenu" class="list">
+				<li onclick='myGrooveWriter.notePopupClick("tom1", "off");'>Off</li>
+				<li onclick='myGrooveWriter.notePopupClick("tom1", "normal");'>Tom Normal</li>
+			</ul>
+		</div>
+		<div class="noteContextMenu">
+			<ul id="tom4ContextMenu" class="list">
+				<li onclick='myGrooveWriter.notePopupClick("tom4", "off");'>Off</li>
+				<li onclick='myGrooveWriter.notePopupClick("tom4", "normal");'>Tom Normal</li>
+			</ul>
+		</div>
+		<div class="noteContextMenu">
 			<ul id="snareContextMenu" class="list">
 				<li onclick='myGrooveWriter.notePopupClick("snare", "off");'>Off</li>
 				<li onclick='myGrooveWriter.notePopupClick("snare", "normal");'>Snare Normal</li>
@@ -296,6 +309,20 @@
 				<li onclick='myGrooveWriter.noteLabelPopupClick("hh", "downbeats");'>downbeats</li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("hh", "upbeats");'>upbeats</li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("hh", "cancel");'>cancel</li>
+			</ul>
+		</div>
+		<div class="noteContextMenu">
+			<ul id="tom1LabelContextMenu" class="list">
+				<li onclick='myGrooveWriter.noteLabelPopupClick("tom1", "all_off");'>all Toms <b>Off</b></li>
+				<li onclick='myGrooveWriter.noteLabelPopupClick("tom1", "all_on");'>all Toms <b>On</b></li>
+				<li onclick='myGrooveWriter.noteLabelPopupClick("tom1", "cancel");'>cancel</li>
+			</ul>
+		</div>
+		<div class="noteContextMenu">
+			<ul id="tom4LabelContextMenu" class="list">
+				<li onclick='myGrooveWriter.noteLabelPopupClick("tom4", "all_off");'>all Toms <b>Off</b></li>
+				<li onclick='myGrooveWriter.noteLabelPopupClick("tom4", "all_on");'>all Toms <b>On</b></li>
+				<li onclick='myGrooveWriter.noteLabelPopupClick("tom4", "cancel");'>cancel</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
