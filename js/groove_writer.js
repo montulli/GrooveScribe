@@ -76,6 +76,8 @@ function GrooveWriter() { "use strict";
 	var constant_sticking_count_on_color_rgb =  "rgb(57, 57, 57)";
 	var constant_sticking_right_off_color_rgb = "rgb(204, 204, 204)";
 	var constant_sticking_left_off_color_rgb = "rgb(204, 204, 204)";
+	var constant_snare_accent_on_color_hex = "#FFF";
+	var constant_snare_accent_on_color_rgb = "rgb(255, 255, 255)";
 	
 	// functions below
 
@@ -181,7 +183,7 @@ function GrooveWriter() { "use strict";
 			else if (returnType == "URL")
 				return "g"; // ghost note
 		}
-		if (document.getElementById("snare_accent" + id).style.color == constant_note_on_color_rgb) {
+		if (document.getElementById("snare_accent" + id).style.color == constant_snare_accent_on_color_rgb) {
 			if (returnType == "ABC")
 				return constant_ABC_SN_Accent; // snare accent
 			else if (returnType == "URL")
@@ -418,7 +420,9 @@ function GrooveWriter() { "use strict";
 				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_GHOST);
 			break;
 		case "accent":
-			document.getElementById("snare_accent" + id).style.color = constant_note_on_color_hex;
+			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
+			document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
+			document.getElementById("snare_accent" + id).style.color = constant_snare_accent_on_color_hex;
 			if(make_sound)
 				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_ACCENT);
 			break;
@@ -4232,29 +4236,31 @@ function GrooveWriter() { "use strict";
 		for (i = indexStartForNotes; i < class_notes_per_measure + indexStartForNotes; i++) {
 			newHTML += ('' +
 						'<div id="snare' + i + '" class="snare" onClick="myGrooveWriter.noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'snare\', ' + i + ')">' +
-						'<div class="snare_ghost note_part"  id="snare_ghost' + i + '">(<i class="fa fa-circle dot_in_snare_ghost_note"></i>)</div>' +
-						'<div class="snare_circle note_part" id="snare_circle' + i + '"></div>' +
-						'<div class="snare_xstick note_part" id="snare_xstick' + i + '"><i class="fa fa-times"></i></div>' +
-						'<div class="snare_buzz note_part" id="snare_buzz' + i + '"><i class="fa fa-bars"></i></div>' +
-						'<div class="snare_flam note_part" id="snare_flam' + i + '"><i class="fa ">' +
-							'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="30" height="30">' +
-							'	<style type="text/css">' +
-							'		.flam_fill {fill: currentColor}' +
-							'		.flam_stroke {stroke: currentColor; fill: none; stroke-width: .7}' +
-							'	</style>' +
-							'	<defs>' +
-							'		<path id="flam_ghd" class="flam_fill" d="m1.7-1c-1-1.7-4.5 0.2-3.4 2 1 1.7 4.5-0.2 3.4-2"></path>' +
-							'		<ellipse id="flam_hd" rx="4.1" ry="2.9" transform="rotate(-20)" class="flam_fill"></ellipse>' +
-							'	</defs>' +
-							'	<g id="note" transform="translate(-44 -35)">' +
-							'		<path class="flam_stroke" d="m52.1 53.34v-14M52.1 39.34c0.6 3.4 5.6 3.8 3 10 1.2-4.4-1.4-7-3-7"></path>' +
-							'		<use x="50.50" y="53.34" xlink:href="#flam_ghd"></use>' +
-							'		<path class="flam_stroke" d="m49.5 49.34l9-5"></path>' +
-							'		<path class="flam_stroke" d="m50.5 58.34c2.9 3 11.6 3 14.5 0M69.5 53.34v-21"></path><use x="66.00" y="53.34" xlink:href="#flam_hd"></use>' +
-							'	</g>' +
-							'</svg>' + 
-						'</i></div>' +
-						'<div class="snare_accent note_part" id="snare_accent' + i + '"><i class="fa fa-exclamation-circle"></i></div>' +
+							'<div class="snare_ghost note_part"  id="snare_ghost' + i + '">(<i class="fa fa-circle dot_in_snare_ghost_note"></i>)</div>' +
+							'<div class="snare_circle note_part" id="snare_circle' + i + '"></div>' +
+							'<div class="snare_xstick note_part" id="snare_xstick' + i + '"><i class="fa fa-times"></i></div>' +
+							'<div class="snare_buzz note_part" id="snare_buzz' + i + '"><i class="fa fa-bars"></i></div>' +
+							'<div class="snare_flam note_part" id="snare_flam' + i + '"><i class="fa ">' +
+								'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="30" height="30">' +
+								'	<style type="text/css">' +
+								'		.flam_fill {fill: currentColor}' +
+								'		.flam_stroke {stroke: currentColor; fill: none; stroke-width: .7}' +
+								'	</style>' +
+								'	<defs>' +
+								'		<path id="flam_ghd" class="flam_fill" d="m1.7-1c-1-1.7-4.5 0.2-3.4 2 1 1.7 4.5-0.2 3.4-2"></path>' +
+								'		<ellipse id="flam_hd" rx="4.1" ry="2.9" transform="rotate(-20)" class="flam_fill"></ellipse>' +
+								'	</defs>' +
+								'	<g id="note" transform="translate(-44 -35)">' +
+								'		<path class="flam_stroke" d="m52.1 53.34v-14M52.1 39.34c0.6 3.4 5.6 3.8 3 10 1.2-4.4-1.4-7-3-7"></path>' +
+								'		<use x="50.50" y="53.34" xlink:href="#flam_ghd"></use>' +
+								'		<path class="flam_stroke" d="m49.5 49.34l9-5"></path>' +
+								'		<path class="flam_stroke" d="m50.5 58.34c2.9 3 11.6 3 14.5 0M69.5 53.34v-21"></path><use x="66.00" y="53.34" xlink:href="#flam_hd"></use>' +
+								'	</g>' +
+								'</svg>' + 
+							'</i></div>' +
+							'<div class="snare_accent note_part" id="snare_accent' + i + '">' +
+							'  <i class="fa fa-chevron-right"></i>' +
+							'</div>' +
 						'</div> \n');
 
 			if ((i - (indexStartForNotes - 1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure) === 0 && i < class_notes_per_measure + indexStartForNotes - 1) {
