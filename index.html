@@ -71,21 +71,22 @@
 			<div id="LeftHandNav">
 				<span id="divisionButtonContainer">
 					<span id="logoInSubdivision"><img src="images/GScribe_Logo_lone_g.svg"></span>
-					<span id="timeLabel" onclick="myGrooveWriter.timeSigPopupOpen();"><span><span id="timeSigLabel" class="buttonFraction"><sup>4</sup>/<sub>4</sub></span><span id="timeSubLabel">TIME</span></span></span>
-					<span class="subdivision" id="subdivision_4ths"  onclick="myGrooveWriter.changeDivision(4);"><span class="buttonFraction"><sup>1</sup>/<sub>4</sub></span></span>
-					<span class="subdivision" id="subdivision_8ths"  onclick="myGrooveWriter.changeDivision(8);"><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span></span>
-					<span class="subdivision" id="subdivision_16ths" onclick="myGrooveWriter.changeDivision(16);"><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span></span>
-					<span class="subdivision" id="subdivision_32ths" onclick="myGrooveWriter.changeDivision(32);"><span class="buttonFraction"><sup>1</sup>/<sub>32</sub></span></span>
-					<span class="subdivision" id="subdivision_12ths" onclick="myGrooveWriter.changeDivision(12);"><span><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>TRIPLETS</span></span>
-					<span class="subdivision" id="subdivision_24ths" onclick="myGrooveWriter.changeDivision(24);"><span><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>TRIPLETS</span></span>
-				
+					<span class="left-button edit-block" id="timeLabel" onclick="myGrooveWriter.timeSigPopupOpen();"><span><span id="timeSigLabel" class="buttonFraction"><sup>4</sup>/<sub>4</sub></span><span id="timeSubLabel">TIME</span></span></span>
+					<span class="left-button subdivision edit-flex" id="subdivision_4ths"  onclick="myGrooveWriter.changeDivision(4);"><span><span class="buttonFraction"><sup>1</sup>/<sub>4</sub></span>NOTES</span></span>
+					<span class="left-button subdivision edit-flex" id="subdivision_8ths"  onclick="myGrooveWriter.changeDivision(8);"><span><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>NOTES</span></span>
+					<span class="left-button subdivision edit-flex" id="subdivision_16ths" onclick="myGrooveWriter.changeDivision(16);"><span><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>NOTES</span></span>
+					<span class="left-button subdivision edit-flex" id="subdivision_32ths" onclick="myGrooveWriter.changeDivision(32);"><span><span class="buttonFraction"><sup>1</sup>/<sub>32</sub></span>NOTES</span></span>
+					<span class="left-button subdivision edit-flex" id="subdivision_12ths" onclick="myGrooveWriter.changeDivision(12);"><span><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>TRIPLETS</span></span>
+					<span class="left-button subdivision edit-flex" id="subdivision_24ths" onclick="myGrooveWriter.changeDivision(24);"><span><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>TRIPLETS</span></span>
+					<span class="left-button" id="view-edit-switch" onclick="myGrooveWriter.swapViewEditMode();">Switch to View mode</span>
+					
 					<script>
 						if (myGrooveWriter.myGrooveUtils.is_touch_device()) {
-							document.write('<div id="advancedEditAnchor" onclick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">Advanced Edit<\/div>');
+							document.write('<span class="left-button edit-flex" id="advancedEditAnchor" onclick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">Advanced Edit<\/span>');
 						}
 					</script>
 				
-					<span class="subdivision" id="undoButton" onclick="myGrooveWriter.undoCommand();"><i class="fa fa-undo"></i>&nbsp;&nbsp;Undo</span>
+					<span class="left-button edit-flex" id="undoButton" onclick="myGrooveWriter.undoCommand();"><i class="fa fa-undo"></i>&nbsp;&nbsp;Undo</span>
 				</span>
 				
 			</div>
@@ -112,7 +113,7 @@
 		
 		<div id="RightHandContent">
 			<div class="nonPrintable">
-				<div id="musicalInput" class="fullWidthEle">
+				<div id="musicalInput" class="fullWidthEle edit-block">
 					<div id="measureContainer">
 						<script type="text/javascript">
 							var genHTML = "";
@@ -151,15 +152,15 @@
 				<div class="warnings" id="diverr">
 				</div>
 				
-				<div id="sheetMusicTextFields" class="fullWidthEle grooveDB_hidden">
+				<div id="sheetMusicTextFields" class="fullWidthEle grooveDB_hidden edit-block">
 					<span class="sheetMusicTextField"><b>Title:</b> <input class="sheetMusicInputField" id="tuneTitle" onchange="myGrooveWriter.refresh_ABC();" type="text"></span>
 					<span class="sheetMusicTextField"><b>Author:</b> <input class="sheetMusicInputField" id="tuneAuthor" onchange="myGrooveWriter.refresh_ABC();"  type="text"></span>
 					<span class="sheetMusicTextField"><b>Comment:</b> <input class="sheetMusicInputField" id="tuneComments" onchange="myGrooveWriter.refresh_ABC();"  type="text"></span>
 				</div>
 
 				<div id="bottomButtonRow" class="fullWidthEle">
-					<span class="pageBottomButton" id="showHideTomsButton" onclick="event.preventDefault(); myGrooveWriter.showHideToms(false, false);"><span class="bottomButtonIcon"><i id="icon-tom1" class="fa fa-circle"></i><i id="icon-tom2" class="fa fa-circle-o"></i><i id="icon-tom3" class="fa fa-circle-o"></i></span><span class="bottomButtonLabel">TOMS</span></span>
-					<span class=" grooveDB_hidden pageBottomButton" id="showHideStickingsButton" onclick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);"><span class="bottomButtonLabel">STICKINGS</span></span>
+					<span class="pageBottomButton edit-block" id="showHideTomsButton" onclick="event.preventDefault(); myGrooveWriter.showHideToms(false, false);"><span class="bottomButtonIcon"><i id="icon-tom1" class="fa fa-circle"></i><i id="icon-tom2" class="fa fa-circle-o"></i><i id="icon-tom3" class="fa fa-circle-o"></i></span><span class="bottomButtonLabel">TOMS</span></span>
+					<span class=" grooveDB_hidden pageBottomButton edit-block" id="showHideStickingsButton" onclick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);"><span class="bottomButtonLabel">STICKINGS</span></span>
 					<span class=" grooveDB_hidden pageBottomButton" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as();"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></i></span><span class="bottomButtonLabel">MIDI</span></span>
 					<span class=" grooveDB_hidden pageBottomButton" id="printButton" onclick="myGrooveWriter.printMusic();"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
 					<span class=" grooveDB_hidden pageBottomButton" id="shareSaveButton" onclick="event.preventDefault(); myGrooveWriter.show_FullURLPopup();"><span class="bottomButtonIcon"><i class="fa fa-share fa-2x"></i></span><span class="bottomButtonLabel">SHARE</span></span>

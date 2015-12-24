@@ -140,6 +140,7 @@
 		/background: #68c2ff;
 	}
 	#midiPlayer {  /* more #midiPlayer css in groove_display.css */
+		background: #000;
 		width: calc(100% - 72px);
 		height: 48px;
 		position: fixed;
@@ -148,9 +149,22 @@
 		left: 72px;
 		z-index: 999;
 		border-bottom: 1px solid #000;
-		
 	}
-	#logoInSubdivision, #timeLabel, .subdivision, #advancedEditAnchor {
+	#logoInSubdivision {
+		display: block;
+		height: 48px;
+		border-bottom: 1px solid #000;
+		display: -webkit-flex;
+		display: flex;
+		align-items: center;
+		-webkit-align-items: center;
+		justify-content: center;
+		-webkit-justify-content: center;
+	}
+	#logoInSubdivision img {
+		height: 40px;
+	}
+	.left-button {
 		display: block;
 		cursor: pointer;
 		font-size: 12px;
@@ -180,29 +194,23 @@
 		color: #E69D02;
 		font-size: 12px;
 	}
-	#logoInSubdivision {
-		background: #000;
-	}
-	#logoInSubdivision img {
-		height: 40px;
-	}
-	.subdivision.disabled, .subdivision.disabled:hover {
+	.left-button.disabled, .left-button.disabled:hover {
 		color: #000;
 		background-color: #393939;
 	}
-	.subdivision.buttonSelected, .subdivision.buttonSelected:hover {  /* is subdivision and is selected */
+	.left-button.buttonSelected, .left-button.buttonSelected:hover {  /* is subdivision and is selected */
 		background: #2484C0;
 		color: #FFF;
 		cursor: auto;
 		transform: scale(1.1);
 	}	
-	.myButton:hover, .subdivision:hover, #timeLabel:hover {
+	.myButton:hover, .left-button:hover {
 	   border-top-color: #28597a;
 	   background: #555555;
 	   color: #ccc;
 	   transform: scale(1.05);
 	 }
-	.myButton:active, .subdivision:active  {
+	.myButton:active, .left-button:active  {
 	   border-top-color: #1b435e;
 	   background: #1b435e;
     }
@@ -1102,8 +1110,8 @@
 		margin-right: 8px;
 	}
 	#GrooveDB_source {
-		width: 100%;
-		height: 200px;
+		width: calc(100% - 6px);
+		height: 280px;
 	}
 	#bottomButtonRow {
 		padding: 20px 0px;

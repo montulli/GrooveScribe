@@ -3181,6 +3181,28 @@ function GrooveWriter() { "use strict";
 			return true; // let the default handler deal with the keypress
 		});
 	};
+	
+	root.swapViewEditMode = function() {
+		var view_edit_button = document.getElementById("view-edit-switch");
+			
+		if(root.myGrooveUtils.viewMode) {
+			
+			showHideCSS_ClassDisplay(".edit-block", true, true, "block"); // show
+			showHideCSS_ClassDisplay(".edit-flex", true, true, "flex"); // show
+			
+			view_edit_button.innerHTML = "Switch to VIEW mode";
+			root.myGrooveUtils.viewMode = false;
+			root.updateCurrentURL();
+		} else {
+			
+			showHideCSS_ClassDisplay(".edit-block", true, false, "block"); // hide
+			showHideCSS_ClassDisplay(".edit-flex", true, false, "flex"); // show
+			
+			view_edit_button.innerHTML = "Switch to EDIT mode";
+			root.myGrooveUtils.viewMode = true;
+			root.updateCurrentURL();
+		}
+	};
 
 	// public function.
 	// This function initializes the data for the groove Scribe web page
@@ -3194,7 +3216,11 @@ function GrooveWriter() { "use strict";
 
 		setupPermutationMenu();
 		root.setTimeSigLabel();
-
+		
+		var set_view_mode_at_the_end_of_function = false;
+		if("view" == root.myGrooveUtils.getQueryVariableFromURL("Mode", "edit"))
+			set_view_mode_at_the_end_of_function = true;
+		
 		// set the background and text color of the current subdivision
 		selectButton(document.getElementById("subdivision_" + class_notes_per_measure + "ths"));
 
@@ -3252,11 +3278,18 @@ function GrooveWriter() { "use strict";
 			}
 		}
 		
+		// do this last so the notes are all filled in before we hide the edit grid
+		// updating the grid refreshes the URL, so we need to get the value at the top of
+		// the function, and act on it last
+		if(set_view_mode_at_the_end_of_function)	
+			root.swapViewEditMode();
+		
 		if(root.myGrooveUtils.is_touch_device()) {
 			setTimeout(function () {
 				window.scrollTo(0, 1);
 			}, 1000);
 		}
+
 	};
 
 	// called right before the midi reloads for the next replay
@@ -3626,6 +3659,9 @@ function GrooveWriter() { "use strict";
 		
 		if (root.myGrooveUtils.debugMode)
 			fullURL += "Debug=1&";
+		
+		if (root.myGrooveUtils.viewMode)
+			fullURL += "Mode=view&";
 
 		if (root.myGrooveUtils.grooveDBAuthoring)
 			fullURL += "GDB_Author=1&";
