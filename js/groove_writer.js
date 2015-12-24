@@ -3182,7 +3182,7 @@ function GrooveWriter() { "use strict";
 		});
 	};
 	
-	root.swapViewEditMode = function() {
+	root.swapViewEditMode = function(dontUpdateURL) {
 		var view_edit_button = document.getElementById("view-edit-switch");
 			
 		if(root.myGrooveUtils.viewMode) {
@@ -3192,7 +3192,9 @@ function GrooveWriter() { "use strict";
 			
 			view_edit_button.innerHTML = "Switch to VIEW mode";
 			root.myGrooveUtils.viewMode = false;
-			root.updateCurrentURL();
+			
+			if(!dontUpdateURL)
+				root.updateCurrentURL();
 		} else {
 			
 			showHideCSS_ClassDisplay(".edit-block", true, false, "block"); // hide
@@ -3200,7 +3202,8 @@ function GrooveWriter() { "use strict";
 			
 			view_edit_button.innerHTML = "Switch to EDIT mode";
 			root.myGrooveUtils.viewMode = true;
-			root.updateCurrentURL();
+			if(!dontUpdateURL)
+				root.updateCurrentURL();
 		}
 	};
 
@@ -3217,9 +3220,9 @@ function GrooveWriter() { "use strict";
 		setupPermutationMenu();
 		root.setTimeSigLabel();
 		
-		var set_view_mode_at_the_end_of_function = false;
-		if("view" == root.myGrooveUtils.getQueryVariableFromURL("Mode", "edit"))
-			set_view_mode_at_the_end_of_function = true;
+		// if Mode != "view" put into edit mode  (we default to view mode to prevent screen flicker)
+		if("view" != root.myGrooveUtils.getQueryVariableFromURL("Mode", "edit"))
+			root.swapViewEditMode(true);
 		
 		// set the background and text color of the current subdivision
 		selectButton(document.getElementById("subdivision_" + class_notes_per_measure + "ths"));
@@ -3276,13 +3279,7 @@ function GrooveWriter() { "use strict";
 			if(debugOutput) {
 				debugOutput.innerHTML += "<div>This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".<br>" + root.browserInfo.uastring + "<br>Running on: " + root.browserInfo.platform + "</div>";
 			}
-		}
-		
-		// do this last so the notes are all filled in before we hide the edit grid
-		// updating the grid refreshes the URL, so we need to get the value at the top of
-		// the function, and act on it last
-		if(set_view_mode_at_the_end_of_function)	
-			root.swapViewEditMode();
+		}		
 		
 		if(root.myGrooveUtils.is_touch_device()) {
 			setTimeout(function () {

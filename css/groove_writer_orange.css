@@ -254,7 +254,6 @@
 		display: none;
 	}
 	#musicalInput {
-		display: block;
 		width: 100%;
 		background: #FFF;
 		overflow-x: auto;
@@ -1137,6 +1136,9 @@
 	.bottomButtonLabel {
 		margin-top: 2px;
 		display: block;
+	}
+	.edit-block, .edit-flex {
+		display: none;
 	}
 	// 3 circles make up the tom icon.  Position them
 	#icon-tom1 {

@@ -107,6 +107,7 @@ function GrooveUtils() {
 	var root = this;
 
 	root.debugMode = false;
+	root.viewMode = true;  // by default to prevent screen flicker
 
 	root.abc_obj = null;
 
