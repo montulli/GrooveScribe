@@ -3188,7 +3188,6 @@ function GrooveWriter() { "use strict";
 		if(root.myGrooveUtils.viewMode) {
 			
 			showHideCSS_ClassDisplay(".edit-block", true, true, "block"); // show
-			showHideCSS_ClassDisplay(".edit-flex", true, true, "flex"); // show
 			
 			view_edit_button.innerHTML = "Switch to VIEW mode";
 			root.myGrooveUtils.viewMode = false;
@@ -3198,7 +3197,6 @@ function GrooveWriter() { "use strict";
 		} else {
 			
 			showHideCSS_ClassDisplay(".edit-block", true, false, "block"); // hide
-			showHideCSS_ClassDisplay(".edit-flex", true, false, "flex"); // show
 			
 			view_edit_button.innerHTML = "Switch to EDIT mode";
 			root.myGrooveUtils.viewMode = true;

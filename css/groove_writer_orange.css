@@ -151,20 +151,16 @@
 		border-bottom: 1px solid #000;
 	}
 	#logoInSubdivision {
-		display: block;
-		height: 48px;
-		border-bottom: 1px solid #000;
-		display: -webkit-flex;
-		display: flex;
-		align-items: center;
-		-webkit-align-items: center;
-		justify-content: center;
-		-webkit-justify-content: center;
+		background-color: #000;
 	}
 	#logoInSubdivision img {
 		height: 40px;
 	}
 	.left-button {
+		display: block;
+		cursor: pointer;
+	}
+	.left-button-content {
 		display: block;
 		cursor: pointer;
 		font-size: 12px;
@@ -1137,7 +1133,7 @@
 		margin-top: 2px;
 		display: block;
 	}
-	.edit-block, .edit-flex {
+	.edit-block {
 		display: none;
 	}
 	// 3 circles make up the tom icon.  Position them
