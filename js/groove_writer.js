@@ -4107,6 +4107,11 @@ function GrooveWriter() { "use strict";
 		var isNewDivisionTriplets = root.myGrooveUtils.isTripletDivision(newDivision);
 		var new_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure((isNewDivisionTriplets ? 24 : 32), class_num_beats_per_measure, class_note_value_per_measure);
 			
+		// check for incompatible odd time signature division   9/8 and 1/4notes for instance or 9/16 and 1/8notes
+		if( (newDivision * class_num_beats_per_measure / class_note_value_per_measure) % 1 != 0 ) {
+			alert("1/" + newDivision + " notes are disabled in " + class_num_beats_per_measure + "/" + class_note_value_per_measure + " time.  This combination would result in a half note.");
+			return;
+		}	
 		if(isNewDivisionTriplets && class_note_value_per_measure != 4) {
 			alert("Triplets are disabled in " + class_num_beats_per_measure + "/" + class_note_value_per_measure + " time.  Use x/4 time for triplets.");
 			return;

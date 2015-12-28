@@ -1436,16 +1436,22 @@ function GrooveUtils() {
 		for (var i = 0; i < num_notes; i++) {
 
 			var grouping_size_for_rests = abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom);
-
+			// make sure the group end doesn't go beyond the measure.   Happens in odd time sigs
+			if((i % notes_per_measure) + grouping_size_for_rests > notes_per_measure) {
+				// if we are in an odd time signature then the last few notes will have a different grouping to reach the end of the measure	
+				grouping_size_for_rests = notes_per_measure - (i % notes_per_measure);
+			}
+			
 			var end_of_group;
 			if (i % abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom) === 0)
 				end_of_group = abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom);
 			else
 				end_of_group = (abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom) - ((i) % abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom)));
 			
+			// make sure the group end doesn't go beyond the measure.   Happens in odd time sigs
 			if((i % notes_per_measure) + end_of_group > notes_per_measure) {
 				// if we are in an odd time signature then the last few notes will have a different grouping to reach the end of the measure	
-				end_of_group = notes_per_measure - (i % num_notes);
+				end_of_group = notes_per_measure - (i % notes_per_measure);
 			}
 			
 			if (i % abc_gen_note_grouping_size(false, timeSigTop, timeSigBottom) === 0) {
