@@ -3,12 +3,12 @@
 <html>
     <head>
 		<title>Groove Scribe</title>
-		
+
 		<meta name="viewport" content="width=1024, initial-scale=1.0">
-		
+
 		<!--   Other peoples JS libraries    -->
 		<!-- new version of MIDI.JS  Disabled
-			<!-- shim required by midi.js 
+			<!-- shim required by midi.js
 			<script src="./MIDI.js/inc/shim/Base64.js" type="text/javascript"></script>
 			<script src="./MIDI.js/inc/shim/Base64binary.js" type="text/javascript"></script>
 			<script src="./MIDI.js/inc/shim/WebAudioAPI.js" type="text/javascript"></script>
@@ -17,7 +17,7 @@
 			<script src="./MIDI.js/inc/jasmid/stream.js"></script>
 			<script src="./MIDI.js/inc/jasmid/midifile.js"></script>
 			<script src="./MIDI.js/inc/jasmid/replayer.js"></script>
-			<!--   midi.js package for playing a midi file   
+			<!--   midi.js package for playing a midi file
 			<script src="./MIDI.js/js/midi/audioDetect.js" type="text/javascript"></script>
 			<script src="./MIDI.js/js/midi/gm.js" type="text/javascript"></script>
 			<script src="./MIDI.js/js/midi/loader.js" type="text/javascript"></script>
@@ -25,22 +25,22 @@
 			<script src="./MIDI.js/js/midi/plugin.webaudio.js" type="text/javascript"></script>
 			<script src="./MIDI.js/js/midi/plugin.webmidi.js" type="text/javascript"></script>
 			<script src="./MIDI.js/js/midi/player.js" type="text/javascript"></script>
-			<!-- utils for midi.js 
+			<!-- utils for midi.js
 			<script src="./MIDI.js/js/util/dom_request_xhr.js" type="text/javascript"></script>
 			<script src="./MIDI.js/js/util/dom_request_script.js" type="text/javascript"></script>
 		-->
 		<!-- old version of MIDI.JS -->
-			<script src="./MIDI.js/js/midi/AudioDetect.js" type="text/javascript"></script>
-			<script src="./MIDI.js/js/midi/LoadPlugin.js" type="text/javascript"></script>
-			<script src="./MIDI.js/js/midi/Plugin.js" type="text/javascript"></script>
-			<script src="./MIDI.js/js/midi/Player.js" type="text/javascript"></script>
+			<script src="./MIDI.js/js/MIDI/AudioDetect.js" type="text/javascript"></script>
+			<script src="./MIDI.js/js/MIDI/LoadPlugin.js" type="text/javascript"></script>
+			<script src="./MIDI.js/js/MIDI/Plugin.js" type="text/javascript"></script>
+			<script src="./MIDI.js/js/MIDI/Player.js" type="text/javascript"></script>
 			<script src="./MIDI.js/inc/DOMLoader.XMLHttp.js" type="text/javascript"></script>
 			<script src="./MIDI.js/inc/jasmid/stream.js"></script>
 			<script src="./MIDI.js/inc/jasmid/midifile.js"></script>
 			<script src="./MIDI.js/inc/jasmid/replayer.js"></script>
 			<script src="./MIDI.js/inc/Base64.js"></script>
 			<script src="./MIDI.js/inc/base64binary.js"></script>
-		
+
 		<!-- jsmidgen for generating a midi file -->
 		<script src="./js/jsmidgen.js" type="text/javascript"></script>
 		<!-- script to render ABC to an SVG image -->
@@ -49,18 +49,18 @@
 		<script src="https://apis.google.com/js/client.js"></script>
 		<!-- script for sharing to social sites -->
 		<script src="js/share.min.js"></script>
-		
+
 		<!--   our custom JS  -->
 		<script src="js/groove_writer.js"></script>
 		<script src="js/groove_utils.js"></script>
 		<script src="js/baseGrooves.js"></script>
-		
-		
+
+
 		<script>
 			// instantiate a global instance of the GrooveWriterClass.    This page only uses one
 			myGrooveWriter = new GrooveWriter();
 		</script>
-		
+
 		<link href='https://fonts.googleapis.com/css?family=Lato:400,700,300' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.3.0/css/font-awesome.min.css">
 	    <link rel="stylesheet" type="text/css" href="css/groove_writer.css">
@@ -68,7 +68,7 @@
 
     </head>
     <body>
-	<div id="GrooveWriter">  
+	<div id="GrooveWriter">
 	    	<!-- use css to position this to the upper right -->
 		<span class="nonPrintable">
 			<div id="LeftHandNav">
@@ -81,14 +81,14 @@
 					<span class="subdivision" id="12ths" onClick="myGrooveWriter.changeDivision(12)"><div><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>TRIPLETS</div></span>
 					<span class="subdivision" id="24ths" onClick="myGrooveWriter.changeDivision(24)"><div><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>TRIPLETS</div></span>
 				</span>
-				
+
 				<script>
 					if(myGrooveWriter.is_touch_device()) {
 						document.write('<div id="advancedEditAnchor" onClick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">Advanced Edit</div>');
 					}
 				</script>
 			</div>
-			<div id="TopNav">	
+			<div id="TopNav">
 				<span id="upperLeft">
 					<span id="metronomeContainer">
 						<span id="metronomeLabel">METRONOME:</span>
@@ -103,8 +103,8 @@
 					<span class="rightButtons" id="helpAnchor" onClick="myGrooveWriter.helpAnchorClick(event)"><i class="fa fa-bars"></i> Help</span>
 				</span>
 			</div>
-		</span>  
-		
+		</span>
+
 		<div id="RightHandContent">
 			<span class="nonPrintable">
 				<div id="midiPlayer"><!-- space for the midiplayer to be attached by the javascript --></div>
@@ -130,7 +130,7 @@
 					<span id='NotationLabel'>Notation</span>
 					<span id='KeyButton'><input type="checkbox" class="hiddenCheckbox" id="showLegend" onClick="myGrooveWriter.refresh_ABC()"><label id="LegendLabel" for="showLegend"><i class="fa fa-key"></i></label></span>
 				</div>
-			</span>  
+			</span>
 			<span class="Printable">
 				<!-- rendering area -->
 				<div id="svgTarget" class="svgTarget">
@@ -139,45 +139,45 @@
 			</span>
 			<span class="nonPrintable">
 				<!-- errors -->
-				
+
 				<p class="warnings">Warnings:</p>
 				<div class="warnings" id="diverr"></div>
-				
-				
+
+
 				<div id="sheetMusicTextFields" style="display:none;">
 					&nbsp;
 					<b>Title:</b> <input class="sheetMusicInputField" id="tuneTitle" onChange="myGrooveWriter.refresh_ABC()" type="text"> &nbsp;
 					<b>Author:</b> <input class="sheetMusicInputField" id="tuneAuthor" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
 					<b>Comment:</b> <input class="sheetMusicInputField" id="tuneComments" onChange="myGrooveWriter.refresh_ABC()"  type="text"> &nbsp;
 				</div>
-				
-							
+
+
 				<div id="midiTextOutput">
 				</div>
-				
+
 				<span id="hiddenDescription">
-					Groove Writer allows drummers to create and share interesting grooves with  
+					Groove Writer allows drummers to create and share interesting grooves with
 					WYSIWYG authoring, sheet music creation, and audio playback all in one place.
 					Use the Groove Writer to write out new grooves, figure out the groove to your favorite songs,
 					or write down the groove to your latest tune.
 				</span>
 				<br>
-				
+
 				<!-- GrooveDB output area -->
 				<div id="GrooveDB_MetaData">
 					This is the text that should be added to the grooveDB for this groove.   Copy and paste it into the edit window for a groove  <br>
 					<p>
 					<textarea id="GrooveDB_source" rows="12" cols="92" ></textarea>
 				</div>
-				
+
 				<span id="undoStack"></span>
 				<span id="redoStack"></span>
 				<!-- ABC notation -->
-				<!-- 
-				<A href="" onClick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a> 
+				<!--
+				<A href="" onClick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a>
 				-->
 				<div id="ABC_Results">
-					ABC Notation is used for rendering the music.  You can see what is being generated below.   
+					ABC Notation is used for rendering the music.  You can see what is being generated below.
 					You can even edit it.  <br>
 					NOTE: whenever the page is modified, the ABC Notation below will be overwritten automatically. <br>
 					For more information about ABC Notation go here: <a href="http://abcnotation.com/">http://abcnotation.com/</a>
@@ -192,7 +192,7 @@
 			</span>
 		</div>
 
-		
+
 		<!-- context menu that will pop up over notes in advaced edit more -->
 		<div class="noteContextMenu">
 			<ul id="stickingContextMenu" class="list">
@@ -242,7 +242,7 @@
 		<div class="noteContextMenu">
 			<ul id="hhLabelContextMenu" class="list">
 				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "all_off")'>all Hi-hats <b>Off</b></li>
-				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "all_on")'>all Hi-hats <b>On</b></li>				
+				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "all_on")'>all Hi-hats <b>On</b></li>
 				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "downbeats")'>downbeats</li>
 				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "upbeats")'>upbeats</li>
 				<li onClick='myGrooveWriter.noteLabelPopupClick("hh", "cancel")'>cancel</li>
@@ -281,14 +281,14 @@
 				<li onClick='myGrooveWriter.helpMenuPopupClick("help")'>Help</li>
 				<li onClick='myGrooveWriter.helpMenuPopupClick("about")'>About</li>
 			</ul>
-		</div>	
+		</div>
 		<div id="grooveListWrapper">
 			<script>
 				document.write(grooves.getGroovesAsHTML());
 			</script>
-		</div>	
-		
-		
+		</div>
+
+
 		<!-- this is used by the share/save button, and is hidden by default -->
 		<div id="fullURLPopupContainer">
 			<div id="fullURLPopup">
@@ -303,15 +303,15 @@
 				<div id="shareButton"></div>
 			</div>
 		</div>
-			
-		
+
+
 		<script>
 			// set up the page after it has fully loaded
 			window.onload = function () {
 				myGrooveWriter.runsOnPageLoad();   // Initialize the notes
 			};
 		</script>
-			
-	</div>	
+
+	</div>
     </body>
 </html>

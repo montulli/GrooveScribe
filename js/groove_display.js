@@ -87,10 +87,10 @@ if (typeof(GrooveDisplay) === "undefined") {
 		};
 
 		//	<!--   midi.js package for sound   -->
-		root.loadjscssfile("../MIDI.js/js/midi/AudioDetect.js", "js");
-		root.loadjscssfile("../MIDI.js/js/midi/LoadPlugin.js", "js");
-		root.loadjscssfile("../MIDI.js/js/midi/Plugin.js", "js");
-		root.loadjscssfile("../MIDI.js/js/midi/Player.js", "js");
+		root.loadjscssfile("../MIDI.js/js/MIDI/AudioDetect.js", "js");
+		root.loadjscssfile("../MIDI.js/js/MIDI/LoadPlugin.js", "js");
+		root.loadjscssfile("../MIDI.js/js/MIDI/Plugin.js", "js");
+		root.loadjscssfile("../MIDI.js/js/MIDI/Player.js", "js");
 		root.loadjscssfile("../MIDI.js/inc/DOMLoader.XMLHttp.js", "js");
 		//	<!-- jasmid package midi package required by midi.js above -->
 		root.loadjscssfile("../MIDI.js/inc/jasmid/stream.js", "js");
@@ -161,7 +161,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 				myGrooveData.numBeats = timeSig[0];
 				myGrooveData.noteValue = timeSig[1];
 			}
-			
+
 			//console.log(myGrooveData);
 
 			var svgTargetId = "svgTarget" + root.GrooveDisplayUniqueCounter;
@@ -219,9 +219,9 @@ if (typeof(GrooveDisplay) === "undefined") {
 			// load the groove from the URL data if it was passed in.
 			var GrooveData = myGrooveUtils.getGrooveDataFromUrlString(GrooveDefinition);
 			//console.log(GrooveData);
-				
+
 			var layoutFunction = function() {
-			
+
 				var svgTarget = document.getElementById(svgTargetId);
 				var renderWidth = svgTarget.offsetWidth;
 
@@ -235,14 +235,14 @@ if (typeof(GrooveDisplay) === "undefined") {
 				else
 					svgTarget.innerHTML = svgReturn.svg;
 			};
-			
+
 			layoutFunction();
-				
+
 			// resize SVG on window resize (not needed now.   We render to 1000 and scale in css)
 			//window.addEventListener("resize", layoutFunction);
 			//window.addEventListener("beforeprint", layoutFunction);
-			
-			
+
+
 			if (showPlayer) {
 				myGrooveUtils.setGrooveData(GrooveData);
 				//console.log(GrooveData);

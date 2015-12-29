@@ -5,44 +5,44 @@
 
     <head>
 		<title>Groove Scribe</title>
-		
+
 		<!--meta property="og:image" content="https://mikeslessons.com/groove/images/GScribe_Logo_on_orange.png"> -->
 		<meta property="og:description" content="Groove Scribe allows drummers to easily create grooves, listen, share, print sheet music, and more. Use the Groove Scribe to create new grooves, figure out the groove to your favorite song, or write down the groove to your latest tune."/>
 		<meta property="og:site_name" content="GrooveScribe at MikesLessons.com"/>
-		
+
 		<script>
 			document.write('<meta property="og:image" content="https://gscribe-png-image.herokuapp.com/' + window.location.search + '">');
 		</script>
 		<meta property="og:image" content="https://mikeslessons.com/groove/images/GScribe_Logo_on_orange.png">
-		
+
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.3.0/css/font-awesome.min.css">
 	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css">
 		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css">
 		<link href='https://fonts.googleapis.com/css?family=Lato:400,700,300' rel='stylesheet' type='text/css'>
-		
+
 		<!--   Other peoples JS libraries    -->
 		<!-- <script src="./MIDI.js/js/midi/MIDI.JS.min.js" type="text/javascript"></script> -->
-		<script src="./MIDI.js/js/midi/AudioDetect.js" type="text/javascript"></script>
-		<script src="./MIDI.js/js/midi/LoadPlugin.js" type="text/javascript"></script>
-		<script src="./MIDI.js/js/midi/Plugin.js" type="text/javascript"></script>
-		<script src="./MIDI.js/js/midi/Player.js" type="text/javascript"></script>
+		<script src="./MIDI.js/js/MIDI/AudioDetect.js" type="text/javascript"></script>
+		<script src="./MIDI.js/js/MIDI/LoadPlugin.js" type="text/javascript"></script>
+		<script src="./MIDI.js/js/MIDI/Plugin.js" type="text/javascript"></script>
+		<script src="./MIDI.js/js/MIDI/Player.js" type="text/javascript"></script>
 		<script src="./MIDI.js/inc/DOMLoader.XMLHttp.js" type="text/javascript"></script>
 		<script src="./MIDI.js/inc/jasmid/stream.js"></script>
 		<script src="./MIDI.js/inc/jasmid/midifile.js"></script>
 		<script src="./MIDI.js/inc/jasmid/replayer.js"></script>
 		<script src="./MIDI.js/inc/Base64.js"></script>
 		<script src="./MIDI.js/inc/base64binary.js"></script>
-		
+
 		<!-- script to render ABC to an SVG image -->
 		<script type="text/javascript" src="./js/abc2svg-1.js"></script>
 		<!-- script to shorten URLs from goo.gl -->
 		<script src="https://apis.google.com/js/client.js"></script>
 		<!-- script for sharing to social sites -->
 		<script src="js/share.min.js"></script>
-		
-		
+
+
 		<!-- Minified version: <script src="./js/groove_writer.min.js" type="text/javascript"></script> -->
-		
+
 		<!-- jsmidgen for generating a midi file -->
 		<script src="./js/jsmidgen.js" type="text/javascript"></script>
 		<!--   our custom JS  -->
@@ -62,12 +62,12 @@
 				document.write('<link rel="stylesheet" type="text/css" href="css/groove_debug.css">');
 			}
 		</script>
-						
+
     </head>
     <body>
-	
-	<div id="GrooveWriter">  
-		<div class="nonPrintable">	
+
+	<div id="GrooveWriter">
+		<div class="nonPrintable">
 			<div id="LeftHandNav">
 				<span id="divisionButtonContainer">
 					<span id="logoInSubdivision" class="left-button-content"><img src="images/GScribe_Logo_lone_g.svg"></span>
@@ -78,24 +78,24 @@
 					<span class="left-button subdivision edit-block" id="subdivision_32ths" onclick="myGrooveWriter.changeDivision(32);"><span class="left-button-content"><span><span class="buttonFraction"><sup>1</sup>/<sub>32</sub></span>NOTES</span></span></span>
 					<span class="left-button subdivision edit-block" id="subdivision_12ths" onclick="myGrooveWriter.changeDivision(12);"><span class="left-button-content"><span><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>TRIPLETS</span></span></span>
 					<span class="left-button subdivision edit-block" id="subdivision_24ths" onclick="myGrooveWriter.changeDivision(24);"><span class="left-button-content"><span><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>TRIPLETS</span></span></span>
-					
+
 					<script>
 						if (!myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
 							document.write('<span class="left-button" onclick="myGrooveWriter.swapViewEditMode();"><span class="left-button-content"><span id="view-edit-switch" >Switch to EDIT mode</span></span></span>');
 						}
 					</script>
-					
+
 					<script>
 						if (myGrooveWriter.myGrooveUtils.is_touch_device()) {
 							document.write('<span class="left-button edit-block" id="advancedEditAnchor" onclick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()"><span class="left-button-content">Advanced Edit</span></span>');
 						}
 					</script>
-				
+
 					<span class="left-button edit-block" id="undoButton" onclick="myGrooveWriter.undoCommand();"><span class="left-button-content"><i class="fa fa-undo"></i>&nbsp;&nbsp;Undo</span></span>
 				</span>
-				
+
 			</div>
-			<div id="TopNav" class="fullWidthEle">	
+			<div id="TopNav" class="fullWidthEle">
 				<span id="logoTextUpperLeft"><img src="images/GScribe_Logo_word_stack.svg"></span>
 				<span id="upperLeft">
 					<span id="metronomeContainer">
@@ -114,8 +114,8 @@
 				</span>
 			</div>
 			<div id="midiPlayer" class="fullWidthEle"><!-- space for the midiplayer to be attached by the javascript --></div>
-		</div>  
-		
+		</div>
+
 		<div id="RightHandContent">
 			<div class="nonPrintable">
 				<div id="musicalInput" class="fullWidthEle edit-block">
@@ -136,13 +136,13 @@
 							var genHTML = "";
 							genHTML += myGrooveWriter.HTMLforPermutationOptions();
 							document.write(genHTML);
-					</script>	
+					</script>
 				</div>
 				<div id="NotationLine" class="fullWidthEle">
 					<span id='NotationLabel'>Notation</span>
 					<span id='KeyButton'><input type="checkbox" class="hiddenCheckbox" id="showLegend" onclick="myGrooveWriter.refresh_ABC();"><label id="LegendLabel" for="showLegend"><i class="fa fa-key"></i></label></span>
 				</div>
-			</div>  
+			</div>
 			<div class="Printable">
 				<!-- rendering area -->
 				<div id="sheetMusicDiv" class="fullWidthEle">
@@ -152,11 +152,11 @@
 				</div>
 			</div>
 			<div class="nonPrintable">
-				
+
 				<p class="warnings">Warnings:</p>
 				<div class="warnings" id="diverr">
 				</div>
-				
+
 				<div id="sheetMusicTextFields" class="fullWidthEle grooveDB_hidden edit-block">
 					<span class="sheetMusicTextField"><b>Title:</b> <input class="sheetMusicInputField" id="tuneTitle" onchange="myGrooveWriter.refresh_ABC();" type="text"></span>
 					<span class="sheetMusicTextField"><b>Author:</b> <input class="sheetMusicInputField" id="tuneAuthor" onchange="myGrooveWriter.refresh_ABC();"  type="text"></span>
@@ -170,16 +170,16 @@
 					<span class=" grooveDB_hidden pageBottomButton" id="printButton" onclick="myGrooveWriter.printMusic();"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
 					<span class=" grooveDB_hidden pageBottomButton" id="shareSaveButton" onclick="event.preventDefault(); myGrooveWriter.show_FullURLPopup();"><span class="bottomButtonIcon"><i class="fa fa-share fa-2x"></i></span><span class="bottomButtonLabel">SHARE</span></span>
 				</div>
-				
+
 				<div id="midiTextOutput">
 				</div>
-				
+
 				<span id="hiddenDescription">
 					Groove Scribe allows drummers to easily create grooves, listen, share, print sheet music, and more.
 					Use the Groove Scribe to create new grooves, figure out the groove to your favorite song,
 					or write down the groove to your latest tune.
 				</span>
-				
+
 				<!-- GrooveDB output area -->
 				<div id="GrooveDB_MetaData" class="grooveDB_show" style="display:none;">
 					<div id="grooveDBInstructions">
@@ -190,7 +190,7 @@
 					<textarea id="GrooveDB_source" class="fullWidthEle"></textarea>
 					</div>
 				</div>
-				
+
 				<div id="debugDisplayArea">
 					<span id="undoStack"></span>
 					<span id="redoStack"></span>
@@ -199,7 +199,7 @@
 					<A href="" id="showHideABC" onclick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a>
 
 					<div id="ABC_Results">
-						ABC Notation is used for rendering the music.  You can see what is being generated below.   
+						ABC Notation is used for rendering the music.  You can see what is being generated below.
 						You can even edit it.  <br>
 						NOTE: whenever the page is modified, the ABC Notation below will be overwritten automatically. <br>
 						For more information about ABC Notation go here: <a href="http://abcnotation.com/">http://abcnotation.com/</a>
@@ -211,13 +211,13 @@
 					</div>
 					<span id="debugOutput"></span>
 				</div>
-				
+
 				<div id="totalPlayTime">
 				</div>
 			</div>
 		</div>
 
-		
+
 		<!-- context menu that will pop up over notes in advaced edit mode or right click -->
 		<div class="noteContextMenu">
 			<ul id="metronomeOptionsContextMenu" class="list">
@@ -311,7 +311,7 @@
 		<div class="noteContextMenu">
 			<ul id="hhLabelContextMenu" class="list">
 				<li onclick='myGrooveWriter.noteLabelPopupClick("hh", "all_off");'>all Hi-hats <b>Off</b></li>
-				<li onclick='myGrooveWriter.noteLabelPopupClick("hh", "all_on");'>all Hi-hats <b>On</b></li>				
+				<li onclick='myGrooveWriter.noteLabelPopupClick("hh", "all_on");'>all Hi-hats <b>On</b></li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("hh", "downbeats");'>downbeats</li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("hh", "upbeats");'>upbeats</li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("hh", "cancel");'>cancel</li>
@@ -361,16 +361,16 @@
 				<li onclick='myGrooveWriter.helpMenuPopupClick("help");'>Help</li>
 				<li onclick='myGrooveWriter.helpMenuPopupClick("about");'>About</li>
 			</ul>
-		</div>	
+		</div>
 		<div id="grooveListWrapper">
 			<script>
 				document.write(grooves.getGroovesAsHTML());
 			</script>
-		</div>	
-		
+		</div>
+
 		<!-- dialog for the TIME label, hidden by default -->
 		<div id="timeSigPopup">
-			<div id="timeSigPopupTitle">Choose a Time Signature</div> 
+			<div id="timeSigPopupTitle">Choose a Time Signature</div>
 			<div id="timeSigPopupOptions">
 			 <select id="timeSigPopupTimeSigTop">
 			  <option value="2">2</option>
@@ -387,20 +387,20 @@
 			  <option value="13">13</option>
 			  <option value="14">14</option>
 			  <option value="15">15</option>
-			</select> 
+			</select>
 			<b id="timeSigPopupSlash">/</b>
 			<select id="timeSigPopupTimeSigBottom">
 			  <option selected value="4">4</option>
 			  <option value="8">8</option>
 			  <option value="16">16</option>
-			</select> 
+			</select>
 			</div>
 			<div id="timeSigPopupButtons">
 			<button id="timeSigPopupCancel" onclick="myGrooveWriter.timeSigPopupClose('cancel');">Cancel</button>
 			<button id="timeSigPopupOK" onclick="myGrooveWriter.timeSigPopupClose('ok');">Done</button>
 			</div>
 		</div>
-		
+
 		<!-- this is used by the share/save button, and is hidden by default -->
 		<div id="fullURLPopup">
 			<span id="fullURLPopupCloseButton" onclick="myGrooveWriter.close_FullURLPopup();"><i class="fa fa-lg fa-times-circle"></i></span>
@@ -416,11 +416,11 @@
 			<div id="shareButton"></div>
 		</div>
 
-	
+
 		<!-- this is used by the metronome auto speed up option menu, and is hidden by default -->
 		<div id="metronomeAutoSpeedupConfiguration">
 			<div id="metronomeAutoSpeedupOutputText">
-				Increase <span id="metronomeAutoSpeedupTempoIncreaseAmountOutput">5</span> bpm in 
+				Increase <span id="metronomeAutoSpeedupTempoIncreaseAmountOutput">5</span> bpm in
 				<span id="metronomeAutoSpeedupTempoIncreaseIntervalOutput">2</span> min
 			</div>
 			<div id="metronomeAutoSpeedupConfigurationKeepIncreasing">
@@ -428,25 +428,25 @@
 			</div>
 			<div id="metronomeAutoSpeedupConfigurationSliders">
 				<div id="metronomeAutoSpeedupConfigurationAmountLable">Amount in BPM</div>
-				<input type=range min=1 max=100 value=5 class="metronomeAutoSpeedUpRange" id="metronomeAutoSpeedupTempoIncreaseAmount" oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseAmountOutput');"> 
+				<input type=range min=1 max=100 value=5 class="metronomeAutoSpeedUpRange" id="metronomeAutoSpeedupTempoIncreaseAmount" oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseAmountOutput');">
 				<div id="metronomeAutoSpeedupConfigurationIntervalLable">Interval in Minutes</div>
-				<input type=range min=1 max=20 value=2 class="metronomeAutoSpeedUpRange" id="metronomeAutoSpeedupTempoIncreaseInterval" step="1" oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseIntervalOutput');"> 
+				<input type=range min=1 max=20 value=2 class="metronomeAutoSpeedUpRange" id="metronomeAutoSpeedupTempoIncreaseInterval" step="1" oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseIntervalOutput');">
 			</div>
 			<div id="metronomeAutoSpeedupCloseButtonDiv">
 				<button id="metronomeAutoSpeedupConfigurationCloseButton" onclick="myGrooveWriter.close_MetronomeAutoSpeedupConfiguration('ok');">Done</button>
 			</div>
 		</div>
-			
-		
+
+
 		<script>
 			// set up the page after it has fully loaded
 			window.onload = function () { 'use strict';
 				myGrooveWriter.runsOnPageLoad();   // Initialize the notes
 			};
 		</script>
-				
-			
+
+
 	</div>
-	
+
     </body>
 </html>
