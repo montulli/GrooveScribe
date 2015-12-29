@@ -10,13 +10,13 @@
 		},
 		onload: function(response) {
 			console.log(response.responseText);
-		}, 
+		},
 		onprogress: function (event) {
 			var percent = event.loaded / event.total * 100 >> 0;
 			loader.message("loading: " + percent + "%");
 		}
 	});
-	
+
 */
 
 if (typeof(DOMLoader) === "undefined") var DOMLoader = {};
@@ -115,7 +115,8 @@ if (typeof ((new XMLHttpRequest()).responseText) === "undefined") {
 		if (conf.onprogress) req.onprogress = conf.onprogress;
 		req.onreadystatechange = function (event) {
 			if (req.readyState === 4) {
-				if (req.status !== 200 && req.status != 304) {
+				if (req.status !== 200 && req.status != 304 &&
+					(req.status == 0 && req.response == null) ) {
 					if (conf.onerror) conf.onerror(event, false);
 					return;
 				}
