@@ -3814,6 +3814,12 @@ function GrooveWriter() { "use strict";
 			
 			class_num_beats_per_measure = newTimeSigTop;
 			class_note_value_per_measure = newTimeSigBottom;
+			var new_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure(class_time_division, class_num_beats_per_measure, class_note_value_per_measure);
+			// If new_notes_per_measure is greater it will cause the changeDivision code to error
+			// as it tries to read the notes from the UI.   Setting it lower will allow the code to truncate
+			// the groove properly to something smaller rather than interpolating the groove into something weird
+			if(new_notes_per_measure < class_notes_per_measure)
+				class_notes_per_measure = new_notes_per_measure;
 			root.changeDivision(class_time_division);   // use this function because it will relayout everything
 		}
 	};
