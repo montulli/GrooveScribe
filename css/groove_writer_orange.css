@@ -8,6 +8,7 @@
 		/* Use GrooveWriter instead of body for easy embedding */
 		margin: 0px;
 		height: 100vh;
+		background-color: #393939;
 	}
 	#GrooveWriter {
 		/* tag surrounds entire app */
@@ -23,7 +24,7 @@
 		width: 100%;
 		min-width: 800px;
 		/* to embed, add your header height here.  Replace 0px with your header height */
-		height: 100%;
+		//height: 100%;
 		font: 100%/normal 'Lato', Calibri, sans-serif;
 
 	}
@@ -44,8 +45,8 @@
 	#LeftHandNav {
 		width: 70px;
 		height: 100%;
-		/position: fixed;
-		position: absolute;
+		position: fixed;
+		/position: absolute;
 		top: 0px;
 		left: 0px;
 		border-right: 2px solid #000;
@@ -53,8 +54,8 @@
 		z-index: 999;
 	}
 	#TopNav {
-		/position: fixed;
-		position: relative;
+		position: fixed;
+		/position: relative;
 		top: 0px;
 		left: 0px;
 		z-index: 998;
@@ -89,6 +90,7 @@
 	}
 	#RightHandContent {
 		position: relative;
+		top: 98px;
 		left: 72px;
 		height: calc(100% - 98px);
 		width: calc(100% - 72px);
@@ -138,16 +140,28 @@
 		/background: #68c2ff;
 	}
 	#midiPlayer {  /* more #midiPlayer css in groove_display.css */
+		background: #000;
 		width: calc(100% - 72px);
 		height: 48px;
-		/position: fixed;
-		position: relative;
+		position: fixed;
+		top: 49px;
+		/position: relative;
 		left: 72px;
 		z-index: 999;
 		border-bottom: 1px solid #000;
-		
 	}
-	#logoInSubdivision, #timeLabel, .subdivision, #advancedEditAnchor {
+	#logoInSubdivision {
+		background-color: #000;
+	}
+	#logoInSubdivision img {
+		height: 40px;
+	}
+	.left-button {
+		display: block;
+		color: #999999;
+		cursor: pointer;
+	}
+	.left-button-content {
 		display: block;
 		cursor: pointer;
 		font-size: 12px;
@@ -156,7 +170,6 @@
 		border-bottom: 1px solid #000;
 		text-align: center;
 		vertical-align: middle;
-		color: #999999;
 		display: -webkit-flex;
 		display: flex;
 		align-items: center;
@@ -165,41 +178,41 @@
 		-webkit-justify-content: center;
 		transition: all .1s ease-in-out;
 	}
-	#logoInSubdivision {
-		background: #000;
+	#timeLabel {
+		height: 48px;  /* Override from above */
 	}
-	#logoInSubdivision img {
-		height: 40px;
+	#timeSigLabel {
+		color: #E69D02;
+		font-size: 20px;
+		margin-bottom: -5px;
 	}
-	.subdivision.disabled, .subdivision.disabled:hover {
+	#timeSubLabel {
+		color: #E69D02;
+		font-size: 12px;
+	}
+	.left-button.disabled, .left-button.disabled:hover {
 		color: #000;
 		background-color: #393939;
 	}
-	.subdivision.buttonSelected, .subdivision.buttonSelected:hover {  /* is subdivision and is selected */
+	.left-button.buttonSelected, .left-button.buttonSelected:hover {  /* is subdivision and is selected */
 		background: #2484C0;
 		color: #FFF;
 		cursor: auto;
 		transform: scale(1.1);
 	}	
-	.myButton:hover, .subdivision:hover {
+	.myButton:hover, .left-button:hover {
 	   border-top-color: #28597a;
 	   background: #555555;
 	   color: #ccc;
 	   transform: scale(1.05);
 	 }
-	.myButton:active, .subdivision:active  {
+	.myButton:active, .left-button:active  {
 	   border-top-color: #1b435e;
 	   background: #1b435e;
     }
 	.buttonFraction {  /* The number above "triplet" in the .subdivision 1/4, 1/8, etc */
 		display: block;
 		font-size: 18px;
-	}
-	#timeLabel {
-		cursor: auto;
-		font-size: 16px;
-		font-weight: 700;
-		height: 48px;  /* Override from above */
 	}
 	#advancedEditAnchor.buttonSelected {
 		background: #009ffa;
@@ -237,7 +250,6 @@
 		display: none;
 	}
 	#musicalInput {
-		display: block;
 		width: 100%;
 		background: #FFF;
 		overflow-x: auto;
@@ -303,14 +315,32 @@
 		cursor: pointer;
 		text-align: center;
 	}
+	#tom1-label {
+		display: block;
+		white-space:nowrap;
+		margin-top: 5px;
+		margin-left: 8px;
+		cursor: pointer;
+		text-align: center;
+		visibility: hidden;
+	}
 	.snare-label {
-		margin-top: 35px;
+		margin-top: 5px;
 		margin-left: 8px;
 		cursor: pointer;
 		text-align: center;
 	}
+	#tom4-label {
+		display: block;
+		white-space:nowrap;
+		margin-top: 5px;
+		margin-left: 8px;
+		cursor: pointer;
+		text-align: center;
+		visibility: hidden;
+	}
 	.kick-label {
-		margin-top: 35px;
+		margin-top: 5px;
 		margin-left: 8px;
 		cursor: pointer;
 		text-align: center;
@@ -343,25 +373,49 @@
 		-webkit-user-select: none;
 		-ms-user-select: none;
 	}
+	.background-highlight-container {
+		position: absolute; 
+		height: 190px;
+		white-space:nowrap;
+		border: 1px solid transparent;
+	}
 	.hi-hat-container {
-		height: 43px;
+		height: 42px;
 		white-space:nowrap;
 		border: 1px solid transparent;
 		-moz-user-select: none;
 		-webkit-user-select: none;
 		-ms-user-select: none;
+	}
+	#tom1-container {
+		height: 28px;
+		white-space:nowrap;
+		border: 1px solid transparent;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+		visibility: hidden;
 	}
 	.snare-container {
 		border: 1px solid transparent;
-		height: 58px;
+		height: 28px;
 		white-space:nowrap;
 		-moz-user-select: none;
 		-webkit-user-select: none;
 		-ms-user-select: none;
 	}
+	#tom4-container {
+		height: 28px;
+		white-space:nowrap;
+		border: 1px solid transparent;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+		visibility: hidden;
+	}
 	.kick-container {
 		border: 1px solid transparent;
-		height: 84px;
+		height: 56px;
 		white-space:nowrap;
 		-moz-user-select: none;
 		-webkit-user-select: none;
@@ -407,8 +461,23 @@
 		margin-right: 2px;
 		margin-left: 2px;
 		margin-bottom: -1;
-		}
+	}
+	.bg-highlight {
+		display: inline-block;
+		width: 35px;
+		height: 192px;
+	}
 	.hi-hat {
+		display: inline-block;
+		position: relative;
+		border: 1px solid;
+		border-color: transparent;
+		width: 29px;
+		height: 100%;
+		margin-right: 2px;
+		margin-left: 2px;
+	}
+	.tom {
 		display: inline-block;
 		position: relative;
 		border: 1px solid;
@@ -517,20 +586,32 @@
 		color: transparent;
 		float:left;
 	}
+	.tom_circle {
+		position: absolute; top: 1px; left: 3px;
+		width:90%;
+		height:20px;
+		width: 20px;
+		background: #FFF;
+		border: 2px solid;
+		border-color: #999;
+		border-radius: 30px;
+		cursor: pointer;
+	}
 	.dot_in_snare_ghost_note {
 		font-size: 14px;
 		position: relative; top: -1px; left: 0px;
 	}
 	.snare_ghost {
-		position: absolute; top: 25px; left: 1px;
+		position: absolute; top: -4px; left: 1px;
 		font-size: 26px;
 		line-height: 30px;
 		color: transparent;
 		cursor: pointer;
 	}
 	.snare_circle {
-		position: absolute; top: 29px; left: 2px;
+		position: absolute; top: 0px; left: 2px;
 		width:90%;
+		line-height: 20px;
 		height:22px;
 		width: 22px;
 		background: #FFF;
@@ -539,31 +620,33 @@
 		border-radius: 30px;
 		cursor: pointer;
 	}
+	.snare_accent {
+		position: absolute; top: 5px; left: 11px;
+		line-height: 15px;
+		font-size: 15px;
+		color: transparent;
+		cursor: pointer;
+	}
 	.snare_xstick {
-		position: absolute; top: 26px; left: 3px;
+		position: absolute; top: -5px; left: 3px;
 		font-size: 30px;
 		color: transparent;
 		cursor: pointer;
 	}
 	.snare_buzz {
-		position: absolute; top: 31px; left: 3px;
+		position: absolute; top: 0px; left: 3px;
 		font-size: 22px;
 		color: transparent;
 		cursor: pointer;
 	}
 	.snare_flam {
-		position: absolute; top: 29px; left: -2px;
+		position: absolute; top: -2px; left: -2px;
 		font-size: 25px;
 		color: transparent;
 		cursor: pointer;
 	}
-	.snare_accent {
-		position: absolute; top: 0px; left: 11px;
-		font-size: 26px;
-		color: transparent;
-	}
 	.kick_circle {
-		position: absolute; top: 29px; left: 2px;
+		position: absolute; top: 0px; left: 2px;
 		height: 22px;
 		width: 22px;
 		background: #FFF;
@@ -573,7 +656,7 @@
 	}
 	
 	.kick_splash {
-		position: absolute; top: 55px; left: 3px;
+		position: absolute; top: 24px; left: 3px;
 		font-size: 30px;
 		color: transparent;
 		cursor: pointer;
@@ -1022,8 +1105,8 @@
 		margin-right: 8px;
 	}
 	#GrooveDB_source {
-		width: 100%;
-		height: 200px;
+		width: calc(100% - 6px);
+		height: 280px;
 	}
 	#bottomButtonRow {
 		padding: 20px 0px;
@@ -1046,10 +1129,26 @@
 	.bottomButtonIcon {
 		display:block;
 	}
-	
 	.bottomButtonLabel {
 		margin-top: 2px;
 		display: block;
+	}
+	.edit-block {
+		display: none;
+	}
+	// 3 circles make up the tom icon.  Position them
+	#icon-tom1 {
+		font-size: 16px;
+		margin-top: 16px;
+	}
+	#icon-tom2 {
+		font-size: 14px;
+		margin-left: -5px;
+		vertical-align: top;
+	}
+	#icon-tom3 {
+		font-size: 20px;
+		margin-top: 11px;
 	}
 	@media print {
 		/* keep at bottom so it overrides the styles above */

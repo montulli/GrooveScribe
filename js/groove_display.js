@@ -153,6 +153,8 @@ if (typeof(GrooveDisplay) === "undefined") {
 			if(GrooveDBTabIn.hihatTab !== undefined) myGrooveData.hh_array = myGrooveUtils.noteArraysFromURLData("H", GrooveDBTabIn.hihatTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
 			myGrooveData.snare_array = myGrooveUtils.noteArraysFromURLData("S", combinedSnareTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
 			myGrooveData.kick_array = myGrooveUtils.noteArraysFromURLData("K", combinedKickTab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
+			if(GrooveDBTabIn.tom1Tab !== undefined) myGrooveData.toms_array[0] = myGrooveUtils.noteArraysFromURLData("T1", GrooveDBTabIn.tom1Tab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
+			if(GrooveDBTabIn.tom4Tab !== undefined) myGrooveData.toms_array[3] = myGrooveUtils.noteArraysFromURLData("T4", GrooveDBTabIn.tom4Tab, GrooveDBTabIn.notesPerTabMeasure, GrooveDBTabIn.measures);
 
 			if(GrooveDBTabIn.timeSignature !== undefined) {
 				var timeSig = parseTimeSignature(GrooveDBTabIn.timeSignature);
@@ -203,7 +205,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 			}, false);
 		};
 
-		root.displayGrooveInHTMLElementId = function (HtmlTagId, GrooveDefinition, showPlayer, linkToEditor, expandPlayer) {
+		root.AddGrooveDisplayToElementId = function (HtmlTagId, GrooveDefinition, showPlayer, linkToEditor, expandPlayer) {
 			var myGrooveUtils = new GrooveUtils();
 			root.GrooveDisplayUniqueCounter++;
 
@@ -266,7 +268,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 			document.write('<div class="GrooveDisplay" id="' + HTMLElementID + '"></div>');
 
 			window.addEventListener("load", function () {
-				root.displayGrooveInHTMLElementId(HTMLElementID, URLEncodedGrooveData, showPlayer, linkToEditor, expandPlayer);
+				root.AddGrooveDisplayToElementId(HTMLElementID, URLEncodedGrooveData, showPlayer, linkToEditor, expandPlayer);
 			}, false);
 		};
 	})(); // end of class GrooveDisplay

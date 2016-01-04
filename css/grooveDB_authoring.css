@@ -14,3 +14,12 @@
  .grooveDB_show {
 	display: block !important;
 }
+
+#GrooveDB_MetaData {
+	margin-top: 0px;
+}
+
+#grooveDBInstructions {
+	margin-left: 10px;
+	margin-bottom: 3px;
+}
