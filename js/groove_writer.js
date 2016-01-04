@@ -3434,6 +3434,10 @@ function GrooveWriter() { "use strict";
 			case "a":
 				setFunction(displayIndex, "a", false);
 				break;
+			case "B":
+				if (drumType == "Stickings")	
+					setFunction(displayIndex, "both", false);
+				break;
 			case "b":
 				if (drumType == "H")
 					setFunction(displayIndex, "ride_bell", false);
