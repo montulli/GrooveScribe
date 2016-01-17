@@ -2500,7 +2500,7 @@ function GrooveWriter() { "use strict";
 		
 		var i,
 		new_snare_array,
-		num_notes_for_swing;
+		num_notes_for_swing = 16;
 
 		var metronomeFrequency = root.getMetronomeFrequency();
 
@@ -2537,10 +2537,6 @@ function GrooveWriter() { "use strict";
 					Kick_Array = filter_kick_array_for_permutation(Kick_Array);
 					new_kick_array = merge_kick_arrays(new_kick_array, Kick_Array);
 
-					num_notes_for_swing = 16;
-					if (class_notes_per_measure > 16)
-						num_notes_for_swing = class_notes_per_measure;
-
 					root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
 				}
 			}
@@ -2560,9 +2556,6 @@ function GrooveWriter() { "use strict";
 					else
 						new_snare_array = get_snare_permutation_array(i);
 
-					num_notes_for_swing = 16;
-					if (class_notes_per_measure > 16)
-						num_notes_for_swing = class_notes_per_measure;
 
 					root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
 				}
@@ -2572,7 +2565,12 @@ function GrooveWriter() { "use strict";
 		case "none":
 			/* falls through */
 		default:
-			root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, class_notes_per_measure, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
+			if(class_time_division < 16)
+				num_notes_for_swing = 8 * class_num_beats_per_measure/class_note_value_per_measure;
+			else 
+				num_notes_for_swing = 16 * class_num_beats_per_measure/class_note_value_per_measure;
+		
+			root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
 
 			for (i = 1; i < class_number_of_measures; i++) {
 				// reset arrays
@@ -2587,7 +2585,7 @@ function GrooveWriter() { "use strict";
 				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, class_notes_per_measure * i);
 				muteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, i);
 
-				root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, class_notes_per_measure, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
+				root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
 			}
 			break;
 		}
