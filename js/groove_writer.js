@@ -43,7 +43,7 @@ function GrooveWriter() { "use strict";
 	var class_number_of_measures = 1;
 	var class_time_division = parseInt(root.myGrooveUtils.getQueryVariableFromURL("Div", "16"), 10); // default to 16ths
 	var class_num_beats_per_measure  = 4;     // TimeSigTop
-	var class_note_value_per_measure = 4;   // TimeSigBottom
+	var class_note_value_per_measure = 4;     // TimeSigBottom
 	var class_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure(class_time_division, class_num_beats_per_measure, class_note_value_per_measure);
 	var class_metronome_auto_speed_up_active = false;
 	
@@ -1240,27 +1240,21 @@ function GrooveWriter() { "use strict";
 
 		switch (instrument) {
 		case "stickings":
-			contextMenu = document.getElementById("stickingsLabelContextMenu");
 			setFunction = set_sticking_state;
 			break;
 		case "hh":
-			contextMenu = document.getElementById("hhLabelContextMenu");
 			setFunction = set_hh_state;
 			break;
 		case "tom1":
-			contextMenu = document.getElementById("tom1LabelContextMenu");
 			setFunction = set_tom1_state;
 			break;
 		case "tom4":
-			contextMenu = document.getElementById("tom3LabelContextMenu");
 			setFunction = set_tom4_state;		
 			break;
 		case "snare":
-			contextMenu = document.getElementById("snareLabelContextMenu");
 			setFunction = set_snare_state;
 			break;
 		case "kick":
-			contextMenu = document.getElementById("kickLabelContextMenu");
 			setFunction = set_kick_state;
 			break;
 		default:
@@ -1295,20 +1289,37 @@ function GrooveWriter() { "use strict";
 						break;
 				}
 			} else if (instrument == "hh" && action == "downbeats") {
-				setFunction(i, (i % 2 === 0 ? "normal" : "off"), i == startIndex);
+				set_hh_state(i, (i % 2 === 0 ? "normal" : "off"), i == startIndex);
 				
 			} else if (instrument == "hh" && action == "upbeats") {
-				setFunction(i, (i % 2 === 0 ? "off" : "normal"), i == (startIndex + 1));
+				set_hh_state(i, (i % 2 === 0 ? "off" : "normal"), i == (startIndex + 1));
 				
 			} else if (instrument == "snare" && action == "all_on") {
-				setFunction(i, "accent", i == startIndex);
+				set_snare_state(i, "accent", i == startIndex);
 				
 			} else if (instrument == "snare" && action == "all_on_normal") {
-				setFunction(i, "normal", i == startIndex);
+				set_snare_state(i, "normal", i == startIndex);
 				
 			} else if (instrument == "snare" && action == "all_on_ghost") {
-				setFunction(i, "ghost", i == startIndex);
+				set_snare_state(i, "ghost", i == startIndex);
 				
+			} else if (instrument == "kick" && action == "hh_foot_nums_on") {
+				var num_notes_per_count = class_time_division/class_note_value_per_measure
+				var cur_state = get_kick_state(i, "ABC");
+				var kick_is_on = false;
+				if(cur_state == constant_ABC_KI_SandK || cur_state == constant_ABC_KI_Normal)
+					kick_is_on = true;
+		set_kick_state(i, (i % num_notes_per_count === 0 ?  (kick_is_on ? "kick_and_splash" : "splash") : (kick_is_on ? "normal" : "off")), i == (startIndex));
+				
+			} else if (instrument == "kick" && action == "hh_foot_ands_on") {
+				var num_notes_per_count = class_time_division/class_note_value_per_measure
+				var cur_state = get_kick_state(i, "ABC");
+				var kick_is_on = false;
+				if(cur_state == constant_ABC_KI_SandK || cur_state == constant_ABC_KI_Normal)
+					kick_is_on = true;
+		
+				set_kick_state(i, (i % num_notes_per_count === (num_notes_per_count/2) ? (kick_is_on ? "kick_and_splash" : "splash") : (kick_is_on ? "normal" : "off")), i == (startIndex + num_notes_per_count/2));
+			
 			} else if (action == "all_on") {
 				setFunction(i, "normal", i == startIndex);
 				
