@@ -1161,7 +1161,7 @@ function GrooveWriter() { "use strict";
 	
 	function isInstrumentMuted(instrument, measure) {
 		// find unmuteHHButton1  or unmuteSnareButton2
-		var buttonName = "unmute" + instrument + "Button" + class_measure_for_note_label_click
+		var buttonName = "unmute" + instrument + "Button" + measure
 		var button = document.getElementById(buttonName);
 		if(button && button.style.display == "inline-block")
 			return true;
@@ -2418,15 +2418,15 @@ function GrooveWriter() { "use strict";
 	// each of the instruments can be muted.   Check the UI and zero out the array if the instrument is marked as muted
 	// for a particular measure
 	function muteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, measureIndex) {
-		if(isInstrumentMuted("hh", measureIndex))
+		if(isInstrumentMuted("hh", measureIndex+1))
 			fill_array_with_value_false(HH_Array, HH_Array.length);
-		if(isInstrumentMuted("snare", measureIndex))
+		if(isInstrumentMuted("snare", measureIndex+1))
 			fill_array_with_value_false(Snare_Array, Snare_Array.length);
-		if(isInstrumentMuted("kick", measureIndex))
+		if(isInstrumentMuted("kick", measureIndex+1))
 			fill_array_with_value_false(Kick_Array, Kick_Array.length);
 		
 		for (var i = 0; i < Toms_Array.length; i++) {
-			if(isInstrumentMuted("tom" + (i+1), measureIndex))
+			if(isInstrumentMuted("tom" + (i+1), measureIndex+1))
 				fill_array_with_value_false(Toms_Array[i], Toms_Array[i].length);
 		}
 	}
