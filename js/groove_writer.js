@@ -47,7 +47,6 @@ function GrooveWriter() { "use strict";
 	var class_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure(class_time_division, class_num_beats_per_measure, class_note_value_per_measure);
 	var class_metronome_auto_speed_up_active = false;
 	
-
 	// set debugMode immediately so we can use it in index.html
 	root.myGrooveUtils.debugMode = parseInt(root.myGrooveUtils.getQueryVariableFromURL("Debug", "0"), 10);
 	root.myGrooveUtils.grooveDBAuthoring = parseInt(root.myGrooveUtils.getQueryVariableFromURL("GDB_Author", "0"), 10);
@@ -1147,7 +1146,29 @@ function GrooveWriter() { "use strict";
 
 		create_ABC();
 	};
-
+	
+	root.muteInstrument = function (instrument, measure, muteElseUnmute) {
+		// find unmuteHHButton1  or unmuteSnareButton2
+		var buttonName = "unmute" + instrument + "Button" + measure
+		var button = document.getElementById(buttonName);
+		if(muteElseUnmute)
+			button.style.display = "inline-block";
+		else
+			button.style.display = "none";
+		
+		root.myGrooveUtils.midiNoteHasChanged();
+	}
+	
+	function isInstrumentMuted(instrument, measure) {
+		// find unmuteHHButton1  or unmuteSnareButton2
+		var buttonName = "unmute" + instrument + "Button" + class_measure_for_note_label_click
+		var button = document.getElementById(buttonName);
+		if(button && button.style.display == "inline-block")
+			return true;
+		else
+			return false;
+	}
+	
 	root.helpMenuPopupClick = function (help_type) {
 		var win;
 
@@ -1259,6 +1280,11 @@ function GrooveWriter() { "use strict";
 			break;
 		default:
 			console.log("bad case in noteLabelPopupClick");
+			return false;
+		}
+		
+		if(action == "mute") {
+			root.muteInstrument(instrument, class_measure_for_note_label_click, true);
 			return false;
 		}
 
@@ -2071,15 +2097,17 @@ function GrooveWriter() { "use strict";
 		return kick_array;
 	}
 	
+	function fill_array_with_value_false(array_of_notes, number_of_notes) {
+		for(var i=0; i < number_of_notes; i++) {
+			array_of_notes[i] = false;
+		}
+	}
+	
 	// create a new instance of an array with all the values prefilled with false
 	function get_empty_note_array(number_of_notes) {
 		
 		var newArray = [number_of_notes];
-		
-		for(var i=0; i < number_of_notes; i++) {
-			newArray[i] = false;
-		}
-		
+		fill_array_with_value_false(newArray, number_of_notes);
 		return newArray;
 	}
 	
@@ -2386,6 +2414,22 @@ function GrooveWriter() { "use strict";
 		var num_notes = Snare_Array.length;
 		return num_notes;
 	}
+	
+	// each of the instruments can be muted.   Check the UI and zero out the array if the instrument is marked as muted
+	// for a particular measure
+	function muteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, measureIndex) {
+		if(isInstrumentMuted("hh", measureIndex))
+			fill_array_with_value_false(HH_Array, HH_Array.length);
+		if(isInstrumentMuted("snare", measureIndex))
+			fill_array_with_value_false(Snare_Array, Snare_Array.length);
+		if(isInstrumentMuted("kick", measureIndex))
+			fill_array_with_value_false(Kick_Array, Kick_Array.length);
+		
+		for (var i = 0; i < Toms_Array.length; i++) {
+			if(isInstrumentMuted("tom" + (i+1), measureIndex))
+				fill_array_with_value_false(Toms_Array[i], Toms_Array[i].length);
+		}
+	}
 
 	function filter_kick_array_for_permutation(old_kick_array) {
 		var new_kick_array = [];
@@ -2462,6 +2506,7 @@ function GrooveWriter() { "use strict";
 
 		// just the first measure
 		var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, 0);
+		muteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, 0);
 
 		var midiFile = new Midi.File();
 		var midiTrack = new Midi.Track();
@@ -2540,6 +2585,7 @@ function GrooveWriter() { "use strict";
 
 				// get another measure
 				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, class_notes_per_measure * i);
+				muteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, i);
 
 				root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, class_notes_per_measure, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
 			}
@@ -3775,14 +3821,7 @@ function GrooveWriter() { "use strict";
 	
 	// turns on or off triplet 1/4 and 1/8 note selection based on the current time sig setting
 	root.setTimeDivisionSelectionOnOrOff = function() {
-		
-		// check for incompatible odd time signature division   9/8 and 1/4 notes for instance
-		if( (4 * class_num_beats_per_measure / class_note_value_per_measure) % 1 != 0 ) {
-			addOrRemoveKeywordFromClassById("subdivision_4ths", "disabled", true);
-		} else {
-			addOrRemoveKeywordFromClassById("subdivision_4ths", "disabled", false);
-		}
-		
+
 		// check for incompatible odd time signature division  9/16 and 1/8 notes for instance 
 		if( (8 * class_num_beats_per_measure / class_note_value_per_measure) % 1 != 0 ) {
 			addOrRemoveKeywordFromClassById("subdivision_8ths", "disabled", true);
@@ -4286,6 +4325,7 @@ function GrooveWriter() { "use strict";
 				newHTML += ('<div class="space_between_note_groups"> </div> \n');
 			}
 		}
+		newHTML += '<div class="unmuteHHButton" id="unmutehhButton' + baseindex + '" onClick=\'myGrooveWriter.muteInstrument("hh", ' + baseindex + ', false)\'><span class="fa-stack unmuteHHStack"><i class="fa fa-ban fa-stack-2x" style="color:red"></i><i class="fa fa-volume-down fa-stack-1x"></i></div>';
 		newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 
 		// Toms 1
@@ -4303,6 +4343,7 @@ function GrooveWriter() { "use strict";
 				newHTML += ('<div class="space_between_note_groups"> </div> \n');
 			}
 		}
+		newHTML += '<span class="unmuteTom1Button" id="unmutetom1Button' + baseindex + '" onClick=\'myGrooveWriter.muteInstrument("tom1", ' + baseindex + ', false)\'><span class="fa-stack unmuteStack"><i class="fa fa-ban fa-stack-2x" style="color:red"></i><i class="fa fa-volume-down fa-stack-1x"></i></span>';
 		newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 		
 		// Snare stuff
@@ -4339,10 +4380,13 @@ function GrooveWriter() { "use strict";
 							'</div>' +
 						'</div> \n');
 
+			
+						
 			if ((i - (indexStartForNotes - 1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure) === 0 && i < class_notes_per_measure + indexStartForNotes - 1) {
 				newHTML += ('<div class="space_between_note_groups"> </div> ');
 			}
 		}
+		newHTML += '<span class="unmuteSnareButton" id="unmutesnareButton' + baseindex + '" onClick=\'myGrooveWriter.muteInstrument("snare", ' + baseindex + ', false)\'><span class="fa-stack unmuteStack"><i class="fa fa-ban fa-stack-2x" style="color:red"></i><i class="fa fa-volume-down fa-stack-1x"></i></span>';
 		newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 
 		// Toms 4
@@ -4360,6 +4404,7 @@ function GrooveWriter() { "use strict";
 				newHTML += ('<div class="space_between_note_groups"> </div> \n');
 			}
 		}
+		newHTML += '<span class="unmuteTom4Button" id="unmutetom4Button' + baseindex + '" onClick=\'myGrooveWriter.muteInstrument("tom4", ' + baseindex + ', false)\'><span class="fa-stack unmuteStack"><i class="fa fa-ban fa-stack-2x" style="color:red"></i><i class="fa fa-volume-down fa-stack-1x"></i></span>';
 		newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 		
 		
@@ -4379,6 +4424,7 @@ function GrooveWriter() { "use strict";
 				newHTML += ('<div class="space_between_note_groups"> </div> ');
 			}
 		}
+		newHTML += '<span class="unmuteKickButton" id="unmutekickButton' + baseindex + '" onClick=\'myGrooveWriter.muteInstrument("kick", ' + baseindex + ', false)\'><span class="fa-stack unmuteStack"><i class="fa fa-ban fa-stack-2x" style="color:red"></i><i class="fa fa-volume-down fa-stack-1x"></i></span>';
 		newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 
 		newHTML += ('\
@@ -4391,6 +4437,7 @@ function GrooveWriter() { "use strict";
 		else
 			newHTML += '<span class="closeMeasureButton"><i class="fa">&nbsp;&nbsp;&nbsp;</i></span>';
 
+		
 		if (baseindex == class_number_of_measures) // add new measure button
 			newHTML += '<span id="addMeasureButton" title="Add measure" onClick="myGrooveWriter.addMeasureButtonClick(event)"><i class="fa fa-plus"></i></span>';
 
