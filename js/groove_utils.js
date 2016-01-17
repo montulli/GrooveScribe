@@ -1997,16 +1997,8 @@ function GrooveUtils() {
 			var duration = 0;
 			
 			if (isTriplets) {
-				// triplets are only supported in 4/4 time so the duration is constant
 				duration = 21.333; // "ticks"   16 for 32nd notes.  21.33 for 24th triplets
 			} else {
-				// use time sig to determine duration of a 32nd note
-				// a 4/4 32 note is 16 ticks long
-				// x/2 should be 32 ticks
-				// x/8 should be 8 ticks
-				// x/16 would be 4 ticks
-				// anything over x/64 would be break
-				//duration = 64 / (16/timeSigBottom);  // use sig to space notes.   
 				duration = 16;
 			}
 
@@ -2038,7 +2030,7 @@ function GrooveUtils() {
 			var metronome_velocity = constant_OUR_MIDI_VELOCITY_ACCENT;
 			if (metronome_frequency > 0) {
 				var quarterNoteFrequency = (isTriplets ? 6 : 8);
-				var eighthNoteFrequency = (isTriplets ? 2 : 4);
+				var eighthNoteFrequency = (isTriplets ? 3 : 4);
 				var sixteenthNoteFrequency = (isTriplets ? 1 : 2);
 
 				var metronome_specific_index = i;
