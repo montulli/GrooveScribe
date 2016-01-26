@@ -3704,7 +3704,7 @@ function GrooveWriter() { "use strict";
 			if(fullURL.includes('index.html'))
 				fullURL = fullURL.replace('index.html', 'GrooveEmbed.html');
 			else if(fullURL.includes('/gscribe'))
-				fullURL = fullURL.replace('/gscribe', '/GrooveEmbed.html');
+				fullURL = fullURL.replace('/gscribe', '/groove/GrooveEmbed.html');
 			else
 				fullURL += 'GrooveEmbed.html';
 		}
