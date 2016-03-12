@@ -1328,6 +1328,7 @@ function GrooveUtils() {
 			//                           and "1" for 1/16th note triplets.    
 			var end_of_group = sub_division == 12 ? 2 : 1; 
 			var grouping_size_for_rests = end_of_group;
+			var special_quarter_note_rest = false;
 
 			if((i % notes_per_measure) + end_of_group > notes_per_measure) {
 				// if we are in an odd time signature then the last few notes will have a different grouping to reach the end of the measure	
@@ -1360,33 +1361,43 @@ function GrooveUtils() {
 							num_notes_in_next_group += 1;   
 						}	
 					}
+				} else if (0 == count_active_notes_in_arrays(all_drum_array_of_array, i, 6)) {
+					// there are no notes in the next beat.   Let's output a special string for a quarter note rest
+					special_quarter_note_rest = true;
+					stickings_voice_string += "x8"
+					hh_snare_voice_string += "z8";  // quarter note rest with 1/8 note rest for alignment of the stickings
+					i += 5;
+				} else {		
+					hh_snare_voice_string += "(" + notes_in_triplet_group +	":" + notes_in_triplet_group + ":" + num_notes_in_next_group;
 				}
-				
-				hh_snare_voice_string += "(" + notes_in_triplet_group +	":" + notes_in_triplet_group + ":" + num_notes_in_next_group;
 			}
 
-			if (i % grouping_size_for_rests === 0) {
-				// we will output a rest for each place there could be a note
-				stickings_voice_string += getABCforRest([sticking_array], i, grouping_size_for_rests, scaler, true);
+			// the special_rest happens when there are no notes for the next whole beat.
+			// skip the code to add notes
+			if(!special_quarter_note_rest) {
+				if (i % grouping_size_for_rests === 0) {
+					// we will output a rest for each place there could be a note
+					stickings_voice_string += getABCforRest([sticking_array], i, grouping_size_for_rests, scaler, true);
+
+					if (kick_stems_up) {
+						hh_snare_voice_string += getABCforRest(all_drum_array_of_array, i, grouping_size_for_rests, scaler, false);
+						kick_voice_string = "";
+					} else {
+						hh_snare_voice_string += getABCforRest(all_drum_array_of_array, i, grouping_size_for_rests, scaler, false);
+						kick_voice_string += getABCforRest([kick_array], i, grouping_size_for_rests, scaler, true);
+					}
+				}
+
+				stickings_voice_string += getABCforNote([sticking_array], i, end_of_group, scaler);
 
 				if (kick_stems_up) {
-					hh_snare_voice_string += getABCforRest(all_drum_array_of_array, i, grouping_size_for_rests, scaler, false);
+					hh_snare_voice_string += getABCforNote(all_drum_array_of_array, i, end_of_group, scaler);
 					kick_voice_string = "";
 				} else {
-					hh_snare_voice_string += getABCforRest(all_drum_array_of_array, i, grouping_size_for_rests, scaler, false);
-					kick_voice_string += getABCforRest([kick_array], i, grouping_size_for_rests, scaler, true);
+					hh_snare_voice_string += getABCforNote(all_drum_array_of_array, i, end_of_group, scaler);
+					kick_voice_string += getABCforNote([kick_array], i, end_of_group, scaler);
 				}
-			}
-
-			stickings_voice_string += getABCforNote([sticking_array], i, end_of_group, scaler);
-
-			if (kick_stems_up) {
-				hh_snare_voice_string += getABCforNote(all_drum_array_of_array, i, end_of_group, scaler);
-				kick_voice_string = "";
-			} else {
-				hh_snare_voice_string += getABCforNote(all_drum_array_of_array, i, end_of_group, scaler);
-				kick_voice_string += getABCforNote([kick_array], i, end_of_group, scaler);
-			}
+			}	
 
 			if ((i % abc_gen_note_grouping_size(true, timeSigTop, timeSigBottom)) == abc_gen_note_grouping_size(true, timeSigTop, timeSigBottom) - 1) {
 
