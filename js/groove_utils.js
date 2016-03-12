@@ -1328,7 +1328,7 @@ function GrooveUtils() {
 			//                           and "1" for 1/16th note triplets.    
 			var end_of_group = sub_division == 12 ? 2 : 1; 
 			var grouping_size_for_rests = end_of_group;
-			var special_quarter_note_rest = false;
+			var skip_adding_more_notes = false;
 
 			if((i % notes_per_measure) + end_of_group > notes_per_measure) {
 				// if we are in an odd time signature then the last few notes will have a different grouping to reach the end of the measure	
@@ -1361,20 +1361,74 @@ function GrooveUtils() {
 							num_notes_in_next_group += 1;   
 						}	
 					}
-				} else if (0 == count_active_notes_in_arrays(all_drum_array_of_array, i, 6)) {
+				} 
+
+				// look for a whole beat of rests
+				if (0 == count_active_notes_in_arrays(all_drum_array_of_array, i, 6)) {
 					// there are no notes in the next beat.   Let's output a special string for a quarter note rest
-					special_quarter_note_rest = true;
+					skip_adding_more_notes = true;
 					stickings_voice_string += "x8"
-					hh_snare_voice_string += "z8";  // quarter note rest with 1/8 note rest for alignment of the stickings
-					i += 5;
+					hh_snare_voice_string += "z8";  // quarter note rest 
+					i += 5;  // skip past all the rests
+				
+				
+				// look for 1/4 note with no triplets in 1/8 notes triplets.   "x--"  
+				} else if( (0 == count_active_notes_in_arrays(all_drum_array_of_array, i+1, 5)) ) {
+					
+					// code duplicated from below
+					// clear any invalid stickings since they will mess up the formatting greatly
+					for(var si = i+1; si < i+6; si++)
+						sticking_array[si] = false;
+					stickings_voice_string += getABCforRest([sticking_array], i, 4, scaler, true);
+					stickings_voice_string += getABCforNote([sticking_array], i, 4, scaler);
+
+					if (kick_stems_up) {
+						hh_snare_voice_string += getABCforNote(all_drum_array_of_array, i, 4, scaler);
+						kick_voice_string = "";
+					} else {
+						hh_snare_voice_string += getABCforNote(all_drum_array_of_array, i, 4, scaler);
+						kick_voice_string += getABCforNote([kick_array], i, 4, scaler);
+					}
+					
+					skip_adding_more_notes = true;
+					i += 5;  // skip past to the next beat
+					
+				// look for two 1/8 notes with no triplets in 1/16 notes triplets.   "x--"  
+				} else if( (sub_division == 24 && 0 == count_active_notes_in_arrays(all_drum_array_of_array, i+1, 2) &&
+										          0 == count_active_notes_in_arrays(all_drum_array_of_array, i+4, 2)) ) {
+					
+					// think of the 1/8 notes as two groups of 3 notes
+					for(var eighth_index=i; eighth_index <= i+3; eighth_index += 3) {
+						// code duplicated from below
+						// clear any invalid stickings since they will mess up the formatting greatly
+						for(var si = eighth_index+1; si < eighth_index+3; si++)
+							sticking_array[si] = false;
+						stickings_voice_string += getABCforRest([sticking_array], eighth_index, 2, scaler, true);
+						stickings_voice_string += getABCforNote([sticking_array], eighth_index, 2, scaler);
+
+						if (kick_stems_up) {
+							hh_snare_voice_string += getABCforNote(all_drum_array_of_array, eighth_index, 2, scaler);
+							kick_voice_string = "";
+						} else {
+							hh_snare_voice_string += getABCforNote(all_drum_array_of_array, eighth_index, 2, scaler);
+							kick_voice_string += getABCforNote([kick_array], eighth_index, 2, scaler);
+						}
+					}	
+					
+					skip_adding_more_notes = true;
+					i += 5;  // skip past to the next beat
+					
 				} else {		
+					// the normal case.   We tell ABC that we are using a triplet
+					// looks like (3:3:3 or (6:6:6
 					hh_snare_voice_string += "(" + notes_in_triplet_group +	":" + notes_in_triplet_group + ":" + num_notes_in_next_group;
 				}
 			}
 
-			// the special_rest happens when there are no notes for the next whole beat.
 			// skip the code to add notes
-			if(!special_quarter_note_rest) {
+			// Happens for special_rest when there are no notes for the next whole beat.
+			// Happens when we found only a 1/4 or 1/8 note instead of triplets
+			if(!skip_adding_more_notes) {
 				if (i % grouping_size_for_rests === 0) {
 					// we will output a rest for each place there could be a note
 					stickings_voice_string += getABCforRest([sticking_array], i, grouping_size_for_rests, scaler, true);
