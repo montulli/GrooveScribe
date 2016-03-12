@@ -3115,6 +3115,19 @@ function GrooveWriter() { "use strict";
 		}
 	}
 
+	// clear all the notes on all measures
+	root.clearAllNotes = function () {
+		for (var i = 0; i < class_number_of_measures * class_notes_per_measure; i++) {
+			set_sticking_state(i, 'off');
+			set_hh_state(i, 'off');  
+			set_tom1_state(i, 'off');
+			set_tom4_state(i, 'off');
+			set_snare_state(i, 'off');
+			set_kick_state(i, 'off');
+		}	
+		create_ABC();
+	}   
+
 	function isTomsVisible() {
 		var myElements = document.querySelectorAll(".toms-container");
 		for (var i = 0; i < myElements.length; i++) {
