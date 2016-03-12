@@ -1277,12 +1277,14 @@ function GrooveUtils() {
 		return retArray;
 	}
 
+	// count the number of note positions that are not rests in all the arrays
+	// FFFxFFFxF  would be 2
 	function count_active_notes_in_arrays(array_of_arrays, start_index, how_far_to_measure) {
 		var num_active_notes = 0;
 
 		for (var i = start_index; i < start_index + how_far_to_measure; i++) {
 			for(var which_array = 0; which_array < array_of_arrays.length; which_array++) {
-				if (array_of_arrays[which_array] !== false) {
+				if (array_of_arrays[which_array][i] !== false) {
 					num_active_notes++;
 					which_array = array_of_arrays.length;  // exit this inner for loop immediately
 				}
@@ -1335,10 +1337,10 @@ function GrooveUtils() {
 			// this will remove rests and use different length notes to express triplets.   
 			// It can be little harder to decipher since you need to understand and process dotted eights and others
 			if (eliminate_rests_in_triplets) {
-				if (sub_division != 12) {
-					var group_size = sub_division / 4;
+				if (1 || sub_division != 12) {
+					var group_size = 6;
 					end_of_group = group_size - (i % group_size); // assuming we are always dealing with 24 notes
-					grouping_size_for_rests = group_size; // we scale up the notes to fit a 24 length array.  This will be 1 or 2
+					grouping_size_for_rests = group_size; // we scale up the notes to fit a 24 length array.  This will be 6 or 12
 				}
 			}
 
@@ -1350,8 +1352,13 @@ function GrooveUtils() {
 
 				// used for elemintating rests in triplets.
 				if (eliminate_rests_in_triplets) {
-					if (sub_division != 12) {
-						num_notes_in_next_group = count_active_notes_in_arrays(all_drum_array_of_array, i, 6);
+					if (1 || sub_division != 12) {
+						num_notes_in_next_group = count_active_notes_in_arrays(all_drum_array_of_array, i, grouping_size_for_rests);
+						if(num_notes_in_next_group < grouping_size_for_rests && 0 == count_active_notes_in_arrays(all_drum_array_of_array, i, 1)) {
+							// a single rest will be added if not already full of notes
+							// and the first note is a rest
+							num_notes_in_next_group += 1;   
+						}	
 					}
 				}
 				
