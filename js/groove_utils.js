@@ -1407,9 +1407,11 @@ function GrooveUtils() {
 						stickings_voice_string += getABCforNote([sticking_array], eighth_index, 2, scaler);
 
 						if (kick_stems_up) {
+							hh_snare_voice_string += getABCforRest(all_drum_array_of_array, eighth_index, 2, scaler, false);
 							hh_snare_voice_string += getABCforNote(all_drum_array_of_array, eighth_index, 2, scaler);
 							kick_voice_string = "";
 						} else {
+							hh_snare_voice_string += getABCforRest(all_drum_array_of_array, eighth_index, 2, scaler, false);
 							hh_snare_voice_string += getABCforNote(all_drum_array_of_array, eighth_index, 2, scaler);
 							kick_voice_string += getABCforNote([kick_array], eighth_index, 2, scaler);
 						}
