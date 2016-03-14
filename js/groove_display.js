@@ -139,7 +139,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 		// shows the groove via SVG sheet music and a midi player
 		root.GrooveDBFormatPutGrooveInHTMLElement = function (HtmlTagId, GrooveDBTabIn) {
 			var myGrooveUtils = new GrooveUtils();
-			var myGrooveData = new myGrooveUtils.grooveData();
+			var myGrooveData = new myGrooveUtils.grooveDataNew();
 
 			var combinedSnareTab = myGrooveUtils.mergeDrumTabLines(GrooveDBTabIn.snareAccentTab, GrooveDBTabIn.snareOtherTab);
 			var combinedKickTab = myGrooveUtils.mergeDrumTabLines(GrooveDBTabIn.kickTab, GrooveDBTabIn.footOtherTab);

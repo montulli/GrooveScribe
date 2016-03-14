@@ -2605,8 +2605,8 @@ function GrooveWriter() { "use strict";
 	// creates a grooveData class from the clickable UI elements of the page
 	//
 	root.grooveDataFromClickableUI = function () {
-		var myGrooveData = new root.myGrooveUtils.grooveData();
-
+		var myGrooveData = new root.myGrooveUtils.grooveDataNew();
+		
 		myGrooveData.notesPerMeasure = class_notes_per_measure;
 		myGrooveData.numberOfMeasures = class_number_of_measures;
 		myGrooveData.numBeats = class_num_beats_per_measure;
@@ -2626,7 +2626,7 @@ function GrooveWriter() { "use strict";
 			var HH_Array = get_empty_note_array_in_32nds();
 			var Snare_Array = get_empty_note_array_in_32nds();
 			var Kick_Array = get_empty_note_array_in_32nds();
-			var Toms_Array = [get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(),get_empty_note_array_in_32nds()];
+			var Toms_Array = [get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds()];
 		
 			var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, i * class_notes_per_measure);
 
