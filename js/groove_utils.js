@@ -2920,6 +2920,7 @@ function GrooveUtils() {
 		var playerControlElement = document.getElementById('playerControl' + root.grooveUtilsUniqueIndex);
 		var playerControlRowElement = document.getElementById('playerControlsRow' + root.grooveUtilsUniqueIndex);
 		var tempoAndProgressElement = document.getElementById('tempoAndProgress' + root.grooveUtilsUniqueIndex);
+		var midiMetronomeMenuElement = document.getElementById('midiMetronomeMenu' + root.grooveUtilsUniqueIndex);
 		var gsLogoLoadFullGSElement = document.getElementById('midiGSLogo' + root.grooveUtilsUniqueIndex);
 		var midiExpandImageElement = document.getElementById('midiExpandImage' + root.grooveUtilsUniqueIndex);
 		var midiPlayTime = document.getElementById('MIDIPlayTime' + root.grooveUtilsUniqueIndex);
@@ -2929,6 +2930,7 @@ function GrooveUtils() {
 			playerControlElement.className = playerControlElement.className.replace(" small", "") + " large";
 			playerControlRowElement.className = playerControlRowElement.className.replace(" small", "") + " large";
 			tempoAndProgressElement.className = tempoAndProgressElement.className.replace(" small", "") + " large";
+			midiMetronomeMenuElement.className = gsLogoLoadFullGSElement.className.replace(" small", "") + " large";
 			gsLogoLoadFullGSElement.className = gsLogoLoadFullGSElement.className.replace(" small", "") + " large";
 			midiExpandImageElement.className = midiExpandImageElement.className.replace(" small", "") + " large";
 			midiPlayTime.className = midiPlayTime.className.replace(" small", "") + " large";
@@ -2936,6 +2938,7 @@ function GrooveUtils() {
 			// make small
 			playerControlElement.className = playerControlElement.className.replace(" large", "") + " small";
 			playerControlRowElement.className = playerControlRowElement.className.replace(" large", "") + " small";
+			midiMetronomeMenuElement.className = tempoAndProgressElement.className.replace(" large", "") + " small";
 			tempoAndProgressElement.className = tempoAndProgressElement.className.replace(" large", "") + " small";
 			gsLogoLoadFullGSElement.className = gsLogoLoadFullGSElement.className.replace(" large", "") + " small";
 			midiExpandImageElement.className = midiExpandImageElement.className.replace(" large", "") + " small";
@@ -2950,6 +2953,9 @@ function GrooveUtils() {
 			'	<div class="playerControlsRow" id="playerControlsRow' + root.grooveUtilsUniqueIndex + '">' +
 			'		<span title="Play/Pause" class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '"></span>' +
 			'       <span class="MIDIPlayTime" id="MIDIPlayTime' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Midi_play_time_zero + '</span>' +
+			'       <span title="Metronome controls" class="midiMetronomeMenu" id="midiMetronomeMenu'  + root.grooveUtilsUniqueIndex + '">' +
+			'          <img class="midiMetronomeMenuImage" src="images/metronome.svg">' +
+			'       </span>' +
 			'		<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
 			'			<div class="tempoRow">' +
 			'				<span class="tempoLabel">BPM</span>' +
@@ -3017,6 +3023,11 @@ function GrooveUtils() {
 		html_element = document.getElementById("midiGSLogo" + root.grooveUtilsUniqueIndex);
 		if (html_element) {
 			html_element.addEventListener("click", root.loadFullScreenGrooveScribe, false);
+		}
+		
+		html_element = document.getElementById("midiMetronomeMenu" + root.grooveUtilsUniqueIndex);
+		if (html_element) {
+			html_element.addEventListener("click", root.metronomeMiniMenuClick, false);
 		}
 
 		// enable or disable swing

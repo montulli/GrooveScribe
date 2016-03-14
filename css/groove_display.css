@@ -107,13 +107,12 @@
 	 	letter-spacing: -3px; 
 		content: "\f066";
 	} 
-	.midiGSLogo.small {
-		display: none;
-	}
-	.midiGSLogo.large {
-		display: block;
-	}
 	.midiGSLogoImage {
+		margin-top: 6px;
+		width:  30px;
+		height: 30px;
+	}
+	.midiMetronomeMenuImage {
 		margin-top: 6px;
 		width:  30px;
 		height: 30px;
@@ -125,7 +124,7 @@
 		flex: 1;
 		-webkit-flex: 1;
 	}
-	.tempoAndProgress.small {
+	.tempoAndProgress.small, .midiGSLogo.small, .midiMetronomeMenu.small {
 		display: none;
 	}
 	.tempoRow, .swingRow {
@@ -194,7 +193,7 @@
 	}
 	.MIDIPlayTime {
 		display: inline-block;
-		width: 130px;
+		width: 100px;
 		color: #66c0fe;
 		font-size: 30px;
 		margin-left: 6px;
