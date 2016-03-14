@@ -3007,13 +3007,14 @@ function GrooveUtils() {
 			'				<span for="swingAmount" class="swingOutput" id="swingOutput' + root.grooveUtilsUniqueIndex + '">0% swing</span>' +
 			'				<input type=range min=0 max=50 value=0 class="swingInput' + (root.is_touch_device() ? ' touch' : '') + '" id="swingInput' + root.grooveUtilsUniqueIndex + '" list="swingSettings" step=5 >' +
 			'			</div>' +
-			'       </span>' +
+			'       </span>';
+			
+		if (expandable)
+			newHTML += 
 			'       <span title="Expand full screen in GrooveScribe" class="midiGSLogo" id="midiGSLogo'  + root.grooveUtilsUniqueIndex + '">' +
 			'          <img class="midiGSLogoImage" src="images/GScribe_Logo_lone_g.svg">' +
-			'       </span>';
-
-		if (expandable)
-			newHTML += '<span title="Expand/Retract player" class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '"></span>';
+			'       </span>' +
+			'		<span title="Expand/Retract player" class="midiExpandImage" id="midiExpandImage' + root.grooveUtilsUniqueIndex + '"></span>';
 
 		newHTML += '</div>';
 
