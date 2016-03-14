@@ -43,11 +43,13 @@ MIDI.js/inc/jasmid/replayer.js
 
 #font awesome
 font-awesome/4.3.0/css/font-awesome.min.css
+font-awesome/4.3.0/fonts/fontawesome-webfont.woff?v=4.3.0
 font-awesome/4.3.0/fonts/fontawesome-webfont.woff2?v=4.3.0
 font-awesome/4.3.0/fonts/fontawesome-webfont.ttf?v=4.3.0
 
 # large soundfont file
 soundfont/gunshot-ogg.js
+soundfont/gunshot-mp3.js
 
 # google hosted
 https://fonts.googleapis.com/css?family=Lato:400,700,300
