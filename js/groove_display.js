@@ -251,6 +251,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 				myGrooveUtils.expandOrRetractMIDI_playback(true, expandPlayer); // make it small
 				myGrooveUtils.setTempo(GrooveData.tempo);
 				myGrooveUtils.setSwing(GrooveData.swingPercent);
+				myGrooveUtils.setMetronomeFrequencyDisplay(GrooveData.metronomeFrequency);
 				myGrooveUtils.oneTimeInitializeMidi();
 			}
 		};

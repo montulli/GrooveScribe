@@ -1943,7 +1943,7 @@ function GrooveUtils() {
 				//note.className = note.className.replace(new RegExp(' highlighted', 'g'), "");
 				var class_name = myElements[i].getAttribute("class");
 				myElements[i].setAttribute("class", class_name.replace(new RegExp(' highlighted', 'g'), ""));
-				if(root.grooveData.debugMode && i === 0) {
+				if(root.debugMode && i === 0) {
 					if(!root.isElementOnScreen(myElements[i])) {
 						if(root.abcNoteNumCurrentlyHighlighted === 0)
 							myElements[i].scrollIntoView({block: "start", behavior: "smooth"});   // autoscroll if necessary
@@ -2907,12 +2907,36 @@ function GrooveUtils() {
 		}
 	};
 	
+	root.setMetronomeFrequencyDisplay = function (newFrequency) {
+		var mm = document.getElementById('midiMetronomeMenu' + root.grooveUtilsUniqueIndex);
+		
+		if(mm) {
+			mm.className = mm.className.replace(" selected", "");
+		
+			if(newFrequency > 0) {
+				mm.className += " selected";
+			}
+		}	
+	};
+	
 	// open a new tab with GrooveScribe with the current groove
 	root.loadFullScreenGrooveScribe = function() {
 		var fullURL = root.getUrlStringFromGrooveData(root.myGrooveData, 'fullGrooveScribe')
 		
 		var win = window.open(fullURL, '_blank');
 		win.focus();
+	}
+	
+	
+	// turn the metronome on and off
+	root.metronomeMiniMenuClick = function() {
+		if(root.myGrooveData.metronomeFrequency > 0)
+			root.myGrooveData.metronomeFrequency = 0;
+		else
+			root.myGrooveData.metronomeFrequency = 4;
+		
+		root.setMetronomeFrequencyDisplay(root.myGrooveData.metronomeFrequency);
+		root.midiNoteHasChanged();
 	}
 
 	root.expandOrRetractMIDI_playback = function (force, expandElseContract) {
@@ -2930,7 +2954,7 @@ function GrooveUtils() {
 			playerControlElement.className = playerControlElement.className.replace(" small", "") + " large";
 			playerControlRowElement.className = playerControlRowElement.className.replace(" small", "") + " large";
 			tempoAndProgressElement.className = tempoAndProgressElement.className.replace(" small", "") + " large";
-			midiMetronomeMenuElement.className = gsLogoLoadFullGSElement.className.replace(" small", "") + " large";
+			midiMetronomeMenuElement.className = midiMetronomeMenuElement.className.replace(" small", "") + " large";
 			gsLogoLoadFullGSElement.className = gsLogoLoadFullGSElement.className.replace(" small", "") + " large";
 			midiExpandImageElement.className = midiExpandImageElement.className.replace(" small", "") + " large";
 			midiPlayTime.className = midiPlayTime.className.replace(" small", "") + " large";
@@ -2938,7 +2962,7 @@ function GrooveUtils() {
 			// make small
 			playerControlElement.className = playerControlElement.className.replace(" large", "") + " small";
 			playerControlRowElement.className = playerControlRowElement.className.replace(" large", "") + " small";
-			midiMetronomeMenuElement.className = tempoAndProgressElement.className.replace(" large", "") + " small";
+			midiMetronomeMenuElement.className = midiMetronomeMenuElement.className.replace(" large", "") + " small";
 			tempoAndProgressElement.className = tempoAndProgressElement.className.replace(" large", "") + " small";
 			gsLogoLoadFullGSElement.className = gsLogoLoadFullGSElement.className.replace(" large", "") + " small";
 			midiExpandImageElement.className = midiExpandImageElement.className.replace(" large", "") + " small";
@@ -2946,17 +2970,33 @@ function GrooveUtils() {
 		}
 
 	};
+	
+	function addInlineMetronomeSVG() {
+		return  '<svg class="midiMetronomeImage" version="1.1" width="30" height="30"' + 
+				'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 100 100" ' +
+				'xml:space="preserve"><path d="M86.945,10.635c-0.863-0.494-1.964-0.19-2.455,0.673l-8.31,14.591l-2.891-1.745l-1.769,9.447l0.205,0.123' +
+				'l-1.303,2.286L63.111,6.819c-0.25-1-1.299-1.819-2.33-1.819H37.608c-1.031,0-2.082,0.818-2.334,1.818L13.454,93.182' +
+				'c-0.253,1,0.385,1.818,1.416,1.818h68.459c1.031,0,1.67-0.818,1.42-1.818L71.69,41.061l3.117-5.475l0.152,0.092l7.559-5.951' +
+				'l-3.257-1.966l8.355-14.67C88.11,12.226,87.81,11.127,86.945,10.635z M71.58,70.625H54.855l12.946-22.737l5.197,20.789' +
+				'C73.25,69.678,72.61,70.625,71.58,70.625z M50.714,70.625H26.57c-1.031,0-1.669-0.994-1.416-1.994L39.59,11.5' +
+				'c0.253-1,1.303-1.812,2.334-1.812h14.431c1.032,0,2.081,0.725,2.331,1.725l7.854,31.421L50.714,70.625z"></path></svg>'
+	}
 
 	root.HTMLForMidiPlayer = function (expandable) {
 		var newHTML = '' +
 			'<div id="playerControl' + root.grooveUtilsUniqueIndex + '" class="playerControl">' +
 			'	<div class="playerControlsRow" id="playerControlsRow' + root.grooveUtilsUniqueIndex + '">' +
 			'		<span title="Play/Pause" class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '"></span>' +
-			'       <span class="MIDIPlayTime" id="MIDIPlayTime' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Midi_play_time_zero + '</span>' +
+			'       <span class="MIDIPlayTime" id="MIDIPlayTime' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Midi_play_time_zero + '</span>';
+			
+			if(expandable)
+				newHTML += '' +
 			'       <span title="Metronome controls" class="midiMetronomeMenu" id="midiMetronomeMenu'  + root.grooveUtilsUniqueIndex + '">' +
-			'          <img class="midiMetronomeMenuImage" src="images/metronome.svg">' +
-			'       </span>' +
-			'		<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
+			           addInlineMetronomeSVG() +
+			'       </span>'
+			
+			
+		newHTML +=	'<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
 			'			<div class="tempoRow">' +
 			'				<span class="tempoLabel">BPM</span>' +
 			'				<span for="tempo" class="tempoOutput" id="tempoOutput' + root.grooveUtilsUniqueIndex + '">80</span>' +

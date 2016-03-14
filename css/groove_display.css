@@ -112,10 +112,19 @@
 		width:  30px;
 		height: 30px;
 	}
-	.midiMetronomeMenuImage {
-		margin-top: 6px;
+	.midiMetronomeImage {
+		margin-top: 9px;
 		width:  30px;
 		height: 30px;
+	}
+	.midiMetronomeImage path {
+	  fill: #005483;
+	}
+	.midiMetronomeImage:hover path {
+	  fill: #68c2ff;
+	}
+	.midiMetronomeMenu.selected .midiMetronomeImage path {
+	  fill: white;
 	}
 	.tempoAndProgress {
 		padding-top: 2px;
