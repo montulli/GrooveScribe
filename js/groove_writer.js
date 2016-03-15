@@ -1107,6 +1107,10 @@ function GrooveWriter() { "use strict";
 	}
 
 	root.permutationPopupClick = function (perm_type) {
+		
+		if(class_permutation_type == perm_type)
+			return;
+		
 		class_permutation_type = perm_type;
 
 		switch (perm_type) {
@@ -2387,7 +2391,7 @@ function GrooveWriter() { "use strict";
 	//
 	// (note: Only one measure, not all the notes on the page if multiple measures are present)
 	// Return value is the number of notes.
-	function getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, startIndexForClickableUI) {
+	function get32NoteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, startIndexForClickableUI) {
 
 		var scaler = root.myGrooveUtils.getNoteScaler(class_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure); // fill proportionally
 
@@ -2505,7 +2509,7 @@ function GrooveWriter() { "use strict";
 		var metronomeFrequency = root.getMetronomeFrequency();
 
 		// just the first measure
-		var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, 0);
+		var num_notes = get32NoteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, 0);
 		muteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, 0);
 
 		var midiFile = new Midi.File();
@@ -2582,7 +2586,7 @@ function GrooveWriter() { "use strict";
 		
 
 				// get another measure
-				getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, class_notes_per_measure * i);
+				get32NoteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, class_notes_per_measure * i);
 				muteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, i);
 
 				root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
@@ -2608,6 +2612,7 @@ function GrooveWriter() { "use strict";
 		var myGrooveData = new root.myGrooveUtils.grooveDataNew();
 		
 		myGrooveData.notesPerMeasure = class_notes_per_measure;
+		myGrooveData.timeDivision    = class_time_division;
 		myGrooveData.numberOfMeasures = class_number_of_measures;
 		myGrooveData.numBeats = class_num_beats_per_measure;
 		myGrooveData.noteValue = class_note_value_per_measure;
@@ -2622,28 +2627,28 @@ function GrooveWriter() { "use strict";
 		myGrooveData.kickStemsUp = true;
 
 		for (var i = 0; i < class_number_of_measures; i++) {
-			var Sticking_Array = get_empty_note_array_in_32nds();
-			var HH_Array = get_empty_note_array_in_32nds();
-			var Snare_Array = get_empty_note_array_in_32nds();
-			var Kick_Array = get_empty_note_array_in_32nds();
-			var Toms_Array = [get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds()];
+			var total_notes = class_notes_per_measure * class_number_of_measures;
+			myGrooveData.sticking_array = [];
+			myGrooveData.hh_array = [];
+			myGrooveData.snare_array = [];
+			myGrooveData.kick_array = [];
+			myGrooveData.toms = [[],[],[],[]];
 		
-			var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, i * class_notes_per_measure);
+			// query the clickable UI and generate a arrays representing the notes of all measures
+			for (var i = 0; i < total_notes; i++) {
 
-			if (i === 0) { // assign
-				myGrooveData.sticking_array = Sticking_Array;
-				myGrooveData.hh_array = HH_Array;
-				myGrooveData.snare_array = Snare_Array;
-				myGrooveData.kick_array = Kick_Array;
-				for(var x in myGrooveData.toms_array)
-					myGrooveData.toms_array[x] = Toms_Array[x];
-			} else { // add on to string
-				myGrooveData.sticking_array = myGrooveData.sticking_array.concat(Sticking_Array);
-				myGrooveData.hh_array = myGrooveData.hh_array.concat(HH_Array);
-				myGrooveData.snare_array = myGrooveData.snare_array.concat(Snare_Array);
-				myGrooveData.kick_array = myGrooveData.kick_array.concat(Kick_Array);
-				for(var x in myGrooveData.toms_array)
-					myGrooveData.toms_array[x] = myGrooveData.toms_array[x].concat(Toms_Array[x]);
+				// only grab the stickings if they are visible
+				if (isStickingsVisible())
+					myGrooveData.sticking_array.push(get_sticking_state(i, "ABC"));
+
+				myGrooveData.hh_array.push(get_hh_state(i, "ABC"));
+				myGrooveData.snare_array.push(get_snare_state(i, "ABC"));
+				myGrooveData.kick_array.push(get_kick_state(i, "ABC"));
+				
+				if (isTomsVisible()) {
+					GrooveData.toms_array[0].push(get_tom_state(i, 1, "ABC"));
+					GrooveData.toms_array[3].push(get_tom_state(i, 4, "ABC"));
+				}
 			}
 		}
 
@@ -2675,15 +2680,22 @@ function GrooveWriter() { "use strict";
 	// }}
 	//
 	root.updateGrooveDBSource = function () {
-		if (!document.getElementById("GrooveDB_source"))
+		if (!document.getElementById("GrooveDB_source") || document.getElementById("GrooveDB_source").style.disply != 'block' )
 			return; // nothing to update
 
 		var myGrooveData = root.grooveDataFromClickableUI();
 
-		
 		var notesPerMeasureInTab = root.myGrooveUtils.calc_notes_per_measure((usingTriplets() ? 24 : 32), class_num_beats_per_measure, class_note_value_per_measure);
 		var maxNotesInTab = myGrooveData.numberOfMeasures * notesPerMeasureInTab;
 
+		// scale up all the arrays to 24 or 32 notes so that they look normalized
+		
+		myGrooveData.hh_array      = myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.hh_array,      myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.snare_array   = myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.snare_array,   myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.kick_array    = myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.kick_array,    myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.toms_array[0] = myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[0], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.toms_array[3] = myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[3], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		
 		var DBString = "{{GrooveTab";
 
 		DBString += "\n|HasTempo=" + myGrooveData.tempo;
@@ -2833,7 +2845,7 @@ function GrooveWriter() { "use strict";
 		new_snare_array,
 		post_abc,
 		num_sections;
-		var num_notes = getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, 0);
+		var num_notes = get32NoteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, 0);
 
 		// abc header boilerplate
 		var tuneTitle = document.getElementById("tuneTitle").value;
@@ -2925,7 +2937,7 @@ function GrooveWriter() { "use strict";
 					Snare_Array = get_empty_note_array_in_32nds();
 					Kick_Array = get_empty_note_array_in_32nds();
 
-					getArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, class_notes_per_measure * i);
+					get32NoteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, class_notes_per_measure * i);
 				}	
 
 				if (i == class_number_of_measures - 1) {
@@ -3707,102 +3719,9 @@ function GrooveWriter() { "use strict";
 	// this will allow us to bookmark or reference a groove and handle undo/redo.
 	//
 	function get_FullURLForPage(url_destination) {
-
-		var fullURL = window.location.protocol + "//" + window.location.host + window.location.pathname;
-
-		if(!url_destination) {
-			// then assume it is the groove writer display.  Do nothing
-		} if(url_destination == "display") {
-			// asking for the "groove_display" page
-			if(fullURL.includes('index.html'))
-				fullURL = fullURL.replace('index.html', 'GrooveEmbed.html');
-			else if(fullURL.includes('/gscribe'))
-				fullURL = fullURL.replace('/gscribe', '/groove/GrooveEmbed.html');
-			else
-				fullURL += 'GrooveEmbed.html';
-		}
-		
-		fullURL += '?';
-		
-		if (root.myGrooveUtils.debugMode)
-			fullURL += "Debug=1&";
-		
-		if (root.myGrooveUtils.viewMode)
-			fullURL += "Mode=view&";
-
-		if (root.myGrooveUtils.grooveDBAuthoring)
-			fullURL += "GDB_Author=1&";
-
-		fullURL += 'TimeSig=' + class_num_beats_per_measure + '/' + class_note_value_per_measure;
-
-		// # of notes
-		fullURL += "&Div=" + class_time_division;
-
-		var title = document.getElementById("tuneTitle").value.trim();
-		if (title !== "")
-			fullURL += "&Title=" + encodeURIComponent(title);
-
-		var author = document.getElementById("tuneAuthor").value.trim();
-		if (author !== "")
-			fullURL += "&Author=" + encodeURIComponent(author);
-
-		var comments = document.getElementById("tuneComments").value.trim();
-		if (comments !== "")
-			fullURL += "&Comments=" + encodeURIComponent(comments);
-
-		fullURL += "&Tempo=" + root.myGrooveUtils.getTempo();
-
-		if (root.myGrooveUtils.getSwing() > 0)
-			fullURL += "&Swing=" + root.myGrooveUtils.getSwing();
-
-		// # of measures
-		fullURL += "&Measures=" + class_number_of_measures;
-
-		// # metronome setting
-		if(root.getMetronomeFrequency() !== 0) {
-			fullURL += "&MetronomeFreq=" + root.getMetronomeFrequency();
-		}
-		
-		// notes
-		var HH = "&H=|";
-		var Snare = "&S=|";
-		var Tom1 = "&T1=|";
-		var Tom4 = "&T4=|";
-		var Kick = "&K=|";
-		var Stickings = "&Stickings=|";
-
-		// run through both measures.
-		var topIndex = class_notes_per_measure * class_number_of_measures;
-		for (var i = 0; i < topIndex; i++) {
-			Stickings += get_sticking_state(i, "URL");
-			HH += get_hh_state(i, "URL");
-			Tom1 += get_tom_state(i, 1, "URL");
-			Tom4 += get_tom_state(i, 4, "URL");
-			Snare += get_snare_state(i, "URL");
-			Kick += get_kick_state(i, "URL");
-
-			if (((i + 1) % class_notes_per_measure) === 0) {
-				Stickings += "|";
-				HH += "|";
-				Tom1 += "|";
-				Tom4 += "|";
-				Snare += "|";
-				Kick += "|";
-			}
-		}
-
-		fullURL += HH + Snare + Kick;
-
-		// only add if we need them.  // they are long and ugly. :)
-		if (isTomsVisible())
-			fullURL += Tom1 + Tom4;
-
-		// only add if we need them.  // they are long and ugly. :)
-		if (isStickingsVisible())
-			fullURL += Stickings;
-
-		return fullURL;
-	}
+		var myGrooveData = root.grooveDataFromClickableUI()
+		return root.myGrooveUtils.getUrlStringFromGrooveData(myGrooveData, url_destination)
+	}	
 
 	root.show_MetronomeAutoSpeedupConfiguration = function () {
 		var popup = document.getElementById("metronomeAutoSpeedupConfiguration");

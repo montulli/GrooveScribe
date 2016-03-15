@@ -778,9 +778,6 @@ function GrooveUtils() {
 		for (var i = 0; i < maxLength; i++) {
 			var newTabChar = abcNotationToTablaturePerNote(drumType, noteArray[i]);
 
-			if (separatorDistance > 0)
-				returnTabLine += "|";
-
 			if (drumType == "H" && newTabChar == "X") {
 				if (getAccents)
 					returnTabLine += newTabChar;
@@ -806,7 +803,7 @@ function GrooveUtils() {
 					returnTabLine += "-";
 			}
 
-			if ((separatorDistance + 1 > 0) && (i % separatorDistance) === 0)
+			if ((separatorDistance > 0) && ((i+1) % separatorDistance) === 0)
 				returnTabLine += "|";
 		}
 
@@ -1342,7 +1339,7 @@ function GrooveUtils() {
 	// take any size array and make it larger by padding it with rests in the spaces between
 	// For triplets, expands to 24 notes per measure
 	// For non Triplets, expands to 32 notes per measure
-	function scaleNoteArrayToFullSize(note_array, num_measures, notes_per_measure, timeSigTop, timeSigBottom) {
+	root.scaleNoteArrayToFullSize = function(note_array, num_measures, notes_per_measure, timeSigTop, timeSigBottom) {
 		var scaler = root.getNoteScaler(notes_per_measure, timeSigTop, timeSigBottom); // fill proportionally
 		var retArray = [];
 		var isTriplets = root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom);
@@ -1352,10 +1349,6 @@ function GrooveUtils() {
 			return note_array; // no need to expand
 
 		// preset to false (rest) all entries in the expanded array
-		if (isTriplets) {
-			for (i = 0; i < num_measures * 24; i++)
-				retArray[i] = false;
-		}
 		for (i = 0; i < num_measures * notes_per_measure * scaler; i++)
 			retArray[i] = false;
 
@@ -1796,14 +1789,14 @@ function GrooveUtils() {
 
 	root.createABCFromGrooveData = function (myGrooveData, renderWidth) {
 
-		var FullNoteStickingArray = scaleNoteArrayToFullSize(myGrooveData.sticking_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		var FullNoteHHArray = scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		var FullNoteSnareArray = scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		var FullNoteKickArray = scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteStickingArray = root.scaleNoteArrayToFullSize(myGrooveData.sticking_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteHHArray = root.scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteSnareArray = root.scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteKickArray = root.scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		var FullNoteTomsArray = [];
 		
 		for(var i = 0; i < constant_NUMBER_OF_TOMS; i++) {
-			FullNoteTomsArray[i] = scaleNoteArrayToFullSize(myGrooveData.toms_array[i], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+			FullNoteTomsArray[i] = root.scaleNoteArrayToFullSize(myGrooveData.toms_array[i], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		}
 		
 		var fullABC = root.get_top_ABC_BoilerPlate(false,
@@ -2475,13 +2468,13 @@ function GrooveUtils() {
 
 		// the midi converter expects all the arrays to be 32 or 24 notes long.
 		// Expand them
-		var FullNoteHHArray = scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		var FullNoteSnareArray = scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		var FullNoteKickArray = scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteHHArray = root.scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteSnareArray = root.scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		var FullNoteKickArray = root.scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		var FullNoteTomsArray = [];
 		
 		for(var i = 0; i < constant_NUMBER_OF_TOMS; i++) {
-			FullNoteTomsArray[i] = scaleNoteArrayToFullSize(myGrooveData.toms_array[i], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+			FullNoteTomsArray[i] = root.scaleNoteArrayToFullSize(myGrooveData.toms_array[i], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		}
 		
 		var total_notes = FullNoteHHArray.length;
