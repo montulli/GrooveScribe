@@ -107,9 +107,9 @@
 	 	letter-spacing: -3px; 
 		content: "\f066";
 	} 
-	.midiGSLogoImage {
-		margin-top: 6px;
-		width:  30px;
+	.midiGSLogo {
+		padding-top: 6px;
+		width:  20px;
 		height: 30px;
 	}
 	.midiMetronomeImage {
