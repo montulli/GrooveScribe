@@ -2632,7 +2632,7 @@ function GrooveWriter() { "use strict";
 			myGrooveData.hh_array = [];
 			myGrooveData.snare_array = [];
 			myGrooveData.kick_array = [];
-			myGrooveData.toms = [[],[],[],[]];
+			myGrooveData.toms_array = [[],[],[],[]];
 		
 			// query the clickable UI and generate a arrays representing the notes of all measures
 			for (var i = 0; i < total_notes; i++) {
@@ -2646,8 +2646,8 @@ function GrooveWriter() { "use strict";
 				myGrooveData.kick_array.push(get_kick_state(i, "ABC"));
 				
 				if (isTomsVisible()) {
-					GrooveData.toms_array[0].push(get_tom_state(i, 1, "ABC"));
-					GrooveData.toms_array[3].push(get_tom_state(i, 4, "ABC"));
+					myGrooveData.toms_array[0].push(get_tom_state(i, 1, "ABC"));
+					myGrooveData.toms_array[3].push(get_tom_state(i, 4, "ABC"));
 				}
 			}
 		}

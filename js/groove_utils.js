@@ -999,7 +999,7 @@ function GrooveUtils() {
 		// only add if we need them.  // they are long and ugly. :)
 		if (myGrooveData.showToms) {
 			var Tom1 = "&T1=|" + root.tabLineFromAbcNoteArray('T1', myGrooveData.toms_array[0], true, true, total_notes, myGrooveData.notesPerMeasure);
-			var Tom4 = "&T4=|" + root.tabLineFromAbcNoteArray('T4', myGrooveData.toms_array[4], true, true, total_notes, myGrooveData.notesPerMeasure);
+			var Tom4 = "&T4=|" + root.tabLineFromAbcNoteArray('T4', myGrooveData.toms_array[3], true, true, total_notes, myGrooveData.notesPerMeasure);
 			fullURL += Tom1 + Tom4;
 		}
 
