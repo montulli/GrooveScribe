@@ -161,7 +161,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 				myGrooveData.numBeats = timeSig[0];
 				myGrooveData.noteValue = timeSig[1];
 			}
-			
+
 			//console.log(myGrooveData);
 
 			var svgTargetId = "svgTarget" + root.GrooveDisplayUniqueCounter;
@@ -219,9 +219,9 @@ if (typeof(GrooveDisplay) === "undefined") {
 			// load the groove from the URL data if it was passed in.
 			var GrooveData = myGrooveUtils.getGrooveDataFromUrlString(GrooveDefinition);
 			//console.log(GrooveData);
-				
+
 			var layoutFunction = function() {
-			
+
 				var svgTarget = document.getElementById(svgTargetId);
 				var renderWidth = svgTarget.offsetWidth;
 
@@ -235,14 +235,14 @@ if (typeof(GrooveDisplay) === "undefined") {
 				else
 					svgTarget.innerHTML = svgReturn.svg;
 			};
-			
+
 			layoutFunction();
-				
+
 			// resize SVG on window resize (not needed now.   We render to 1000 and scale in css)
 			//window.addEventListener("resize", layoutFunction);
 			//window.addEventListener("beforeprint", layoutFunction);
-			
-			
+
+
 			if (showPlayer) {
 				myGrooveUtils.setGrooveData(GrooveData);
 				//console.log(GrooveData);
@@ -266,7 +266,10 @@ if (typeof(GrooveDisplay) === "undefined") {
 
 			// add an html Element to hold the grooveDisplay
 			var HTMLElementID = 'GrooveDisplay' + root.GrooveDisplayUniqueCounter;
-			document.write('<div class="GrooveDisplay" id="' + HTMLElementID + '"></div>');
+			var GrooveDisplayElement = document.createElement("div");
+			GrooveDisplayElement.class = "GrooveDisplay";
+			GrooveDisplayElement.id = HTMLElementID;
+			document.getElementsByTagName("body")[0].appendChild(GrooveDisplayElement);
 
 			window.addEventListener("load", function () {
 				root.AddGrooveDisplayToElementId(HTMLElementID, URLEncodedGrooveData, showPlayer, linkToEditor, expandPlayer);
