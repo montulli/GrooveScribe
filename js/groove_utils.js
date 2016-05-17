@@ -133,6 +133,7 @@ function GrooveUtils() {
 
 	// integration with third party components
 	root.noteCallback = null;  //function triggered when a note is played
+	root.playEventCallback = null;  //triggered when the play button is pressed
 
 	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
 
@@ -2027,7 +2028,9 @@ function GrooveUtils() {
 			var icon = document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex);
 			if (icon)
 				icon.className = "midiPlayImage Playing";
-
+				if (root.playEventCallback) {
+					root.playEventCallback();
+				}
 		};
 		// default loadMIDIDataEvent.  You probably want to override this
 		// it will only make changes to the tempo and swing
