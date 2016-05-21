@@ -134,6 +134,7 @@ function GrooveUtils() {
 	// integration with third party components
 	root.noteCallback = null;  //function triggered when a note is played
 	root.playEventCallback = null;  //triggered when the play button is pressed
+	root.repeatCallback = null;  //triggered when a groove is going to be repeated
 
 	var class_empty_note_array = [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false];
 
@@ -2687,6 +2688,9 @@ function GrooveUtils() {
 					// let midi.loop handle the repeat for us
 					//MIDI.Player.stop();
 					//MIDI.Player.start();
+				}
+				if (root.repeatCallback) {
+					root.repeatCallback();
 				}
 			} else {
 				// not repeating, so stopping
