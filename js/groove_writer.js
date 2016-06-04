@@ -864,6 +864,24 @@ function GrooveWriter() { "use strict";
 			y : yVal
 		};
 	}
+	
+	// called every time the tempo changes, which can be a lot of times due to the range slider
+	// update the main URL with the tempo, but only do it every third of a second at the most
+	var global_tempoChangeCallbackTimeout = null;
+	root.tempoChangeCallback = function(newTempo) {
+		
+		// if there is a timeout running clear it
+		if(global_tempoChangeCallbackTimeout != null) 
+			window.clearTimeout(global_tempoChangeCallbackTimeout);
+
+		// set a new timeout
+		global_tempoChangeCallbackTimeout = window.setTimeout(function() {
+					global_tempoChangeCallbackTimeout = null
+					// update the Main URL to show the new tempo
+					root.updateCurrentURL();
+				}, 300);
+	}
+	
 
 	root.setMetronomeButton = function (metronomeInterval) {
 
@@ -3365,7 +3383,9 @@ function GrooveWriter() { "use strict";
 				window.scrollTo(0, 1);
 			}, 1000);
 		}
-
+		
+		// get updates when the tempo changes
+		root.myGrooveUtils.tempoChangeCallback = root.tempoChangeCallback
 	};
 
 	// called right before the midi reloads for the next replay
