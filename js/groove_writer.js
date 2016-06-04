@@ -2624,6 +2624,7 @@ function GrooveWriter() { "use strict";
 		myGrooveData.showLegend = document.getElementById("showLegend").checked;
 		myGrooveData.swingPercent = root.myGrooveUtils.getSwing();
 		myGrooveData.tempo = root.myGrooveUtils.getTempo();
+		myGrooveData.metronomeFrequency = root.getMetronomeFrequency();
 		myGrooveData.kickStemsUp = true;
 
 		for (var i = 0; i < class_number_of_measures; i++) {
