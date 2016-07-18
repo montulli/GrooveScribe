@@ -298,7 +298,7 @@ function GrooveUtils() {
 	// figure it out from the division  Division is number of notes per measure 4, 6, 8, 12, 16, 24, 32, etc...
 	// Triplets only support 4/4 and 2/4 time signatures for now
 	root.isTripletDivision = function (division) {
-		if(division % 12 === 0)  // we only support 12 & 24   1/8th and 1/16 note triplets
+		if(division % 12 === 0)  // we only support 12 & 24 & 48  1/8th, 1/16, & 1/32 note triplets
 			return true;
 
 		return false;
@@ -359,11 +359,14 @@ function GrooveUtils() {
 		var i;
 
 		for(i = 0; i < notes_per_measure; i++) {
+			if(notes_per_measure == 48)
+				oneMeasureString += "-";
+			else
 				oneMeasureString += "x";
 		}
 		for (i = 0; i < numMeasures; i++)
-				retString += oneMeasureString;
-			retString += "|";
+			retString += oneMeasureString;
+		retString += "|";
 
 		return retString;
 	};
@@ -686,7 +689,7 @@ function GrooveUtils() {
 			tabChar = "-";
 			break;
 		default:
-			console.log("bad case in abcNotationToTablaturePerNote");
+			console.log("bad case in abcNotationToTablaturePerNote: " + abcChar);
 			break;
 		}
 
@@ -1310,7 +1313,7 @@ function GrooveUtils() {
 		var note_grouping;
 
 		if (usingTriplets) {
-				note_grouping = 6;
+				note_grouping = 12;
 
 		} else {
 			//note_grouping = 8 * (4/timeSigBottom);
@@ -1334,7 +1337,7 @@ function GrooveUtils() {
 			// that implies 32nd notes in quarter note beats
 			// TODO: should we support triplets here?
 			if (root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom))
-				scaler = Math.ceil(((24/timeSigBottom) * timeSigTop) / notes_per_measure);
+				scaler = Math.ceil(((48/timeSigBottom) * timeSigTop) / notes_per_measure);
 			else
 				scaler = Math.ceil(((32/timeSigBottom) * timeSigTop) / notes_per_measure);
 		}
@@ -1343,7 +1346,7 @@ function GrooveUtils() {
 	};
 
 	// take any size array and make it larger by padding it with rests in the spaces between
-	// For triplets, expands to 24 notes per measure
+	// For triplets, expands to 48 notes per measure
 	// For non Triplets, expands to 32 notes per measure
 	root.scaleNoteArrayToFullSize = function(note_array, num_measures, notes_per_measure, timeSigTop, timeSigBottom) {
 		var scaler = root.getNoteScaler(notes_per_measure, timeSigTop, timeSigBottom); // fill proportionally
@@ -1385,23 +1388,27 @@ function GrooveUtils() {
 		return num_active_notes;
 	}
 
-	// takes 4 arrays 24 elements long that represent the stickings, snare, HH & kick.
+	// takes 4 arrays 48 elements long that represent the stickings, snare, HH & kick.
 	// each element contains either the note value in ABC "F","^g" or false to represent off
 	// translates them to an ABC string (in 2 voices if !kick_stems_up)
 	// post_voice_abc is a string added to the end of each voice line that can end the line
 	//
-	// We output 24 notes in the ABC rather than the traditional 16 or 32 for 4/4 time.
+	// We output 48 notes in the ABC rather than the traditional 16 or 32 for 4/4 time.
 	// This is because of the stickings above the bar are a separate voice and should not have the "3" above them
 	// This could be changed to using the normal number and moving all the stickings down to be comments on each note in one voice (But is a pretty big change)
 	function snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, sub_division, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
 
-		var scaler = 2; // we are always in 24 notes here, and the ABC needs to think we are in 48 since the specified division is 1/32
+		var scaler = 1; // we are always in 48 notes here, and the ABC needs to think we are in 48 since the specified division is 1/32
 		var ABC_String = "";
 		var stickings_voice_string = "V:Stickings\n";
 		var hh_snare_voice_string = "V:Hands stem=up\n%%voicemap drum\n";
 		var kick_voice_string = "V:Feet stem=down\n%%voicemap drum\n";
-		var eliminate_rests_in_triplets = 0;
 		var all_drum_array_of_array;
+		
+		// console.log(HH_array);
+		// console.log(kick_array);
+		// console.log(notes_per_measure);
+		// console.log(sub_division);
 
 		if(kick_stems_up) {
 			all_drum_array_of_array = [snare_array, HH_array, kick_array];
@@ -1411,14 +1418,17 @@ function GrooveUtils() {
 		if(toms_array)
 			all_drum_array_of_array = all_drum_array_of_array.concat(toms_array);
 
+		
+		// triplets are special.  We want to output a note or a rest for every space of time
+		// 8th note triplets should always use rests
+		// end_of_group should be 
+		//  "4" for 1/8th note triplets
+		//  "2" for 1/16th note triplets
+		//  "1" for 1/32nd note triplets.
+		var end_of_group = 48/sub_division;
+		var grouping_size_for_rests = end_of_group;
 		for (var i = 0; i < num_notes; i++) {
-
-			// triplets are special.  We want to output a note or a rest for every space of time
-			// 8th note triplets should always use rests
-			// end_of_group should always be "2" for 1/8th note triplets
-			//                           and "1" for 1/16th note triplets.
-			var end_of_group = sub_division == 12 ? 2 : 1;
-			var grouping_size_for_rests = end_of_group;
+		
 			var skip_adding_more_notes = false;
 
 			if((i % notes_per_measure) + end_of_group > notes_per_measure) {
@@ -1426,70 +1436,76 @@ function GrooveUtils() {
 				end_of_group = notes_per_measure - (i % num_notes);
 			}
 
-			// this will remove rests and use different length notes to express triplets.
-			// It can be little harder to decipher since you need to understand and process dotted eights and others
-			if (eliminate_rests_in_triplets) {
-				if (1 || sub_division != 12) {
-					var group_size = 6;
-					end_of_group = group_size - (i % group_size); // assuming we are always dealing with 24 notes
-					grouping_size_for_rests = group_size; // we scale up the notes to fit a 24 length array.  This will be 6 or 12
-				}
-			}
 
 			if (i % abc_gen_note_grouping_size(true, timeSigTop, timeSigBottom) === 0) {
-				var notes_in_triplet_group = sub_division == 12 ? 3 : 6;
-				var num_notes_in_next_group = notes_in_triplet_group;
-				// creates the 3 or the 6 over the note grouping
-				// looks like (3:3:3 or (6:6:6
-
-				// used for elemintating rests in triplets.
-				if (eliminate_rests_in_triplets) {
-					if (1 || sub_division != 12) {
-						num_notes_in_next_group = count_active_notes_in_arrays(all_drum_array_of_array, i, grouping_size_for_rests);
-						if(num_notes_in_next_group < grouping_size_for_rests && 0 == count_active_notes_in_arrays(all_drum_array_of_array, i, 1)) {
-							// a single rest will be added if not already full of notes
-							// and the first note is a rest
-							num_notes_in_next_group += 1;
-						}
-					}
-				}
+				
+				// Look for some special cases that will format beats as non triplet groups.   Quarter notes, 1/8th and 1/16th notes only.
 
 				// look for a whole beat of rests
-				if (0 == count_active_notes_in_arrays(all_drum_array_of_array, i, 6)) {
+				if (0 == count_active_notes_in_arrays(all_drum_array_of_array, i, 12)) {
 					// there are no notes in the next beat.   Let's output a special string for a quarter note rest
 					skip_adding_more_notes = true;
 					stickings_voice_string += "x8"
 					hh_snare_voice_string += "z8";  // quarter note rest
-					i += 5;  // skip past all the rests
+					i += 11;  // skip past all the rests
 
 
-				// look for 1/4 note with no triplets in 1/8 notes triplets.   "x--"
-				} else if( (0 == count_active_notes_in_arrays(all_drum_array_of_array, i+1, 5)) ) {
+				// look for 1/4 note with no triplets  "x--"
+				} else if( (0 == count_active_notes_in_arrays(all_drum_array_of_array, i+1, 11)) ) {
 
 					// code duplicated from below
 					// clear any invalid stickings since they will mess up the formatting greatly
-					for(var si = i+1; si < i+6; si++)
+					for(var si = i+1; si < i+12; si++)
 						sticking_array[si] = false;
-					stickings_voice_string += getABCforRest([sticking_array], i, 4, scaler, true);
-					stickings_voice_string += getABCforNote([sticking_array], i, 4, scaler);
+					stickings_voice_string += getABCforRest([sticking_array], i, 8, scaler, true);
+					stickings_voice_string += getABCforNote([sticking_array], i, 8, scaler);
 
 					if (kick_stems_up) {
-						hh_snare_voice_string += getABCforNote(all_drum_array_of_array, i, 4, scaler);
+						hh_snare_voice_string += getABCforNote(all_drum_array_of_array, i, 8, scaler);
 						kick_voice_string = "";
 					} else {
-						hh_snare_voice_string += getABCforNote(all_drum_array_of_array, i, 4, scaler);
-						kick_voice_string += getABCforNote([kick_array], i, 4, scaler);
+						hh_snare_voice_string += getABCforNote(all_drum_array_of_array, i, 8, scaler);
+						kick_voice_string += getABCforNote([kick_array], i, 8, scaler);
 					}
 
 					skip_adding_more_notes = true;
-					i += 5;  // skip past to the next beat
+					i += 11;  // skip past to the next beat
 
-				// look for two 1/8 notes with no triplets in 1/16 notes triplets.   "x--"
-				} else if( (sub_division == 24 && 0 == count_active_notes_in_arrays(all_drum_array_of_array, i+1, 2) &&
-										          0 == count_active_notes_in_arrays(all_drum_array_of_array, i+4, 2)) ) {
+				// look for two 1/8 notes with no triplets in 1/16th & 1/32nd note triplets.   "x--x--", "x-----x-----"
+				} else if( sub_division > 12 && 0 == count_active_notes_in_arrays(all_drum_array_of_array, i+1, 5) &&
+										        0 == count_active_notes_in_arrays(all_drum_array_of_array, i+7, 5) ) {
 
 					// think of the 1/8 notes as two groups of 3 notes
-					for(var eighth_index=i; eighth_index <= i+3; eighth_index += 3) {
+					for(var eighth_index=i; eighth_index <= i+6; eighth_index += 6) {
+						// code duplicated from below
+						// clear any invalid stickings since they will mess up the formatting greatly
+						for(var si = eighth_index+1; si < eighth_index+6; si++)
+							sticking_array[si] = false;
+						stickings_voice_string += getABCforRest([sticking_array], eighth_index, 4, scaler, true);
+						stickings_voice_string += getABCforNote([sticking_array], eighth_index, 4, scaler);
+
+						if (kick_stems_up) {
+							hh_snare_voice_string += getABCforRest(all_drum_array_of_array, eighth_index, 4, scaler, false);
+							hh_snare_voice_string += getABCforNote(all_drum_array_of_array, eighth_index, 4, scaler);
+							kick_voice_string = "";
+						} else {
+							hh_snare_voice_string += getABCforRest(all_drum_array_of_array, eighth_index, 4, scaler, false);
+							hh_snare_voice_string += getABCforNote(all_drum_array_of_array, eighth_index, 4, scaler);
+							kick_voice_string += getABCforNote([kick_array], eighth_index, 4, scaler);
+						}
+					}
+
+					skip_adding_more_notes = true;
+					i += 11;  // skip past to the next beat
+
+				// look for 1/16th notes with no triplets in 1/32nd note triplets.   "x--x--"
+				} else if( sub_division == 48 && 0 == count_active_notes_in_arrays(all_drum_array_of_array, i+1,  2) &&
+									             0 == count_active_notes_in_arrays(all_drum_array_of_array, i+4,  2) &&
+									             0 == count_active_notes_in_arrays(all_drum_array_of_array, i+7,  2) &&
+									             0 == count_active_notes_in_arrays(all_drum_array_of_array, i+10, 2)) {
+
+					// think of the 1/8 notes as two groups of 3 notes
+					for(var eighth_index=i; eighth_index <= i+9; eighth_index += 3) {
 						// code duplicated from below
 						// clear any invalid stickings since they will mess up the formatting greatly
 						for(var si = eighth_index+1; si < eighth_index+3; si++)
@@ -1509,12 +1525,46 @@ function GrooveUtils() {
 					}
 
 					skip_adding_more_notes = true;
-					i += 5;  // skip past to the next beat
-
+					i += 11;  // skip past to the next beat
+	
 				} else {
 					// the normal case.   We tell ABC that we are using a triplet
-					// looks like (3:3:3 or (6:6:6
-					hh_snare_voice_string += "(" + notes_in_triplet_group +	":" + notes_in_triplet_group + ":" + num_notes_in_next_group;
+					var notes_in_triplet_group = sub_division / 4;    // 4 beats
+					
+					// look through the notes and see if we should "fake" 1/8 or 1/6th note triplets
+					// If the groove can be expressed in "3" or "6" groups it is way easier to read than in a higher "12" group with rests
+					// "3" looks like "x---x---x---"   one note and three rests
+					// "6" looks like "x-x-x-x-x-x-"   one note and one rest
+					if(sub_division == 48) {
+						var can_fake_threes = true;
+						var can_fake_sixes = true;
+						for (var j = i; j < i+12; j += 4) {
+							if(0 < count_active_notes_in_arrays(all_drum_array_of_array, j+1, 3)) {
+								can_fake_threes = false
+							}
+							if(0 < count_active_notes_in_arrays(all_drum_array_of_array, j+1, 1) ||
+							   0 < count_active_notes_in_arrays(all_drum_array_of_array, j+3, 1)) {
+								can_fake_sixes = false
+							}
+							if(can_fake_threes == false && can_fake_sixes == false)
+								break;  // skip the rest, since we have an answer already
+						}
+						
+						var faker_sub_division = sub_division;
+						if(can_fake_threes)
+							faker_sub_division = 12;
+						else if(can_fake_sixes)
+							faker_sub_division = 24;
+						
+						end_of_group = 48/faker_sub_division;
+						grouping_size_for_rests = end_of_group;
+						notes_in_triplet_group = faker_sub_division / 4;    // 4 beats
+					}
+					
+					
+					// creates the 3, 6 or 12 over the note grouping
+					// looks like (3:3:3 or (6:6:6 or (12:12:12
+					hh_snare_voice_string += "(" + notes_in_triplet_group +	":" + notes_in_triplet_group + ":" + notes_in_triplet_group;
 				}
 			}
 
@@ -1554,13 +1604,13 @@ function GrooveUtils() {
 			}
 
 			// add a bar line every measure
-			if (((i + 1) % (6 * timeSigTop * (4/timeSigBottom))) === 0) {
+			if (((i + 1) % (12 * timeSigTop * (4/timeSigBottom))) === 0) {
 				stickings_voice_string += "|";
 				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
 
 				// add a line break every 2 measures
-				if (i < num_notes-1 && ((i + 1) % ((6 * timeSigTop * (4/timeSigBottom)) * 2)) === 0) {
+				if (i < num_notes-1 && ((i + 1) % ((12 * timeSigTop * (4/timeSigBottom)) * 2)) === 0) {
 					stickings_voice_string += "\n";
 					hh_snare_voice_string += "\n";
 					kick_voice_string += "\n";
@@ -1732,6 +1782,14 @@ function GrooveUtils() {
 				else
 					new_state = "a";
 				break;
+			case 48:  // 32nd triplets
+				if(note_index % 3 === 0)
+					new_state = Math.floor(note_index / 12) + 1;  // 1,2,3,4,5, etc.
+				else if(note_index % 3 == 1)
+					new_state = "&";
+				else
+					new_state = "a";
+				break;	
 			case 16:
 			case 32:  // fall through
 			default:
@@ -1755,11 +1813,11 @@ function GrooveUtils() {
 
 		var cur_div_of_array = 32;
 		if(root.isTripletDivision(time_division))
-			cur_div_of_array = 24;
+			cur_div_of_array = 48;
 
 		var actual_notes_per_measure_in_this_array = root.calc_notes_per_measure(cur_div_of_array, timeSigTop, timeSigBottom);
 
-		// Time division is 4, 8, 16, 32, 12, or 24
+		// Time division is 4, 8, 16, 32, 12, 24, or 48
 		var notes_per_measure_in_time_division = ((time_division / 4) * timeSigTop) * (4/timeSigBottom);
 
 		for(var i in sticking_array) {
@@ -1775,8 +1833,8 @@ function GrooveUtils() {
 	};
 
 	// create ABC from note arrays
-	// The Arrays passed in must be 32 or 24 notes long
-	// notes_per_measure denotes the number of notes that _should_ be in the measure even though the arrays are always scaled up and large (24 or 32)
+	// The Arrays passed in must be 32 or 48 notes long
+	// notes_per_measure denotes the number of notes that _should_ be in the measure even though the arrays are always scaled up and large (48 or 32)
 	root.create_ABC_from_snare_HH_kick_arrays = function (sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, time_division, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
 
 		// convert sticking count symbol to the actual count
@@ -1804,13 +1862,15 @@ function GrooveUtils() {
 		for(var i = 0; i < constant_NUMBER_OF_TOMS; i++) {
 			FullNoteTomsArray[i] = root.scaleNoteArrayToFullSize(myGrooveData.toms_array[i], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		}
+		
+		var is_triplet_division = root.isTripletDivisionFromNotesPerMeasure(myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 
 		var fullABC = root.get_top_ABC_BoilerPlate(false,
 				myGrooveData.title,
 				myGrooveData.author,
 				myGrooveData.comments,
 				myGrooveData.showLegend,
-				root.isTripletDivisionFromNotesPerMeasure(myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue),
+				is_triplet_division,
 				myGrooveData.kickStemsUp,
 				myGrooveData.numBeats,
 				myGrooveData.noteValue,
@@ -1824,7 +1884,7 @@ function GrooveUtils() {
 			"|\n",
 			FullNoteHHArray.length,
 			myGrooveData.timeDivision,
-			myGrooveData.notesPerMeasure,
+			is_triplet_division ? 48 : 32,   // notes_per_measure, We scaled up to 48/32 above
 			myGrooveData.kickStemsUp,
 			myGrooveData.numBeats,
 			myGrooveData.noteValue);
@@ -1834,6 +1894,8 @@ function GrooveUtils() {
 				FullNoteKickArray,
 				FullNoteTomsArray,
 				FullNoteHHArray.length);
+				
+		// console.log(fullABC);		
 		return fullABC;
 	};
 
@@ -2164,7 +2226,7 @@ function GrooveUtils() {
 			var duration = 0;
 
 			if (isTriplets) {
-				duration = 21.333; // "ticks"   16 for 32nd notes.  21.33 for 24th triplets
+				duration = 10.666; // "ticks"   16 for 32nd notes.  10.66 for 48th triplets
 			} else {
 				duration = 16;
 			}
@@ -2196,9 +2258,9 @@ function GrooveUtils() {
 			var metronome_note = false;
 			var metronome_velocity = constant_OUR_MIDI_VELOCITY_ACCENT;
 			if (metronome_frequency > 0) {
-				var quarterNoteFrequency = (isTriplets ? 6 : 8);
-				var eighthNoteFrequency = (isTriplets ? 3 : 4);
-				var sixteenthNoteFrequency = (isTriplets ? 1 : 2);
+				var quarterNoteFrequency = (isTriplets ? 12 : 8);
+				var eighthNoteFrequency = (isTriplets ? 6 : 4);
+				var sixteenthNoteFrequency = (isTriplets ? 2 : 2);
 
 				var metronome_specific_index = i;
 				switch (root.getMetronomeClickStart()) {
@@ -2474,7 +2536,7 @@ function GrooveUtils() {
 
 		var swing_percentage = myGrooveData.swingPercent / 100;
 
-		// the midi converter expects all the arrays to be 32 or 24 notes long.
+		// the midi converter expects all the arrays to be 32 or 48 notes long.
 		// Expand them
 		var FullNoteHHArray = root.scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		var FullNoteSnareArray = root.scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);

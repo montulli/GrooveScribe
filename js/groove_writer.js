@@ -88,7 +88,7 @@ function GrooveWriter() { "use strict";
 		return class_notes_per_measure;
 	};
 
-	// is the division a triplet groove?   6, 12, or 24 notes
+	// is the division a triplet groove?   12, 24, or 48 notes
 	function usingTriplets() {
 		if (root.myGrooveUtils.isTripletDivision(class_time_division))
 			return true;
@@ -809,7 +809,7 @@ function GrooveWriter() { "use strict";
 		if (class_permutation_type != "none")
 			percent_complete = (percent_complete * get_numberOfActivePermutationSections()) % 1.0;
 
-		var note_id_in_32 = Math.floor(percent_complete * root.myGrooveUtils.calc_notes_per_measure((usingTriplets() ? 24 : 32), class_num_beats_per_measure, class_note_value_per_measure)  * class_number_of_measures);
+		var note_id_in_32 = Math.floor(percent_complete * root.myGrooveUtils.calc_notes_per_measure((usingTriplets() ? 48 : 32), class_num_beats_per_measure, class_note_value_per_measure)  * class_number_of_measures);
 		var real_note_id = (note_id_in_32 / root.myGrooveUtils.getNoteScaler(class_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure));
 
 		//hilight_individual_note(instrument, id);
@@ -2043,82 +2043,6 @@ function GrooveWriter() { "use strict";
 		return kick_array;
 	}
 
-	// 6 note triplet kick permutation expressed in 4th notes
-	function get_kick16th_triplets_permutation_array_for_4ths(section) {
-		var kick_array;
-
-		switch (section) {
-		case 0:
-			kick_array = [false, false, false, false, false, false,
-				false, false, false, false, false, false,
-				false, false, false, false, false, false,
-				false, false, false, false, false, false];
-			break;
-		case 1:
-			kick_array = ["F", false, false, false, false, false,
-				false, false, false, false, false, false,
-				"F", false, false, false, false, false,
-				false, false, false, false, false, false];
-			break;
-		case 2:
-			kick_array = [false, false, false, false, "F", false,
-				false, false, false, false, false, false,
-				false, false, false, false, "F", false,
-				false, false, false, false, false, false];
-			break;
-		case 3:
-			kick_array = [false, false, false, false, false, false,
-				false, false, "F", false, false, false,
-				false, false, false, false, false, false,
-				false, false, "F", false, false, false];
-			break;
-		case 5:
-			kick_array = ["F", false, false, false, "F", false,
-				false, false, false, false, false, false,
-				"F", false, false, false, "F", false,
-				false, false, false, false, false, false];
-			break;
-		case 6:
-			kick_array = [false, false, false, false, "F", false,
-				false, false, "F", false, false, false,
-				false, false, false, false, "F", false,
-				false, false, "F", false, false, false];
-			break;
-		case 7:
-			kick_array = ["F", false, false, false, false, false,
-				false, false, "F", false, false, false,
-				"F", false, false, false, false, false,
-				false, false, "F", false, false, false];
-			break;
-
-			// these cases should not be called
-		case 4: // 4th single
-		case 8: // 4th double
-		case 9: // 1st up/down
-		case 10: // 2nd up/down
-		case 12: // 2nd triplet
-		case 13: // 3nd triplet
-		case 14: // 4nd triplet
-		case 15: // 1st Quad
-			console.log("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
-			break;
-
-		case 11: // first triplet
-			/* falls through */
-		default:
-			// use default
-			break;
-		}
-
-		if (!kick_array)
-			kick_array = ["F", false, false, false, "F", false,
-				false, false, "F", false, false, false,
-				"F", false, false, false, "F", false,
-				false, false, "F", false, false, false];
-
-		return kick_array;
-	}
-
 	function fill_array_with_value_false(array_of_notes, number_of_notes) {
 		for(var i=0; i < number_of_notes; i++) {
 			array_of_notes[i] = false;
@@ -2142,7 +2066,7 @@ function GrooveWriter() { "use strict";
 	function get_empty_note_array_in_32nds() {
 		var notes_per_4_beats = 32;
 		if(usingTriplets())
-			notes_per_4_beats = 24;
+			notes_per_4_beats = 48;
 		var num_notes = (class_num_beats_per_measure * notes_per_4_beats) / class_note_value_per_measure;
 
 		return get_empty_note_array(num_notes);
@@ -2151,12 +2075,12 @@ function GrooveWriter() { "use strict";
 
 	function get_kick16th_permutation_array(section) {
 		if (usingTriplets()) {
-			if (class_notes_per_measure == 6)
-				return get_kick16th_triplets_permutation_array_for_4ths(section);
-			else if (class_notes_per_measure == 12)
+			if (class_notes_per_measure == 12)
 				return get_kick16th_triplets_permutation_array_for_8ths(section);
 			else if (class_notes_per_measure == 24)
 				return get_kick16th_triplets_permutation_array_for_16ths(section);
+			else if (class_notes_per_measure == 48)
+				return get_kick16th_triplets_permutation_array_for_32nds(section);
 			else
 				return get_empty_note_array_in_32nds();
 		}
@@ -2405,7 +2329,7 @@ function GrooveWriter() { "use strict";
 
 	// query the clickable UI and generate a 32 element array representing the notes of one measure
 	// note: the ui may have fewer notes, but we scale them to fit into the 32 elements proportionally
-	// If using triplets returns 24 notes.   Otherwise always 32.
+	// If using triplets returns 48 notes.   Otherwise always 32.
 	//
 	// (note: Only one measure, not all the notes on the page if multiple measures are present)
 	// Return value is the number of notes.
@@ -2699,21 +2623,21 @@ function GrooveWriter() { "use strict";
 	// }}
 	//
 	root.updateGrooveDBSource = function () {
-		if (!document.getElementById("GrooveDB_source") || document.getElementById("GrooveDB_source").style.disply != 'block' )
+		if (!document.getElementById("GrooveDB_source") || document.getElementById("GrooveDB_source").style.display == 'none' )
 			return; // nothing to update
 
 		var myGrooveData = root.grooveDataFromClickableUI();
 
-		var notesPerMeasureInTab = root.myGrooveUtils.calc_notes_per_measure((usingTriplets() ? 24 : 32), class_num_beats_per_measure, class_note_value_per_measure);
+		var notesPerMeasureInTab = root.myGrooveUtils.calc_notes_per_measure((usingTriplets() ? 48 : 32), class_num_beats_per_measure, class_note_value_per_measure);
 		var maxNotesInTab = myGrooveData.numberOfMeasures * notesPerMeasureInTab;
 
-		// scale up all the arrays to 24 or 32 notes so that they look normalized
+		// scale up all the arrays to 48 or 32 notes so that they look normalized
 
-		myGrooveData.hh_array      = myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.hh_array,      myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		myGrooveData.snare_array   = myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.snare_array,   myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		myGrooveData.kick_array    = myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.kick_array,    myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		myGrooveData.toms_array[0] = myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[0], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		myGrooveData.toms_array[3] = myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[3], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.hh_array      = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.hh_array,      myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.snare_array   = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.snare_array,   myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.kick_array    = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.kick_array,    myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.toms_array[0] = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[0], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.toms_array[3] = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[3], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 
 		var DBString = "{{GrooveTab";
 
@@ -3288,7 +3212,8 @@ function GrooveWriter() { "use strict";
 
 			showHideCSS_ClassDisplay(".edit-block", true, true, "block"); // show
 
-			view_edit_button.innerHTML = "Switch to VIEW mode";
+			if(view_edit_button)
+				view_edit_button.innerHTML = "Switch to VIEW mode";
 			root.myGrooveUtils.viewMode = false;
 
 			if(!dontUpdateURL)
@@ -3297,7 +3222,8 @@ function GrooveWriter() { "use strict";
 
 			showHideCSS_ClassDisplay(".edit-block", true, false, "block"); // hide
 
-			view_edit_button.innerHTML = "Switch to EDIT mode";
+			if(view_edit_button)
+				view_edit_button.innerHTML = "Switch to EDIT mode";
 			root.myGrooveUtils.viewMode = true;
 			if(!dontUpdateURL)
 				root.updateCurrentURL();
@@ -3786,10 +3712,12 @@ function GrooveWriter() { "use strict";
 
 			addOrRemoveKeywordFromClassById("subdivision_12ths", "disabled", true);
 			addOrRemoveKeywordFromClassById("subdivision_24ths", "disabled", true);
+			addOrRemoveKeywordFromClassById("subdivision_48ths", "disabled", true);
 
 		} else {
 			addOrRemoveKeywordFromClassById("subdivision_12ths", "disabled", false);
 			addOrRemoveKeywordFromClassById("subdivision_24ths", "disabled", false);
+			addOrRemoveKeywordFromClassById("subdivision_48ths", "disabled", false);
 
 		}
 	};
@@ -4123,6 +4051,7 @@ function GrooveWriter() { "use strict";
 	// change the base division to something else.
 	// eg  16th to 8ths or   32nds to 8th note triplets
 	// need to re-layout the html notes, change any globals and then reinitialize
+	var have_shown_mixed_division_message = false;
 	root.changeDivision = function (newDivision) {
 		var uiStickings = "|";
 		var uiHH = "|";
@@ -4131,8 +4060,13 @@ function GrooveWriter() { "use strict";
 		var uiSnare = "|";
 		var uiKick = "|";
 
+		if(newDivision == 48 && !have_shown_mixed_division_message) {
+			have_shown_mixed_division_message = true;
+			alert("The MIXED subdivision allows you to create a combination of triplets and non-triplet notes in one measure.  Set every 3rd note for 16ths and every 6th note for 8th notes")
+		}
+		
 		var isNewDivisionTriplets = root.myGrooveUtils.isTripletDivision(newDivision);
-		var new_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure((isNewDivisionTriplets ? 24 : 32), class_num_beats_per_measure, class_note_value_per_measure);
+		var new_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure((isNewDivisionTriplets ? 48 : 32), class_num_beats_per_measure, class_note_value_per_measure);
 
 		// check for incompatible odd time signature division   9/8 and 1/4notes for instance or 9/16 and 1/8notes
 		if( (newDivision * class_num_beats_per_measure / class_note_value_per_measure) % 1 != 0 ) {

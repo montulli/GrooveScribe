@@ -54,19 +54,28 @@
 <script>
 	
 	
-	var TabIn = {};
-	TabIn.tempo          =  70;
-	TabIn.div            =  24;
-	TabIn.measures       =  1;
-	TabIn.hihatTab       = 'x-xx-xx-xx-xx-xx-xx-xx-x';
-	TabIn.snareAccentTab = '------O-----------O-----';
-	TabIn.snareOtherTab  = '-g--g--g--g--g--g--g--g-';
-	TabIn.kickTab        = '------------------------';
-	TabIn.footOtherTab   = '------------------------';
-	TabIn.notesPerTabMeasure = 24;
 	
-		// put it on the page
+	
+	var TabIn = {};
+	TabIn.tempo           =  parseInt('100', 10);
+	TabIn.div             =  parseInt('12', 10);
+    TabIn.swingPercent    =  parseInt('{{{HasSwingPercent}}}', 10);
+	TabIn.measures        =  parseInt('1', 10);
+	TabIn.notesPerTabMeasure = parseInt('24', 10);
+    TabIn.timeSignature   = '4/4';
+	TabIn.hihatTab        = 'x---x-x---x-x---x-x---x-';
+	TabIn.snareAccentTab  = '------O-----------O-----';
+	TabIn.snareOtherTab   = '------------------------';
+	TabIn.kickTab         = 'o-----------o-----------';
+	TabIn.footOtherTab    = '------------------------';
+        if('{{{HasTom1Tab}}}' != '{{{HasTom1Tab}}}')
+            TabIn.tom1Tab         = '{{{HasTom1Tab}}}';
+	if('{{{HasTom4Tab}}}' != '{{{HasTom4Tab}}}')
+            TabIn.tom4Tab         = '{{{HasTom4Tab}}}';
+	
+	// put it on the page
 	GrooveDisplay.GrooveDBFormatPutGrooveOnPage(TabIn);
+	
 
 </script>
 
@@ -87,7 +96,8 @@
 	
 	var TabIn = {};
 	TabIn.tempo          =  70;
-	TabIn.div            =  24;
+	TabIn.div             =  parseInt('24', 10);
+	TabIn.notesPerTabMeasure = parseInt('12', 10);
 	TabIn.measures       =  2;
 	TabIn.timeSignature  = "2/4";
 	TabIn.hihatTab       = 'x-xx-xx-xx-xx-xx-xx-xx-x';
@@ -95,7 +105,7 @@
 	TabIn.snareOtherTab  = '-g--g--g--g--g--g--g--g-';
 	TabIn.kickTab        = '------------------------';
 	TabIn.footOtherTab   = '------------------------';
-	TabIn.notesPerTabMeasure = 12;
+
 	
 		// put it on the page
 	GrooveDisplay.GrooveDBFormatPutGrooveOnPage(TabIn);
