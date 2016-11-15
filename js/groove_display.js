@@ -218,16 +218,16 @@ if (typeof(GrooveDisplay) === "undefined") {
 
 			// load the groove from the URL data if it was passed in.
 			var GrooveData = myGrooveUtils.getGrooveDataFromUrlString(GrooveDefinition);
-			//console.log(GrooveData);
+			// console.log(GrooveData);
 
 			var layoutFunction = function() {
 
 				var svgTarget = document.getElementById(svgTargetId);
-				var renderWidth = svgTarget.offsetWidth;
+				// var renderWidth = svgTarget.offsetWidth;
+				var renderWidth = 700;
 
-				renderWidth = 700;
 				var abcNotation = myGrooveUtils.createABCFromGrooveData(GrooveData, renderWidth);
-				//console.log(abcNotation);
+				// console.log(abcNotation);
 				var svgReturn = myGrooveUtils.renderABCtoSVG(abcNotation);
 
 				if (linkToEditor)

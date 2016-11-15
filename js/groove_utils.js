@@ -1214,10 +1214,11 @@ function GrooveUtils() {
 				// for every empty space we increment nextCount, and then make the note that long
 				nextCount = 1;
 				for (var indexA = start_index + 1; indexA < (start_index + end_of_group); indexA++) {
-					if(!testArrayOfArraysForEquality(note_array_of_arrays, indexA, false))
+					if(!testArrayOfArraysForEquality(note_array_of_arrays, indexA, false)) {
 						break;
-					else
+					} else {
 						nextCount++;
+					}
 				}
 
 				abcNoteStrings.notes1 += note_array_of_arrays[which_array][start_index] + (scaler * nextCount);
@@ -1419,23 +1420,23 @@ function GrooveUtils() {
 			all_drum_array_of_array = all_drum_array_of_array.concat(toms_array);
 
 		
-		// triplets are special.  We want to output a note or a rest for every space of time
-		// 8th note triplets should always use rests
-		// end_of_group should be 
-		//  "4" for 1/8th note triplets
-		//  "2" for 1/16th note triplets
-		//  "1" for 1/32nd note triplets.
-		var end_of_group = 48/sub_division;
-		var grouping_size_for_rests = end_of_group;
+
 		for (var i = 0; i < num_notes; i++) {
-		
+
+			// triplets are special.  We want to output a note or a rest for every space of time
+			// 8th note triplets should always use rests
+			// end_of_group should be
+			//  "4" for 1/8th note triplets
+			//  "2" for 1/16th note triplets
+			//  "1" for 1/32nd note triplets.
+			var end_of_group = 48/sub_division;
+			var grouping_size_for_rests = end_of_group;
 			var skip_adding_more_notes = false;
 
 			if((i % notes_per_measure) + end_of_group > notes_per_measure) {
 				// if we are in an odd time signature then the last few notes will have a different grouping to reach the end of the measure
 				end_of_group = notes_per_measure - (i % num_notes);
 			}
-
 
 			if (i % abc_gen_note_grouping_size(true, timeSigTop, timeSigBottom) === 0) {
 				
@@ -1445,7 +1446,7 @@ function GrooveUtils() {
 				if (0 == count_active_notes_in_arrays(all_drum_array_of_array, i, 12)) {
 					// there are no notes in the next beat.   Let's output a special string for a quarter note rest
 					skip_adding_more_notes = true;
-					stickings_voice_string += "x8"
+					stickings_voice_string += "x8";
 					hh_snare_voice_string += "z8";  // quarter note rest
 					i += 11;  // skip past all the rests
 
@@ -1597,7 +1598,6 @@ function GrooveUtils() {
 			}
 
 			if ((i % abc_gen_note_grouping_size(true, timeSigTop, timeSigBottom)) == abc_gen_note_grouping_size(true, timeSigTop, timeSigBottom) - 1) {
-
 				stickings_voice_string += " ";
 				hh_snare_voice_string += " "; // Add a space to break the bar line every group notes
 				kick_voice_string += " ";
