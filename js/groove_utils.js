@@ -55,6 +55,7 @@ var constant_ABC_SN_Normal = "c";
 var constant_ABC_SN_XStick = "^c";
 var constant_ABC_SN_Buzz = "!///!c";
 var constant_ABC_SN_Flam = "{/c}c";
+var constant_ABC_SN_Drag = "{/cc}c";
 var constant_ABC_KI_SandK = "[F^d,]"; // kick & splash
 var constant_ABC_KI_Splash = "^d,"; // splash only
 var constant_ABC_KI_Normal = "F";
@@ -85,6 +86,7 @@ var constant_OUR_MIDI_SNARE_GHOST = 21;
 var constant_OUR_MIDI_SNARE_XSTICK = 37;
 var constant_OUR_MIDI_SNARE_BUZZ = 104;
 var constant_OUR_MIDI_SNARE_FLAM = 107;
+var constant_OUR_MIDI_SNARE_DRAG = 107;
 var constant_OUR_MIDI_KICK_NORMAL = 35;
 var constant_OUR_MIDI_TOM1_NORMAL = 48;
 var constant_OUR_MIDI_TOM2_NORMAL = 47;
@@ -497,6 +499,10 @@ function GrooveUtils() {
 			else if (drumType == "H")
 				return constant_ABC_HH_Crash;
 			break;
+		case "d":
+			if (drumType == "S")
+				return constant_ABC_SN_Drag;
+			break;
 		case "f":
 			if (drumType == "S")
 				return constant_ABC_SN_Flam;
@@ -677,6 +683,9 @@ function GrooveUtils() {
 			break;
 		case constant_ABC_SN_Flam:
 			tabChar = "f";
+			break;
+		case constant_ABC_SN_Drag:
+			tabChar = "d";
 			break;
 		case constant_ABC_HH_Accent:
 		case constant_ABC_KI_SandK:
@@ -1247,6 +1256,8 @@ function GrooveUtils() {
 
 			// this is the flam notation, it can't be in a sub grouping
 			ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "{/c}");
+            // this is the drag notation, it can't be in a sub grouping
+            ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "{/cc}");
 
 			ABC_String += "[" + abcNoteStrings.notes1 + abcNoteStrings.notes2 + abcNoteStrings.notes3 + "]"; // [^gc]
 		} else {
@@ -2406,6 +2417,15 @@ function GrooveUtils() {
 						snare_velocity = constant_OUR_MIDI_VELOCITY_NORMAL;
 					}
 					break;
+				case constant_ABC_SN_Drag: // drag
+					if (midi_output_type == "general_MIDI") {
+						snare_note = constant_OUR_MIDI_SNARE_NORMAL;
+						snare_velocity = constant_OUR_MIDI_VELOCITY_ACCENT;
+					} else {
+						snare_note = constant_OUR_MIDI_SNARE_DRAG;
+						snare_velocity = constant_OUR_MIDI_VELOCITY_NORMAL;
+					}
+					break;
 				case constant_ABC_SN_Accent: // accent
 					if (midi_output_type == "general_MIDI") {
 						snare_note = constant_OUR_MIDI_SNARE_NORMAL;
@@ -2775,7 +2795,8 @@ function GrooveUtils() {
 				note_type = "hi-hat";
 			} else if (data.note == constant_OUR_MIDI_SNARE_NORMAL || data.note == constant_OUR_MIDI_SNARE_ACCENT ||
 						data.note == constant_OUR_MIDI_SNARE_GHOST || data.note == constant_OUR_MIDI_SNARE_XSTICK ||
-						data.note == constant_OUR_MIDI_SNARE_FLAM || data.note == constant_OUR_MIDI_SNARE_BUZZ) {
+						data.note == constant_OUR_MIDI_SNARE_FLAM || data.note == constant_OUR_MIDI_SNARE_DRAG ||
+                		data.note == constant_OUR_MIDI_SNARE_BUZZ	) {
 				note_type = "snare";
 			} else if (data.note == constant_OUR_MIDI_KICK_NORMAL || data.note == constant_OUR_MIDI_HIHAT_FOOT) {
 				note_type = "kick";

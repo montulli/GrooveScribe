@@ -674,6 +674,12 @@
 		color: transparent;
 		cursor: pointer;
 	}
+	.snare_drag {
+		position: absolute; top: -2px; left: -2px;
+		font-size: 25px;
+		color: transparent;
+		cursor: pointer;
+	}
 	.kick_circle {
 		position: absolute; top: 0px; left: 2px;
 		height: 22px;

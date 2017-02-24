@@ -25,7 +25,7 @@
 /*jslint browser:true devel:true */
 
 /*global gapi, GrooveUtils, Midi, Share */
-/*global MIDI, constant_MAX_MEASURES, constant_DEFAULT_TEMPO, constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_BOTH, constant_ABC_STICK_OFF, constant_ABC_STICK_COUNT, constant_ABC_HH_Ride, constant_ABC_HH_Ride_Bell, constant_ABC_HH_Cow_Bell, constant_ABC_HH_Crash, constant_ABC_HH_Stacker, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Buzz, constant_ABC_SN_Flam, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T2_Normal, constant_ABC_T3_Normal, constant_ABC_T4_Normal, constant_NUMBER_OF_TOMS, constant_ABC_OFF, constant_OUR_MIDI_VELOCITY_NORMAL, constant_OUR_MIDI_VELOCITY_ACCENT, constant_OUR_MIDI_VELOCITY_GHOST, constant_OUR_MIDI_METRONOME_1, constant_OUR_MIDI_METRONOME_NORMAL, constant_OUR_MIDI_HIHAT_NORMAL, constant_OUR_MIDI_HIHAT_OPEN, constant_OUR_MIDI_HIHAT_ACCENT, constant_OUR_MIDI_HIHAT_CRASH, constant_OUR_MIDI_HIHAT_STACKER, constant_OUR_MIDI_HIHAT_RIDE, constant_OUR_MIDI_HIHAT_FOOT, constant_OUR_MIDI_SNARE_NORMAL, constant_OUR_MIDI_SNARE_ACCENT, constant_OUR_MIDI_SNARE_GHOST, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_FLAM, constant_OUR_MIDI_KICK_NORMAL, constant_OUR_MIDI_TOM1_NORMAL, constant_OUR_MIDI_TOM2_NORMAL, constant_OUR_MIDI_TOM4_NORMAL, constant_OUR_MIDI_TOM4_NORMAL */
+/*global MIDI, constant_MAX_MEASURES, constant_DEFAULT_TEMPO, constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_BOTH, constant_ABC_STICK_OFF, constant_ABC_STICK_COUNT, constant_ABC_HH_Ride, constant_ABC_HH_Ride_Bell, constant_ABC_HH_Cow_Bell, constant_ABC_HH_Crash, constant_ABC_HH_Stacker, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Buzz, constant_ABC_SN_Flam, constant_ABC_SN_Drag, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T2_Normal, constant_ABC_T3_Normal, constant_ABC_T4_Normal, constant_NUMBER_OF_TOMS, constant_ABC_OFF, constant_OUR_MIDI_VELOCITY_NORMAL, constant_OUR_MIDI_VELOCITY_ACCENT, constant_OUR_MIDI_VELOCITY_GHOST, constant_OUR_MIDI_METRONOME_1, constant_OUR_MIDI_METRONOME_NORMAL, constant_OUR_MIDI_HIHAT_NORMAL, constant_OUR_MIDI_HIHAT_OPEN, constant_OUR_MIDI_HIHAT_ACCENT, constant_OUR_MIDI_HIHAT_CRASH, constant_OUR_MIDI_HIHAT_STACKER, constant_OUR_MIDI_HIHAT_RIDE, constant_OUR_MIDI_HIHAT_FOOT, constant_OUR_MIDI_SNARE_NORMAL, constant_OUR_MIDI_SNARE_ACCENT, constant_OUR_MIDI_SNARE_GHOST, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_FLAM, onstant_OUR_MIDI_SNARE_DRAG, constant_OUR_MIDI_KICK_NORMAL, constant_OUR_MIDI_TOM1_NORMAL, constant_OUR_MIDI_TOM2_NORMAL, constant_OUR_MIDI_TOM4_NORMAL, constant_OUR_MIDI_TOM4_NORMAL */
 
 // GrooveWriter class.   The only one in this file.
 
@@ -175,6 +175,12 @@ function GrooveWriter() { "use strict";
 				return constant_ABC_SN_Flam; // snare flam
 			else if (returnType == "URL")
 				return "f"; // snare flam
+		}
+		if (document.getElementById("snare_drag" + id).style.color == constant_note_on_color_rgb) {
+			if (returnType == "ABC")
+				return constant_ABC_SN_Drag; // snare drag
+			else if (returnType == "URL")
+				return "d"; // snare drag
 		}
 		if (document.getElementById("snare_ghost" + id).style.color == constant_note_on_color_rgb) {
 			if (returnType == "ABC")
@@ -393,6 +399,7 @@ function GrooveWriter() { "use strict";
 		document.getElementById("snare_xstick" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("snare_buzz" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("snare_flam" + id).style.color = constant_note_hidden_color_rgb;
+		document.getElementById("snare_drag" + id).style.color = constant_note_hidden_color_rgb;
 
 		// turn stuff on conditionally
 		switch (mode) {
@@ -407,11 +414,14 @@ function GrooveWriter() { "use strict";
 				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_NORMAL);
 			break;
 		case "flam":
-			//document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
-			//document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
 			document.getElementById("snare_flam" + id).style.color = constant_note_on_color_hex;
 			if(make_sound)
 				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_FLAM);
+			break;
+		case "drag":
+			document.getElementById("snare_drag" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_DRAG);
 			break;
 		case "ghost":
 			document.getElementById("snare_ghost" + id).style.color = constant_note_on_color_hex;
@@ -3392,6 +3402,7 @@ function GrooveWriter() { "use strict";
 	//      o: normal
 	//      O: accent
 	//      f: flam
+    //      d: drag
 	//      g: ghost
 	//      x: cross stick
 	//      -: off
@@ -3485,6 +3496,9 @@ function GrooveWriter() { "use strict";
 				break;
 			case "f":
 				setFunction(displayIndex, "flam", false);
+				break;
+			case "d":
+				setFunction(displayIndex, "drag", false);
 				break;
 			case "l":
 			case "L":
@@ -3636,6 +3650,9 @@ function GrooveWriter() { "use strict";
 				break;
 			case constant_ABC_SN_Flam:
 				setFunction(displayIndex, "flam", false);
+				break;
+			case constant_ABC_SN_Drag:
+				setFunction(displayIndex, "drag", false);
 				break;
 			case constant_ABC_SN_XStick:
 				setFunction(displayIndex, "xstick", false);
@@ -4262,6 +4279,29 @@ function GrooveWriter() { "use strict";
 								'		<path class="flam_stroke" d="m50.5 58.34c2.9 3 11.6 3 14.5 0M69.5 53.34v-21"></path><use x="66.00" y="53.34" xlink:href="#flam_hd"></use>' +
 								'	</g>' +
 								'</svg>' +
+							'</i></div>' +
+							'<div class="snare_drag note_part" id="snare_drag' + i + '"><i class="fa ">' +
+							'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="30" height="30">' +
+							'	<style type="text/css">' +
+							'		.drag_fill {fill: currentColor}' +
+							'		.drag_stroke {stroke: currentColor; fill: none; stroke-width: .7}' +
+							'	</style>' +
+							'	<defs>' +
+							'		<path id="drag_ghd" class="drag_fill" d="m1.7-1c-1-1.7-4.5 0.2-3.4 2 1 1.7 4.5-0.2 3.4-2"></path>' +
+							'		<ellipse id="drag_hd" rx="4.1" ry="2.9" transform="rotate(-20)" class="drag_fill"></ellipse>' +
+							'	</defs>' +
+							'	<g id="note" transform="translate(-44 -35)">' +
+							'       <path class="fill" d="m51.81 38.34 l8.58 0.00v1.60l-8.58 0.00"></path>' +
+							'	    <path class="fill" d="m52.10 41.34 l8.00 0.00v1.60l-8.00 0.00"></path>' +
+							'		<path class="drag_stroke" d="m52.1 53.34v-15.00"></path>' +
+							'		<use x="50.50" y="53.34" xlink:href="#drag_ghd"></use>' +
+							'		<path class="drag_stroke" d="m49.50 49.34l8.00 -15.00"></path>' +
+							'		<path class="drag_stroke" d="m60.10 53.34v-15.00"></path>' +
+							'		<use x="58.50" y="53.34" xlink:href="#drag_ghd"></use>' +
+							'		<path class="drag_stroke" d="m50.5 58.34c2.9 3 11.6 3 14.5 0M69.5 53.34v-21"></path><use x="66.00" y="53.34" xlink:href="#drag_hd"></use>' +
+
+							'	</g>' +
+							'</svg>' +
 							'</i></div>' +
 							'<div class="snare_accent note_part" id="snare_accent' + i + '">' +
 							'  <i class="fa fa-chevron-right"></i>' +

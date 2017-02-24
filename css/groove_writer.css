@@ -463,6 +463,12 @@
 		color: transparent;
 		cursor: pointer;
 	}
+	.snare_drag {
+		position: absolute; top: 29px; left: -3px;
+		ont-size: 25px;
+		color: transparent;
+		cursor: pointer;
+	}
 	.snare_accent {
 		position: absolute; top: 0px; left: 10px;
 		font-size: 26px;
