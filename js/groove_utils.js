@@ -4,7 +4,7 @@
 // Author: Lou Montulli
 // Original Creation date: Feb 2015.
 //
-//  Copyright 2015-2016 Lou Montulli, Mike Johnston
+//  Copyright 2015-2017 Lou Montulli, Mike Johnston
 //
 //  This file is part of Project Groove Scribe.
 //
@@ -1297,20 +1297,28 @@ function GrooveUtils() {
 	// This function is for laying out the HTML
 	// see abc_gen_note_grouping_size for the sheet music layout grouping size
 	root.noteGroupingSize = function (notes_per_measure, timeSigTop, timeSigBottom) {
-		var note_grouping = 4;
+		var note_grouping;
 		var usingTriplets = root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom);
 
 		if(usingTriplets) {
-				// triplets  ( we only support 2/4 here )
-				if(timeSigTop != 2 && timeSigBottom != 4)
-					console.log("Triplets are only supported in 2/4 and 4/4 time");
-				note_grouping = notes_per_measure / (timeSigTop * (4/timeSigBottom));
-
+			// triplets  ( we only support 2/4 here )
+			if(timeSigTop != 2 && timeSigBottom != 4)
+				console.log("Triplets are only supported in 2/4 and 4/4 time");
+			note_grouping = notes_per_measure / (timeSigTop * (4/timeSigBottom));	
+		} else if(timeSigTop == 3) {
+			// 3/4, 3/8, 3/16
+			// 3 groups
+			// not triplets
+			note_grouping =  (notes_per_measure) / 3
+		} else if(timeSigTop % 6 == 0 && timeSigBottom % 8 == 0) {
+			// 6/8, 12/8
+			// 2 groups in 6/8 rather than 3 groups 
+			// 4 groups in 12/8
+			// not triplets
+			note_grouping = notes_per_measure / (2 * timeSigTop/6)
 		} else {
 			// figure it out from the time signature
-			// TODO: figure out what to do about timeSigBottom
 			// not triplets
-			//note_grouping = notes_per_measure / timeSigTop;
 			note_grouping = (notes_per_measure / timeSigTop) * (timeSigBottom/4);
 		}
 		return note_grouping;
@@ -1327,9 +1335,15 @@ function GrooveUtils() {
 		if (usingTriplets) {
 				note_grouping = 12;
 
+		} else if(timeSigTop == 3) {
+			// 3/4, 3/8, 3/16
+			note_grouping =  8 * (4/timeSigBottom)	
+		} else if(timeSigTop % 6 == 0 && timeSigBottom % 8 == 0) {
+			// 3/4, 6/8, 9/8, 12/8
+			note_grouping = 12 * (8/timeSigBottom);		
 		} else {
 			//note_grouping = 8 * (4/timeSigBottom);
-			note_grouping = 8;
+			note_grouping = 8 * (4/timeSigBottom);
 
 		}
 
@@ -1430,8 +1444,10 @@ function GrooveUtils() {
 		if(toms_array)
 			all_drum_array_of_array = all_drum_array_of_array.concat(toms_array);
 
+		// occationally we will change the sub_division output to 1/8th or 1/16th notes when we detect a beat that is better displayed that way
+		// By default we use the base sub_division but this can be set different below
+		var faker_sub_division = sub_division;
 		
-
 		for (var i = 0; i < num_notes; i++) {
 
 			// triplets are special.  We want to output a note or a rest for every space of time
@@ -1440,7 +1456,7 @@ function GrooveUtils() {
 			//  "4" for 1/8th note triplets
 			//  "2" for 1/16th note triplets
 			//  "1" for 1/32nd note triplets.
-			var end_of_group = 48/sub_division;
+			var end_of_group = 48/faker_sub_division;
 			var grouping_size_for_rests = end_of_group;
 			var skip_adding_more_notes = false;
 
@@ -1562,11 +1578,14 @@ function GrooveUtils() {
 								break;  // skip the rest, since we have an answer already
 						}
 						
-						var faker_sub_division = sub_division;
+						// reset
+						
 						if(can_fake_threes)
 							faker_sub_division = 12;
 						else if(can_fake_sixes)
 							faker_sub_division = 24;
+						else
+							faker_sub_division = sub_division;  // reset
 						
 						end_of_group = 48/faker_sub_division;
 						grouping_size_for_rests = end_of_group;

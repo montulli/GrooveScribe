@@ -7,7 +7,7 @@
 // Author: Lou Montulli
 // Original Creation date: Feb 2015.
 //
-//  Copyright 2015-2016 Lou Montulli, Mike Johnston
+//  Copyright 2015-2017 Lou Montulli, Mike Johnston
 //
 //  This file is part of Project Groove Scribe.
 //
