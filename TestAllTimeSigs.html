@@ -57,10 +57,13 @@
 				options += '&S=-';
 		
 				// Hihat
-				// leave it blank and GScribe will make all hi-hats on by default
+				num_notes = top_sig * (16/btm_sig)
+				hh_line = ''
+				for(var i=0; i < num_notes; i++)
+					hh_line += 'x'
+				options+= '&H=' + hh_line;	
 			
-				//GrooveDisplay.AddGrooveDisplayToPage(options, true, true);
-				//console.log(options)
+				console.log(options)
 				
 				window.GrooveDisplayUniqueCounter++;
 
