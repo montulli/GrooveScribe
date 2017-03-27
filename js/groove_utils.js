@@ -1343,8 +1343,7 @@ function GrooveUtils() {
 			note_grouping = 12 * (8/timeSigBottom);		
 		} else {
 			//note_grouping = 8 * (4/timeSigBottom);
-			note_grouping = 4 * (8/timeSigBottom);
-
+			note_grouping = 8;
 		}
 
 		return note_grouping;
