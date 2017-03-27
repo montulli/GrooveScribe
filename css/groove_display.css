@@ -2,7 +2,7 @@
 	/* this is for debugging layout issues - puts a read border around everything */
 	/* body * { border: 1px solid red; }		 */
 	body {
-		
+
 	}
 	.warnings {
 		font-family: monospace;
@@ -14,7 +14,7 @@
 	.nonPrintable {
 		display: block;
 	}
-	
+
 	/* there is another .svgTarget definitiion in groove_writer.css */
 	.svgTarget {
 		width: 100%;
@@ -25,26 +25,28 @@
 	}
 	.playerControl {
 		display: inline-block;
-		background-color: #2484c0;
+		background-color: #e6e6e6;
 		width: 100%;  /* expand to the surounding element */
 		font-family: 'Lato', sans-serif;
 		white-space: nowrap;
+		border-radius: 5px;
+		-webkit-border-radius: 5px;
+		-moz-border-radius: 5px;
 	}
 	.playerControl.large {
 		display: block;
 		width: calc(75% - 83px);
 		min-width: 450px;
-		border: 1px solid #009;
+		border: 1px solid #d5d5d5;
 		padding-left: 0px;
 		margin: 0px 0px 0px 0px;
 	}
 	.playerControl.small {
 		width: 90px;
-		border: 1px solid #009;
+		border: 1px solid #d5d5d5;
 		padding-left: 0px;
 	}
 	.playerControlsRow {
-		/border: 1px solid red;
 		display: flex;
 		display: -webkit-flex;
 		padding-left: 6px;
@@ -64,7 +66,7 @@
 		-webkit-flex: none;
 		margin: 4px 0px 4px 0px;
 		border: 0px solid #000;
-		color: #005483;
+		color: #aaa;
 		font-size: 20px;
 		font-family: FontAwesome;
 		text-align: center;
@@ -73,40 +75,45 @@
 		border-radius: 50%;
 	}
 	.midiPlayImage, .midiRepeatImage {
-		background: #68c2ff;
+		background: #aaa;
+		color: #fff;
 		margin: 4px 4px 4px 4px;
 	}
 	.midiPlayImage:hover, .midiRepeatImage:hover {
-		color: #68c2ff;
-		background: #005483;
+		color: #fff;
+		background: #aaa;
 	}
 	.midiExpandImage {
 		font-size: 26px;
 		transition: all .6s ease-in-out;
 	}
 	.midiExpandImage.small:hover {
-		color: #68c2ff;
+		color: #888;
 		transform: scale(1.4);
 	}
 	.midiExpandImage.large:hover {
-		color: #68c2ff;
+		color: #888;
 		transform: scale(.8);
 	}
-	.midiPlayImage.Stopped:before ,  .midiPlayImage.Paused:before   { 
-	 	letter-spacing: -3px; 
+	.midiPlayImage.Stopped::before ,  .midiPlayImage.Paused::before   {
+	 	letter-spacing: -3px;
+		font-family: 'FontAwesome';
 		content: "\f04b";
-	} 
-	.midiPlayImage.Playing:before  { 
-		content: "\f04c"; 
-	} 
-	.midiExpandImage.small:before   { 
-	 	letter-spacing: -3px; 
+	}
+	.midiPlayImage.Playing::before  {
+		font-family: 'FontAwesome';
+		content: "\f04c";
+	}
+	.midiExpandImage.small::before   {
+		font-family: 'FontAwesome';
+	 	letter-spacing: -3px;
 		content: "\f065";
-	} 
-	.midiExpandImage.large:before   { 
-	 	letter-spacing: -3px; 
+	}
+	.midiExpandImage.large::before   {
+		font-family: 'FontAwesome';
+	 	letter-spacing: -3px;
 		content: "\f066";
-	} 
+	}
 	.midiGSLogo {
 		padding-top: 6px;
 		width:  20px;
@@ -118,13 +125,13 @@
 		height: 30px;
 	}
 	.midiMetronomeImage path {
-	  fill: #005483;
+	  fill: #aaa;
 	}
 	.midiMetronomeImage:hover path {
-	  fill: #68c2ff;
+	  fill: #888;
 	}
 	.midiMetronomeMenu.selected .midiMetronomeImage path {
-	  fill: white;
+	  fill: #d78a02;
 	}
 	.tempoAndProgress {
 		padding-top: 2px;
@@ -137,7 +144,6 @@
 		display: none;
 	}
 	.tempoRow, .swingRow {
-		/border: 1px solid red;
 		display: flex;
 		display: -webkit-flex;
 		height: 22px;
@@ -147,7 +153,7 @@
 		-webkit-flex-wrap: nowrap;
 	}
 	.tempoInput, .swingInput {
-		background-color: 3f91e5;
+		background-color: none;
 		padding: 0px;
 		margin-top: 4px;
 		margin-right: 2%;
@@ -164,14 +170,14 @@
 		padding-top: 0px;
 		font-size: 16px;
 		width: 60px;
-		color: #66c0fe;
+		color: #888;
 	}
 	.tempoOutput, .swingOutput {
 		display: inline-block;
 		text-align: left;
 		padding-top: 0px;
 		font-size: 16px;
-		color: #0cdef9;
+		color: #999;
 		padding-left: 8px;
 		width: 34px;
 		flex: none;
@@ -203,7 +209,7 @@
 	.MIDIPlayTime {
 		display: inline-block;
 		width: 100px;
-		color: #66c0fe;
+		color: #999;
 		font-size: 30px;
 		margin-left: 6px;
 		padding-top: 4px;
@@ -226,37 +232,37 @@
 	.MIDIProgress.large {
 		margin-top: 3px;
 	}
-	
+
 	#ABCSource {
-		font-family: monospace; 
+		font-family: monospace;
 		font-size: 14px;
 	}
-	
+
 	button {
 		cursor: pointer;
 	}
-	
+
 	.abcr {  /* rectangles enclosing notes in ABC SVG */
-		fill: transparent; 
+		fill: transparent;
 		fill-opactity: 0.25;
 	}
 	.abcr.highlighted {
-		fill:#990000 !important; 
+		fill:#990000 !important;
 		fill-opacity: 0.25;
 	}
- 	
+
 input[type=range] {
   -webkit-appearance: none;
   width: 100%;
-  background-color: #2484c0;
+  background-color: #e6e6e6;
 }
 input[type=range]:before {
   /* set this color for the runnable-track left of the thumb color */
-  color: #49b4f8;
+  color: #bbb;
 }
 input[type=range]:after {
   /* set this color for the runnable-track right of the thumb color */
-  color: #005789;
+  color: #888;
 }
 input[type=range]:focus {
   outline: none;
@@ -265,37 +271,37 @@ input[type=range]::-webkit-slider-runnable-track {
   width: 100%;
   height: 8.4px;
   cursor: pointer;
-  background: #005789;
+  background: #888;
   border-radius: 6px;
   border: 0px solid #010101;
 }
 input[type=range]::-webkit-slider-thumb {
-  border: 1px solid #005789;
+  border: 1px solid #666;
   height: 18px;
   width: 18px;
   border-radius: 20px;
-  background: #49b4f8;
+  background: #eee;
   cursor: pointer;
   -webkit-appearance: none;
   margin-top: -6px;
 }
 input[type=range]:focus::-webkit-slider-runnable-track {
-  background: #0067a3;
+  background: #888;
 }
 input[type=range]::-moz-range-track {
   width: 100%;
   height: 8.4px;
   cursor: pointer;
-  background: #005789;
+  background: #888;
   border-radius: 6px;
   border: 0px solid #010101;
 }
 input[type=range]::-moz-range-thumb {
-  border: 1px solid #005789;
+  border: 1px solid #666;
   height: 18px;
   width: 18px;
   border-radius: 20px;
-  background: #49b4f8;
+  background: #eee;
   cursor: pointer;
 }
 input[type=range]::-ms-track {
@@ -307,21 +313,21 @@ input[type=range]::-ms-track {
   color: transparent;
 }
 input[type=range]::-ms-fill-lower {
-  background: #49b4f8;
+  background: #e6e6e6;
   border: 0px solid #010101;
   border-radius: 2.6px;
 }
 input[type=range]::-ms-fill-upper {
-  background: #005789;
+  background: #e6e6e6;
   border: 0px solid #010101;
   border-radius: 6px;
 }
 input[type=range]::-ms-thumb {
-  border: 1px solid #005789;
+  border: 1px solid #666;
   height: 18px;
   width: 18px;
   border-radius: 20px;
-  background: #49b4f8;
+  background: #eee;
   cursor: pointer;
 }
 input[type=range]:active::-moz-range-thumb {
@@ -335,7 +341,7 @@ input[type=range]:active::-webkit-slider-thumb {
 	body {margin:0; padding:0; border:0; background-color: transparent}
 	div.newpage {page-break-before: always}
 	div.nobrk {page-break-inside: avoid}
-	
+
 	.nonPrintable {
 		display: none !important;
 	}
