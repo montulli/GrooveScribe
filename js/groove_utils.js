@@ -1348,6 +1348,16 @@ function GrooveUtils() {
 
 		return note_grouping;
 	}
+	
+	root.notesPerMeasureInFullSizeArray = function (is_triplet_division, timeSigTop, timeSigBottom) {
+		// a full measure will be defined as 8 * timeSigTop.   (4 = 32, 5 = 40, 6 = 48, etc.)
+		// that implies 32nd notes in quarter note beats
+		// TODO: should we support triplets here?
+		if (is_triplet_division)
+			return 48 * (timeSigTop/timeSigBottom);
+		else
+			return 32 * (timeSigTop/timeSigBottom);
+	}
 
 	// since note values are 16ths or 12ths this corrects for that by multiplying note values
 	// timeSigTop is the top number in a time signature (4/4, 5/4, 6/8, 7/4, etc)
@@ -1358,13 +1368,10 @@ function GrooveUtils() {
 			console.log("Error in getNoteScaler, out of range: " + timeSigTop);
 			scaler = 1;
 		} else {
-			// a full measure will be defined as 8 * timeSigTop.   (4 = 32, 5 = 40, 6 = 48, etc.)
-			// that implies 32nd notes in quarter note beats
-			// TODO: should we support triplets here?
 			if (root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom))
-				scaler = Math.ceil(((48/timeSigBottom) * timeSigTop) / notes_per_measure);
+				scaler = Math.ceil(root.notesPerMeasureInFullSizeArray(true, timeSigTop, timeSigBottom) / notes_per_measure);
 			else
-				scaler = Math.ceil(((32/timeSigBottom) * timeSigTop) / notes_per_measure);
+				scaler = Math.ceil(root.notesPerMeasureInFullSizeArray(false, timeSigTop, timeSigBottom) / notes_per_measure);
 		}
 
 		return scaler;
@@ -1913,7 +1920,7 @@ function GrooveUtils() {
 			"|\n",
 			FullNoteHHArray.length,
 			myGrooveData.timeDivision,
-			is_triplet_division ? 48 : 32,   // notes_per_measure, We scaled up to 48/32 above
+			root.notesPerMeasureInFullSizeArray(is_triplet_division, myGrooveData.numBeats, myGrooveData.noteValue), // notes_per_measure, We scaled up to 48/32 above
 			myGrooveData.kickStemsUp,
 			myGrooveData.numBeats,
 			myGrooveData.noteValue);
