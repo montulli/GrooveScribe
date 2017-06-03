@@ -874,14 +874,14 @@ function GrooveWriter() { "use strict";
 			y : yVal
 		};
 	}
-	
+
 	// called every time the tempo changes, which can be a lot of times due to the range slider
 	// update the main URL with the tempo, but only do it every third of a second at the most
 	var global_tempoChangeCallbackTimeout = null;
 	root.tempoChangeCallback = function(newTempo) {
-		
+
 		// if there is a timeout running clear it
-		if(global_tempoChangeCallbackTimeout != null) 
+		if(global_tempoChangeCallbackTimeout != null)
 			window.clearTimeout(global_tempoChangeCallbackTimeout);
 
 		// set a new timeout
@@ -891,7 +891,7 @@ function GrooveWriter() { "use strict";
 					root.updateCurrentURL();
 				}, 300);
 	}
-	
+
 
 	root.setMetronomeButton = function (metronomeInterval) {
 
@@ -1795,261 +1795,186 @@ function GrooveWriter() { "use strict";
 	// 16th note permutation array expressed in 32nd notes
 	// all kicks are included, including the ones that start the measure
 	function get_kick16th_strait_permutation_array(section) {
-		var kick_array;
-
-		switch (section) {
-		case 0:
-			kick_array = [false, false, false, false, false, false, false, false,
-				false, false, false, false, false, false, false, false,
-				false, false, false, false, false, false, false, false,
-				false, false, false, false, false, false, false, false];
-			break;
-		case 1:
-			kick_array = ["F", false, false, false, false, false, false, false,
-				"F", false, false, false, false, false, false, false,
-				"F", false, false, false, false, false, false, false,
-				"F", false, false, false, false, false, false, false];
-			break;
-		case 2:
-			kick_array = [false, false, "F", false, false, false, false, false,
-				false, false, "F", false, false, false, false, false,
-				false, false, "F", false, false, false, false, false,
-				false, false, "F", false, false, false, false, false];
-			break;
-		case 3:
-			kick_array = [false, false, false, false, "F", false, false, false,
-				false, false, false, false, "F", false, false, false,
-				false, false, false, false, "F", false, false, false,
-				false, false, false, false, "F", false, false, false];
-			break;
-		case 4:
-			kick_array = [false, false, false, false, false, false, "F", false,
-				false, false, false, false, false, false, "F", false,
-				false, false, false, false, false, false, "F", false,
-				false, false, false, false, false, false, "F", false];
-			break;
-		case 5:
-			kick_array = ["F", false, "F", false, false, false, false, false,
-				"F", false, "F", false, false, false, false, false,
-				"F", false, "F", false, false, false, false, false,
-				"F", false, "F", false, false, false, false, false];
-			break;
-		case 6:
-			kick_array = [false, false, "F", false, "F", false, false, false,
-				false, false, "F", false, "F", false, false, false,
-				false, false, "F", false, "F", false, false, false,
-				false, false, "F", false, "F", false, false, false];
-			break;
-		case 7:
-			kick_array = [false, false, false, false, "F", false, "F", false,
-				false, false, false, false, "F", false, "F", false,
-				false, false, false, false, "F", false, "F", false,
-				false, false, false, false, "F", false, "F", false];
-			break;
-		case 8:
-			kick_array = ["F", false, false, false, false, false, "F", false,
-				"F", false, false, false, false, false, "F", false,
-				"F", false, false, false, false, false, "F", false,
-				"F", false, false, false, false, false, "F", false];
-			break;
-		case 9: // downbeats
-			kick_array = ["F", false, false, false, "F", false, false, false,
-				"F", false, false, false, "F", false, false, false,
-				"F", false, false, false, "F", false, false, false,
-				"F", false, false, false, "F", false, false, false];
-			break;
-		case 10: // upbeats
-			kick_array = [false, false, "F", false, false, false, "F", false,
-				false, false, "F", false, false, false, "F", false,
-				false, false, "F", false, false, false, "F", false,
-				false, false, "F", false, false, false, "F", false];
-			break;
-		case 11:
-			kick_array = ["F", false, "F", false, "F", false, false, false,
-				"F", false, "F", false, "F", false, false, false,
-				"F", false, "F", false, "F", false, false, false,
-				"F", false, "F", false, "F", false, false, false];
-			break;
-		case 12:
-			kick_array = [false, false, "F", false, "F", false, "F", false,
-				false, false, "F", false, "F", false, "F", false,
-				false, false, "F", false, "F", false, "F", false,
-				false, false, "F", false, "F", false, "F", false];
-			break;
-		case 13:
-			kick_array = ["F", false, false, false, "F", false, "F", false,
-				"F", false, false, false, "F", false, "F", false,
-				"F", false, false, false, "F", false, "F", false,
-				"F", false, false, false, "F", false, "F", false];
-			break;
-		case 14:
-			kick_array = ["F", false, "F", false, false, false, "F", false,
-				"F", false, "F", false, false, false, "F", false,
-				"F", false, "F", false, false, false, "F", false,
-				"F", false, "F", false, false, false, "F", false];
-			break;
-		case 15:
-			/* falls through */
-		default:
-			kick_array = ["F", false, "F", false, "F", false, "F", false,
-				"F", false, "F", false, "F", false, "F", false,
-				"F", false, "F", false, "F", false, "F", false,
-				"F", false, "F", false, "F", false, "F", false];
-			break;
+    var kick_array = [];
+    for(var index=0; index < 32; index++) {
+      switch (section) {
+        case 0:
+          // no notes on
+          kick_array.push(false);
+          break;
+        case 1:
+          // every 0th note of 8
+          kick_array.push((index % 8) ? false : 'F');
+          break;
+        case 2:
+          // every 2nd note of 8
+          kick_array.push(((index-2) % 8) ? false : 'F');
+          break;
+        case 3:
+          // every 4nd note of 8
+          kick_array.push(((index-4) % 8) ? false : 'F');
+          break;
+        case 4:
+          // every 6nd note of 8
+          kick_array.push(((index-6) % 8) ? false : 'F');
+          break;
+        case 5:
+          // every 0th and 2nd
+          if((index % 8) == 0)
+            kick_array.push('F');
+          else if(((index-2) % 8) == 0)
+            kick_array.push('F');
+          else
+            kick_array.push(false);
+          break;
+        case 6:
+          // every 2nd & 4th
+          if(((index-2) % 8) == 0)
+            kick_array.push('F');
+          else if(((index-4) % 8) == 0)
+            kick_array.push('F');
+          else
+            kick_array.push(false);
+          break;
+        case 7:
+          // every 4th & 6th
+          if(((index-4) % 8) == 0)
+            kick_array.push('F');
+          else if(((index-6) % 8) == 0)
+            kick_array.push('F');
+          else
+            kick_array.push(false);
+          break;
+        case 8:
+          // every 0th & 6th
+          if(((index-0) % 8) == 0)
+            kick_array.push('F');
+          else if(((index-6) % 8) == 0)
+            kick_array.push('F');
+          else
+            kick_array.push(false);
+          break;
+        case 9: // downbeats
+          // every 0th note of 4
+          kick_array.push((index % 4) ? false : 'F');
+          break;
+				case 10: // upbeats
+          // every 2nd note of 4
+          kick_array.push(((index-2) % 4) ? false : 'F');
+          break;
+				case 11:
+					return kick_array = ["F", false, "F", false, "F", false, false, false,
+						"F", false, "F", false, "F", false, false, false,
+						"F", false, "F", false, "F", false, false, false,
+						"F", false, "F", false, "F", false, false, false];
+					break;
+				case 12:
+          return kick_array = [false, false, "F", false, "F", false, "F", false,
+						false, false, "F", false, "F", false, "F", false,
+						false, false, "F", false, "F", false, "F", false,
+						false, false, "F", false, "F", false, "F", false];
+					break;
+				case 13:
+          return kick_array = ["F", false, false, false, "F", false, "F", false,
+						"F", false, false, false, "F", false, "F", false,
+						"F", false, false, false, "F", false, "F", false,
+						"F", false, false, false, "F", false, "F", false];
+					break;
+				case 14:
+          return kick_array = ["F", false, "F", false, false, false, "F", false,
+						"F", false, "F", false, false, false, "F", false,
+						"F", false, "F", false, false, false, "F", false,
+						"F", false, "F", false, false, false, "F", false];
+					break;
+				case 15:
+					/* falls through */
+				default:
+          // every 0th note of 2  (quads)
+          kick_array.push((index % 2) ? false : 'F');
+          break;
+				break;
+			}
 		}
 
+		console.log(kick_array)
 		return kick_array;
 	}
 
-	// 24 note triplet kick permutation expressed in 16th notes
-	function get_kick16th_triplets_permutation_array_for_16ths(section) {
-		var kick_array;
+	// 48th note triplet kick permutation
+	function get_kick16th_triplets_permutation_array(section) {
+		var kick_array = [];
+    for(var index=0; index < 48; index++) {
 
-		switch (section) {
-		case 0:
-			kick_array = [false, false, false, false, false, false,
-				false, false, false, false, false, false,
-				false, false, false, false, false, false,
-				false, false, false, false, false, false];
-			break;
-		case 1:
-			kick_array = ["F", false, false, false, false, false,
-				"F", false, false, false, false, false,
-				"F", false, false, false, false, false,
-				"F", false, false, false, false, false];
-			break;
-		case 2:
-			kick_array = [false, false, "F", false, false, false,
-				false, false, "F", false, false, false,
-				false, false, "F", false, false, false,
-				false, false, "F", false, false, false];
-			break;
-		case 3:
-			kick_array = [false, false, false, false, "F", false,
-				false, false, false, false, "F", false,
-				false, false, false, false, "F", false,
-				false, false, false, false, "F", false];
-			break;
-		case 5:
-			kick_array = ["F", false, "F", false, false, false,
-				"F", false, "F", false, false, false,
-				"F", false, "F", false, false, false,
-				"F", false, "F", false, false, false];
-			break;
-		case 6:
-			kick_array = [false, false, "F", false, "F", false,
-				false, false, "F", false, "F", false,
-				false, false, "F", false, "F", false,
-				false, false, "F", false, "F", false];
-			break;
-		case 7:
-			kick_array = ["F", false, false, false, "F", false,
-				"F", false, false, false, "F", false,
-				"F", false, false, false, "F", false,
-				"F", false, false, false, "F", false];
-			break;
+      switch (section) {
+        case 0:
+          // no notes on
+          kick_array.push(false);
+          break;
+        case 1:
+          // every 0th note of 12
+          kick_array.push((index % 12) ? false : 'F');
+          break;
+        case 2:
+          // every 4th note of 12
+          kick_array.push(((index-4) % 12) ? false : 'F');
+          break;
+        case 3:
+          // every 8th note of 12
+          kick_array.push(((index-8) % 12) ? false : 'F');
+          break;
 
-			// these cases should not be called
-		case 4: // 4th single
-		case 8: // 4th double
-		case 9: // 1st up/down
-		case 10: // 2nd up/down
-		case 12: // 2nd triplet
-		case 13: // 3nd triplet
-		case 14: // 4nd triplet
-		case 15: // 1st Quad
-			console.log("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
-			break;
+        case 5:
+          // every 0th and 4th
+          if((index % 12) == 0)
+            kick_array.push('F');
+          else if(((index-4) % 12) == 0)
+            kick_array.push('F');
+          else
+            kick_array.push(false);
+          break;
+        case 6:
+          // every 4th && 8th
+          if(((index-4) % 12) == 0)
+            kick_array.push('F');
+          else if(((index-8) % 12) == 0)
+            kick_array.push('F');
+          else
+            kick_array.push(false);
+          break;
+        case 7:
+          // every 0th and 8th
+          if((index % 12) == 0)
+            kick_array.push('F');
+          else if(((index-8) % 12) == 0)
+            kick_array.push('F');
+          else
+            kick_array.push(false);
+          break;
 
-		case 11: // first triplet
-			/* falls through */
-		default:
-			// use default
-			break;
-		}
-		// default;
-		if (!kick_array)
-			kick_array = ["F", false, "F", false, "F", false,
-				"F", false, "F", false, "F", false,
-				"F", false, "F", false, "F", false,
-				"F", false, "F", false, "F", false];
+          // these cases should not be called
+        case 4: // 4th single
+        case 8: // 4th double
+        case 9: // 1st up/down
+        case 10: // 2nd up/down
+        case 12: // 2nd triplet
+        case 13: // 3nd triplet
+        case 14: // 4nd triplet
+        case 15: // 1st Quad
+          console.log("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
+          break;
 
-		return kick_array;
-	}
-
-	// 12th note triplet kick permutation expressed in 8th notes
-	function get_kick16th_triplets_permutation_array_for_8ths(section) {
-		var kick_array;
-
-		switch (section) {
-		case 0:
-			kick_array = [false, false, false, false, false, false,
-				false, false, false, false, false, false,
-				false, false, false, false, false, false,
-				false, false, false, false, false, false];
-			break;
-		case 1:
-			kick_array = ["F", false, false, false, false, false,
-				"F", false, false, false, false, false,
-				"F", false, false, false, false, false,
-				"F", false, false, false, false, false];
-			break;
-		case 2:
-			kick_array = [false, false, "F", false, false, false,
-				false, false, "F", false, false, false,
-				false, false, "F", false, false, false,
-				false, false, "F", false, false, false];
-			break;
-		case 3:
-			kick_array = [false, false, false, false, "F", false,
-				false, false, false, false, "F", false,
-				false, false, false, false, "F", false,
-				false, false, false, false, "F", false];
-			break;
-		case 5:
-			kick_array = ["F", false, "F", false, false, false,
-				"F", false, "F", false, false, false,
-				"F", false, "F", false, false, false,
-				"F", false, "F", false, false, false];
-			break;
-		case 6:
-			kick_array = [false, false, "F", false, "F", false,
-				false, false, "F", false, "F", false,
-				false, false, "F", false, "F", false,
-				false, false, "F", false, "F", false];
-			break;
-		case 7:
-			kick_array = ["F", false, false, false, "F", false,
-				"F", false, false, false, "F", false,
-				"F", false, false, false, "F", false,
-				"F", false, false, false, "F", false];
-			break;
-
-			// these cases should not be called
-		case 4: // 4th single
-		case 8: // 4th double
-		case 9: // 1st up/down
-		case 10: // 2nd up/down
-		case 12: // 2nd triplet
-		case 13: // 3nd triplet
-		case 14: // 4nd triplet
-		case 15: // 1st Quad
-			console.log("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
-			break;
-
-		case 11: // first triplet
-			/* falls through */
-		default:
-			// use default
-			break;
-		}
-
-		// default;
-		if (!kick_array)
-			kick_array = ["F", false, "F", false, "F", false,
-				"F", false, "F", false, "F", false,
-				"F", false, "F", false, "F", false,
-				"F", false, "F", false, "F", false];
+        case 11: // first triplet
+					/* falls through */
+        default:
+          // use default
+          // every 4th note
+          if(index % 4 == 0)
+            kick_array.push("F");
+          else
+            kick_array.push(false);
+          break;
+      }
+    }
 		return kick_array;
 	}
 
@@ -2084,22 +2009,18 @@ function GrooveWriter() { "use strict";
 
 
 	function get_kick16th_permutation_array(section) {
-		if (usingTriplets()) {
-			if (class_notes_per_measure == 12)
-				return get_kick16th_triplets_permutation_array_for_8ths(section);
-			else if (class_notes_per_measure == 24)
-				return get_kick16th_triplets_permutation_array_for_16ths(section);
-			else if (class_notes_per_measure == 48)
-				return get_kick16th_triplets_permutation_array_for_32nds(section);
-			else
-				return get_empty_note_array_in_32nds();
+    console.log("get_kick16th_permutation_array");
+    console.log("class_notes_per_measure: " + class_notes_per_measure);
+    if (usingTriplets()) {
+      return get_kick16th_triplets_permutation_array(section);
 		}
 
 		return get_kick16th_strait_permutation_array(section);
 	}
 
 	function get_kick16th_permutation_array_minus_some(section) {
-		if (usingTriplets()) {
+    console.log("get_kick16th_permutation_array_minus_some");
+    if (usingTriplets()) {
 			// triplets never skip any: delegate
 			return get_kick16th_permutation_array(section);
 		}
@@ -3322,7 +3243,7 @@ function GrooveWriter() { "use strict";
 				window.scrollTo(0, 1);
 			}, 1000);
 		}
-		
+
 		// get updates when the tempo changes
 		root.myGrooveUtils.tempoChangeCallback = root.tempoChangeCallback
 	};
@@ -4084,7 +4005,7 @@ function GrooveWriter() { "use strict";
 			have_shown_mixed_division_message = true;
 			alert("The MIXED subdivision allows you to create a combination of triplets and non-triplet notes in one measure.  Set every 3rd note for 16ths and every 6th note for 8th notes")
 		}
-		
+
 		var isNewDivisionTriplets = root.myGrooveUtils.isTripletDivision(newDivision);
 		var new_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure((isNewDivisionTriplets ? 48 : 32), class_num_beats_per_measure, class_note_value_per_measure);
 
