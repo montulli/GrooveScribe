@@ -350,7 +350,7 @@ function GrooveUtils() {
   };
 
   root.getMetronomeOptionsOffsetClickStartRotation = function (isTriplets) {
-    if(root.getMetronomeOffsetClickStartIsRotating) {
+    if(root.getMetronomeOffsetClickStartIsRotating()) {
 			// constrain the rotation
       if(isTriplets && root.metronomeOffsetClickStartRotation > 2)
 				root.metronomeOffsetClickStartRotation = 0;
