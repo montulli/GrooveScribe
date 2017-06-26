@@ -129,7 +129,9 @@ function GrooveUtils() {
 
 	// metronome options
 	root.metronomeSolo = false;
-	root.metronomeClickStart = "1";
+	root.metronomeOffsetClickStart = "1";
+  // start with last in the rotation so the next rotation brings it to '1'
+	root.metronomeOffsetClickStartRotation = 0;
 
 	root.isLegendVisable = false;
 
@@ -323,12 +325,62 @@ function GrooveUtils() {
 		root.metronomeSolo = trueElseFalse;
 	};
 
-	root.getMetronomeClickStart = function () {
-		return root.metronomeClickStart;
+	root.getMetronomeOffsetClickStart = function () {
+		return root.metronomeOffsetClickStart;
 	};
 
-	root.setMetronomeClickStart = function (value) {
-		root.metronomeClickStart = value;
+  root.getMetronomeOffsetClickStartIsRotating = function () {
+    return root.metronomeOffsetClickStart == 'ROTATE';
+  };
+
+	root.setMetronomeOffsetClickStart = function (value) {
+		root.metronomeOffsetClickStart = value;
+	};
+
+	// if the Metronome offset click start is set to rotate this
+	// will advance the position of the rotation and return TRUE
+	// returns FALSE if rotation is OFF
+  root.advanceMetronomeOptionsOffsetClickStartRotation = function (isTriplets) {
+  	if(root.getMetronomeOffsetClickStartIsRotating) {
+      root.metronomeOffsetClickStartRotation++;
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  root.getMetronomeOptionsOffsetClickStartRotation = function (isTriplets) {
+    if(root.getMetronomeOffsetClickStartIsRotating) {
+			// constrain the rotation
+      if(isTriplets && root.metronomeOffsetClickStartRotation > 2)
+				root.metronomeOffsetClickStartRotation = 0;
+      else if(root.metronomeOffsetClickStartRotation > 3)
+        root.metronomeOffsetClickStartRotation = 0;
+
+      switch(root.metronomeOffsetClickStartRotation) {
+        case 0:
+          return '1';
+        case 1:
+          if (isTriplets)
+            return 'TI';
+          else
+            return 'E';
+        case 2:
+          if (isTriplets)
+            return 'TA';
+          else
+            return 'AND';
+        case 3:
+          return 'A';
+      }
+		} else {
+			return root.metronomeOffsetClickStart
+		}
+	};
+
+  root.resetMetronomeOptionsOffsetClickStartRotation = function (value) {
+  	// start with last in the rotation so the next rotation brings it to '1'
+    return root.metronomeOffsetClickStartRotation = 0;
 	};
 
 	// build a string that looks like this
@@ -1304,7 +1356,7 @@ function GrooveUtils() {
 			// triplets  ( we only support 2/4 here )
 			if(timeSigTop != 2 && timeSigBottom != 4)
 				console.log("Triplets are only supported in 2/4 and 4/4 time");
-			note_grouping = notes_per_measure / (timeSigTop * (4/timeSigBottom));	
+			note_grouping = notes_per_measure / (timeSigTop * (4/timeSigBottom));
 		} else if(timeSigTop == 3) {
 			// 3/4, 3/8, 3/16
 			// 3 groups
@@ -1312,7 +1364,7 @@ function GrooveUtils() {
 			note_grouping =  (notes_per_measure) / 3
 		} else if(timeSigTop % 6 == 0 && timeSigBottom % 8 == 0) {
 			// 6/8, 12/8
-			// 2 groups in 6/8 rather than 3 groups 
+			// 2 groups in 6/8 rather than 3 groups
 			// 4 groups in 12/8
 			// not triplets
 			note_grouping = notes_per_measure / (2 * timeSigTop/6)
@@ -1337,10 +1389,10 @@ function GrooveUtils() {
 
 		} else if(timeSigTop == 3) {
 			// 3/4, 3/8, 3/16
-			note_grouping =  8 * (4/timeSigBottom)	
+			note_grouping =  8 * (4/timeSigBottom)
 		} else if(timeSigTop % 6 == 0 && timeSigBottom % 8 == 0) {
 			// 3/4, 6/8, 9/8, 12/8
-			note_grouping = 12 * (8/timeSigBottom);		
+			note_grouping = 12 * (8/timeSigBottom);
 		} else {
 			//note_grouping = 8 * (4/timeSigBottom);
 			note_grouping = 8;
@@ -1348,7 +1400,7 @@ function GrooveUtils() {
 
 		return note_grouping;
 	}
-	
+
 	root.notesPerMeasureInFullSizeArray = function (is_triplet_division, timeSigTop, timeSigBottom) {
 		// a full measure will be defined as 8 * timeSigTop.   (4 = 32, 5 = 40, 6 = 48, etc.)
 		// that implies 32nd notes in quarter note beats
@@ -1436,7 +1488,7 @@ function GrooveUtils() {
 		var hh_snare_voice_string = "V:Hands stem=up\n%%voicemap drum\n";
 		var kick_voice_string = "V:Feet stem=down\n%%voicemap drum\n";
 		var all_drum_array_of_array;
-		
+
 		// console.log(HH_array);
 		// console.log(kick_array);
 		// console.log(notes_per_measure);
@@ -1453,7 +1505,7 @@ function GrooveUtils() {
 		// occationally we will change the sub_division output to 1/8th or 1/16th notes when we detect a beat that is better displayed that way
 		// By default we use the base sub_division but this can be set different below
 		var faker_sub_division = sub_division;
-		
+
 		for (var i = 0; i < num_notes; i++) {
 
 			// triplets are special.  We want to output a note or a rest for every space of time
@@ -1472,7 +1524,7 @@ function GrooveUtils() {
 			}
 
 			if (i % abc_gen_note_grouping_size(true, timeSigTop, timeSigBottom) === 0) {
-				
+
 				// Look for some special cases that will format beats as non triplet groups.   Quarter notes, 1/8th and 1/16th notes only.
 
 				// look for a whole beat of rests
@@ -1560,11 +1612,11 @@ function GrooveUtils() {
 
 					skip_adding_more_notes = true;
 					i += 11;  // skip past to the next beat
-	
+
 				} else {
 					// the normal case.   We tell ABC that we are using a triplet
 					var notes_in_triplet_group = sub_division / 4;    // 4 beats
-					
+
 					// look through the notes and see if we should "fake" 1/8 or 1/6th note triplets
 					// If the groove can be expressed in "3" or "6" groups it is way easier to read than in a higher "12" group with rests
 					// "3" looks like "x---x---x---"   one note and three rests
@@ -1583,22 +1635,22 @@ function GrooveUtils() {
 							if(can_fake_threes == false && can_fake_sixes == false)
 								break;  // skip the rest, since we have an answer already
 						}
-						
+
 						// reset
-						
+
 						if(can_fake_threes)
 							faker_sub_division = 12;
 						else if(can_fake_sixes)
 							faker_sub_division = 24;
 						else
 							faker_sub_division = sub_division;  // reset
-						
+
 						end_of_group = 48/faker_sub_division;
 						grouping_size_for_rests = end_of_group;
 						notes_in_triplet_group = faker_sub_division / 4;    // 4 beats
 					}
-					
-					
+
+
 					// creates the 3, 6 or 12 over the note grouping
 					// looks like (3:3:3 or (6:6:6 or (12:12:12
 					hh_snare_voice_string += "(" + notes_in_triplet_group +	":" + notes_in_triplet_group + ":" + notes_in_triplet_group;
@@ -1825,7 +1877,7 @@ function GrooveUtils() {
 					new_state = "&";
 				else
 					new_state = "a";
-				break;	
+				break;
 			case 16:
 			case 32:  // fall through
 			default:
@@ -1898,7 +1950,7 @@ function GrooveUtils() {
 		for(var i = 0; i < constant_NUMBER_OF_TOMS; i++) {
 			FullNoteTomsArray[i] = root.scaleNoteArrayToFullSize(myGrooveData.toms_array[i], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		}
-		
+
 		var is_triplet_division = root.isTripletDivisionFromNotesPerMeasure(myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 
 		var fullABC = root.get_top_ABC_BoilerPlate(false,
@@ -1930,8 +1982,8 @@ function GrooveUtils() {
 				FullNoteKickArray,
 				FullNoteTomsArray,
 				FullNoteHHArray.length);
-				
-		// console.log(fullABC);		
+
+		// console.log(fullABC);
 		return fullABC;
 	};
 
@@ -2254,8 +2306,9 @@ function GrooveUtils() {
 			midiTrack.addNoteOff(midi_channel, 60, 1); // add a blank note for spacing
 		}
 
-		var isTriplets = root.isTripletDivisionFromNotesPerMeasure(num_notes, timeSigTop, timeSigBottom);
-		var delay_for_next_note = 0;
+    var isTriplets = root.isTripletDivisionFromNotesPerMeasure(num_notes, timeSigTop, timeSigBottom);
+    var offsetClickStartBeat = root.getMetronomeOptionsOffsetClickStartRotation(isTriplets);
+    var delay_for_next_note = 0;
 
 		for (var i = 0; i < num_notes; i++) {
 
@@ -2299,37 +2352,37 @@ function GrooveUtils() {
 				var sixteenthNoteFrequency = (isTriplets ? 2 : 2);
 
 				var metronome_specific_index = i;
-				switch (root.getMetronomeClickStart()) {
+				switch (offsetClickStartBeat) {
 				case "1":
 					// default do nothing
 					break;
 				case "E":
 					if (isTriplets)
-						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						console.log("OffsetClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by one sixteenth note
 					metronome_specific_index -= sixteenthNoteFrequency;
 					break;
 				case "AND":
 					if (isTriplets)
-						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						console.log("OffsetClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by two sixteenth notes
 					metronome_specific_index -= (2 * sixteenthNoteFrequency);
 					break;
 				case "A":
 					if (isTriplets)
-						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						console.log("OffsetClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by three sixteenth notes
 					metronome_specific_index -= (3 * sixteenthNoteFrequency);
 					break;
 				case "TI":
 					if (!isTriplets)
-						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						console.log("OffsetClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by one sixteenth note
 					metronome_specific_index -= sixteenthNoteFrequency * 2;
 					break;
 				case "TA":
 					if (!isTriplets)
-						console.log("ClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
+						console.log("OffsetClickStart error in MIDI_from_HH_Snare_Kick_Arrays");
 					// shift by two sixteenth notes
 					metronome_specific_index -= (2 * (sixteenthNoteFrequency * 2));
 					break;
@@ -2338,7 +2391,7 @@ function GrooveUtils() {
 					break;
 				}
 
-				if (metronome_specific_index >= 0) { // can go negative due to MetronomeClickStart shift above
+				if (metronome_specific_index >= 0) { // can go negative due to MetronomeOffsetClickStart shift above
 					// Special sound on the one
 					if (metronome_specific_index === 0 || (metronome_specific_index % (quarterNoteFrequency * timeSigTop * (4/timeSigBottom))) === 0) {
 						metronome_note = constant_OUR_MIDI_METRONOME_1; // 1 count
@@ -2662,6 +2715,7 @@ function GrooveUtils() {
 			root.midiEventCallbacks.stopEvent(root.midiEventCallbacks.classRoot);
 			root.midiEventCallbacks.notePlaying(root.midiEventCallbacks.classRoot, "clear", -1);
 			root.clearHighlightNoteInABCSVG();
+			root.resetMetronomeOptionsOffsetClickStartRotation()
 		}
 	};
 
@@ -2788,7 +2842,9 @@ function GrooveUtils() {
 
 				global_total_midi_repeats++;
 
-				if (root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot)) {
+				// regenerate the MIDI if the data needs refreshing or the OffsetClick is rotating every time
+				// advanceMetronomeOptionsOffsetClickStartRotation will return false if not rotating
+				if (root.advanceMetronomeOptionsOffsetClickStartRotation() || root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot)) {
 					MIDI.Player.stop();
 					root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot, false);
 					MIDI.Player.start();
@@ -3043,7 +3099,7 @@ function GrooveUtils() {
 
 		var win = window.open(fullURL, '_blank');
 		win.focus();
-	}
+	};
 
 
 	// turn the metronome on and off
@@ -3055,7 +3111,7 @@ function GrooveUtils() {
 
 		root.setMetronomeFrequencyDisplay(root.myGrooveData.metronomeFrequency);
 		root.midiNoteHasChanged();
-	}
+	};
 
 	root.expandOrRetractMIDI_playback = function (force, expandElseContract) {
 

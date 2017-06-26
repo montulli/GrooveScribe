@@ -1018,7 +1018,7 @@ function GrooveWriter() { "use strict";
 
 		if (root.myGrooveUtils.getMetronomeSolo() ||
 			class_metronome_auto_speed_up_active ||
-			root.myGrooveUtils.getMetronomeClickStart() != "1") {
+			root.myGrooveUtils.getMetronomeOffsetClickStart() != "1") {
 			// make menu look active
 			addOrRemoveKeywordFromClassById("metronomeOptionsAnchor", "selected", true)
 		} else {
@@ -1103,7 +1103,7 @@ function GrooveWriter() { "use strict";
 
 	root.metronomeOptionsMenuOffsetClickPopupClick = function (option_type) {
 
-		root.myGrooveUtils.setMetronomeClickStart(option_type);
+		root.myGrooveUtils.setMetronomeOffsetClickStart(option_type);
 
 		// clear other and select
 		var myElements = document.querySelectorAll(".metronomeOptionsOffsetClickContextMenuItem");
