@@ -46,6 +46,7 @@ function GrooveWriter() { "use strict";
 	var class_note_value_per_measure = 4;     // TimeSigBottom
 	var class_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure(class_time_division, class_num_beats_per_measure, class_note_value_per_measure);
 	var class_metronome_auto_speed_up_active = false;
+	var class_metronome_count_in_active = false;
 
 	// set debugMode immediately so we can use it in index.html
 	root.myGrooveUtils.debugMode = parseInt(root.myGrooveUtils.getQueryVariableFromURL("Debug", "0"), 10);
@@ -1052,6 +1053,19 @@ function GrooveWriter() { "use strict";
 				class_metronome_auto_speed_up_active = true;
 				addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSpeedUp", "menuChecked", true);
 				root.show_MetronomeAutoSpeedupConfiguration();
+			}
+			break;
+
+		case "CountIn":
+			if (class_metronome_count_in_active) {
+				// just turn it off if it is on, don't show the configurator
+        class_metronome_count_in_active = false;
+				addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuCountIn", "menuChecked", false);
+        root.myGrooveUtils.setMetronomeCountIn(false);
+      } else {
+        class_metronome_count_in_active = true;
+				addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuCountIn", "menuChecked", true);
+        root.myGrooveUtils.setMetronomeCountIn(true);
 			}
 			break;
 
@@ -3193,9 +3207,7 @@ function GrooveWriter() { "use strict";
 		root.myGrooveUtils.midiEventCallbacks.loadMidiDataEvent = function (myroot, playStarting) {
 			var midiURL;
 
-			if (playStarting && class_permutation_type != "none" &&
-				(document.getElementById("PermuationOptionsCountIn") &&
-					document.getElementById("PermuationOptionsCountIn").checked)) {
+			if (playStarting && class_metronome_count_in_active) {
 
 				midiURL = root.myGrooveUtils.MIDI_build_midi_url_count_in_track();
 				root.myGrooveUtils.midiNoteHasChanged(); // this track is temporary
@@ -4346,12 +4358,6 @@ function GrooveWriter() { "use strict";
 			return "";
 
 		var optionTypeArray = [{
-				id : "PermuationOptionsCountIn",
-				subid : "PermuationOptionsCountIn_sub",
-				name : "Count In 1 Measure",
-				SubOptions : [],
-				defaultOn : true
-			}, {
 				id : "PermuationOptionsOstinato",
 				subid : "PermuationOptionsOstinato_sub",
 				name : "Ostinato",
@@ -4383,17 +4389,17 @@ function GrooveWriter() { "use strict";
 		// add up beats and down beats
 		// add quads
 		if (!usingTriplets()) {
-			optionTypeArray[2].SubOptions = ["1", "e", "&", "a"]; // singles
-			optionTypeArray[3].SubOptions = ["1", "e", "&", "a"]; // doubles
-			optionTypeArray[4].SubOptions = ["1", "e", "&", "a"]; // triples
-			optionTypeArray.splice(4, 0, {
+			optionTypeArray[1].SubOptions = ["1", "e", "&", "a"]; // singles
+			optionTypeArray[2].SubOptions = ["1", "e", "&", "a"]; // doubles
+			optionTypeArray[3].SubOptions = ["1", "e", "&", "a"]; // triples
+			optionTypeArray.splice(3, 0, {
 				id : "PermuationOptionsUpsDowns",
 				subid : "PermuationOptionsUpsDowns_sub",
 				name : "Downbeats/Upbeats",
 				SubOptions : ["downs", "ups"],
 				defaultOn : false
 			});
-			optionTypeArray.splice(6, 0, {
+			optionTypeArray.splice(5, 0, {
 				id : "PermuationOptionsQuads",
 				subid : "PermuationOptionsQuads_sub",
 				name : "Quads",
