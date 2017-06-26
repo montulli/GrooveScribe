@@ -2249,7 +2249,7 @@ function GrooveUtils() {
 		root.midiEventCallbacks.noteHasChangedSinceLastDataLoad = false;
 	};
 
-	root.MIDI_build_midi_url_count_in_track = function () {
+	root.MIDI_build_midi_url_count_in_track = function (timeSigTop, timeSigBottom) {
 
 		var midiFile = new Midi.File();
 		var midiTrack = new Midi.Track();
@@ -2266,7 +2266,7 @@ function GrooveUtils() {
 		// add count in
 		midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_1, 0, 85);
 		midiTrack.addNoteOff(9, constant_OUR_MIDI_METRONOME_1, 16 * 8);
-		for (var i = 0; i < 3; i++) {
+		for (var i = 1; i < timeSigTop; i++) {
 			midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_NORMAL, 0, 85);
 			midiTrack.addNoteOff(9, constant_OUR_MIDI_METRONOME_NORMAL, 16 * 8);
 		}

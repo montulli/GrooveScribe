@@ -3210,7 +3210,7 @@ function GrooveWriter() { "use strict";
 
 			if (playStarting && class_metronome_count_in_active) {
 
-				midiURL = root.myGrooveUtils.MIDI_build_midi_url_count_in_track();
+				midiURL = root.myGrooveUtils.MIDI_build_midi_url_count_in_track(class_num_beats_per_measure, class_note_value_per_measure);
 				root.myGrooveUtils.midiNoteHasChanged(); // this track is temporary
         class_metronome_count_in_is_playing = true;
 			} else {
