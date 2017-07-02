@@ -2069,7 +2069,7 @@ function GrooveWriter() { "use strict";
 				if (snare_array[i] !== false)
 					snare_array[i] = constant_ABC_SN_Accent;
 				else if ((i % 2) === 0) // all other even notes are ghosted snares
-					snare_array[i] = constant_ABC_SN_Normal;
+					snare_array[i] = constant_ABC_SN_Ghost;
 			}
 		}
 
@@ -2085,10 +2085,10 @@ function GrooveWriter() { "use strict";
 		if (section > 0) { // Don't convert notes for the first measure since it is the ostinado
 			for (var i = 0; i < snare_array.length; i++) {
 				if (snare_array[i] !== false) {
-					snare_array[i] = constant_ABC_SN_Accent;
+					snare_array[i] = constant_ABC_SN_Buzz;
 					i++; // the next one is not diddled  (leave it false)
 				} else { // all other even notes are diddled, which means 32nd notes
-					snare_array[i] = constant_ABC_SN_Normal;
+					snare_array[i] = constant_ABC_SN_Ghost;
 				}
 			}
 		}
