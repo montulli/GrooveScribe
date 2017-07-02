@@ -2263,12 +2263,18 @@ function GrooveUtils() {
 		// TODO: Find and fix midi bug
 		midiTrack.addNoteOff(9, 60, 1); // add a blank note for spacing
 
+        var noteDelay = 128;  // quarter notes over x/4 time
+        if(timeSigBottom == 8)
+            noteDelay = 64;  // 8th notes over x/8 time
+        else if(timeSigBottom == 16)
+            noteDelay = 32;  // 16th notes over x/16 time
+
 		// add count in
-		midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_1, 0, 85);
-		midiTrack.addNoteOff(9, constant_OUR_MIDI_METRONOME_1, 16 * 8);
+		midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_1, 0, constant_OUR_MIDI_VELOCITY_NORMAL);
+		midiTrack.addNoteOff(9, constant_OUR_MIDI_METRONOME_1, noteDelay);
 		for (var i = 1; i < timeSigTop; i++) {
-			midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_NORMAL, 0, 85);
-			midiTrack.addNoteOff(9, constant_OUR_MIDI_METRONOME_NORMAL, 16 * 8);
+			midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_NORMAL, 0, constant_OUR_MIDI_VELOCITY_NORMAL);
+			midiTrack.addNoteOff(9, constant_OUR_MIDI_METRONOME_NORMAL, noteDelay);
 		}
 
 		var midi_url = "data:audio/midi;base64," + btoa(midiFile.toBytes());
