@@ -1193,6 +1193,8 @@ function GrooveUtils() {
 		'%%map drum ^g heads=Xhead print=g       % Hi-Hat\n' +
 		'%%map drum ^c\' heads=Xhead print=c\'   % Crash\n' +
 		'%%map drum ^d\' heads=Xhead print=d\'   % Stacker\n' +
+		'%%map drum ^e\' heads=Xhead print=e\'   % Metronome click\n' +
+		'%%map drum ^f\' heads=Xhead print=f\'   % Metronome beep\n' +
 		'%%map drum ^A\' heads=Xhead print=A\'   % Ride\n' +
 		'%%map drum ^B\' heads=Trihead print=A\' % Ride Bell\n' +
 		'%%map drum ^D\' heads=Trihead print=g   % Cow Bell\n' +
