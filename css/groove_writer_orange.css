@@ -570,6 +570,18 @@
 		color: transparent;
 		cursor: pointer;
 	}
+	.hh_metronome_normal {
+		position: absolute; top: 17px; left: 5px;
+		font-size: 20px;
+		color: transparent;
+		cursor: pointer;
+	}
+	.hh_metronome_accent {
+		position: absolute; top: 17px; left: 5px;
+		font-size: 20px;
+		color: transparent;
+		cursor: pointer;
+	}
 	.hh_cross {
 		position: absolute; top: 15px; left: 5px;
 		font-size: 24px;
@@ -820,7 +832,7 @@
 	.sheetMusicInputField {
 	
 	}
-	// Context Menu
+	/* Context Menu */
 	.noteContextMenu { 
 		
 	}

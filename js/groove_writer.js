@@ -504,6 +504,18 @@ function GrooveWriter() { "use strict";
 			else if (returnType == "URL")
 				return "s"; // stacker
 		}
+    if (document.getElementById("hh_metronome_normal" + id).style.color == constant_note_on_color_rgb) {
+      if (returnType == "ABC")
+        return constant_ABC_HH_Metronome_Normal; // beep
+      else if (returnType == "URL")
+        return "n"; // beep
+    }
+		if (document.getElementById("hh_metronome_accent" + id).style.color == constant_note_on_color_rgb) {
+      if (returnType == "ABC")
+        return constant_ABC_HH_Metronome_Accent; // beep
+      else if (returnType == "URL")
+        return "N"; // beep
+    }
 		if (document.getElementById("hh_open" + id).style.color == constant_note_on_color_rgb) {
 			if (returnType == "ABC")
 				return constant_ABC_HH_Open; // hh Open
@@ -536,6 +548,7 @@ function GrooveWriter() { "use strict";
 			return "-"; // off (rest)
 	}
 
+	// TODO: refactor this using a lookup table of constants
 	function set_hh_state(id, mode, make_sound) {
 
 		// hide everything optional
@@ -545,6 +558,8 @@ function GrooveWriter() { "use strict";
 		document.getElementById("hh_cow_bell" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("hh_crash" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("hh_stacker" + id).style.color = constant_note_hidden_color_rgb;
+		document.getElementById("hh_metronome_normal" + id).style.color = constant_note_hidden_color_rgb;
+		document.getElementById("hh_metronome_accent" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("hh_open" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("hh_close" + id).style.color = constant_note_hidden_color_rgb;
 		document.getElementById("hh_accent" + id).style.color = constant_note_hidden_color_rgb;
@@ -584,7 +599,17 @@ function GrooveWriter() { "use strict";
 			if(make_sound)
 				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_STACKER);
 			break;
-		case "open":
+		case "metronome_normal":
+			document.getElementById("hh_metronome_normal" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_METRONOME_NORMAL);
+			break;
+    case "metronome_accent":
+			document.getElementById("hh_metronome_accent" + id).style.color = constant_note_on_color_hex;
+			if(make_sound)
+				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_METRONOME_ACCENT);
+			break;
+    case "open":
 			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
 			document.getElementById("hh_open" + id).style.color = constant_note_on_color_hex;
 			if(make_sound)
@@ -3451,6 +3476,14 @@ function GrooveWriter() { "use strict";
 				if (drumType == "H")
 					setFunction(displayIndex, "cow_bell", false);
 				break;
+			case "n":
+				if (drumType == "H")
+					setFunction(displayIndex, "metronome_normal", false);
+				break;
+			case "N":
+				if (drumType == "H")
+					setFunction(displayIndex, "metronome_accent", false);
+				break;
 			case "O":
 				setFunction(displayIndex, "accent", false);
 				break;
@@ -3562,6 +3595,12 @@ function GrooveWriter() { "use strict";
 				break;
 			case constant_ABC_HH_Stacker:
 				setFunction(displayIndex, "stacker", false);
+				break;
+			case constant_ABC_HH_Metronome_Normal:
+				setFunction(displayIndex, "metronome_normal", false);
+				break;
+			case constant_ABC_HH_Metronome_Accent:
+				setFunction(displayIndex, "metronome_accent", false);
 				break;
 			case constant_ABC_HH_Open:
 				setFunction(displayIndex, "open", false);
@@ -4161,6 +4200,8 @@ function GrooveWriter() { "use strict";
 															<div class="hh_ride_bell note_part"   id="hh_ride_bell' + i + '"><i class="fa fa-bell-o"></i></div>\
 															<div class="hh_cow_bell note_part"    id="hh_cow_bell' + i + '"><i class="fa fa-plus-square-o"></i></div>\
 															<div class="hh_stacker note_part"   id="hh_stacker' + i + '"><i class="fa fa-bars"></i></div>\
+															<div class="hh_metronome_normal note_part"   id="hh_metronome_normal' + i + '"><i class="fa fa-neuter"></i></div>\
+															<div class="hh_metronome_accent note_part"   id="hh_metronome_accent' + i + '"><i class="fa fa-map-pin"></i></div>\
 															<div class="hh_cross note_part"  id="hh_cross' + i + '"><i class="fa fa-times"></i></div>\
 															<div class="hh_open note_part"   id="hh_open' + i + '"><i class="fa fa-circle-o"></i></div>\
 															<div class="hh_close note_part"  id="hh_close' + i + '"><i class="fa fa-plus"></i></div>\

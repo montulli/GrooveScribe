@@ -45,6 +45,8 @@ var constant_ABC_HH_Ride_Bell = "^B'";
 var constant_ABC_HH_Cow_Bell = "^D'";
 var constant_ABC_HH_Crash = "^c'";
 var constant_ABC_HH_Stacker = "^d'";
+var constant_ABC_HH_Metronome_Normal = "^e'";
+var constant_ABC_HH_Metronome_Accent = "^f'";
 var constant_ABC_HH_Open = "!open!^g";
 var constant_ABC_HH_Close = "!plus!^g";
 var constant_ABC_HH_Accent = "!accent!^g";
@@ -76,6 +78,8 @@ var constant_OUR_MIDI_HIHAT_OPEN = 46;
 var constant_OUR_MIDI_HIHAT_ACCENT = 108;
 var constant_OUR_MIDI_HIHAT_CRASH = 49;
 var constant_OUR_MIDI_HIHAT_STACKER = 52;
+var constant_OUR_MIDI_HIHAT_METRONOME_NORMAL = 77;
+var constant_OUR_MIDI_HIHAT_METRONOME_ACCENT = 76;
 var constant_OUR_MIDI_HIHAT_RIDE = 51;
 var constant_OUR_MIDI_HIHAT_RIDE_BELL = 53;
 var constant_OUR_MIDI_HIHAT_COW_BELL = 105;
@@ -492,7 +496,7 @@ function GrooveUtils() {
 	//
 	//  Sticking support:
 	//		R: right
-	//      L: left
+	//    L: left
 	//
 	//  HiHat support:
 	//		x: normal
@@ -503,7 +507,9 @@ function GrooveUtils() {
 	//		r: ride
 	//		b: ride bell
 	//		m: (more) cow bell
-	//      s: stacker
+	//    s: stacker
+	//    n: metroNome normal
+	//    N: metroNome accent
 	//		-: off
 	//
 	//   Snare support:
@@ -571,6 +577,14 @@ function GrooveUtils() {
 		case "m":  // (more) cow bell
 			if (drumType == "H")
 				return constant_ABC_HH_Cow_Bell;
+			break;
+		case "n":  // (more) cow bell
+			if (drumType == "H")
+				return constant_ABC_HH_Metronome_Normal;
+			break;
+		case "N":  // (more) cow bell
+			if (drumType == "H")
+				return constant_ABC_HH_Metronome_Accent;
 			break;
 		case "O":
 			if (drumType == "S")
@@ -706,7 +720,13 @@ function GrooveUtils() {
 		case constant_ABC_HH_Stacker:
 			tabChar = "s";
 			break;
-		case constant_ABC_HH_Open:
+    case constant_ABC_HH_Metronome_Normal:
+        tabChar = "n";
+        break;
+    case constant_ABC_HH_Metronome_Accent:
+        tabChar = "N";
+        break;
+    case constant_ABC_HH_Open:
 			tabChar = "o";
 			break;
 		case constant_ABC_HH_Close:
@@ -2464,7 +2484,13 @@ function GrooveUtils() {
 				case constant_ABC_HH_Stacker: // stacker
 					hh_note = constant_OUR_MIDI_HIHAT_STACKER;
 					break;
-				case false:
+				case constant_ABC_HH_Metronome_Normal: // Metronome beep
+					hh_note = constant_OUR_MIDI_HIHAT_METRONOME_NORMAL;
+					break;
+        case constant_ABC_HH_Metronome_Accent: // Metronome beep
+					hh_note = constant_OUR_MIDI_HIHAT_METRONOME_ACCENT;
+					break;
+        case false:
 					break;
 				default:
 					console.log("Bad case in GrooveUtils.MIDI_from_HH_Snare_Kick_Arrays");
@@ -2878,7 +2904,8 @@ function GrooveUtils() {
 			} else if (data.note == constant_OUR_MIDI_HIHAT_NORMAL || data.note == constant_OUR_MIDI_HIHAT_OPEN ||
 						data.note == constant_OUR_MIDI_HIHAT_ACCENT || data.note == constant_OUR_MIDI_HIHAT_CRASH ||
 						data.note == constant_OUR_MIDI_HIHAT_RIDE || data.note == constant_OUR_MIDI_HIHAT_STACKER ||
-						data.note == constant_OUR_MIDI_HIHAT_RIDE_BELL || data.note == constant_OUR_MIDI_HIHAT_COW_BELL ) {
+						data.note == constant_OUR_MIDI_HIHAT_RIDE_BELL || data.note == constant_OUR_MIDI_HIHAT_COW_BELL ||
+            data.note == constant_OUR_MIDI_HIHAT_METRONOME_NORMAL || data.note == constant_OUR_MIDI_HIHAT_METRONOME_NORMAL ) {
 				note_type = "hi-hat";
 			} else if (data.note == constant_OUR_MIDI_SNARE_NORMAL || data.note == constant_OUR_MIDI_SNARE_ACCENT ||
 						data.note == constant_OUR_MIDI_SNARE_GHOST || data.note == constant_OUR_MIDI_SNARE_XSTICK ||
