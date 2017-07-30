@@ -124,19 +124,7 @@
 
 		<div id="RightHandContent">
 			<div class="nonPrintable">
-				<div id="musicalInput" class="fullWidthEle edit-block">
-					<div id="measureContainer">
-						<script type="text/javascript">
-							var genHTML = "";
-							var cur_measure;
-							for (cur_measure = 1; cur_measure <= myGrooveWriter.numberOfMeasures(); cur_measure++) {
-								genHTML += myGrooveWriter.HTMLforStaffContainer(cur_measure, (cur_measure - 1) * myGrooveWriter.notesPerMeasure());
-							}
-							document.write(genHTML);
-							//console.log(genHTML);
-						</script>
-					</div>
-				</div>
+
 				<div id="PermutationOptions">
 					<script type="text/javascript">
 							var genHTML = "";
@@ -144,11 +132,8 @@
 							document.write(genHTML);
 					</script>
 				</div>
-				<div id="NotationLine" class="fullWidthEle">
-					<span id='NotationLabel'>Notation</span>
-					<span id='KeyButton'><input type="checkbox" class="hiddenCheckbox" id="showLegend" onclick="myGrooveWriter.refresh_ABC();"><label id="LegendLabel" for="showLegend"><i class="fa fa-key"></i></label></span>
-				</div>
 			</div>
+
 			<div class="Printable">
 				<!-- rendering area -->
 				<div id="sheetMusicDiv" class="fullWidthEle">
@@ -167,7 +152,23 @@
 					<span class="sheetMusicTextField"><b>Title:</b> <input class="sheetMusicInputField" id="tuneTitle" onchange="myGrooveWriter.refresh_ABC();" type="text"></span>
 					<span class="sheetMusicTextField"><b>Author:</b> <input class="sheetMusicInputField" id="tuneAuthor" onchange="myGrooveWriter.refresh_ABC();"  type="text"></span>
 					<span class="sheetMusicTextField"><b>Comment:</b> <input class="sheetMusicInputField" id="tuneComments" onchange="myGrooveWriter.refresh_ABC();"  type="text"></span>
+					<span id='KeyButton'><input type="checkbox" class="hiddenCheckbox" id="showLegend" onclick="myGrooveWriter.refresh_ABC();"><label id="LegendLabel" for="showLegend"><i class="fa fa-key"></i></label></span>
 				</div>
+
+				<div id="musicalInput" class="fullWidthEle edit-block">
+					<div id="measureContainer">
+						<script type="text/javascript">
+              var genHTML = "";
+              var cur_measure;
+              for (cur_measure = 1; cur_measure <= myGrooveWriter.numberOfMeasures(); cur_measure++) {
+                genHTML += myGrooveWriter.HTMLforStaffContainer(cur_measure, (cur_measure - 1) * myGrooveWriter.notesPerMeasure());
+              }
+              document.write(genHTML);
+              //console.log(genHTML);
+						</script>
+					</div>
+				</div>
+
 
 				<div id="bottomButtonRow" class="fullWidthEle">
 					<span class="pageBottomButton edit-block" id="clearAllNotesButton" onclick="event.preventDefault(); myGrooveWriter.clearAllNotes();"><span class="bottomButtonIcon"><i class="fa fa-trash fa-2x"></i></span><span class="bottomButtonLabel">CLEAR ALL</span></span>
