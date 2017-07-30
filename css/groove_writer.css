@@ -52,7 +52,7 @@
 		left: 72px;
 		top: 49px;
 		border-bottom: 1px solid #00C;
-		
+
 	}
 	#RightHandContent {
 		margin-left: 72px;
@@ -63,7 +63,7 @@
 		float: right;
 	}
 	#divisionButtonContainer {
-		
+
 	}
 	#upperLeft  {
 	}
@@ -127,7 +127,7 @@
 		color: #FFF;
 		cursor: auto;
 		transform: scale(1.1);
-	}	
+	}
 	.myButton:hover, .subdivision:hover {
 	   border-top-color: #28597a;
 	   background: #004781;
@@ -155,7 +155,7 @@
 	}
 	.buttonText {
 	}
-	
+
 	#NotationLine {
 		height: 35px;
 		text-align: center;
@@ -265,14 +265,14 @@
 		color: #2484C0;
 	}
 	.music-line-container {
-		display: inline-block; 
-		/top: 30px; 
+		display: inline-block;
+		/top: 30px;
 		z-index: 3;
 		display: table-cell;
 	}
 	.notes-container {
 		font-family:  Times New Roman;  /* parens around snare ghost note, R for Ride */
-		position: relative; 
+		position: relative;
 		z-index: 4;
 	}
 	.stickings-container {
@@ -312,33 +312,33 @@
 	}
 	.staff-line-1{
 		position: absolute; top: 46px;
-		width:100%; 
-		height:0px; 
-		border-top:3px solid #cacaca; 
+		width:100%;
+		height:0px;
+		border-top:3px solid #cacaca;
 	}
 	.staff-line-2{
 		position: absolute; top: 76px;
-		width:100%; 
-		height:0px; 
-		border-top:3px solid #cacaca; 
+		width:100%;
+		height:0px;
+		border-top:3px solid #cacaca;
 	}
 	.staff-line-3{
 		position: absolute; top: 107px;
-		width:100%; 
-		height:0px; 
-		border-top:3px solid #cacaca; 
+		width:100%;
+		height:0px;
+		border-top:3px solid #cacaca;
 	}
 	.staff-line-4{
 		position: absolute; top: 136px;
-		width:100%; 
-		height:0px; 
-		border-top:3px solid #cacaca; 
+		width:100%;
+		height:0px;
+		border-top:3px solid #cacaca;
 	}
 	.staff-line-5{
 		position: absolute; top: 167px;
-		width:100%; 
-		height:0px; 
-		border-top:3px solid #cacaca; 
+		width:100%;
+		height:0px;
+		border-top:3px solid #cacaca;
 	}
 	.sticking {
 		display: inline-block;
@@ -483,7 +483,7 @@
 		border-radius: 40px 40px 40px 40px;
 		cursor: pointer;
 	}
-	
+
 	.kick_splash {
 		position: absolute; top: 55px; left: 3px;
 		font-size: 30px;
@@ -515,9 +515,9 @@
 		cursor: pointer;
 		font-size: 40px;
 		padding-top: 2px;
-		margin-top: 73px;		
+		margin-top: 73px;
 	}
-	
+
 	.closeMeasureButton {
 		vertical-align: top;
 		display: inline-block;
@@ -529,7 +529,7 @@
 		color: #000;
 	}
 	#PermutationOptions.displayed {
-		margin: 3px 0px -20px 10px;
+		margin: 3px 0px 0px 10px;
 	}
 	#PermutationOptionsHeader {
 		/margin-left: 22px;
@@ -593,11 +593,11 @@
 		justify-content: space-between;
 	}
 	.sheetMusicInputField {
-	
+
 	}
 	// Context Menu
-	.noteContextMenu { 
-		
+	.noteContextMenu {
+
 	}
 	#permutationContextMenu, #helpContextMenu, #metronomeOptionsContextMenu, #metronomeOptionsOffsetClickContextMenu {
 		position: fixed;
@@ -607,14 +607,14 @@
 	.metronomeOptionsContextMenuItem:before, .metronomeOptionsOffsetClickContextMenuItem:before {
 		font-family: FontAwesome;
 		content: "\00a0";  /* blank space */
-		letter-spacing: 17px; 
+		letter-spacing: 17px;
 	} /* unchecked icon */
 	.menuChecked:before {
 		font-family: FontAwesome;
-		content: "\f00c"; 
-		letter-spacing: 5px; 
+		content: "\f00c";
+		letter-spacing: 5px;
 	} /* checked icon */
-	.noteContextMenu>ul.list  { 
+	.noteContextMenu>ul.list  {
 		display: none;
 		position:absolute; left:30px; top:-30px; z-index:999;
 		width:150px;
@@ -633,7 +633,7 @@
 		background: #004781;
 		color: #FFF;
 	}
-	.noteContextMenu>ul.list li:last-child { 
+	.noteContextMenu>ul.list li:last-child {
 		border:none;
 	}
 	#grooveListWrapper {
@@ -672,9 +672,9 @@
 		width: 795px;
 		margin-left: 0px;
 	}
-	
+
 	#ABCSource {
-		font-family: monospace; 
+		font-family: monospace;
 		font-size: 14px;
 	}
 	#fullURLPopup, #metronomeAutoSpeedupConfiguration {
@@ -722,16 +722,16 @@
 	}
 	#showHideStickingsButton {
 	}
-	#showHideStickingsButton:before  { 
+	#showHideStickingsButton:before  {
 		font-family: FontAwesome;
 		font-size: 30px;
-		letter-spacing: -3px; 
+		letter-spacing: -3px;
 		content: "\f065";
 	}
 	#showHideStickingsButton.ClickToHide:before {
 		font-family: FontAwesome;
 		font-size: 30px;
-		letter-spacing: -3px; 
+		letter-spacing: -3px;
 		content: "\f066";
 	}
 	#printButton {
@@ -747,8 +747,8 @@
 	button {
 		cursor: pointer;
 	}
-	
-		
+
+
 	input[type=checkbox]:checked  + label {
 		color: #000;
 		cursor: pointer;
@@ -767,25 +767,25 @@
 	.totalTimeNum {
 		color: #CC6500;
 	}
-	.myCheckbox { 
-		display:none; 
+	.myCheckbox {
+		display:none;
 	} /* to hide the checkbox itself */
-	.myCheckbox + label:before 
-	{ 
+	.myCheckbox + label:before
+	{
 		font-family: FontAwesome;
 		display: inline-block;
 	 /* content: "\f096";  /* uncheck box */
 		content: "\00a0";  /* blank space */
-		letter-spacing: 17px; 
+		letter-spacing: 17px;
 	} /* unchecked icon */
-	.myCheckbox:checked + label:before 
-	{ 
-		content: "\f00c"; 
-		letter-spacing: 5px; 
+	.myCheckbox:checked + label:before
+	{
+		content: "\f00c";
+		letter-spacing: 5px;
 	} /* checked icon */
 	.hiddenCheckbox {
 		/* checkbox for the key (legend) */
-		visibility: hidden;	
+		visibility: hidden;
 	}
 	#LegendLabel {
 		border: 1px solid #CCC;
@@ -819,7 +819,7 @@
 		display:block;
 		margin-bottom: 2px;
 	}
-	
+
 	.bottomButtonLabel {
 		display: block;
 	}
@@ -828,11 +828,11 @@
 		body {margin:0; padding:0; border:0; background-color: transparent}
 		div.newpage {page-break-before: always}
 		div.nobrk {page-break-inside: avoid}
-		
+
 		.nonPrintable {
 			display: none !important;
 		}
-		
+
 		#RightHandContent {
 			margin-left: 0px;
 			padding-top: 0px;
