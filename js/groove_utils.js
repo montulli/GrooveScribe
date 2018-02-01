@@ -1330,8 +1330,8 @@ function GrooveUtils() {
 
 			// this is the flam notation, it can't be in a sub grouping
 			ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "{/c}");
-            // this is the drag notation, it can't be in a sub grouping
-            ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "{/cc}");
+			// this is the drag notation, it can't be in a sub grouping
+			ABC_String += moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, "{/cc}");
 
 			ABC_String += "[" + abcNoteStrings.notes1 + abcNoteStrings.notes2 + abcNoteStrings.notes3 + "]"; // [^gc]
 		} else {
@@ -1750,13 +1750,15 @@ function GrooveUtils() {
 		var kick_voice_string = "V:Feet stem=down\n%%voicemap drum\n"; // for kick drum
 		var all_drum_array_of_array;
 
-		if(kick_stems_up) {
-			all_drum_array_of_array = [snare_array, HH_array, kick_array];
-		} else {
-			all_drum_array_of_array = [snare_array, HH_array];  // exclude the kick
-		}
+
+		all_drum_array_of_array = [snare_array, HH_array];  // exclude the kick
 		if(toms_array)
 			all_drum_array_of_array = all_drum_array_of_array.concat(toms_array);
+		// Add the kick array last to solve a subtle bug with the kick foot splash combo note
+		// If the combo note comes last in a multi note event it will space correctly.  If it
+		// comes first it will create a wrong sized note
+    if(kick_stems_up)
+      all_drum_array_of_array = all_drum_array_of_array.concat([kick_array]);
 
 		for (var i = 0; i < num_notes; i++) {
 
@@ -1809,7 +1811,7 @@ function GrooveUtils() {
 				kick_voice_string += " ";
 			}
 
-			// add a bar line every meausre.   32 notes in 4/4 time.   (32/timeSigBottom * timeSigTop)
+			// add a bar line every measure.   32 notes in 4/4 time.   (32/timeSigBottom * timeSigTop)
 			if (((i + 1) % ((32/timeSigBottom) * timeSigTop)) === 0) {
 				stickings_voice_string += "|";
 				hh_snare_voice_string += "|";
