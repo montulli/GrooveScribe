@@ -2732,7 +2732,8 @@ function GrooveUtils() {
 			global_last_midi_update_time = 0;
 			MIDI.Player.resume();
 		} else {
-			global_current_midi_start_time = new Date();
+      MIDI.Player.ctx.resume();
+      global_current_midi_start_time = new Date();
 			global_last_midi_update_time = 0;
 			root.midiEventCallbacks.loadMidiDataEvent(root.midiEventCallbacks.classRoot, true);
 			MIDI.Player.stop();
