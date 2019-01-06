@@ -2675,25 +2675,34 @@ function GrooveUtils() {
 		var FullNoteHHArray = root.scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		var FullNoteSnareArray = root.scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		var FullNoteKickArray = root.scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		var FullNoteTomsArray = [];
 
-		for(var i = 0; i < constant_NUMBER_OF_TOMS; i++) {
-			FullNoteTomsArray[i] = root.scaleNoteArrayToFullSize(myGrooveData.toms_array[i], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		}
+		// the midi functions expect just one measure at a time to work correctly
+		// call once for each measure
+    var measure_notes = FullNoteHHArray.length / myGrooveData.numberOfMeasures;
+    for (var measureIndex = 0; measureIndex < myGrooveData.numberOfMeasures; measureIndex++) {
 
-		var total_notes = FullNoteHHArray.length;
-		root.MIDI_from_HH_Snare_Kick_Arrays(midiTrack,
-			FullNoteHHArray,
-			FullNoteSnareArray,
-			FullNoteKickArray,
-			FullNoteTomsArray,
-			MIDI_type,
-			myGrooveData.metronomeFrequency,
-			total_notes,
-			myGrooveData.timeDivision,
-			swing_percentage,
-			myGrooveData.numBeats,
-			myGrooveData.noteValue);
+      var FullNoteTomsArray = [];
+      for(var i = 0; i < constant_NUMBER_OF_TOMS; i++) {
+        FullNoteTomsArray[i] = root.scaleNoteArrayToFullSize(myGrooveData.toms_array[i].slice(measure_notes*i, measure_notes*(i+1)),
+																														 1,
+																														 myGrooveData.notesPerMeasure,
+																														 myGrooveData.numBeats,
+																														 myGrooveData.noteValue);
+      }
+
+      root.MIDI_from_HH_Snare_Kick_Arrays(midiTrack,
+          FullNoteHHArray.slice(measure_notes*measureIndex, measure_notes*(measureIndex+1)),
+          FullNoteSnareArray.slice(measure_notes*measureIndex, measure_notes*(measureIndex+1)),
+          FullNoteKickArray.slice(measure_notes*measureIndex, measure_notes*(measureIndex+1)),
+          FullNoteTomsArray,
+          MIDI_type,
+          myGrooveData.metronomeFrequency,
+          measure_notes,
+          myGrooveData.timeDivision,
+          swing_percentage,
+          myGrooveData.numBeats,
+          myGrooveData.noteValue);
+    }
 
 		var midi_url = "data:audio/midi;base64," + btoa(midiFile.toBytes());
 
