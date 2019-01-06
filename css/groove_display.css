@@ -25,7 +25,7 @@
 	}
 	.playerControl {
 		display: inline-block;
-		background-color: #e6e6e6;
+		background-color: #f0f0f0;
 		width: 100%;  /* expand to the surounding element */
 		font-family: 'Lato', sans-serif;
 		white-space: nowrap;
@@ -35,7 +35,7 @@
 	}
 	.playerControl.large {
 		display: block;
-		width: calc(75% - 83px);
+		width: 100%;
 		min-width: 450px;
 		border: 1px solid #d5d5d5;
 		padding-left: 0px;
@@ -66,7 +66,7 @@
 		-webkit-flex: none;
 		margin: 4px 0px 4px 0px;
 		border: 0px solid #000;
-		color: #aaa;
+		color: #878795;
 		font-size: 20px;
 		font-family: FontAwesome;
 		text-align: center;
@@ -75,24 +75,24 @@
 		border-radius: 50%;
 	}
 	.midiPlayImage, .midiRepeatImage {
-		background: #aaa;
+		background: #878795;
 		color: #fff;
 		margin: 4px 4px 4px 4px;
 	}
 	.midiPlayImage:hover, .midiRepeatImage:hover {
 		color: #fff;
-		background: #aaa;
+		background: #878795;
 	}
 	.midiExpandImage {
 		font-size: 26px;
 		transition: all .6s ease-in-out;
 	}
 	.midiExpandImage.small:hover {
-		color: #888;
+		color: #878795;
 		transform: scale(1.4);
 	}
 	.midiExpandImage.large:hover {
-		color: #888;
+		color: #878795;
 		transform: scale(.8);
 	}
 	.midiPlayImage.Stopped::before ,  .midiPlayImage.Paused::before   {
@@ -125,13 +125,13 @@
 		height: 30px;
 	}
 	.midiMetronomeImage path {
-	  fill: #aaa;
+	  fill: #878795;
 	}
 	.midiMetronomeImage:hover path {
-	  fill: #888;
+	  fill: #878795;
 	}
 	.midiMetronomeMenu.selected .midiMetronomeImage path {
-	  fill: #d78a02;
+	  fill: #1aa3d6;
 	}
 	.tempoAndProgress {
 		padding-top: 2px;
@@ -157,7 +157,7 @@
 		padding: 0px;
 		margin-top: 4px;
 		margin-right: 2%;
-		color: #66c0fe;
+		color: #878795;
 		width: 90%;
 		flex: 1;
 		-webkit-flex: 1;
@@ -170,7 +170,7 @@
 		padding-top: 0px;
 		font-size: 16px;
 		width: 60px;
-		color: #888;
+		color: #878795;
 	}
 	.tempoOutput, .swingOutput {
 		display: inline-block;
@@ -254,15 +254,15 @@
 input[type=range] {
   -webkit-appearance: none;
   width: 100%;
-  background-color: #e6e6e6;
+  background-color: #f0f0f0;
 }
 input[type=range]:before {
   /* set this color for the runnable-track left of the thumb color */
-  color: #bbb;
+  color: #a6a6b0;
 }
 input[type=range]:after {
   /* set this color for the runnable-track right of the thumb color */
-  color: #888;
+  color: #878795;
 }
 input[type=range]:focus {
   outline: none;
@@ -271,7 +271,7 @@ input[type=range]::-webkit-slider-runnable-track {
   width: 100%;
   height: 8.4px;
   cursor: pointer;
-  background: #888;
+  background: #878795;
   border-radius: 6px;
   border: 0px solid #010101;
 }
@@ -286,13 +286,13 @@ input[type=range]::-webkit-slider-thumb {
   margin-top: -6px;
 }
 input[type=range]:focus::-webkit-slider-runnable-track {
-  background: #888;
+  background: #878795;
 }
 input[type=range]::-moz-range-track {
   width: 100%;
   height: 8.4px;
   cursor: pointer;
-  background: #888;
+  background: #878795;
   border-radius: 6px;
   border: 0px solid #010101;
 }
@@ -313,12 +313,12 @@ input[type=range]::-ms-track {
   color: transparent;
 }
 input[type=range]::-ms-fill-lower {
-  background: #e6e6e6;
+  background: #f0f0f0;
   border: 0px solid #010101;
   border-radius: 2.6px;
 }
 input[type=range]::-ms-fill-upper {
-  background: #e6e6e6;
+  background: #f0f0f0;
   border: 0px solid #010101;
   border-radius: 6px;
 }
