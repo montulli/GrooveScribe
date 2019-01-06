@@ -747,7 +747,6 @@
 		color: #000;
 	}
 	#permutationAnchor {
-		display: none;   /* disabled until it is done */
 		color: #555;
 	}
 	#permutationAnchor.enabled {
