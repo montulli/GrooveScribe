@@ -2683,7 +2683,8 @@ function GrooveUtils() {
 
       var FullNoteTomsArray = [];
       for(var i = 0; i < constant_NUMBER_OF_TOMS; i++) {
-        FullNoteTomsArray[i] = root.scaleNoteArrayToFullSize(myGrooveData.toms_array[i].slice(measure_notes*i, measure_notes*(i+1)),
+      	var orig_measure_notes = myGrooveData.notesPerMeasure;
+        FullNoteTomsArray[i] = root.scaleNoteArrayToFullSize(myGrooveData.toms_array[i].slice(orig_measure_notes*measureIndex, orig_measure_notes*(measureIndex+1)),
 																														 1,
 																														 myGrooveData.notesPerMeasure,
 																														 myGrooveData.numBeats,
