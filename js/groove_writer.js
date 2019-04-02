@@ -24,7 +24,7 @@
 /*jshint multistr: true */
 /*jslint browser:true devel:true */
 
-/*global gapi, GrooveUtils, Midi, Share */
+/*global GrooveUtils, Midi, Share */
 /*global MIDI, constant_MAX_MEASURES, constant_DEFAULT_TEMPO, constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_BOTH, constant_ABC_STICK_OFF, constant_ABC_STICK_COUNT, constant_ABC_HH_Ride, constant_ABC_HH_Ride_Bell, constant_ABC_HH_Cow_Bell, constant_ABC_HH_Crash, constant_ABC_HH_Stacker, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Buzz, constant_ABC_SN_Flam, constant_ABC_SN_Drag, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T2_Normal, constant_ABC_T3_Normal, constant_ABC_T4_Normal, constant_NUMBER_OF_TOMS, constant_ABC_OFF, constant_OUR_MIDI_VELOCITY_NORMAL, constant_OUR_MIDI_VELOCITY_ACCENT, constant_OUR_MIDI_VELOCITY_GHOST, constant_OUR_MIDI_METRONOME_1, constant_OUR_MIDI_METRONOME_NORMAL, constant_OUR_MIDI_HIHAT_NORMAL, constant_OUR_MIDI_HIHAT_OPEN, constant_OUR_MIDI_HIHAT_ACCENT, constant_OUR_MIDI_HIHAT_CRASH, constant_OUR_MIDI_HIHAT_STACKER, constant_OUR_MIDI_HIHAT_RIDE, constant_OUR_MIDI_HIHAT_FOOT, constant_OUR_MIDI_SNARE_NORMAL, constant_OUR_MIDI_SNARE_ACCENT, constant_OUR_MIDI_SNARE_GHOST, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_FLAM, onstant_OUR_MIDI_SNARE_DRAG, constant_OUR_MIDI_KICK_NORMAL, constant_OUR_MIDI_TOM1_NORMAL, constant_OUR_MIDI_TOM2_NORMAL, constant_OUR_MIDI_TOM4_NORMAL, constant_OUR_MIDI_TOM4_NORMAL */
 
 // GrooveWriter class.   The only one in this file.
@@ -3208,10 +3208,6 @@ function GrooveWriter() { "use strict";
 	// This function initializes the data for the groove Scribe web page
 	root.runsOnPageLoad = function () {
 
-		// setup for URL shortener
-		gapi.client.setApiKey('AIzaSyBnjOal_AHASONxMQSZPk6E5w9M04CGLcA');
-		gapi.client.load('urlshortener', 'v1', function () {});
-
 		root.setupWriterHotKeys(); // there are other hot keys in GrooveUtils for the midi player
 
 		setupPermutationMenu();
@@ -3841,30 +3837,31 @@ function GrooveWriter() { "use strict";
 	function fillInShortenedURLInFullURLPopup(fullURL, cssIdOfTextFieldToFill) {
 		document.getElementById("embedCodeCheckbox").checked = false;  // uncheck embedCodeCheckbox, because it is not compatible
 
-		if (gapi.client.urlshortener) {
-			var request = gapi.client.urlshortener.url.insert({
-					'resource' : {
-						'longUrl' : fullURL
-					}
-				});
-			request.execute(function (response) {
-				if (response.id !== null && response.id !== undefined) {
+		var params = {
+			"dynamicLinkInfo": {
+				"domainUriPrefix": "https://gscribe.com/share",
+				"link": fullURL
+			}
+		};
 
-					document.getElementById("shortenerCheckbox").checked = true;  // this is now true if isn't already
-
-					var textField = document.getElementById(cssIdOfTextFieldToFill);
-					textField.value = response.id;
-
-					// select the URL for copy/paste
-					textField.focus();
-					textField.select();
-				} else {
-					document.getElementById("shortenerCheckbox").checked = false;  // request failed
-				}
-			});
-		} else {
-			console.log("Error: URL Shortener API is not loaded");
-		}
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', 'https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyBx4So11fGFPgTI62nP-JmxrxHmuRpJ120');
+		xhr.setRequestHeader('Content-Type', 'application/json');
+		xhr.onload = function() {
+			if (xhr.status === 200) {
+				// success
+				var response = JSON.parse(xhr.responseText);
+				var textField = document.getElementById(cssIdOfTextFieldToFill);
+				textField.value = response.shortLink;
+				// select the URL for copy/paste
+				textField.focus();
+				textField.select();
+				document.getElementById("shortenerCheckbox").checked = true;  // this is now true if isn't already
+			} else {
+				document.getElementById("shortenerCheckbox").checked = false;  // request failed
+			}
+		};
+		xhr.send(JSON.stringify(params));
 
 	}
 
