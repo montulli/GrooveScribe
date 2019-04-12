@@ -3783,39 +3783,40 @@ function GrooveWriter() { "use strict";
 	root.show_FullURLPopup = function () {
 		var popup = document.getElementById("fullURLPopup");
 
-		var ShareButton = new Share("#shareButton", {
-				networks : {
-					facebook : {
-						before : function () {
+		var ShareBut = new ShareButton({
+				networks: {
+					facebook: {
+						before: function () {
 							this.url = document.getElementById("fullURLPopupTextField").value;
-							this.description = "Check out this groove.";
+							this.text = "Check out this groove.";
 						},
 						//app_id : "839699029418014"    // staging id
 						// app_id : "1499163983742002"   // MLDC id, lou created
-						app_id : "445510575651140"   // MLDC id, brad created
+						appId: "445510575651140",   // MLDC id, brad created
+						loadSdk: true
 					},
-					google_plus : {
-						before : function () {
-							this.url = encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
-							this.description = "Check out this groove.";
-						}
-					},
-					twitter : {
-						before : function () {
-							this.url = encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
-							this.description = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
-						}
-					},
-					pinterest : {
+					googlePlus : {
 						enabled : false
 					},
-					email : {
+					twitter: {
+						before: function () {
+							this.url = encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
+							this.text = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
+						}
+					},
+					pinterest: {
+						enabled: false
+					},
+					linkedin: {
+						enabled: false
+					},
+					whatsapp: {
+						enabled: false
+					},
+					email: {
 						before : function () {
 							this.url = document.getElementById("fullURLPopupTextField").value;
-							this.description = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
-						},
-						after : function () {
-							//console.log("User shared:", this.url);
+							this.text = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
 						}
 					}
 				}

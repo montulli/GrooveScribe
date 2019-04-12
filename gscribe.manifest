@@ -27,7 +27,7 @@ js/groove_display.js
 js/groove_utils.js
 js/groove_writer.js
 js/jsmidgen.js
-js/share.min.js
+js/share-button.min.js
 css/groove_debug.css
 css/groove_display_orange.css
 css/groove_writer_orange.css
