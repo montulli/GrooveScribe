@@ -3788,7 +3788,7 @@ function GrooveWriter() { "use strict";
 					facebook: {
 						before: function () {
 							this.url = document.getElementById("fullURLPopupTextField").value;
-							this.text = "Check out this groove.";
+							this.description = "Check out this groove.";
 						},
 						//app_id : "839699029418014"    // staging id
 						// app_id : "1499163983742002"   // MLDC id, lou created
@@ -3801,7 +3801,19 @@ function GrooveWriter() { "use strict";
 					twitter: {
 						before: function () {
 							this.url = encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
-							this.text = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
+							this.description = "Check out this groove:  " + document.getElementById("fullURLPopupTextField").value;
+						}
+					},
+					reddit: {
+						before: function () {
+							this.url = document.getElementById("fullURLPopupTextField").value;
+							this.title = "Check out this groove: " + document.getElementById("fullURLPopupTextField").value;
+						}
+					},
+					email: {
+						before : function () {
+							this.url = document.getElementById("fullURLPopupTextField").value;
+							this.description = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
 						}
 					},
 					pinterest: {
@@ -3812,12 +3824,6 @@ function GrooveWriter() { "use strict";
 					},
 					whatsapp: {
 						enabled: false
-					},
-					email: {
-						before : function () {
-							this.url = document.getElementById("fullURLPopupTextField").value;
-							this.text = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
-						}
 					}
 				}
 			});
