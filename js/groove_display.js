@@ -224,7 +224,7 @@ if (typeof(GrooveDisplay) === "undefined") {
 
 				var svgTarget = document.getElementById(svgTargetId);
 				// var renderWidth = svgTarget.offsetWidth;
-				var renderWidth = 700;
+				var renderWidth = 600;
 
 				var abcNotation = myGrooveUtils.createABCFromGrooveData(GrooveData, renderWidth);
 				// console.log(abcNotation);

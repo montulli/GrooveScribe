@@ -902,8 +902,10 @@
 		border-radius: 5px;
 		text-align: center;
 	}
+	#shareButtonContainer {
+		text-align: center;
+	}
 	#shareButton {
-		margin: 0px auto;
 	}
 	.sharer-0 label {
 		background: #E79700 !important;	
