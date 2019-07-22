@@ -1593,7 +1593,7 @@ function GrooveWriter() { "use strict";
 		return false;
 	}
 
-	function get_permutation_pre_ABC(section) {
+	function get_permutation_pre_ABC(section, show_title) {
 		var abc = "";
 
 		switch (section) {
@@ -1604,43 +1604,83 @@ function GrooveWriter() { "use strict";
 			abc += "T: \nP: Singles\n%\n%\n% singles on the \"1\"\n%\n";
 			break;
 		case 2:
-			abc += "%\n%\n% singles on the \"e\"\n%\n";
+			if (show_title) {
+				abc += "T: \nP: Singles\n%\n%\n% singles on the \"e\"\n%\n";
+			} else {
+				abc += "%\n%\n% singles on the \"e\"\n%\n";
+			}
 			break;
 		case 3:
-			abc += "%\n%\n% singles on the \"&\"\n%\n";
+			if (show_title) {
+				abc += "T: \nP: Singles\n%\n%\n% singles on the \"&\"\n%\n";
+			} else {
+				abc += "%\n%\n% singles on the \"&\"\n%\n";
+			}
 			break;
 		case 4:
-			abc += "%\n%\n% singles on the \"a\"\n%\n";
+			if (show_title) {
+				abc += "T: \nP: Singles\n%\n%\n% singles on the \"a\"\n%\n";
+			} else {
+				abc += "%\n%\n% singles on the \"a\"\n%\n";
+			}
 			break;
 		case 5:
 			abc += "T: \nP: Doubles\n%\n%\n% doubles on the \"1\"\n%\n";
 			break;
 		case 6:
-			abc += "%\n%\n% doubles on the \"e\"\n%\n";
+			if (show_title) {
+				abc += "T: \nP: Doubles\n%\n%\n% doubles on the \"e\"\n%\n";
+			} else {
+				abc += "%\n%\n% doubles on the \"e\"\n%\n";
+			}
 			break;
 		case 7:
-			abc += "%\n%\n% doubles on the \"&\"\n%\n";
+			if (show_title) {
+				abc += "T: \nP: Doubles\n%\n%\n% doubles on the \"&\"\n%\n";
+			} else {
+				abc += "%\n%\n% doubles on the \"&\"\n%\n";
+			}
 			break;
 		case 8:
-			abc += "%\n%\n% doubles on the \"a\"\n%\n";
+			if (show_title) {
+				abc += "T: \nP: Doubles\n%\n%\n% doubles on the \"a\"\n%\n";
+			} else {
+				abc += "%\n%\n% doubles on the \"a\"\n%\n";
+			}
 			break;
 		case 9:
 			abc += "T: \nP: Down/Up Beats\n%\n%\n% upbeats on the \"1\"\n%\n";
 			break;
 		case 10:
-			abc += "%\n%\n% downbeats on the \"e\"\n%\n";
+			if (show_title) {
+				abc += "T: \nP: Down/Up Beats\n%\n%\n% upbeats on the \"e\"\n%\n";
+			} else {
+				abc += "%\n%\n% downbeats on the \"e\"\n%\n";
+			}
 			break;
 		case 11:
 			abc += "T: \nP: Triples\n%\n%\n% triples on the \"1\"\n%\n";
 			break;
 		case 12:
-			abc += "%\n%\n% triples on the \"e\"\n%\n";
+			if (show_title) {
+				abc += "T: \nP: Triples\n%\n%\n% triples on the \"e\"\n%\n";
+			} else {
+				abc += "%\n%\n% triples on the \"e\"\n%\n";
+			}
 			break;
 		case 13:
-			abc += "%\n%\n% triples on the \"&\"\n%\n";
+			if (show_title) {
+				abc += "T: \nP: Triples\n%\n%\n% triples on the \"&7\"\n%\n";
+			} else {
+				abc += "%\n%\n% triples on the \"&\"\n%\n";
+			}
 			break;
 		case 14:
-			abc += "%\n%\n% triples on the \"a\"\n%\n";
+			if (show_title) {
+				abc += "T: \nP: Triples\n%\n%\n% triples on the \"a\"\n%\n";
+			} else {
+				abc += "%\n%\n% triples on the \"a\"\n%\n";
+			}
 			break;
 		case 15:
 			abc += "T: \nP: Quads\n%\n%\n% quads\n%\n";
@@ -1653,8 +1693,13 @@ function GrooveWriter() { "use strict";
 		return abc;
 	}
 
-	function get_permutation_post_ABC(section) {
+	function get_permutation_post_ABC(section, isLast) {
 		var abc = "";
+
+		if (isLast) {
+			abc += "|\n";
+			return abc;
+		}
 
 		switch (section) {
 		case 0:
@@ -2454,6 +2499,7 @@ function GrooveWriter() { "use strict";
 					Kick_Array = filter_kick_array_for_permutation(Kick_Array);
 					new_kick_array = merge_kick_arrays(new_kick_array, Kick_Array);
 
+
 					root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
 				}
 			}
@@ -2747,21 +2793,110 @@ function GrooveWriter() { "use strict";
 		}
 	};
 
+	// this builds all the sections for display
+	// each section having a title on the first measure and a break after the last
+	// returns the sections in order of section number
+	function build_display_sections() {
+		var numSections = get_numSectionsFor_permutation_array();
+		var sections = {
+			singles: [],
+			doubles: [],
+			downUp: [],
+			triples: [],
+			quads: []
+		};
+		for (var i = 0; i < numSections; i++) {
+			if (shouldDisplayPermutationForSection(i)) {
+				// Singles sections
+				if (i > 0 && i < 5) {
+					sections.singles.push({
+						section: i,
+						showTitle: false,
+						isLast: false
+					});
+				}
+
+				// Doubles sections
+				if (i > 4 && i < 9) {
+					sections.doubles.push({
+						section: i,
+						showTitle: false,
+						isLast: false
+					});
+				}
+
+				// DownUp sections
+				if (i > 8 && i < 11) {
+					sections.downUp.push({
+						section: i,
+						showTitle: false,
+						isLast: false
+					});
+				}
+
+				// Triples sections
+				if (i > 10 && i < 15) {
+					sections.triples.push({
+						section: i,
+						showTitle: false,
+						isLast: false
+					});
+				}
+
+				// Quads sections
+				if (i >= 15) {
+					sections.triples.push({
+						section: i,
+						showTitle: false,
+						isLast: false
+					});
+				}
+			}
+		}
+
+		if (sections.singles.length > 0) {
+			sections.singles[0].showTitle = true;
+			sections.singles[sections.singles.length - 1].isLast = true;
+		}
+		if (sections.doubles.length > 0) {
+			sections.doubles[0].showTitle = true;
+			sections.doubles[sections.doubles.length - 1].isLast = true;
+		}
+		if (sections.downUp.length > 0) {
+			sections.downUp[0].showTitle = true;
+			sections.downUp[sections.downUp.length - 1].isLast = true;
+		}
+		if (sections.triples.length > 0) {
+			sections.triples[0].showTitle = true;
+			sections.triples[sections.triples.length - 1].isLast = true;
+		}
+		if (sections.quads.length > 0) {
+			sections.quads[0].showTitle = true;
+			sections.quads[sections.quads.length - 1].isLast = true;
+		}
+
+		var fullSections = Object.keys(sections).reduce(function (a, b) {
+			return a.concat(sections[b]);
+		}, []).sort(function (a, b) {
+			return a.section - b.section;
+		});
+
+		return fullSections;
+	}
+
 	// this is called by a bunch of places anytime we modify the musical notes on the page
 	// this will recreate the ABC code and will then use the ABC to rerender the sheet music
 	// on the page.
 	function create_ABC() {
-
 		var Sticking_Array = get_empty_note_array_in_32nds();
 		var HH_Array = get_empty_note_array_in_32nds();
 		var Snare_Array = get_empty_note_array_in_32nds();
 		var Kick_Array = get_empty_note_array_in_32nds();
 		var Toms_Array = [get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(),get_empty_note_array_in_32nds()];
-		var numSections = get_numSectionsFor_permutation_array();
 		var i,
+		full_sections,
 		new_snare_array,
-		post_abc,
-		num_sections;
+		post_abc;
 		var num_notes = get32NoteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, 0);
 
 		// abc header boilerplate
@@ -2782,57 +2917,61 @@ function GrooveWriter() { "use strict";
 
 		switch (class_permutation_type) {
 		case "kick_16ths": // use the hh & snare from the user
-			numSections = get_numSectionsFor_permutation_array();
+			var singlesSectionTitleShown = false;
+			var doublesSectionTitleShown = false;
+			var downUpSectionTitleShown = false;
+			var triplesSectionTitleShown = false;
+			var shouldBreakSection = false;
+			full_sections = build_display_sections();
 
 			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, class_num_beats_per_measure, class_note_value_per_measure, renderWidth);
 			root.myGrooveUtils.note_mapping_array = [];
 
 			// compute sections with different kick patterns
-			for (i = 0; i < numSections; i++) {
-				if (shouldDisplayPermutationForSection(i)) {
-					var new_kick_array;
+			for (i = 0; i < full_sections.length; i++) {
+				var section = full_sections[i].section;
+				var new_kick_array;
 
-					if (document.getElementById("PermuationOptionsSkipSomeFirstNotes") && document.getElementById("PermuationOptionsSkipSomeFirstNotes").checked)
-						new_kick_array = get_kick16th_permutation_array_minus_some(i);
-					else
-						new_kick_array = get_kick16th_permutation_array(i);
+				if (document.getElementById("PermuationOptionsSkipSomeFirstNotes") && document.getElementById("PermuationOptionsSkipSomeFirstNotes").checked)
+					new_kick_array = get_kick16th_permutation_array_minus_some(section);
+				else
+					new_kick_array = get_kick16th_permutation_array(section);
 
-					// grab hi-hat foots from existing kick array and merge it in.
-					Kick_Array = filter_kick_array_for_permutation(Kick_Array);
-					new_kick_array = merge_kick_arrays(new_kick_array, Kick_Array);
+				// grab hi-hat foots from existing kick array and merge it in.
+				Kick_Array = filter_kick_array_for_permutation(Kick_Array);
+				new_kick_array = merge_kick_arrays(new_kick_array, Kick_Array);
 
-					post_abc = get_permutation_post_ABC(i);
+				post_abc = get_permutation_post_ABC(section, full_sections[i].isLast);
 
-					fullABC += get_permutation_pre_ABC(i);
-					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, Toms_Array, post_abc, num_notes, class_time_division, num_notes, true, class_num_beats_per_measure, class_note_value_per_measure);
-					root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, new_kick_array, Toms_Array, num_notes));
-				}
+				fullABC += get_permutation_pre_ABC(section, full_sections[i].showTitle);
+
+				fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, Toms_Array, post_abc, num_notes, class_time_division, num_notes, true, class_num_beats_per_measure, class_note_value_per_measure);
+				root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, new_kick_array, Toms_Array, num_notes));
 			}
 			break;
 
 		case "snare_16ths": // use the hh & kick from the user
-			numSections = get_numSectionsFor_permutation_array();
+			full_sections = build_display_sections();
 
 			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, class_num_beats_per_measure, class_note_value_per_measure, renderWidth);
 			root.myGrooveUtils.note_mapping_array = [];
 
 			//compute 16 sections with different snare patterns
-			for (i = 0; i < numSections; i++) {
-				if (shouldDisplayPermutationForSection(i)) {
+			for (i = 0; i < full_sections.length; i++) {
+				var section = full_sections[i].section;
 
 					if (document.getElementById("PermuationOptionsAccentGridDiddled") && document.getElementById("PermuationOptionsAccentGridDiddled").checked)
-						new_snare_array = get_snare_accent_with_diddle_permutation_array(i);
+						new_snare_array = get_snare_accent_with_diddle_permutation_array(section);
 					else if (document.getElementById("PermuationOptionsAccentGrid") && document.getElementById("PermuationOptionsAccentGrid").checked)
-						new_snare_array = get_snare_accent_permutation_array(i);
+						new_snare_array = get_snare_accent_permutation_array(section);
 					else
-						new_snare_array = get_snare_permutation_array(i);
+						new_snare_array = get_snare_permutation_array(section);
 
-					post_abc = get_permutation_post_ABC(i);
+					post_abc = get_permutation_post_ABC(section, full_sections[i].isLast);
 
-					fullABC += get_permutation_pre_ABC(i);
+					fullABC += get_permutation_pre_ABC(section, full_sections[i].showTitle);
 					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, Toms_Array, post_abc, num_notes, class_time_division, num_notes, true, class_num_beats_per_measure, class_note_value_per_measure);
 					root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, new_snare_array, Kick_Array, Toms_Array, num_notes));
-				}
 			}
 			break;
 
