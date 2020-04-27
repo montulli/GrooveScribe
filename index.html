@@ -43,6 +43,9 @@
 		<!-- script to render ABC to an SVG image -->
 		<script type="text/javascript" src="./js/abc2svg-1.js"></script>
 
+		<!-- script to convert SVG to PNGs for download -->
+		<script type="text/javascript" src="./js/pablo.min.js"></script>
+
 		<!-- script for sharing to social sites -->
 		<script src="js/share-button.min.js"></script>
 
@@ -138,7 +141,7 @@
 				<!-- rendering area -->
 				<div id="sheetMusicDiv" class="fullWidthEle">
 					<div id="svgTarget" class="svgTarget">
-				<!-- space for the SVG music go display -->
+						<!-- space for the SVG sheet music to display -->
 					</div>
 				</div>
 			</div>
@@ -384,7 +387,8 @@
 		</div>
 		<div class="noteContextMenu">
 			<ul id="downloadContextMenu" class="list" style="width: 200px;">
-				<li onclick='myGrooveWriter.SVG_save_as();'><b>Download SVG Image</b></li>
+				<li onclick='myGrooveWriter.SVG_save_as();'><b>Download SVG Images</b></li>
+				<li onclick='myGrooveWriter.PNG_save_as();'><b>Download PNG Image</b></li>
 				<li onclick='myGrooveWriter.MIDI_save_as();'><b>Download MIDI file</b></li>
 			</ul>
 		</div>

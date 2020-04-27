@@ -2914,28 +2914,56 @@ function GrooveWriter() { "use strict";
 
 	};
 
+	root.PNG_save_as = function () {
+		var svg_elements = document.getElementById("svgTarget").querySelectorAll("SVG");
+
+		Pablo.support.image.png(function(support){
+			if (support) {
+				for (var i=0; i < svg_elements.length; i++) {
+					var myPablo = Pablo(svg_elements[i]);
+					myPablo.download('png', 'notation.png', function (result) {
+						if (result.error) {
+							alert("An error occured when trying to convert the sheet music to a PNG file.")
+						}
+					});
+				}
+			}
+			else {
+				alert("Unfortunately your browser does not support PNG image saving.")
+			}
+		});
+	}
+
 	root.SVG_save_as = function () {
 		var abc_source = document.getElementById("ABCsource").value;
 		var svg_obj = root.myGrooveUtils.renderABCtoSVG(abc_source);
 
-		// save
-		var filename;
-		var tune_title = document.getElementById("tuneTitle").value;
-		if (tune_title.length == 0) {
-			filename = 'notation';
-		} else {
-			filename = tune_title;
-		}
-		filename += '.svg';
-		var mime_type = 'image/svg+xml;charset=utf-8';
+		var svg_images = svg_obj.svg.split("</svg>");
+		// that split should always create at least 2 since it will match that </svg> if there is only one
+		// since the split creates an extra one reduce the length by 1
+		for (var i=0; i < svg_images.length-1; i++) {
+			// save
+			var filename;
+			var tune_title = document.getElementById("tuneTitle").value;
+			if (tune_title.length == 0) {
+				filename = "notation";
+			} else {
+				filename = tune_title;
+			}
+			if (svg_images.length > 2) {
+				filename += '_' + (i + 1);
+			}
+			filename += '.svg';
+			var mime_type = 'image/svg+xml;charset=utf-8';
 
-		var link = document.createElement('a');
-		link.href = URL.createObjectURL(new Blob([svg_obj.svg], {type: mime_type}))
-		link.download = filename;
-		// FF requires the link in actual DOM
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
+			var link = document.createElement('a');
+			link.href = URL.createObjectURL(new Blob([svg_images[i] + "</svg>"], {type: mime_type}))
+			link.download = filename;
+			// FF requires the link in actual DOM
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		}
 	};
 
 	root.ShowHideABCResults = function () {
