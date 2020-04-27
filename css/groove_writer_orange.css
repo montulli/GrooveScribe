@@ -809,12 +809,15 @@
 	.svgTarget {
 		background: #FFF;
 	}
-	.svgTarget svg {
+
+	/* override the normal 100% width that is in groove_display for editing */
+	#RightHandContent .svgTarget svg {
 		margin-left: 5%;
 		margin-right: 5%;
-		width: 90% !important;
-		//height: auto;
+		width: 90%;
+		/* height: auto; */
 	}
+
 	#sheetMusicTextFields {
 		border-top: 1px solid #999;
 		padding: 8px 0px;
