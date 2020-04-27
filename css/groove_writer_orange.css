@@ -467,7 +467,7 @@
 		height: 100%;
 		margin-right: 2px;
 		margin-left: 2px;
-		margin-bottom: -1;
+		margin-bottom: 0;
 	}
 	.bg-highlight {
 		display: inline-block;
@@ -1093,7 +1093,7 @@
 	}
 	#printButton {
 	}
-	#exportMidiButton {
+	#downloadButton {
 	}
 	#shareSaveButton {
 	}
@@ -1184,7 +1184,7 @@
 	.edit-block {
 		display: none;
 	}
-	// 3 circles make up the tom icon.  Position them
+	/*  3 circles make up the tom icon.  Position them */
 	#icon-tom1 {
 		font-size: 16px;
 		margin-top: 16px;

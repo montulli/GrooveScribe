@@ -1039,6 +1039,22 @@ function GrooveWriter() { "use strict";
 		}
 	};
 
+	// the user has clicked on the download menu
+	root.DownloadAnchorClick = function (event) {
+
+		var contextMenu = document.getElementById("downloadContextMenu");
+		if (contextMenu) {
+			var anchorPoint = document.getElementById("downloadButton");
+
+			if (anchorPoint) {
+				var anchorPos = getTagPosition(anchorPoint);
+				contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight - 150 + "px";
+				contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + "px";
+			}
+			root.myGrooveUtils.showContextMenu(contextMenu);
+		}
+	};
+
 	// figure out if the metronome options menu should be selected and change the UI
 	root.metronomeOptionsMenuSetSelectedState = function () {
 
@@ -2896,6 +2912,30 @@ function GrooveWriter() { "use strict";
 		diverr.innerHTML = svg_return.error_html;
 		svgTarget.innerHTML = svg_return.svg;
 
+	};
+
+	root.SVG_save_as = function () {
+		var abc_source = document.getElementById("ABCsource").value;
+		var svg_obj = root.myGrooveUtils.renderABCtoSVG(abc_source);
+
+		// save
+		var filename;
+		var tune_title = document.getElementById("tuneTitle").value;
+		if (tune_title.length == 0) {
+			filename = 'notation';
+		} else {
+			filename = tune_title;
+		}
+		filename += '.svg';
+		var mime_type = 'image/svg+xml;charset=utf-8';
+
+		var link = document.createElement('a');
+		link.href = URL.createObjectURL(new Blob([svg_obj.svg], {type: mime_type}))
+		link.download = filename;
+		// FF requires the link in actual DOM
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
 	};
 
 	root.ShowHideABCResults = function () {
