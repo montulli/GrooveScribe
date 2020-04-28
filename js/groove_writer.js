@@ -2920,84 +2920,51 @@ function GrooveWriter() {
 
 	};
 
-	root.PNG_save_as = function () {
+	// Render an SVG that is good for download.
+	// Constant size at 2000x200
+	function downloadImages(imageType) {
 		var abc_source = generate_ABC(800);
 		var svg_obj = root.myGrooveUtils.renderABCtoSVG(abc_source);
+		var filename;
+		var tune_title = document.getElementById("tuneTitle").value;
+
+		if (tune_title.length == 0) {
+			filename = "notation.";
+		} else {
+			filename = tune_title;
+		}
+		filename += imageType;
 
 		var svg_images = svg_obj.svg.split("</svg>");
 		// that split should always create at least 2 since it will match that </svg> if there is only one
 		// since the split creates an extra one reduce the length by 1
 		for (var i=0; i < svg_images.length-1; i++) {
-			var filename;
-			var tune_title = document.getElementById("tuneTitle").value;
-			if (tune_title.length == 0) {
-				filename = "notation";
-			} else {
-				filename = tune_title;
-			}
-			filename += '.png';
-
 			var myPablo = Pablo(svg_images[i] + "</svg>");
 			myPablo.attr('width', '2000px')
 			myPablo.attr('height', '200px')
 			myPablo.attr('viewBox', '0 0 1600 160')
 			myPablo.children('g').attr('transform', 'scale(2)')
-			myPablo.download('png', filename, function (result) {
+
+			myPablo.download(imageType, filename, function (result) {
 				if (result.error) {
 					alert("An error occurred when trying to convert the sheet music to a PNG file.")
 				}
 			});
 		}
+	}
 
-		/* This code downloads the on screen SVG directly
-		var svg_elements = document.getElementById("svgTarget").querySelectorAll("SVG");
-		Pablo.support.image.png(function(support){
-			if (support) {
-				for (var i=0; i < svg_elements.length; i++) {
-					var myPablo = Pablo(svg_elements[i]);
-					myPablo.download('png', 'notation.png', function (result) {
-						if (result.error) {
-							alert("An error occured when trying to convert the sheet music to a PNG file.")
-						}
-					});
-				}
+	root.PNG_save_as = function () {
+		Pablo.support.image.png(function(acceptable) {
+			if(acceptable) {
+				downloadImages('png');
+			} else {
+				alert("Sorry, this browser can't export PNG images")
 			}
-			else {
-				alert("Unfortunately your browser does not support PNG image saving.")
-			}
-		}); */
+		});
 	}
 
 	root.SVG_save_as = function () {
-		var abc_source = generate_ABC(1200);
-		var svg_obj = root.myGrooveUtils.renderABCtoSVG(abc_source);
-
-		var svg_images = svg_obj.svg.split("</svg>");
-		// that split should always create at least 2 since it will match that </svg> if there is only one
-		// since the split creates an extra one reduce the length by 1
-		for (var i=0; i < svg_images.length-1; i++) {
-			// save
-			var filename;
-			var tune_title = document.getElementById("tuneTitle").value;
-			if (tune_title.length == 0) {
-				filename = "notation";
-			} else {
-				filename = tune_title;
-			}
-			if (svg_images.length > 2) {
-				filename += '_' + (i + 1);
-			}
-			filename += '.svg';
-			var mime_type = 'image/svg+xml;charset=utf-8';
-
-			var link = document.createElement('a');
-			link.href = URL.createObjectURL(new Blob([svg_images[i] + "</svg>"], {type: mime_type}))
-			link.download = filename;
-			// FF requires the link in actual DOM
-			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
-		}
+		downloadImages('svg');
 	};
 
 	root.ShowHideABCResults = function () {
