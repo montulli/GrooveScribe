@@ -2921,7 +2921,7 @@ function GrooveWriter() {
 	};
 
 	root.PNG_save_as = function () {
-		var abc_source = generate_ABC(1200);
+		var abc_source = generate_ABC(800);
 		var svg_obj = root.myGrooveUtils.renderABCtoSVG(abc_source);
 
 		var svg_images = svg_obj.svg.split("</svg>");
@@ -2938,6 +2938,10 @@ function GrooveWriter() {
 			filename += '.png';
 
 			var myPablo = Pablo(svg_images[i] + "</svg>");
+			myPablo.attr('width', '2000px')
+			myPablo.attr('height', '200px')
+			myPablo.attr('viewBox', '0 0 1600 160')
+			myPablo.children('g').attr('transform', 'scale(2)')
 			myPablo.download('png', filename, function (result) {
 				if (result.error) {
 					alert("An error occurred when trying to convert the sheet music to a PNG file.")
