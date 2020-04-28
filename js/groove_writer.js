@@ -29,7 +29,8 @@
 
 // GrooveWriter class.   The only one in this file.
 
-function GrooveWriter() { "use strict";
+function GrooveWriter() {
+	"use strict";
 
 	var root = this;
 
@@ -42,7 +43,7 @@ function GrooveWriter() { "use strict";
 	// public class vars
 	var class_number_of_measures = 1;
 	var class_time_division = parseInt(root.myGrooveUtils.getQueryVariableFromURL("Div", "16"), 10); // default to 16ths
-	var class_num_beats_per_measure  = 4;     // TimeSigTop
+	var class_num_beats_per_measure = 4;     // TimeSigTop
 	var class_note_value_per_measure = 4;     // TimeSigBottom
 	var class_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure(class_time_division, class_num_beats_per_measure, class_note_value_per_measure);
 	var class_metronome_auto_speed_up_active = false;
@@ -72,9 +73,9 @@ function GrooveWriter() { "use strict";
 	var constant_hihat_note_off_color_rgb = 'rgb(204, 204, 204)'; // grey
 	var constant_note_hidden_color_rgb = "transparent";
 	var constant_sticking_right_on_color_rgb = "rgb(204, 101, 0)";
-	var constant_sticking_left_on_color_rgb =  "rgb(57, 57, 57)";
-	var constant_sticking_both_on_color_rgb =  "rgb(57, 57, 57)";
-	var constant_sticking_count_on_color_rgb =  "rgb(57, 57, 57)";
+	var constant_sticking_left_on_color_rgb = "rgb(57, 57, 57)";
+	var constant_sticking_both_on_color_rgb = "rgb(57, 57, 57)";
+	var constant_sticking_count_on_color_rgb = "rgb(57, 57, 57)";
 	var constant_sticking_right_off_color_rgb = "rgb(204, 204, 204)";
 	var constant_sticking_left_off_color_rgb = "rgb(204, 204, 204)";
 	var constant_snare_accent_on_color_hex = "#FFF";
@@ -103,9 +104,9 @@ function GrooveWriter() { "use strict";
 
 		if (tag_class) {
 
-			if(tag_class.className != undefined) {
-				if(addElseRemove) {
-					if( tag_class.className.indexOf(keyword) < 0 ) {
+			if (tag_class.className != undefined) {
+				if (addElseRemove) {
+					if (tag_class.className.indexOf(keyword) < 0) {
 						tag_class.className += " " + keyword;
 					}
 				} else {
@@ -127,7 +128,7 @@ function GrooveWriter() { "use strict";
 	function addOrRemoveKeywordFromClassById(tagId, keyword, addElseRemove) {
 		var tag_class = document.getElementById(tagId);
 
-		if(!addOrRemoveKeywordFromClass(tag_class, keyword, addElseRemove))
+		if (!addOrRemoveKeywordFromClass(tag_class, keyword, addElseRemove))
 			console.log("Warning in addOrRemoveKeywordFromClassById bad ID: " + tagId);
 	}
 
@@ -151,9 +152,9 @@ function GrooveWriter() { "use strict";
 	}
 
 	function play_single_note_for_note_setting(note_val) {
-		if(MIDI.WebAudio) {
+		if (MIDI.WebAudio) {
 			MIDI.WebAudio.noteOn(9, note_val, constant_OUR_MIDI_VELOCITY_NORMAL, 0);
-		} else if(MIDI.AudioTag) {
+		} else if (MIDI.AudioTag) {
 			MIDI.AudioTag.noteOn(9, note_val, constant_OUR_MIDI_VELOCITY_NORMAL, 0);
 		}
 	}
@@ -244,7 +245,7 @@ function GrooveWriter() { "use strict";
 
 		if (tomOn) {
 			if (returnType == "ABC")
-				switch(tom_num) {
+				switch (tom_num) {
 					case 1:
 						return constant_ABC_T1_Normal; // normal
 						break;
@@ -267,32 +268,31 @@ function GrooveWriter() { "use strict";
 
 	// set the tom note on with type
 	function set_tom_state(id, tom_num, mode, make_sound) {
-
 		// turn stuff on conditionally
 		switch (mode) {
-		case "off":
-			document.getElementById("tom_circle" + tom_num + "-" + id).style.backgroundColor = constant_note_off_color_hex;
-			document.getElementById("tom_circle" + tom_num + "-" + id).style.borderColor = constant_note_border_color_hex;
-			break;
-		case "normal":
-			document.getElementById("tom_circle" + tom_num + "-" + id).style.backgroundColor = constant_note_on_color_hex;
-			document.getElementById("tom_circle" + tom_num + "-" + id).style.borderColor = constant_note_border_color_hex;
-			if(make_sound)
-				switch(tom_num) {
-					case 1:
-						play_single_note_for_note_setting(constant_OUR_MIDI_TOM1_NORMAL);
-						break;
-					case 4:
-						play_single_note_for_note_setting(constant_OUR_MIDI_TOM4_NORMAL);
-						break;
-					default:
-						console.log("bad switch in set_tom_state. bad tom num:" + tom_num);
-						break;
-				}
-			break;
-		default:
-			console.log("bad switch in set_tom_state");
-			break;
+			case "off":
+				document.getElementById("tom_circle" + tom_num + "-" + id).style.backgroundColor = constant_note_off_color_hex;
+				document.getElementById("tom_circle" + tom_num + "-" + id).style.borderColor = constant_note_border_color_hex;
+				break;
+			case "normal":
+				document.getElementById("tom_circle" + tom_num + "-" + id).style.backgroundColor = constant_note_on_color_hex;
+				document.getElementById("tom_circle" + tom_num + "-" + id).style.borderColor = constant_note_border_color_hex;
+				if (make_sound)
+					switch (tom_num) {
+						case 1:
+							play_single_note_for_note_setting(constant_OUR_MIDI_TOM1_NORMAL);
+							break;
+						case 4:
+							play_single_note_for_note_setting(constant_OUR_MIDI_TOM4_NORMAL);
+							break;
+						default:
+							console.log("bad switch in set_tom_state. bad tom num:" + tom_num);
+							break;
+					}
+				break;
+			default:
+				console.log("bad switch in set_tom_state");
+				break;
 		}
 	}
 
@@ -300,6 +300,7 @@ function GrooveWriter() { "use strict";
 	function set_tom1_state(id, mode, make_sound) {
 		set_tom_state(id, 1, mode, make_sound);
 	}
+
 	function set_tom4_state(id, mode, make_sound) {
 		set_tom_state(id, 4, mode, make_sound);
 	}
@@ -361,33 +362,33 @@ function GrooveWriter() { "use strict";
 
 		// turn stuff on conditionally
 		switch (mode) {
-		case "off":
-			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_off_color_hex;
-			document.getElementById("kick_circle" + id).style.borderColor = constant_note_border_color_hex;
-			break;
-		case "normal":
-			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_on_color_hex;
-			document.getElementById("kick_circle" + id).style.borderColor = constant_note_border_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_KICK_NORMAL);
-			break;
-		case "splash":
-			document.getElementById("kick_splash" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("kick_circle" + id).style.borderColor = constant_note_hidden_color_rgb;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_FOOT);
-			break;
-		case "kick_and_splash":
-			document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_on_color_hex;
-			document.getElementById("kick_splash" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_FOOT);
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_KICK_NORMAL);
-			break;
-		default:
-			console.log("bad switch in set_kick_state");
-			break;
+			case "off":
+				document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_off_color_hex;
+				document.getElementById("kick_circle" + id).style.borderColor = constant_note_border_color_hex;
+				break;
+			case "normal":
+				document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_on_color_hex;
+				document.getElementById("kick_circle" + id).style.borderColor = constant_note_border_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_KICK_NORMAL);
+				break;
+			case "splash":
+				document.getElementById("kick_splash" + id).style.color = constant_note_on_color_hex;
+				document.getElementById("kick_circle" + id).style.borderColor = constant_note_hidden_color_rgb;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_FOOT);
+				break;
+			case "kick_and_splash":
+				document.getElementById("kick_circle" + id).style.backgroundColor = constant_note_on_color_hex;
+				document.getElementById("kick_splash" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_FOOT);
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_KICK_NORMAL);
+				break;
+			default:
+				console.log("bad switch in set_kick_state");
+				break;
 		}
 	}
 
@@ -405,54 +406,52 @@ function GrooveWriter() { "use strict";
 
 		// turn stuff on conditionally
 		switch (mode) {
-		case "off":
-			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_off_color_hex;
-			document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
-			break;
-		case "normal":
-			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
-			document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_NORMAL);
-			break;
-		case "flam":
-			document.getElementById("snare_flam" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_FLAM);
-			break;
-		case "drag":
-			document.getElementById("snare_drag" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_DRAG);
-			break;
-		case "ghost":
-			document.getElementById("snare_ghost" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_GHOST);
-			break;
-		case "accent":
-			document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
-			document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
-			document.getElementById("snare_accent" + id).style.color = constant_snare_accent_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_ACCENT);
-			break;
-		case "xstick":
-			document.getElementById("snare_xstick" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_XSTICK);
-			break;
-		case "buzz":
-			document.getElementById("snare_buzz" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_BUZZ);
-			break;
-		default:
-			console.log("bad switch in set_snare_state");
-			break;
+			case "off":
+				document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_off_color_hex;
+				document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
+				break;
+			case "normal":
+				document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
+				document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_NORMAL);
+				break;
+			case "flam":
+				document.getElementById("snare_flam" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_FLAM);
+				break;
+			case "drag":
+				document.getElementById("snare_drag" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_DRAG);
+				break;
+			case "ghost":
+				document.getElementById("snare_ghost" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_GHOST);
+				break;
+			case "accent":
+				document.getElementById("snare_circle" + id).style.backgroundColor = constant_note_on_color_hex;
+				document.getElementById("snare_circle" + id).style.borderColor = constant_note_border_color_hex;
+				document.getElementById("snare_accent" + id).style.color = constant_snare_accent_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_ACCENT);
+				break;
+			case "xstick":
+				document.getElementById("snare_xstick" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_XSTICK);
+				break;
+			case "buzz":
+				document.getElementById("snare_buzz" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_SNARE_BUZZ);
+				break;
+			default:
+				console.log("bad switch in set_snare_state");
+				break;
 		}
-
-
 	}
 
 	function is_hh_on(id) {
@@ -504,18 +503,18 @@ function GrooveWriter() { "use strict";
 			else if (returnType == "URL")
 				return "s"; // stacker
 		}
-    if (document.getElementById("hh_metronome_normal" + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == "ABC")
-        return constant_ABC_HH_Metronome_Normal; // beep
-      else if (returnType == "URL")
-        return "n"; // beep
-    }
+		if (document.getElementById("hh_metronome_normal" + id).style.color == constant_note_on_color_rgb) {
+			if (returnType == "ABC")
+				return constant_ABC_HH_Metronome_Normal; // beep
+			else if (returnType == "URL")
+				return "n"; // beep
+		}
 		if (document.getElementById("hh_metronome_accent" + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == "ABC")
-        return constant_ABC_HH_Metronome_Accent; // beep
-      else if (returnType == "URL")
-        return "N"; // beep
-    }
+			if (returnType == "ABC")
+				return constant_ABC_HH_Metronome_Accent; // beep
+			else if (returnType == "URL")
+				return "N"; // beep
+		}
 		if (document.getElementById("hh_open" + id).style.color == constant_note_on_color_rgb) {
 			if (returnType == "ABC")
 				return constant_ABC_HH_Open; // hh Open
@@ -566,70 +565,70 @@ function GrooveWriter() { "use strict";
 
 		// turn stuff on conditionally
 		switch (mode) {
-		case "off":
-			document.getElementById("hh_cross" + id).style.color = constant_hihat_note_off_color_hex;
-			break;
-		case "normal":
-			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_NORMAL);
-			break;
-		case "ride":
-			document.getElementById("hh_ride" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_RIDE);
-			break;
-		case "ride_bell":
-			document.getElementById("hh_ride_bell" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_RIDE_BELL);
-			break;
-		case "cow_bell":
-			document.getElementById("hh_cow_bell" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_COW_BELL);
-			break;
-		case "crash":
-			document.getElementById("hh_crash" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_CRASH);
-			break;
-		case "stacker":
-			document.getElementById("hh_stacker" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_STACKER);
-			break;
-		case "metronome_normal":
-			document.getElementById("hh_metronome_normal" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_METRONOME_NORMAL);
-			break;
-    case "metronome_accent":
-			document.getElementById("hh_metronome_accent" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_METRONOME_ACCENT);
-			break;
-    case "open":
-			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("hh_open" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_OPEN);
-			break;
-		case "close":
-			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("hh_close" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_NORMAL);
-			break;
-		case "accent":
-			document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
-			document.getElementById("hh_accent" + id).style.color = constant_note_on_color_hex;
-			if(make_sound)
-				play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_ACCENT);
-			break;
-		default:
-			console.log("bad switch in set_hh_state");
-			break;
+			case "off":
+				document.getElementById("hh_cross" + id).style.color = constant_hihat_note_off_color_hex;
+				break;
+			case "normal":
+				document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_NORMAL);
+				break;
+			case "ride":
+				document.getElementById("hh_ride" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_RIDE);
+				break;
+			case "ride_bell":
+				document.getElementById("hh_ride_bell" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_RIDE_BELL);
+				break;
+			case "cow_bell":
+				document.getElementById("hh_cow_bell" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_COW_BELL);
+				break;
+			case "crash":
+				document.getElementById("hh_crash" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_CRASH);
+				break;
+			case "stacker":
+				document.getElementById("hh_stacker" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_STACKER);
+				break;
+			case "metronome_normal":
+				document.getElementById("hh_metronome_normal" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_METRONOME_NORMAL);
+				break;
+			case "metronome_accent":
+				document.getElementById("hh_metronome_accent" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_METRONOME_ACCENT);
+				break;
+			case "open":
+				document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
+				document.getElementById("hh_open" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_OPEN);
+				break;
+			case "close":
+				document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
+				document.getElementById("hh_close" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_NORMAL);
+				break;
+			case "accent":
+				document.getElementById("hh_cross" + id).style.color = constant_note_on_color_hex;
+				document.getElementById("hh_accent" + id).style.color = constant_note_on_color_hex;
+				if (make_sound)
+					play_single_note_for_note_setting(constant_OUR_MIDI_HIHAT_ACCENT);
+				break;
+			default:
+				console.log("bad switch in set_hh_state");
+				break;
 		}
 	}
 
@@ -696,13 +695,13 @@ function GrooveWriter() { "use strict";
 			else if (returnType == "URL")
 				return "R";
 
-		} else  if(left_ele.style.color == constant_sticking_left_on_color_rgb) {
+		} else if (left_ele.style.color == constant_sticking_left_on_color_rgb) {
 
 			if (returnType == "ABC")
 				return constant_ABC_STICK_L;
 			else if (returnType == "URL")
 				return "L";
-		} else  if(count_ele.style.color == constant_sticking_count_on_color_rgb) {
+		} else if (count_ele.style.color == constant_sticking_count_on_color_rgb) {
 
 			if (returnType == "ABC")
 				return constant_ABC_STICK_COUNT;
@@ -718,7 +717,6 @@ function GrooveWriter() { "use strict";
 
 		return false; // should never get here
 	}
-
 
 
 	function sticking_rotate_state(id) {
@@ -752,6 +750,7 @@ function GrooveWriter() { "use strict";
 	var class_cur_tom4_highlight_id = false;
 	var class_cur_snare_highlight_id = false;
 	var class_cur_kick_highlight_id = false;
+
 	function hilight_individual_note(instrument, id) {
 		var hilight_all_notes = true; // on by default
 
@@ -790,29 +789,30 @@ function GrooveWriter() { "use strict";
 		}
 
 		switch (instrument) {
-		case "hi-hat":
-			class_cur_hh_highlight_id = id;
-			break;
-		case "tom1":
-			class_cur_tom1_highlight_id = id;
-			break;
-		case "tom4":
-			class_cur_tom4_highlight_id = id;
-			break;
-		case "snare":
-			class_cur_snare_highlight_id = id;
-			break;
-		case "kick":
-			class_cur_kick_highlight_id = id;
-			break;
-		default:
-			console.log("bad case in hilight_note");
-			break;
+			case "hi-hat":
+				class_cur_hh_highlight_id = id;
+				break;
+			case "tom1":
+				class_cur_tom1_highlight_id = id;
+				break;
+			case "tom4":
+				class_cur_tom4_highlight_id = id;
+				break;
+			case "snare":
+				class_cur_snare_highlight_id = id;
+				break;
+			case "kick":
+				class_cur_kick_highlight_id = id;
+				break;
+			default:
+				console.log("bad case in hilight_note");
+				break;
 		}
 
 	}
 
 	var class_cur_all_notes_highlight_id = false;
+
 	function hilight_all_notes_on_same_beat(instrument, id) {
 
 		id = Math.floor(id);
@@ -846,7 +846,7 @@ function GrooveWriter() { "use strict";
 		if (class_permutation_type != "none")
 			percent_complete = (percent_complete * get_numberOfActivePermutationSections()) % 1.0;
 
-		var note_id_in_32 = Math.floor(percent_complete * root.myGrooveUtils.calc_notes_per_measure((usingTriplets() ? 48 : 32), class_num_beats_per_measure, class_note_value_per_measure)  * class_number_of_measures);
+		var note_id_in_32 = Math.floor(percent_complete * root.myGrooveUtils.calc_notes_per_measure((usingTriplets() ? 48 : 32), class_num_beats_per_measure, class_note_value_per_measure) * class_number_of_measures);
 		var real_note_id = (note_id_in_32 / root.myGrooveUtils.getNoteScaler(class_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure));
 
 		//hilight_individual_note(instrument, id);
@@ -890,33 +890,33 @@ function GrooveWriter() { "use strict";
 
 	function getTagPosition(tag) {
 		var xVal = 0,
-		yVal = 0;
+				yVal = 0;
 		while (tag) {
 			xVal += (tag.offsetLeft - tag.scrollLeft + tag.clientLeft);
 			yVal += (tag.offsetTop - tag.scrollTop + tag.clientTop);
 			tag = tag.offsetParent;
 		}
 		return {
-			x : xVal,
-			y : yVal
+			x: xVal,
+			y: yVal
 		};
 	}
 
 	// called every time the tempo changes, which can be a lot of times due to the range slider
 	// update the main URL with the tempo, but only do it every third of a second at the most
 	var global_tempoChangeCallbackTimeout = null;
-	root.tempoChangeCallback = function(newTempo) {
+	root.tempoChangeCallback = function (newTempo) {
 
 		// if there is a timeout running clear it
-		if(global_tempoChangeCallbackTimeout != null)
+		if (global_tempoChangeCallbackTimeout != null)
 			window.clearTimeout(global_tempoChangeCallbackTimeout);
 
 		// set a new timeout
-		global_tempoChangeCallbackTimeout = window.setTimeout(function() {
-					global_tempoChangeCallbackTimeout = null
-					// update the Main URL to show the new tempo
-					root.updateCurrentURL();
-				}, 300);
+		global_tempoChangeCallbackTimeout = window.setTimeout(function () {
+			global_tempoChangeCallbackTimeout = null
+			// update the Main URL to show the new tempo
+			root.updateCurrentURL();
+		}, 300);
 	}
 
 
@@ -924,24 +924,24 @@ function GrooveWriter() { "use strict";
 
 		var id = "";
 		switch (metronomeInterval) {
-		case 4:
-			id = "metronome4ths";
-			break;
-		case 8:
-			id = "metronome8ths";
-			break;
-		case 16:
-			id = "metronome16ths";
-			break;
-		case 0:
-			/* falls through */
-		default:
-			id = "metronomeOff";
-			if (root.myGrooveUtils.getMetronomeSolo()) {
-				// turn off solo if we are turning off the metronome
-				root.metronomeOptionsMenuPopupClick("Solo");
-			}
-			break;
+			case 4:
+				id = "metronome4ths";
+				break;
+			case 8:
+				id = "metronome8ths";
+				break;
+			case 16:
+				id = "metronome16ths";
+				break;
+			case 0:
+				/* falls through */
+			default:
+				id = "metronomeOff";
+				if (root.myGrooveUtils.getMetronomeSolo()) {
+					// turn off solo if we are turning off the metronome
+					root.metronomeOptionsMenuPopupClick("Solo");
+				}
+				break;
 		}
 
 		// clear other buttons
@@ -991,7 +991,7 @@ function GrooveWriter() { "use strict";
 	// the user has clicked on the permutation menu
 	root.permutationAnchorClick = function (event) {
 
-		if(class_num_beats_per_measure != 4 || class_note_value_per_measure != 4)
+		if (class_num_beats_per_measure != 4 || class_note_value_per_measure != 4)
 			return;   // permutations disabled except in 4/4 time
 
 		var contextMenu = document.getElementById("permutationContextMenu");
@@ -1059,8 +1059,8 @@ function GrooveWriter() { "use strict";
 	root.metronomeOptionsMenuSetSelectedState = function () {
 
 		if (root.myGrooveUtils.getMetronomeSolo() ||
-			class_metronome_auto_speed_up_active ||
-			root.myGrooveUtils.getMetronomeOffsetClickStart() != "1") {
+				class_metronome_auto_speed_up_active ||
+				root.myGrooveUtils.getMetronomeOffsetClickStart() != "1") {
 			// make menu look active
 			addOrRemoveKeywordFromClassById("metronomeOptionsAnchor", "selected", true)
 		} else {
@@ -1072,72 +1072,72 @@ function GrooveWriter() { "use strict";
 	root.metronomeOptionsMenuPopupClick = function (option_type) {
 
 		switch (option_type) {
-		case "Solo":
-			var current = root.myGrooveUtils.getMetronomeSolo();
-			if (!current) {
-				root.myGrooveUtils.setMetronomeSolo(true);
-				addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSolo", "menuChecked", true);
-				if (root.getMetronomeFrequency() === 0)
-					root.setMetronomeFrequency(4);
-			} else {
-				root.myGrooveUtils.setMetronomeSolo(false);
-				addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSolo", "menuChecked", false);
-			}
-			root.myGrooveUtils.midiNoteHasChanged(); // if playing need to refresh
-			break;
-
-		case "SpeedUp":
-			if (class_metronome_auto_speed_up_active) {
-				// just turn it off if it is on, don't show the configurator
-				class_metronome_auto_speed_up_active = false;
-				addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSpeedUp", "menuChecked", false);
-			} else {
-				class_metronome_auto_speed_up_active = true;
-				addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSpeedUp", "menuChecked", true);
-				root.show_MetronomeAutoSpeedupConfiguration();
-			}
-			break;
-
-		case "CountIn":
-			if (class_metronome_count_in_active) {
-				// just turn it off if it is on, don't show the configurator
-        class_metronome_count_in_active = false;
-				addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuCountIn", "menuChecked", false);
-        root.myGrooveUtils.setMetronomeCountIn(false);
-      } else {
-        class_metronome_count_in_active = true;
-				addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuCountIn", "menuChecked", true);
-        root.myGrooveUtils.setMetronomeCountIn(true);
-			}
-			break;
-
-		case "OffTheOne":
-			// bring up the next menu to be clicked
-			var contextMenu;
-
-			if (usingTriplets())
-				contextMenu = document.getElementById("metronomeOptionsOffsetClickForTripletsContextMenu");
-			else
-				contextMenu = document.getElementById("metronomeOptionsOffsetClickContextMenu");
-			if (contextMenu) {
-				var anchorPoint = document.getElementById("metronomeOptionsContextMenuOffTheOne");
-
-				if (anchorPoint) {
-					var anchorPos = getTagPosition(anchorPoint);
-					contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + "px";
-					contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + "px";
+			case "Solo":
+				var current = root.myGrooveUtils.getMetronomeSolo();
+				if (!current) {
+					root.myGrooveUtils.setMetronomeSolo(true);
+					addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSolo", "menuChecked", true);
+					if (root.getMetronomeFrequency() === 0)
+						root.setMetronomeFrequency(4);
+				} else {
+					root.myGrooveUtils.setMetronomeSolo(false);
+					addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSolo", "menuChecked", false);
 				}
-				root.myGrooveUtils.showContextMenu(contextMenu);
-			}
-			break;
+				root.myGrooveUtils.midiNoteHasChanged(); // if playing need to refresh
+				break;
 
-		case "Dropper":
+			case "SpeedUp":
+				if (class_metronome_auto_speed_up_active) {
+					// just turn it off if it is on, don't show the configurator
+					class_metronome_auto_speed_up_active = false;
+					addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSpeedUp", "menuChecked", false);
+				} else {
+					class_metronome_auto_speed_up_active = true;
+					addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSpeedUp", "menuChecked", true);
+					root.show_MetronomeAutoSpeedupConfiguration();
+				}
+				break;
 
-			break;
+			case "CountIn":
+				if (class_metronome_count_in_active) {
+					// just turn it off if it is on, don't show the configurator
+					class_metronome_count_in_active = false;
+					addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuCountIn", "menuChecked", false);
+					root.myGrooveUtils.setMetronomeCountIn(false);
+				} else {
+					class_metronome_count_in_active = true;
+					addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuCountIn", "menuChecked", true);
+					root.myGrooveUtils.setMetronomeCountIn(true);
+				}
+				break;
 
-		default:
-			console.log("bad case in metronomeOptionsMenuPopupClick()");
-			break;
+			case "OffTheOne":
+				// bring up the next menu to be clicked
+				var contextMenu;
+
+				if (usingTriplets())
+					contextMenu = document.getElementById("metronomeOptionsOffsetClickForTripletsContextMenu");
+				else
+					contextMenu = document.getElementById("metronomeOptionsOffsetClickContextMenu");
+				if (contextMenu) {
+					var anchorPoint = document.getElementById("metronomeOptionsContextMenuOffTheOne");
+
+					if (anchorPoint) {
+						var anchorPos = getTagPosition(anchorPoint);
+						contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + "px";
+						contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + "px";
+					}
+					root.myGrooveUtils.showContextMenu(contextMenu);
+				}
+				break;
+
+			case "Dropper":
+
+				break;
+
+			default:
+				console.log("bad case in metronomeOptionsMenuPopupClick()");
+				break;
 		}
 
 		root.metronomeOptionsMenuSetSelectedState();
@@ -1179,7 +1179,7 @@ function GrooveWriter() { "use strict";
 
 	function setupPermutationMenu() {
 
-		if(class_num_beats_per_measure == 4 && class_note_value_per_measure == 4) {
+		if (class_num_beats_per_measure == 4 && class_note_value_per_measure == 4) {
 
 			addOrRemoveKeywordFromClassById("permutationAnchor", "enabled", true);
 
@@ -1192,54 +1192,55 @@ function GrooveWriter() { "use strict";
 
 	root.permutationPopupClick = function (perm_type) {
 
-		if(class_permutation_type == perm_type)
+		if (class_permutation_type == perm_type)
 			return;
 
 		class_permutation_type = perm_type;
 
 		switch (perm_type) {
-		case "kick_16ths":
-			showHideCSS_ClassVisibility(".kick-container", true, false); // hide it
-			showHideCSS_ClassVisibility(".snare-container", true, true); // show it
-			while (class_number_of_measures > 1) {
-				root.closeMeasureButtonClick(2);
-			}
-			selectButton(document.getElementById("permutationAnchor"));
-			document.getElementById("PermutationOptions").innerHTML = root.HTMLforPermutationOptions();
-			document.getElementById("PermutationOptions").className += " displayed";
-			break;
+			case "kick_16ths":
+				showHideCSS_ClassVisibility(".kick-container", true, false); // hide it
+				showHideCSS_ClassVisibility(".snare-container", true, true); // show it
+				while (class_number_of_measures > 1) {
+					root.closeMeasureButtonClick(2);
+				}
+				selectButton(document.getElementById("permutationAnchor"));
+				document.getElementById("PermutationOptions").innerHTML = root.HTMLforPermutationOptions();
+				document.getElementById("PermutationOptions").className += " displayed";
+				break;
 
-		case "snare_16ths":
-			showHideCSS_ClassVisibility(".kick-container", true, true); // show it
-			showHideCSS_ClassVisibility(".snare-container", true, false); // hide it
-			while (class_number_of_measures > 1) {
-				root.closeMeasureButtonClick(2);
-			}selectButton(document.getElementById("permutationAnchor"));
-			document.getElementById("PermutationOptions").innerHTML = root.HTMLforPermutationOptions();
-			document.getElementById("PermutationOptions").className += " displayed";
-			break;
+			case "snare_16ths":
+				showHideCSS_ClassVisibility(".kick-container", true, true); // show it
+				showHideCSS_ClassVisibility(".snare-container", true, false); // hide it
+				while (class_number_of_measures > 1) {
+					root.closeMeasureButtonClick(2);
+				}
+				selectButton(document.getElementById("permutationAnchor"));
+				document.getElementById("PermutationOptions").innerHTML = root.HTMLforPermutationOptions();
+				document.getElementById("PermutationOptions").className += " displayed";
+				break;
 
-		case "none":
-			/* falls through */
-		default:
-			showHideCSS_ClassVisibility(".kick-container", true, true); // show it
-			showHideCSS_ClassVisibility(".snare-container", true, true); // show it
-			class_permutation_type = "none";
+			case "none":
+				/* falls through */
+			default:
+				showHideCSS_ClassVisibility(".kick-container", true, true); // show it
+				showHideCSS_ClassVisibility(".snare-container", true, true); // show it
+				class_permutation_type = "none";
 
-			unselectButton(document.getElementById("permutationAnchor"));
-			document.getElementById("PermutationOptions").innerHTML = root.HTMLforPermutationOptions();
-			addOrRemoveKeywordFromClassById("PermutationOptions", "displayed", false);
-			break;
+				unselectButton(document.getElementById("permutationAnchor"));
+				document.getElementById("PermutationOptions").innerHTML = root.HTMLforPermutationOptions();
+				addOrRemoveKeywordFromClassById("PermutationOptions", "displayed", false);
+				break;
 		}
 
-		create_ABC();
+		updateSheetMusic();
 	};
 
 	root.muteInstrument = function (instrument, measure, muteElseUnmute) {
 		// find unmuteHHButton1  or unmuteSnareButton2
 		var buttonName = "unmute" + instrument + "Button" + measure
 		var button = document.getElementById(buttonName);
-		if(muteElseUnmute)
+		if (muteElseUnmute)
 			button.style.display = "inline-block";
 		else
 			button.style.display = "none";
@@ -1251,7 +1252,7 @@ function GrooveWriter() { "use strict";
 		// find unmuteHHButton1  or unmuteSnareButton2
 		var buttonName = "unmute" + instrument + "Button" + measure
 		var button = document.getElementById(buttonName);
-		if(button && button.style.display == "inline-block")
+		if (button && button.style.display == "inline-block")
 			return true;
 		else
 			return false;
@@ -1261,27 +1262,27 @@ function GrooveWriter() { "use strict";
 		var win;
 
 		switch (help_type) {
-		case "help":
-			win = window.open("./gscribe_help.html", '_blank');
-			win.focus();
-			break;
+			case "help":
+				win = window.open("./gscribe_help.html", '_blank');
+				win.focus();
+				break;
 
-		case "about":
-			win = window.open("./gscribe_about.html", '_blank');
-			win.focus();
-			break;
+			case "about":
+				win = window.open("./gscribe_about.html", '_blank');
+				win.focus();
+				break;
 
-		case "undo":
-			root.undoCommand();
-			break;
+			case "undo":
+				root.undoCommand();
+				break;
 
-		case "redo":
-			root.redoCommand();
-			break;
+			case "redo":
+				root.redoCommand();
+				break;
 
-		default:
-			console.log("bad case in helpMenuPopupClick()");
-			break;
+			default:
+				console.log("bad case in helpMenuPopupClick()");
+				break;
 		}
 
 	};
@@ -1307,27 +1308,27 @@ function GrooveWriter() { "use strict";
 		class_measure_for_note_label_click = measure;
 
 		switch (instrument) {
-		case "stickings":
-			contextMenu = document.getElementById("stickingsLabelContextMenu");
-			break;
-		case "hh":
-			contextMenu = document.getElementById("hhLabelContextMenu");
-			break;
-		case "tom1":
-			contextMenu = document.getElementById("tom1LabelContextMenu");
-			break;
-		case "tom4":
-			contextMenu = document.getElementById("tom4LabelContextMenu");
-			break;
-		case "snare":
-			contextMenu = document.getElementById("snareLabelContextMenu");
-			break;
-		case "kick":
-			contextMenu = document.getElementById("kickLabelContextMenu");
-			break;
-		default:
-			console.log("bad case in noteLabelClick: " + instrument);
-			break;
+			case "stickings":
+				contextMenu = document.getElementById("stickingsLabelContextMenu");
+				break;
+			case "hh":
+				contextMenu = document.getElementById("hhLabelContextMenu");
+				break;
+			case "tom1":
+				contextMenu = document.getElementById("tom1LabelContextMenu");
+				break;
+			case "tom4":
+				contextMenu = document.getElementById("tom4LabelContextMenu");
+				break;
+			case "snare":
+				contextMenu = document.getElementById("snareLabelContextMenu");
+				break;
+			case "kick":
+				contextMenu = document.getElementById("kickLabelContextMenu");
+				break;
+			default:
+				console.log("bad case in noteLabelClick: " + instrument);
+				break;
 		}
 
 		if (contextMenu) {
@@ -1348,30 +1349,30 @@ function GrooveWriter() { "use strict";
 		var contextMenu = false;
 
 		switch (instrument) {
-		case "stickings":
-			setFunction = set_sticking_state;
-			break;
-		case "hh":
-			setFunction = set_hh_state;
-			break;
-		case "tom1":
-			setFunction = set_tom1_state;
-			break;
-		case "tom4":
-			setFunction = set_tom4_state;
-			break;
-		case "snare":
-			setFunction = set_snare_state;
-			break;
-		case "kick":
-			setFunction = set_kick_state;
-			break;
-		default:
-			console.log("bad case in noteLabelPopupClick");
-			return false;
+			case "stickings":
+				setFunction = set_sticking_state;
+				break;
+			case "hh":
+				setFunction = set_hh_state;
+				break;
+			case "tom1":
+				setFunction = set_tom1_state;
+				break;
+			case "tom4":
+				setFunction = set_tom4_state;
+				break;
+			case "snare":
+				setFunction = set_snare_state;
+				break;
+			case "kick":
+				setFunction = set_kick_state;
+				break;
+			default:
+				console.log("bad case in noteLabelPopupClick");
+				return false;
 		}
 
-		if(action == "mute") {
+		if (action == "mute") {
 			root.muteInstrument(instrument, class_measure_for_note_label_click, true);
 			return false;
 		}
@@ -1385,7 +1386,7 @@ function GrooveWriter() { "use strict";
 				setFunction(i, "off", i == startIndex);
 
 			} else if (instrument == "stickings") {
-				switch(action) {
+				switch (action) {
 					case "all_right":
 						set_sticking_state(i, "right", i == startIndex);
 						break;
@@ -1418,21 +1419,21 @@ function GrooveWriter() { "use strict";
 				set_snare_state(i, "ghost", i == startIndex);
 
 			} else if (instrument == "kick" && action == "hh_foot_nums_on") {
-				var num_notes_per_count = class_time_division/class_note_value_per_measure
+				var num_notes_per_count = class_time_division / class_note_value_per_measure
 				var cur_state = get_kick_state(i, "ABC");
 				var kick_is_on = false;
-				if(cur_state == constant_ABC_KI_SandK || cur_state == constant_ABC_KI_Normal)
+				if (cur_state == constant_ABC_KI_SandK || cur_state == constant_ABC_KI_Normal)
 					kick_is_on = true;
-		set_kick_state(i, (i % num_notes_per_count === 0 ?  (kick_is_on ? "kick_and_splash" : "splash") : (kick_is_on ? "normal" : "off")), i == (startIndex));
+				set_kick_state(i, (i % num_notes_per_count === 0 ? (kick_is_on ? "kick_and_splash" : "splash") : (kick_is_on ? "normal" : "off")), i == (startIndex));
 
 			} else if (instrument == "kick" && action == "hh_foot_ands_on") {
-				var num_notes_per_count = class_time_division/class_note_value_per_measure
+				var num_notes_per_count = class_time_division / class_note_value_per_measure
 				var cur_state = get_kick_state(i, "ABC");
 				var kick_is_on = false;
-				if(cur_state == constant_ABC_KI_SandK || cur_state == constant_ABC_KI_Normal)
+				if (cur_state == constant_ABC_KI_SandK || cur_state == constant_ABC_KI_Normal)
 					kick_is_on = true;
 
-				set_kick_state(i, (i % num_notes_per_count === (num_notes_per_count/2) ? (kick_is_on ? "kick_and_splash" : "splash") : (kick_is_on ? "normal" : "off")), i == (startIndex + num_notes_per_count/2));
+				set_kick_state(i, (i % num_notes_per_count === (num_notes_per_count / 2) ? (kick_is_on ? "kick_and_splash" : "splash") : (kick_is_on ? "normal" : "off")), i == (startIndex + num_notes_per_count / 2));
 
 			} else if (action == "all_on") {
 				setFunction(i, "normal", i == startIndex);
@@ -1448,7 +1449,7 @@ function GrooveWriter() { "use strict";
 
 		class_measure_for_note_label_click = 0; // reset
 
-		create_ABC();
+		updateSheetMusic();
 
 		return false;
 	};
@@ -1460,27 +1461,27 @@ function GrooveWriter() { "use strict";
 		var contextMenu;
 
 		switch (type) {
-		case "sticking":
-			contextMenu = document.getElementById("stickingContextMenu");
-			break;
-		case "hh":
-			contextMenu = document.getElementById("hhContextMenu");
-			break;
-		case "tom1":
-			contextMenu = document.getElementById("tom1ContextMenu");
-			break;
-		case "tom4":
-			contextMenu = document.getElementById("tom4ContextMenu");
-			break;
-		case "snare":
-			contextMenu = document.getElementById("snareContextMenu");
-			break;
-		case "kick":
-			contextMenu = document.getElementById("kickContextMenu");
-			break;
-		default:
-			console.log("Bad case in handleNotePopup");
-			break;
+			case "sticking":
+				contextMenu = document.getElementById("stickingContextMenu");
+				break;
+			case "hh":
+				contextMenu = document.getElementById("hhContextMenu");
+				break;
+			case "tom1":
+				contextMenu = document.getElementById("tom1ContextMenu");
+				break;
+			case "tom4":
+				contextMenu = document.getElementById("tom4ContextMenu");
+				break;
+			case "snare":
+				contextMenu = document.getElementById("snareContextMenu");
+				break;
+			case "kick":
+				contextMenu = document.getElementById("kickContextMenu");
+				break;
+			default:
+				console.log("Bad case in handleNotePopup");
+				break;
 		}
 
 		if (contextMenu) {
@@ -1510,30 +1511,30 @@ function GrooveWriter() { "use strict";
 
 			// this is a non advanced edit left click
 			switch (type) {
-			case "hh":
-				set_hh_state(id, is_hh_on(id) ? "off" : "normal", true);
-				break;
-			case "snare":
-				set_snare_state(id, is_snare_on(id) ? "off" : "accent", true);
-				break;
-			case "tom1":
-				set_tom_state(id, 1, is_tom_on(id, 1) ? "off" : "normal", true);
-				break;
-			case "tom4":
-				set_tom_state(id, 4, is_tom_on(id, 4) ? "off" : "normal", true);
-				break;
-			case "kick":
-				set_kick_state(id, is_kick_on(id) ? "off" : "normal", true);
-				break;
-			case "sticking":
-				sticking_rotate_state(id);
-				break;
-			default:
-				console.log("Bad case in noteLeftClick: " + type);
-				break;
+				case "hh":
+					set_hh_state(id, is_hh_on(id) ? "off" : "normal", true);
+					break;
+				case "snare":
+					set_snare_state(id, is_snare_on(id) ? "off" : "accent", true);
+					break;
+				case "tom1":
+					set_tom_state(id, 1, is_tom_on(id, 1) ? "off" : "normal", true);
+					break;
+				case "tom4":
+					set_tom_state(id, 4, is_tom_on(id, 4) ? "off" : "normal", true);
+					break;
+				case "kick":
+					set_kick_state(id, is_kick_on(id) ? "off" : "normal", true);
+					break;
+				case "sticking":
+					sticking_rotate_state(id);
+					break;
+				default:
+					console.log("Bad case in noteLeftClick: " + type);
+					break;
 			}
 
-			create_ABC();
+			updateSheetMusic();
 		}
 
 	};
@@ -1542,30 +1543,30 @@ function GrooveWriter() { "use strict";
 		var id = class_which_index_last_clicked;
 
 		switch (type) {
-		case "sticking":
-			set_sticking_state(id, new_setting, true);
-			break;
-		case "hh":
-			set_hh_state(id, new_setting, true);
-			break;
-		case "tom1":
-			set_tom1_state(id, new_setting, true);
-			break;
-		case "tom4":
-			set_tom4_state(id, new_setting, true);
-			break;
-		case "snare":
-			set_snare_state(id, new_setting, true);
-			break;
-		case "kick":
-			set_kick_state(id, new_setting, true);
-			break;
-		default:
-			console.log("Bad case in contextMenuClick");
-			break;
+			case "sticking":
+				set_sticking_state(id, new_setting, true);
+				break;
+			case "hh":
+				set_hh_state(id, new_setting, true);
+				break;
+			case "tom1":
+				set_tom1_state(id, new_setting, true);
+				break;
+			case "tom4":
+				set_tom4_state(id, new_setting, true);
+				break;
+			case "snare":
+				set_snare_state(id, new_setting, true);
+				break;
+			case "kick":
+				set_kick_state(id, new_setting, true);
+				break;
+			default:
+				console.log("Bad case in contextMenuClick");
+				break;
 		}
 
-		create_ABC();
+		updateSheetMusic();
 	};
 
 	// called when we initially mouseOver a note.
@@ -1581,20 +1582,20 @@ function GrooveWriter() { "use strict";
 
 		if (action) {
 			switch (instrument) {
-			case "hh":
-				set_hh_state(id, action == "off" ? "off" : "normal", true);
-				break;
-			case "snare":
-				set_snare_state(id, action == "off" ? "off" : "accent", true);
-				break;
-			case "kick":
-				set_kick_state(id, action == "off" ? "off" : "normal", true);
-				break;
-			default:
-				console.log("Bad case in noteOnMouseEnter");
-				break;
+				case "hh":
+					set_hh_state(id, action == "off" ? "off" : "normal", true);
+					break;
+				case "snare":
+					set_snare_state(id, action == "off" ? "off" : "accent", true);
+					break;
+				case "kick":
+					set_kick_state(id, action == "off" ? "off" : "normal", true);
+					break;
+				default:
+					console.log("Bad case in noteOnMouseEnter");
+					break;
 			}
-			create_ABC(); // update music
+			updateSheetMusic(); // update music
 		}
 
 		return false;
@@ -1613,57 +1614,57 @@ function GrooveWriter() { "use strict";
 		var abc = "";
 
 		switch (section) {
-		case 0:
-			abc += "P:Ostinato\n%\n%\n%Just the Ositnato\n";
-			break;
-		case 1:
-			abc += "T: \nP: Singles\n%\n%\n% singles on the \"1\"\n%\n";
-			break;
-		case 2:
-			abc += "%\n%\n% singles on the \"e\"\n%\n";
-			break;
-		case 3:
-			abc += "%\n%\n% singles on the \"&\"\n%\n";
-			break;
-		case 4:
-			abc += "%\n%\n% singles on the \"a\"\n%\n";
-			break;
-		case 5:
-			abc += "T: \nP: Doubles\n%\n%\n% doubles on the \"1\"\n%\n";
-			break;
-		case 6:
-			abc += "%\n%\n% doubles on the \"e\"\n%\n";
-			break;
-		case 7:
-			abc += "%\n%\n% doubles on the \"&\"\n%\n";
-			break;
-		case 8:
-			abc += "%\n%\n% doubles on the \"a\"\n%\n";
-			break;
-		case 9:
-			abc += "T: \nP: Down/Up Beats\n%\n%\n% upbeats on the \"1\"\n%\n";
-			break;
-		case 10:
-			abc += "%\n%\n% downbeats on the \"e\"\n%\n";
-			break;
-		case 11:
-			abc += "T: \nP: Triples\n%\n%\n% triples on the \"1\"\n%\n";
-			break;
-		case 12:
-			abc += "%\n%\n% triples on the \"e\"\n%\n";
-			break;
-		case 13:
-			abc += "%\n%\n% triples on the \"&\"\n%\n";
-			break;
-		case 14:
-			abc += "%\n%\n% triples on the \"a\"\n%\n";
-			break;
-		case 15:
-			abc += "T: \nP: Quads\n%\n%\n% quads\n%\n";
-			break;
-		default:
-			abc += "\nT: Error: No index passed\n";
-			break;
+			case 0:
+				abc += "P:Ostinato\n%\n%\n%Just the Ositnato\n";
+				break;
+			case 1:
+				abc += "T: \nP: Singles\n%\n%\n% singles on the \"1\"\n%\n";
+				break;
+			case 2:
+				abc += "%\n%\n% singles on the \"e\"\n%\n";
+				break;
+			case 3:
+				abc += "%\n%\n% singles on the \"&\"\n%\n";
+				break;
+			case 4:
+				abc += "%\n%\n% singles on the \"a\"\n%\n";
+				break;
+			case 5:
+				abc += "T: \nP: Doubles\n%\n%\n% doubles on the \"1\"\n%\n";
+				break;
+			case 6:
+				abc += "%\n%\n% doubles on the \"e\"\n%\n";
+				break;
+			case 7:
+				abc += "%\n%\n% doubles on the \"&\"\n%\n";
+				break;
+			case 8:
+				abc += "%\n%\n% doubles on the \"a\"\n%\n";
+				break;
+			case 9:
+				abc += "T: \nP: Down/Up Beats\n%\n%\n% upbeats on the \"1\"\n%\n";
+				break;
+			case 10:
+				abc += "%\n%\n% downbeats on the \"e\"\n%\n";
+				break;
+			case 11:
+				abc += "T: \nP: Triples\n%\n%\n% triples on the \"1\"\n%\n";
+				break;
+			case 12:
+				abc += "%\n%\n% triples on the \"e\"\n%\n";
+				break;
+			case 13:
+				abc += "%\n%\n% triples on the \"&\"\n%\n";
+				break;
+			case 14:
+				abc += "%\n%\n% triples on the \"a\"\n%\n";
+				break;
+			case 15:
+				abc += "T: \nP: Quads\n%\n%\n% quads\n%\n";
+				break;
+			default:
+				abc += "\nT: Error: No index passed\n";
+				break;
 		}
 
 		return abc;
@@ -1673,66 +1674,66 @@ function GrooveWriter() { "use strict";
 		var abc = "";
 
 		switch (section) {
-		case 0:
-			abc += "|\n";
-			break;
-		case 1:
-			abc += "\\\n";
-			break;
-		case 2:
-			abc += "\n";
-			break;
-		case 3:
-			if (usingTriplets())
+			case 0:
 				abc += "|\n";
-			else
+				break;
+			case 1:
 				abc += "\\\n";
-			break;
-		case 4:
-			abc += "|\n";
-			break;
-		case 5:
-			abc += "\\\n";
-			break;
-		case 6:
-			abc += "\n";
-			break;
-		case 7:
-			if (usingTriplets())
+				break;
+			case 2:
+				abc += "\n";
+				break;
+			case 3:
+				if (usingTriplets())
+					abc += "|\n";
+				else
+					abc += "\\\n";
+				break;
+			case 4:
 				abc += "|\n";
-			else
+				break;
+			case 5:
 				abc += "\\\n";
-			break;
-		case 8:
-			abc += "|\n";
-			break;
-		case 9:
-			abc += "\\\n";
-			break;
-		case 10:
-			abc += "|\n";
-			break;
-		case 11:
-			if (usingTriplets())
+				break;
+			case 6:
+				abc += "\n";
+				break;
+			case 7:
+				if (usingTriplets())
+					abc += "|\n";
+				else
+					abc += "\\\n";
+				break;
+			case 8:
 				abc += "|\n";
-			else
+				break;
+			case 9:
 				abc += "\\\n";
-			break;
-		case 12:
-			abc += "\n";
-			break;
-		case 13:
-			abc += "\\\n";
-			break;
-		case 14:
-			abc += "|\n";
-			break;
-		case 15:
-			abc += "|\n";
-			break;
-		default:
-			abc += "\nT: Error: No index passed\n";
-			break;
+				break;
+			case 10:
+				abc += "|\n";
+				break;
+			case 11:
+				if (usingTriplets())
+					abc += "|\n";
+				else
+					abc += "\\\n";
+				break;
+			case 12:
+				abc += "\n";
+				break;
+			case 13:
+				abc += "\\\n";
+				break;
+			case 14:
+				abc += "|\n";
+				break;
+			case 15:
+				abc += "|\n";
+				break;
+			default:
+				abc += "\nT: Error: No index passed\n";
+				break;
 		}
 
 		return abc;
@@ -1745,104 +1746,104 @@ function GrooveWriter() { "use strict";
 		var kick_array;
 
 		switch (section) {
-		case 0:
-			kick_array = [false, false, false, false, false, false, false, false,
-				false, false, false, false, false, false, false, false,
-				false, false, false, false, false, false, false, false,
-				false, false, false, false, false, false, false, false];
-			break;
-		case 1:
-			kick_array = ["F", false, false, false, false, false, false, false,
-				"F", false, false, false, false, false, false, false,
-				"F", false, false, false, false, false, false, false,
-				"F", false, false, false, false, false, false, false];
-			break;
-		case 2:
-			kick_array = [false, false, "F", false, false, false, false, false,
-				false, false, "F", false, false, false, false, false,
-				false, false, "F", false, false, false, false, false,
-				false, false, "F", false, false, false, false, false];
-			break;
-		case 3:
-			kick_array = [false, false, false, false, "F", false, false, false,
-				false, false, false, false, "F", false, false, false,
-				false, false, false, false, "F", false, false, false,
-				false, false, false, false, "F", false, false, false];
-			break;
-		case 4:
-			kick_array = [false, false, false, false, false, false, "F", false,
-				false, false, false, false, false, false, "F", false,
-				false, false, false, false, false, false, "F", false,
-				false, false, false, false, false, false, "F", false];
-			break;
-		case 5:
-			kick_array = ["F", false, "F", false, false, false, false, false,
-				"F", false, "F", false, false, false, false, false,
-				"F", false, "F", false, false, false, false, false,
-				"F", false, "F", false, false, false, false, false];
-			break;
-		case 6:
-			kick_array = [false, false, "F", false, "F", false, false, false,
-				false, false, "F", false, "F", false, false, false,
-				false, false, "F", false, "F", false, false, false,
-				false, false, "F", false, "F", false, false, false];
-			break;
-		case 7:
-			kick_array = [false, false, false, false, "F", false, "F", false,
-				false, false, false, false, "F", false, "F", false,
-				false, false, false, false, "F", false, "F", false,
-				false, false, false, false, "F", false, "F", false];
-			break;
-		case 8:
-			kick_array = [false, false, false, false, false, false, "F", false,
-				"F", false, false, false, false, false, "F", false,
-				"F", false, false, false, false, false, "F", false,
-				"F", false, false, false, false, false, "F", false];
-			break;
-		case 9: // downbeats
-			kick_array = ["F", false, false, false, "F", false, false, false,
-				"F", false, false, false, "F", false, false, false,
-				"F", false, false, false, "F", false, false, false,
-				"F", false, false, false, "F", false, false, false];
-			break;
-		case 10: // upbeats
-			kick_array = [false, false, "F", false, false, false, "F", false,
-				false, false, "F", false, false, false, "F", false,
-				false, false, "F", false, false, false, "F", false,
-				false, false, "F", false, false, false, "F", false];
-			break;
-		case 11:
-			kick_array = ["F", false, "F", false, "F", false, false, false,
-				"F", false, "F", false, "F", false, false, false,
-				"F", false, "F", false, "F", false, false, false,
-				"F", false, "F", false, "F", false, false, false];
-			break;
-		case 12:
-			kick_array = [false, false, "F", false, "F", false, "F", false,
-				false, false, "F", false, "F", false, "F", false,
-				false, false, "F", false, "F", false, "F", false,
-				false, false, "F", false, "F", false, "F", false];
-			break;
-		case 13:
-			kick_array = [false, false, false, false, "F", false, "F", false,
-				"F", false, false, false, "F", false, "F", false,
-				"F", false, false, false, "F", false, "F", false,
-				"F", false, false, false, "F", false, "F", false];
-			break;
-		case 14:
-			kick_array = [false, false, false, false, false, false, "F", false,
-				"F", false, "F", false, false, false, "F", false,
-				"F", false, "F", false, false, false, "F", false,
-				"F", false, "F", false, false, false, "F", false];
-			break;
-		case 15:
-			/* falls through */
-		default:
-			kick_array = ["F", false, "F", false, "F", false, "F", false,
-				"F", false, "F", false, "F", false, "F", false,
-				"F", false, "F", false, "F", false, "F", false,
-				"F", false, "F", false, "F", false, "F", false];
-			break;
+			case 0:
+				kick_array = [false, false, false, false, false, false, false, false,
+					false, false, false, false, false, false, false, false,
+					false, false, false, false, false, false, false, false,
+					false, false, false, false, false, false, false, false];
+				break;
+			case 1:
+				kick_array = ["F", false, false, false, false, false, false, false,
+					"F", false, false, false, false, false, false, false,
+					"F", false, false, false, false, false, false, false,
+					"F", false, false, false, false, false, false, false];
+				break;
+			case 2:
+				kick_array = [false, false, "F", false, false, false, false, false,
+					false, false, "F", false, false, false, false, false,
+					false, false, "F", false, false, false, false, false,
+					false, false, "F", false, false, false, false, false];
+				break;
+			case 3:
+				kick_array = [false, false, false, false, "F", false, false, false,
+					false, false, false, false, "F", false, false, false,
+					false, false, false, false, "F", false, false, false,
+					false, false, false, false, "F", false, false, false];
+				break;
+			case 4:
+				kick_array = [false, false, false, false, false, false, "F", false,
+					false, false, false, false, false, false, "F", false,
+					false, false, false, false, false, false, "F", false,
+					false, false, false, false, false, false, "F", false];
+				break;
+			case 5:
+				kick_array = ["F", false, "F", false, false, false, false, false,
+					"F", false, "F", false, false, false, false, false,
+					"F", false, "F", false, false, false, false, false,
+					"F", false, "F", false, false, false, false, false];
+				break;
+			case 6:
+				kick_array = [false, false, "F", false, "F", false, false, false,
+					false, false, "F", false, "F", false, false, false,
+					false, false, "F", false, "F", false, false, false,
+					false, false, "F", false, "F", false, false, false];
+				break;
+			case 7:
+				kick_array = [false, false, false, false, "F", false, "F", false,
+					false, false, false, false, "F", false, "F", false,
+					false, false, false, false, "F", false, "F", false,
+					false, false, false, false, "F", false, "F", false];
+				break;
+			case 8:
+				kick_array = [false, false, false, false, false, false, "F", false,
+					"F", false, false, false, false, false, "F", false,
+					"F", false, false, false, false, false, "F", false,
+					"F", false, false, false, false, false, "F", false];
+				break;
+			case 9: // downbeats
+				kick_array = ["F", false, false, false, "F", false, false, false,
+					"F", false, false, false, "F", false, false, false,
+					"F", false, false, false, "F", false, false, false,
+					"F", false, false, false, "F", false, false, false];
+				break;
+			case 10: // upbeats
+				kick_array = [false, false, "F", false, false, false, "F", false,
+					false, false, "F", false, false, false, "F", false,
+					false, false, "F", false, false, false, "F", false,
+					false, false, "F", false, false, false, "F", false];
+				break;
+			case 11:
+				kick_array = ["F", false, "F", false, "F", false, false, false,
+					"F", false, "F", false, "F", false, false, false,
+					"F", false, "F", false, "F", false, false, false,
+					"F", false, "F", false, "F", false, false, false];
+				break;
+			case 12:
+				kick_array = [false, false, "F", false, "F", false, "F", false,
+					false, false, "F", false, "F", false, "F", false,
+					false, false, "F", false, "F", false, "F", false,
+					false, false, "F", false, "F", false, "F", false];
+				break;
+			case 13:
+				kick_array = [false, false, false, false, "F", false, "F", false,
+					"F", false, false, false, "F", false, "F", false,
+					"F", false, false, false, "F", false, "F", false,
+					"F", false, false, false, "F", false, "F", false];
+				break;
+			case 14:
+				kick_array = [false, false, false, false, false, false, "F", false,
+					"F", false, "F", false, false, false, "F", false,
+					"F", false, "F", false, false, false, "F", false,
+					"F", false, "F", false, false, false, "F", false];
+				break;
+			case 15:
+				/* falls through */
+			default:
+				kick_array = ["F", false, "F", false, "F", false, "F", false,
+					"F", false, "F", false, "F", false, "F", false,
+					"F", false, "F", false, "F", false, "F", false,
+					"F", false, "F", false, "F", false, "F", false];
+				break;
 		}
 
 		return kick_array;
@@ -1851,73 +1852,73 @@ function GrooveWriter() { "use strict";
 	// 16th note permutation array expressed in 32nd notes
 	// all kicks are included, including the ones that start the measure
 	function get_kick16th_strait_permutation_array(section) {
-    var kick_array = [];
-    for(var index=0; index < 32; index++) {
-      switch (section) {
-        case 0:
-          // no notes on
-          kick_array.push(false);
-          break;
-        case 1:
-          // every 0th note of 8
-          kick_array.push((index % 8) ? false : 'F');
-          break;
-        case 2:
-          // every 2nd note of 8
-          kick_array.push(((index-2) % 8) ? false : 'F');
-          break;
-        case 3:
-          // every 4nd note of 8
-          kick_array.push(((index-4) % 8) ? false : 'F');
-          break;
-        case 4:
-          // every 6nd note of 8
-          kick_array.push(((index-6) % 8) ? false : 'F');
-          break;
-        case 5:
-          // every 0th and 2nd
-          if((index % 8) == 0)
-            kick_array.push('F');
-          else if(((index-2) % 8) == 0)
-            kick_array.push('F');
-          else
-            kick_array.push(false);
-          break;
-        case 6:
-          // every 2nd & 4th
-          if(((index-2) % 8) == 0)
-            kick_array.push('F');
-          else if(((index-4) % 8) == 0)
-            kick_array.push('F');
-          else
-            kick_array.push(false);
-          break;
-        case 7:
-          // every 4th & 6th
-          if(((index-4) % 8) == 0)
-            kick_array.push('F');
-          else if(((index-6) % 8) == 0)
-            kick_array.push('F');
-          else
-            kick_array.push(false);
-          break;
-        case 8:
-          // every 0th & 6th
-          if(((index-0) % 8) == 0)
-            kick_array.push('F');
-          else if(((index-6) % 8) == 0)
-            kick_array.push('F');
-          else
-            kick_array.push(false);
-          break;
-        case 9: // downbeats
-          // every 0th note of 4
-          kick_array.push((index % 4) ? false : 'F');
-          break;
+		var kick_array = [];
+		for (var index = 0; index < 32; index++) {
+			switch (section) {
+				case 0:
+					// no notes on
+					kick_array.push(false);
+					break;
+				case 1:
+					// every 0th note of 8
+					kick_array.push((index % 8) ? false : 'F');
+					break;
+				case 2:
+					// every 2nd note of 8
+					kick_array.push(((index - 2) % 8) ? false : 'F');
+					break;
+				case 3:
+					// every 4nd note of 8
+					kick_array.push(((index - 4) % 8) ? false : 'F');
+					break;
+				case 4:
+					// every 6nd note of 8
+					kick_array.push(((index - 6) % 8) ? false : 'F');
+					break;
+				case 5:
+					// every 0th and 2nd
+					if ((index % 8) == 0)
+						kick_array.push('F');
+					else if (((index - 2) % 8) == 0)
+						kick_array.push('F');
+					else
+						kick_array.push(false);
+					break;
+				case 6:
+					// every 2nd & 4th
+					if (((index - 2) % 8) == 0)
+						kick_array.push('F');
+					else if (((index - 4) % 8) == 0)
+						kick_array.push('F');
+					else
+						kick_array.push(false);
+					break;
+				case 7:
+					// every 4th & 6th
+					if (((index - 4) % 8) == 0)
+						kick_array.push('F');
+					else if (((index - 6) % 8) == 0)
+						kick_array.push('F');
+					else
+						kick_array.push(false);
+					break;
+				case 8:
+					// every 0th & 6th
+					if (((index - 0) % 8) == 0)
+						kick_array.push('F');
+					else if (((index - 6) % 8) == 0)
+						kick_array.push('F');
+					else
+						kick_array.push(false);
+					break;
+				case 9: // downbeats
+					// every 0th note of 4
+					kick_array.push((index % 4) ? false : 'F');
+					break;
 				case 10: // upbeats
-          // every 2nd note of 4
-          kick_array.push(((index-2) % 4) ? false : 'F');
-          break;
+					// every 2nd note of 4
+					kick_array.push(((index - 2) % 4) ? false : 'F');
+					break;
 				case 11:
 					return kick_array = ["F", false, "F", false, "F", false, false, false,
 						"F", false, "F", false, "F", false, false, false,
@@ -1925,19 +1926,19 @@ function GrooveWriter() { "use strict";
 						"F", false, "F", false, "F", false, false, false];
 					break;
 				case 12:
-          return kick_array = [false, false, "F", false, "F", false, "F", false,
+					return kick_array = [false, false, "F", false, "F", false, "F", false,
 						false, false, "F", false, "F", false, "F", false,
 						false, false, "F", false, "F", false, "F", false,
 						false, false, "F", false, "F", false, "F", false];
 					break;
 				case 13:
-          return kick_array = ["F", false, false, false, "F", false, "F", false,
+					return kick_array = ["F", false, false, false, "F", false, "F", false,
 						"F", false, false, false, "F", false, "F", false,
 						"F", false, false, false, "F", false, "F", false,
 						"F", false, false, false, "F", false, "F", false];
 					break;
 				case 14:
-          return kick_array = ["F", false, "F", false, false, false, "F", false,
+					return kick_array = ["F", false, "F", false, false, false, "F", false,
 						"F", false, "F", false, false, false, "F", false,
 						"F", false, "F", false, false, false, "F", false,
 						"F", false, "F", false, false, false, "F", false];
@@ -1945,10 +1946,10 @@ function GrooveWriter() { "use strict";
 				case 15:
 					/* falls through */
 				default:
-          // every 0th note of 2  (quads)
-          kick_array.push((index % 2) ? false : 'F');
-          break;
-				break;
+					// every 0th note of 2  (quads)
+					kick_array.push((index % 2) ? false : 'F');
+					break;
+					break;
 			}
 		}
 
@@ -1959,83 +1960,83 @@ function GrooveWriter() { "use strict";
 	// 48th note triplet kick permutation
 	function get_kick16th_triplets_permutation_array(section) {
 		var kick_array = [];
-    for(var index=0; index < 48; index++) {
+		for (var index = 0; index < 48; index++) {
 
-      switch (section) {
-        case 0:
-          // no notes on
-          kick_array.push(false);
-          break;
-        case 1:
-          // every 0th note of 12
-          kick_array.push((index % 12) ? false : 'F');
-          break;
-        case 2:
-          // every 4th note of 12
-          kick_array.push(((index-4) % 12) ? false : 'F');
-          break;
-        case 3:
-          // every 8th note of 12
-          kick_array.push(((index-8) % 12) ? false : 'F');
-          break;
+			switch (section) {
+				case 0:
+					// no notes on
+					kick_array.push(false);
+					break;
+				case 1:
+					// every 0th note of 12
+					kick_array.push((index % 12) ? false : 'F');
+					break;
+				case 2:
+					// every 4th note of 12
+					kick_array.push(((index - 4) % 12) ? false : 'F');
+					break;
+				case 3:
+					// every 8th note of 12
+					kick_array.push(((index - 8) % 12) ? false : 'F');
+					break;
 
-        case 5:
-          // every 0th and 4th
-          if((index % 12) == 0)
-            kick_array.push('F');
-          else if(((index-4) % 12) == 0)
-            kick_array.push('F');
-          else
-            kick_array.push(false);
-          break;
-        case 6:
-          // every 4th && 8th
-          if(((index-4) % 12) == 0)
-            kick_array.push('F');
-          else if(((index-8) % 12) == 0)
-            kick_array.push('F');
-          else
-            kick_array.push(false);
-          break;
-        case 7:
-          // every 0th and 8th
-          if((index % 12) == 0)
-            kick_array.push('F');
-          else if(((index-8) % 12) == 0)
-            kick_array.push('F');
-          else
-            kick_array.push(false);
-          break;
+				case 5:
+					// every 0th and 4th
+					if ((index % 12) == 0)
+						kick_array.push('F');
+					else if (((index - 4) % 12) == 0)
+						kick_array.push('F');
+					else
+						kick_array.push(false);
+					break;
+				case 6:
+					// every 4th && 8th
+					if (((index - 4) % 12) == 0)
+						kick_array.push('F');
+					else if (((index - 8) % 12) == 0)
+						kick_array.push('F');
+					else
+						kick_array.push(false);
+					break;
+				case 7:
+					// every 0th and 8th
+					if ((index % 12) == 0)
+						kick_array.push('F');
+					else if (((index - 8) % 12) == 0)
+						kick_array.push('F');
+					else
+						kick_array.push(false);
+					break;
 
-          // these cases should not be called
-        case 4: // 4th single
-        case 8: // 4th double
-        case 9: // 1st up/down
-        case 10: // 2nd up/down
-        case 12: // 2nd triplet
-        case 13: // 3nd triplet
-        case 14: // 4nd triplet
-        case 15: // 1st Quad
-          console.log("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
-          break;
+					// these cases should not be called
+				case 4: // 4th single
+				case 8: // 4th double
+				case 9: // 1st up/down
+				case 10: // 2nd up/down
+				case 12: // 2nd triplet
+				case 13: // 3nd triplet
+				case 14: // 4nd triplet
+				case 15: // 1st Quad
+					console.log("bad case in get_kick16th_triplets_permutation_array_for_16ths()");
+					break;
 
-        case 11: // first triplet
+				case 11: // first triplet
 					/* falls through */
-        default:
-          // use default
-          // every 4th note
-          if(index % 4 == 0)
-            kick_array.push("F");
-          else
-            kick_array.push(false);
-          break;
-      }
-    }
+				default:
+					// use default
+					// every 4th note
+					if (index % 4 == 0)
+						kick_array.push("F");
+					else
+						kick_array.push(false);
+					break;
+			}
+		}
 		return kick_array;
 	}
 
 	function fill_array_with_value_false(array_of_notes, number_of_notes) {
-		for(var i=0; i < number_of_notes; i++) {
+		for (var i = 0; i < number_of_notes; i++) {
 			array_of_notes[i] = false;
 		}
 	}
@@ -2056,7 +2057,7 @@ function GrooveWriter() { "use strict";
 	// 4/2 would be 32 notes
 	function get_empty_note_array_in_32nds() {
 		var notes_per_4_beats = 32;
-		if(usingTriplets())
+		if (usingTriplets())
 			notes_per_4_beats = 48;
 		var num_notes = (class_num_beats_per_measure * notes_per_4_beats) / class_note_value_per_measure;
 
@@ -2065,18 +2066,18 @@ function GrooveWriter() { "use strict";
 
 
 	function get_kick16th_permutation_array(section) {
-    console.log("get_kick16th_permutation_array");
-    console.log("class_notes_per_measure: " + class_notes_per_measure);
-    if (usingTriplets()) {
-      return get_kick16th_triplets_permutation_array(section);
+		console.log("get_kick16th_permutation_array");
+		console.log("class_notes_per_measure: " + class_notes_per_measure);
+		if (usingTriplets()) {
+			return get_kick16th_triplets_permutation_array(section);
 		}
 
 		return get_kick16th_strait_permutation_array(section);
 	}
 
 	function get_kick16th_permutation_array_minus_some(section) {
-    console.log("get_kick16th_permutation_array_minus_some");
-    if (usingTriplets()) {
+		console.log("get_kick16th_permutation_array_minus_some");
+		if (usingTriplets()) {
 			// triplets never skip any: delegate
 			return get_kick16th_permutation_array(section);
 		}
@@ -2201,101 +2202,101 @@ function GrooveWriter() { "use strict";
 		var ret_val = false;
 
 		switch (sectionNum) {
-		case 0:
-			if (document.getElementById("PermuationOptionsOstinato").checked &&
-				(!document.getElementById("PermuationOptionsOstinato_sub1") ||
-					document.getElementById("PermuationOptionsOstinato_sub1").checked))
-				ret_val = true;
-			break;
-		case 1:
-			if (document.getElementById("PermuationOptionsSingles").checked &&
-				document.getElementById("PermuationOptionsSingles_sub1").checked)
-				ret_val = true;
-			break;
-		case 2:
-			if (document.getElementById("PermuationOptionsSingles").checked &&
-				document.getElementById("PermuationOptionsSingles_sub2").checked)
-				ret_val = true;
-			break;
-		case 3:
-			if (document.getElementById("PermuationOptionsSingles").checked &&
-				document.getElementById("PermuationOptionsSingles_sub3").checked)
-				ret_val = true;
-			break;
-		case 4:
-			if (!usingTriplets() &&
-				document.getElementById("PermuationOptionsSingles").checked &&
-				document.getElementById("PermuationOptionsSingles_sub4").checked)
-				ret_val = true;
-			break;
-		case 5:
-			if (document.getElementById("PermuationOptionsDoubles").checked &&
-				document.getElementById("PermuationOptionsDoubles_sub1").checked)
-				ret_val = true;
-			break;
-		case 6:
-			if (document.getElementById("PermuationOptionsDoubles").checked &&
-				document.getElementById("PermuationOptionsDoubles_sub2").checked)
-				ret_val = true;
-			break;
-		case 7:
-			if (document.getElementById("PermuationOptionsDoubles").checked &&
-				document.getElementById("PermuationOptionsDoubles_sub3").checked)
-				ret_val = true;
-			break;
-		case 8:
-			if (!usingTriplets() &&
-				document.getElementById("PermuationOptionsDoubles").checked &&
-				document.getElementById("PermuationOptionsDoubles_sub4").checked)
-				ret_val = true;
-			break;
-		case 9:
-			if (!usingTriplets() &&
-				document.getElementById("PermuationOptionsUpsDowns").checked &&
-				document.getElementById("PermuationOptionsUpsDowns_sub1").checked)
-				ret_val = true;
-			break;
-		case 10:
-			if (!usingTriplets() &&
-				document.getElementById("PermuationOptionsUpsDowns").checked &&
-				document.getElementById("PermuationOptionsUpsDowns_sub2").checked)
-				ret_val = true;
-			break;
-		case 11:
-			if (document.getElementById("PermuationOptionsTriples").checked &&
-				(!document.getElementById("PermuationSubOptionsTriples1") ||
-					document.getElementById("PermuationOptionsTriples_sub1").checked))
-				ret_val = true;
-			break;
-		case 12:
-			if (!usingTriplets() &&
-				document.getElementById("PermuationOptionsTriples").checked &&
-				document.getElementById("PermuationOptionsTriples_sub2").checked)
-				ret_val = true;
-			break;
-		case 13:
-			if (!usingTriplets() &&
-				document.getElementById("PermuationOptionsTriples").checked &&
-				document.getElementById("PermuationOptionsTriples_sub3").checked)
-				ret_val = true;
-			break;
-		case 14:
-			if (!usingTriplets() &&
-				document.getElementById("PermuationOptionsTriples").checked &&
-				document.getElementById("PermuationOptionsTriples_sub4").checked)
-				ret_val = true;
-			break;
-		case 15:
-			if (!usingTriplets() &&
-				document.getElementById("PermuationOptionsQuads").checked &&
-				(!document.getElementById("PermuationOptionsQuads_sub1") ||
-					document.getElementById("PermuationOptionsQuads_sub1").checked))
-				ret_val = true;
-			break;
-		default:
-			console.log("bad case in groove_writer.js:shouldDisplayPermutationForSection()");
-			return false;
-			//break;
+			case 0:
+				if (document.getElementById("PermuationOptionsOstinato").checked &&
+						(!document.getElementById("PermuationOptionsOstinato_sub1") ||
+								document.getElementById("PermuationOptionsOstinato_sub1").checked))
+					ret_val = true;
+				break;
+			case 1:
+				if (document.getElementById("PermuationOptionsSingles").checked &&
+						document.getElementById("PermuationOptionsSingles_sub1").checked)
+					ret_val = true;
+				break;
+			case 2:
+				if (document.getElementById("PermuationOptionsSingles").checked &&
+						document.getElementById("PermuationOptionsSingles_sub2").checked)
+					ret_val = true;
+				break;
+			case 3:
+				if (document.getElementById("PermuationOptionsSingles").checked &&
+						document.getElementById("PermuationOptionsSingles_sub3").checked)
+					ret_val = true;
+				break;
+			case 4:
+				if (!usingTriplets() &&
+						document.getElementById("PermuationOptionsSingles").checked &&
+						document.getElementById("PermuationOptionsSingles_sub4").checked)
+					ret_val = true;
+				break;
+			case 5:
+				if (document.getElementById("PermuationOptionsDoubles").checked &&
+						document.getElementById("PermuationOptionsDoubles_sub1").checked)
+					ret_val = true;
+				break;
+			case 6:
+				if (document.getElementById("PermuationOptionsDoubles").checked &&
+						document.getElementById("PermuationOptionsDoubles_sub2").checked)
+					ret_val = true;
+				break;
+			case 7:
+				if (document.getElementById("PermuationOptionsDoubles").checked &&
+						document.getElementById("PermuationOptionsDoubles_sub3").checked)
+					ret_val = true;
+				break;
+			case 8:
+				if (!usingTriplets() &&
+						document.getElementById("PermuationOptionsDoubles").checked &&
+						document.getElementById("PermuationOptionsDoubles_sub4").checked)
+					ret_val = true;
+				break;
+			case 9:
+				if (!usingTriplets() &&
+						document.getElementById("PermuationOptionsUpsDowns").checked &&
+						document.getElementById("PermuationOptionsUpsDowns_sub1").checked)
+					ret_val = true;
+				break;
+			case 10:
+				if (!usingTriplets() &&
+						document.getElementById("PermuationOptionsUpsDowns").checked &&
+						document.getElementById("PermuationOptionsUpsDowns_sub2").checked)
+					ret_val = true;
+				break;
+			case 11:
+				if (document.getElementById("PermuationOptionsTriples").checked &&
+						(!document.getElementById("PermuationSubOptionsTriples1") ||
+								document.getElementById("PermuationOptionsTriples_sub1").checked))
+					ret_val = true;
+				break;
+			case 12:
+				if (!usingTriplets() &&
+						document.getElementById("PermuationOptionsTriples").checked &&
+						document.getElementById("PermuationOptionsTriples_sub2").checked)
+					ret_val = true;
+				break;
+			case 13:
+				if (!usingTriplets() &&
+						document.getElementById("PermuationOptionsTriples").checked &&
+						document.getElementById("PermuationOptionsTriples_sub3").checked)
+					ret_val = true;
+				break;
+			case 14:
+				if (!usingTriplets() &&
+						document.getElementById("PermuationOptionsTriples").checked &&
+						document.getElementById("PermuationOptionsTriples_sub4").checked)
+					ret_val = true;
+				break;
+			case 15:
+				if (!usingTriplets() &&
+						document.getElementById("PermuationOptionsQuads").checked &&
+						(!document.getElementById("PermuationOptionsQuads_sub1") ||
+								document.getElementById("PermuationOptionsQuads_sub1").checked))
+					ret_val = true;
+				break;
+			default:
+				console.log("bad case in groove_writer.js:shouldDisplayPermutationForSection()");
+				return false;
+				//break;
 		}
 
 		return ret_val;
@@ -2351,15 +2352,15 @@ function GrooveWriter() { "use strict";
 	// each of the instruments can be muted.   Check the UI and zero out the array if the instrument is marked as muted
 	// for a particular measure
 	function muteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, measureIndex) {
-		if(isInstrumentMuted("hh", measureIndex+1))
+		if (isInstrumentMuted("hh", measureIndex + 1))
 			fill_array_with_value_false(HH_Array, HH_Array.length);
-		if(isInstrumentMuted("snare", measureIndex+1))
+		if (isInstrumentMuted("snare", measureIndex + 1))
 			fill_array_with_value_false(Snare_Array, Snare_Array.length);
-		if(isInstrumentMuted("kick", measureIndex+1))
+		if (isInstrumentMuted("kick", measureIndex + 1))
 			fill_array_with_value_false(Kick_Array, Kick_Array.length);
 
 		for (var i = 0; i < Toms_Array.length; i++) {
-			if(isInstrumentMuted("tom" + (i+1), measureIndex+1))
+			if (isInstrumentMuted("tom" + (i + 1), measureIndex + 1))
 				fill_array_with_value_false(Toms_Array[i], Toms_Array[i].length);
 		}
 	}
@@ -2369,7 +2370,7 @@ function GrooveWriter() { "use strict";
 
 		for (var i in old_kick_array) {
 			if (old_kick_array[i] == constant_ABC_KI_Splash ||
-				old_kick_array[i] == constant_ABC_KI_SandK)
+					old_kick_array[i] == constant_ABC_KI_SandK)
 				new_kick_array.push(constant_ABC_KI_Splash);
 			else
 				new_kick_array.push(false);
@@ -2390,34 +2391,34 @@ function GrooveWriter() { "use strict";
 		for (var i in primary_kick_array) {
 
 			switch (primary_kick_array[i]) {
-			case false:
-				new_kick_array.push(secondary_kick_array[i]);
-				break;
+				case false:
+					new_kick_array.push(secondary_kick_array[i]);
+					break;
 
-			case constant_ABC_KI_SandK:
-				new_kick_array.push(constant_ABC_KI_SandK);
-				break;
-
-			case constant_ABC_KI_Normal:
-				if (secondary_kick_array[i] == constant_ABC_KI_SandK ||
-					secondary_kick_array[i] == constant_ABC_KI_Splash)
+				case constant_ABC_KI_SandK:
 					new_kick_array.push(constant_ABC_KI_SandK);
-				else
-					new_kick_array.push(constant_ABC_KI_Normal);
-				break;
+					break;
 
-			case constant_ABC_KI_Splash:
-				if (secondary_kick_array[i] == constant_ABC_KI_Normal ||
-					secondary_kick_array[i] == constant_ABC_KI_SandK)
-					new_kick_array.push(constant_ABC_KI_SandK);
-				else
-					new_kick_array.push(constant_ABC_KI_Splash);
-				break;
+				case constant_ABC_KI_Normal:
+					if (secondary_kick_array[i] == constant_ABC_KI_SandK ||
+							secondary_kick_array[i] == constant_ABC_KI_Splash)
+						new_kick_array.push(constant_ABC_KI_SandK);
+					else
+						new_kick_array.push(constant_ABC_KI_Normal);
+					break;
 
-			default:
-				console.log("bad case in merge_kick_arrays()");
-				new_kick_array.push(primary_kick_array[i]);
-				break;
+				case constant_ABC_KI_Splash:
+					if (secondary_kick_array[i] == constant_ABC_KI_Normal ||
+							secondary_kick_array[i] == constant_ABC_KI_SandK)
+						new_kick_array.push(constant_ABC_KI_SandK);
+					else
+						new_kick_array.push(constant_ABC_KI_Splash);
+					break;
+
+				default:
+					console.log("bad case in merge_kick_arrays()");
+					new_kick_array.push(primary_kick_array[i]);
+					break;
 			}
 		}
 
@@ -2429,11 +2430,11 @@ function GrooveWriter() { "use strict";
 		var HH_Array = get_empty_note_array_in_32nds();
 		var Snare_Array = get_empty_note_array_in_32nds();
 		var Kick_Array = get_empty_note_array_in_32nds();
-		var Toms_Array = [get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(),get_empty_note_array_in_32nds()];
+		var Toms_Array = [get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds()];
 
 		var i,
-		new_snare_array,
-		num_notes_for_swing = 16;
+				new_snare_array,
+				num_notes_for_swing = 16;
 
 		var metronomeFrequency = root.getMetronomeFrequency();
 
@@ -2452,75 +2453,75 @@ function GrooveWriter() { "use strict";
 
 		// all of the permutations use just the first measure
 		switch (class_permutation_type) {
-		case "kick_16ths":
-			var numSections = get_numSectionsFor_permutation_array();
+			case "kick_16ths":
+				var numSections = get_numSectionsFor_permutation_array();
 
-			// compute sections with different kick patterns
-			for (i = 0; i < numSections; i++) {
+				// compute sections with different kick patterns
+				for (i = 0; i < numSections; i++) {
 
-				if (shouldDisplayPermutationForSection(i)) {
-					var new_kick_array;
+					if (shouldDisplayPermutationForSection(i)) {
+						var new_kick_array;
 
-					if (document.getElementById("PermuationOptionsSkipSomeFirstNotes") && document.getElementById("PermuationOptionsSkipSomeFirstNotes").checked)
-						new_kick_array = get_kick16th_permutation_array_minus_some(i);
-					else
-						new_kick_array = get_kick16th_permutation_array(i);
+						if (document.getElementById("PermuationOptionsSkipSomeFirstNotes") && document.getElementById("PermuationOptionsSkipSomeFirstNotes").checked)
+							new_kick_array = get_kick16th_permutation_array_minus_some(i);
+						else
+							new_kick_array = get_kick16th_permutation_array(i);
 
-					// grab hi-hat foots from existing kick array and merge it in.
-					Kick_Array = filter_kick_array_for_permutation(Kick_Array);
-					new_kick_array = merge_kick_arrays(new_kick_array, Kick_Array);
+						// grab hi-hat foots from existing kick array and merge it in.
+						Kick_Array = filter_kick_array_for_permutation(Kick_Array);
+						new_kick_array = merge_kick_arrays(new_kick_array, Kick_Array);
 
-					root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
+						root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, new_kick_array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
+					}
 				}
-			}
-			break;
+				break;
 
-		case "snare_16ths": // use the hh & snare from the user
-			numSections = get_numSectionsFor_permutation_array();
+			case "snare_16ths": // use the hh & snare from the user
+				numSections = get_numSectionsFor_permutation_array();
 
-			//compute sections with different snare patterns
-			for (i = 0; i < numSections; i++) {
-				if (shouldDisplayPermutationForSection(i)) {
+				//compute sections with different snare patterns
+				for (i = 0; i < numSections; i++) {
+					if (shouldDisplayPermutationForSection(i)) {
 
-					if (document.getElementById("PermuationOptionsAccentGridDiddled") && document.getElementById("PermuationOptionsAccentGridDiddled").checked)
-						new_snare_array = get_snare_accent_with_diddle_permutation_array(i);
-					else if (document.getElementById("PermuationOptionsAccentGrid") && document.getElementById("PermuationOptionsAccentGrid").checked)
-						new_snare_array = get_snare_accent_permutation_array(i);
-					else
-						new_snare_array = get_snare_permutation_array(i);
+						if (document.getElementById("PermuationOptionsAccentGridDiddled") && document.getElementById("PermuationOptionsAccentGridDiddled").checked)
+							new_snare_array = get_snare_accent_with_diddle_permutation_array(i);
+						else if (document.getElementById("PermuationOptionsAccentGrid") && document.getElementById("PermuationOptionsAccentGrid").checked)
+							new_snare_array = get_snare_accent_permutation_array(i);
+						else
+							new_snare_array = get_snare_permutation_array(i);
 
 
-					root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
+						root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, new_snare_array, Kick_Array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
+					}
 				}
-			}
-			break;
+				break;
 
-		case "none":
-			/* falls through */
-		default:
-			if(class_time_division < 16)
-				num_notes_for_swing = 8 * class_num_beats_per_measure/class_note_value_per_measure;
-			else
-				num_notes_for_swing = 16 * class_num_beats_per_measure/class_note_value_per_measure;
-
-			root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
-
-			for (i = 1; i < class_number_of_measures; i++) {
-				// reset arrays
-				Sticking_Array = get_empty_note_array_in_32nds();
-				HH_Array = get_empty_note_array_in_32nds();
-				Snare_Array = get_empty_note_array_in_32nds();
-				Kick_Array = get_empty_note_array_in_32nds();
-				Toms_Array = [get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(),get_empty_note_array_in_32nds()];
-
-
-				// get another measure
-				get32NoteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, class_notes_per_measure * i);
-				muteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, i);
+			case "none":
+				/* falls through */
+			default:
+				if (class_time_division < 16)
+					num_notes_for_swing = 8 * class_num_beats_per_measure / class_note_value_per_measure;
+				else
+					num_notes_for_swing = 16 * class_num_beats_per_measure / class_note_value_per_measure;
 
 				root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
-			}
-			break;
+
+				for (i = 1; i < class_number_of_measures; i++) {
+					// reset arrays
+					Sticking_Array = get_empty_note_array_in_32nds();
+					HH_Array = get_empty_note_array_in_32nds();
+					Snare_Array = get_empty_note_array_in_32nds();
+					Kick_Array = get_empty_note_array_in_32nds();
+					Toms_Array = [get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds()];
+
+
+					// get another measure
+					get32NoteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, class_notes_per_measure * i);
+					muteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, i);
+
+					root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH_Array, Snare_Array, Kick_Array, Toms_Array, MIDI_type, metronomeFrequency, num_notes, num_notes_for_swing, swing_percentage, class_num_beats_per_measure, class_note_value_per_measure);
+				}
+				break;
 		}
 
 		var midi_url = "data:audio/midi;base64," + btoa(midiFile.toBytes());
@@ -2541,7 +2542,7 @@ function GrooveWriter() { "use strict";
 		var myGrooveData = new root.myGrooveUtils.grooveDataNew();
 
 		myGrooveData.notesPerMeasure = class_notes_per_measure;
-		myGrooveData.timeDivision    = class_time_division;
+		myGrooveData.timeDivision = class_time_division;
 		myGrooveData.numberOfMeasures = class_number_of_measures;
 		myGrooveData.numBeats = class_num_beats_per_measure;
 		myGrooveData.noteValue = class_note_value_per_measure;
@@ -2562,7 +2563,7 @@ function GrooveWriter() { "use strict";
 			myGrooveData.hh_array = [];
 			myGrooveData.snare_array = [];
 			myGrooveData.kick_array = [];
-			myGrooveData.toms_array = [[],[],[],[]];
+			myGrooveData.toms_array = [[], [], [], []];
 
 			// query the clickable UI and generate a arrays representing the notes of all measures
 			for (var i = 0; i < total_notes; i++) {
@@ -2590,7 +2591,7 @@ function GrooveWriter() { "use strict";
 
 	// called by the HTML when changes happen to forms that require the ABC to update
 	root.refresh_ABC = function () {
-		create_ABC();
+		updateSheetMusic();
 	};
 
 	// Want to create something like this:
@@ -2608,12 +2609,12 @@ function GrooveWriter() { "use strict";
 	// |HasKickTab=o---------------o---o---------------o-----------o---o---------o-
 	// |HasFootOtherTab=----------------------------------------------------------------
 	// |HasTom1Tab=--------------------------------------------------------o-------
-    // |HasTom4Tab=----------------o---------------------------------------o-------
-    // |HasEditData=?GDB_Author=1&TimeSig=4/4&Div=32&Tempo=80&Measures=2&H=|--x-----x---x-------------------|--x-----x---x-------------------|&S=|----g-----g-------------ooo-o-o-|----g-----g-----------------gggg|&K=|o-----x-------o-o---------------|o-----x-------o-o---------------|&T1=|--------------------------------|------------------------x-------|&T4=|----------------x---------------|------------------------x-------|
+	// |HasTom4Tab=----------------o---------------------------------------o-------
+	// |HasEditData=?GDB_Author=1&TimeSig=4/4&Div=32&Tempo=80&Measures=2&H=|--x-----x---x-------------------|--x-----x---x-------------------|&S=|----g-----g-------------ooo-o-o-|----g-----g-----------------gggg|&K=|o-----x-------o-o---------------|o-----x-------o-o---------------|&T1=|--------------------------------|------------------------x-------|&T4=|----------------x---------------|------------------------x-------|
 	// }}
 	//
 	root.updateGrooveDBSource = function () {
-		if (!document.getElementById("GrooveDB_source") || document.getElementById("GrooveDB_source").style.display == 'none' )
+		if (!document.getElementById("GrooveDB_source") || document.getElementById("GrooveDB_source").style.display == 'none')
 			return; // nothing to update
 
 		var myGrooveData = root.grooveDataFromClickableUI();
@@ -2623,9 +2624,9 @@ function GrooveWriter() { "use strict";
 
 		// scale up all the arrays to 48 or 32 notes so that they look normalized
 
-		myGrooveData.hh_array      = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.hh_array,      myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		myGrooveData.snare_array   = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.snare_array,   myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		myGrooveData.kick_array    = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.kick_array,    myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.hh_array = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.snare_array = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.kick_array = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		myGrooveData.toms_array[0] = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[0], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		myGrooveData.toms_array[3] = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[3], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 
@@ -2748,14 +2749,14 @@ function GrooveWriter() { "use strict";
 		document.title = newTitle;
 		try {
 			window.history.replaceState(null, newTitle, newURL);
-		} catch(err) {
+		} catch (err) {
 			/* empty */
 		}
 
-		if(root.myGrooveUtils.debugMode) {
+		if (root.myGrooveUtils.debugMode) {
 			// put the search data on the bottom of the page to make it easy to cut & paste
 			var searchDataEle = document.getElementById("URLSearchData");
-			if(searchDataEle) {
+			if (searchDataEle) {
 				var searchIndex = newURL.indexOf("?");
 				var searchURL = newURL.substring(searchIndex).replace("Debug=1&", "");
 				searchDataEle.innerHTML = '<p style="margin-left: 10px;"><b>' + searchURL + '</b><p>';
@@ -2763,21 +2764,17 @@ function GrooveWriter() { "use strict";
 		}
 	};
 
-	// this is called by a bunch of places anytime we modify the musical notes on the page
-	// this will recreate the ABC code and will then use the ABC to rerender the sheet music
-	// on the page.
-	function create_ABC() {
-
+	function generate_ABC(renderWidth) {
 		var Sticking_Array = get_empty_note_array_in_32nds();
 		var HH_Array = get_empty_note_array_in_32nds();
 		var Snare_Array = get_empty_note_array_in_32nds();
 		var Kick_Array = get_empty_note_array_in_32nds();
-		var Toms_Array = [get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(),get_empty_note_array_in_32nds()];
+		var Toms_Array = [get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds()];
 		var numSections = get_numSectionsFor_permutation_array();
 		var i,
-		new_snare_array,
-		post_abc,
-		num_sections;
+				new_snare_array,
+				post_abc,
+				num_sections;
 		var num_notes = get32NoteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, 0);
 
 		// abc header boilerplate
@@ -2789,6 +2786,107 @@ function GrooveWriter() { "use strict";
 
 		var fullABC = "";
 
+		switch (class_permutation_type) {
+			case "kick_16ths": // use the hh & snare from the user
+				numSections = get_numSectionsFor_permutation_array();
+
+				fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, class_num_beats_per_measure, class_note_value_per_measure, renderWidth);
+				root.myGrooveUtils.note_mapping_array = [];
+
+				// compute sections with different kick patterns
+				for (i = 0; i < numSections; i++) {
+					if (shouldDisplayPermutationForSection(i)) {
+						var new_kick_array;
+
+						if (document.getElementById("PermuationOptionsSkipSomeFirstNotes") && document.getElementById("PermuationOptionsSkipSomeFirstNotes").checked)
+							new_kick_array = get_kick16th_permutation_array_minus_some(i);
+						else
+							new_kick_array = get_kick16th_permutation_array(i);
+
+						// grab hi-hat foots from existing kick array and merge it in.
+						Kick_Array = filter_kick_array_for_permutation(Kick_Array);
+						new_kick_array = merge_kick_arrays(new_kick_array, Kick_Array);
+
+						post_abc = get_permutation_post_ABC(i);
+
+						fullABC += get_permutation_pre_ABC(i);
+						fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, Toms_Array, post_abc, num_notes, class_time_division, num_notes, true, class_num_beats_per_measure, class_note_value_per_measure);
+						root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, new_kick_array, Toms_Array, num_notes));
+					}
+				}
+				break;
+
+			case "snare_16ths": // use the hh & kick from the user
+				numSections = get_numSectionsFor_permutation_array();
+
+				fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, class_num_beats_per_measure, class_note_value_per_measure, renderWidth);
+				root.myGrooveUtils.note_mapping_array = [];
+
+				//compute 16 sections with different snare patterns
+				for (i = 0; i < numSections; i++) {
+					if (shouldDisplayPermutationForSection(i)) {
+
+						if (document.getElementById("PermuationOptionsAccentGridDiddled") && document.getElementById("PermuationOptionsAccentGridDiddled").checked)
+							new_snare_array = get_snare_accent_with_diddle_permutation_array(i);
+						else if (document.getElementById("PermuationOptionsAccentGrid") && document.getElementById("PermuationOptionsAccentGrid").checked)
+							new_snare_array = get_snare_accent_permutation_array(i);
+						else
+							new_snare_array = get_snare_permutation_array(i);
+
+						post_abc = get_permutation_post_ABC(i);
+
+						fullABC += get_permutation_pre_ABC(i);
+						fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, Toms_Array, post_abc, num_notes, class_time_division, num_notes, true, class_num_beats_per_measure, class_note_value_per_measure);
+						root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, new_snare_array, Kick_Array, Toms_Array, num_notes));
+					}
+				}
+				break;
+
+			case "none":
+				/* falls through */
+			default:
+				fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), true, class_num_beats_per_measure, class_note_value_per_measure, renderWidth);
+				root.myGrooveUtils.note_mapping_array = [];
+
+				var addon_abc;
+
+				for (i = 0; i < class_number_of_measures; i++) {
+
+					// we already go the array states above, don't get it again.
+					if (i > 0) {
+						// reset arrays
+						Sticking_Array = get_empty_note_array_in_32nds();
+						HH_Array = get_empty_note_array_in_32nds();
+						Snare_Array = get_empty_note_array_in_32nds();
+						Kick_Array = get_empty_note_array_in_32nds();
+
+						get32NoteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, class_notes_per_measure * i);
+					}
+
+					if (i == class_number_of_measures - 1) {
+						// last measure
+						addon_abc = "|\n";
+					} else if (i % 2 === 0) {
+						// even measure
+						addon_abc = "\\\n";
+					} else {
+						// odd measure
+						addon_abc = "\n";
+					}
+					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, addon_abc, num_notes, class_time_division, num_notes, true, class_num_beats_per_measure, class_note_value_per_measure);
+					root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, Kick_Array, Toms_Array, num_notes));
+				}
+
+				break;
+		}
+
+		return fullABC;
+	}
+
+	// this is called by a bunch of places anytime we modify the musical notes on the page
+	// this will recreate the ABC code and will then use the ABC to rerender the sheet music
+	// on the page.
+	function updateSheetMusic() {
 		var renderWidth = 600;
 		var svgTarget = document.getElementById("svgTarget");
 		if (svgTarget) {
@@ -2796,99 +2894,7 @@ function GrooveWriter() { "use strict";
 			renderWidth = Math.floor(renderWidth * 0.8);  // reduce width by 20% (This actually makes the notes bigger, because we scale up everything to max width)
 		}
 
-		switch (class_permutation_type) {
-		case "kick_16ths": // use the hh & snare from the user
-			numSections = get_numSectionsFor_permutation_array();
-
-			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, class_num_beats_per_measure, class_note_value_per_measure, renderWidth);
-			root.myGrooveUtils.note_mapping_array = [];
-
-			// compute sections with different kick patterns
-			for (i = 0; i < numSections; i++) {
-				if (shouldDisplayPermutationForSection(i)) {
-					var new_kick_array;
-
-					if (document.getElementById("PermuationOptionsSkipSomeFirstNotes") && document.getElementById("PermuationOptionsSkipSomeFirstNotes").checked)
-						new_kick_array = get_kick16th_permutation_array_minus_some(i);
-					else
-						new_kick_array = get_kick16th_permutation_array(i);
-
-					// grab hi-hat foots from existing kick array and merge it in.
-					Kick_Array = filter_kick_array_for_permutation(Kick_Array);
-					new_kick_array = merge_kick_arrays(new_kick_array, Kick_Array);
-
-					post_abc = get_permutation_post_ABC(i);
-
-					fullABC += get_permutation_pre_ABC(i);
-					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, new_kick_array, Toms_Array, post_abc, num_notes, class_time_division, num_notes, true, class_num_beats_per_measure, class_note_value_per_measure);
-					root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, new_kick_array, Toms_Array, num_notes));
-				}
-			}
-			break;
-
-		case "snare_16ths": // use the hh & kick from the user
-			numSections = get_numSectionsFor_permutation_array();
-
-			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), false, class_num_beats_per_measure, class_note_value_per_measure, renderWidth);
-			root.myGrooveUtils.note_mapping_array = [];
-
-			//compute 16 sections with different snare patterns
-			for (i = 0; i < numSections; i++) {
-				if (shouldDisplayPermutationForSection(i)) {
-
-					if (document.getElementById("PermuationOptionsAccentGridDiddled") && document.getElementById("PermuationOptionsAccentGridDiddled").checked)
-						new_snare_array = get_snare_accent_with_diddle_permutation_array(i);
-					else if (document.getElementById("PermuationOptionsAccentGrid") && document.getElementById("PermuationOptionsAccentGrid").checked)
-						new_snare_array = get_snare_accent_permutation_array(i);
-					else
-						new_snare_array = get_snare_permutation_array(i);
-
-					post_abc = get_permutation_post_ABC(i);
-
-					fullABC += get_permutation_pre_ABC(i);
-					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, new_snare_array, Kick_Array, Toms_Array, post_abc, num_notes, class_time_division, num_notes, true, class_num_beats_per_measure, class_note_value_per_measure);
-					root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, new_snare_array, Kick_Array, Toms_Array, num_notes));
-				}
-			}
-			break;
-
-		case "none":
-			/* falls through */
-		default:
-			fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), true, class_num_beats_per_measure, class_note_value_per_measure, renderWidth);
-			root.myGrooveUtils.note_mapping_array = [];
-
-			var addon_abc;
-
-			for (i = 0; i < class_number_of_measures; i++) {
-
-				// we already go the array states above, don't get it again.
-				if(i > 0) {
-					// reset arrays
-					Sticking_Array = get_empty_note_array_in_32nds();
-					HH_Array = get_empty_note_array_in_32nds();
-					Snare_Array = get_empty_note_array_in_32nds();
-					Kick_Array = get_empty_note_array_in_32nds();
-
-					get32NoteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, class_notes_per_measure * i);
-				}
-
-				if (i == class_number_of_measures - 1) {
-					// last measure
-					addon_abc = "|\n";
-				} else if (i % 2 === 0) {
-					// even measure
-					addon_abc = "\\\n";
-				} else {
-					// odd measure
-					addon_abc = "\n";
-				}
-				fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, addon_abc, num_notes, class_time_division, num_notes, true, class_num_beats_per_measure, class_note_value_per_measure);
-				root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, Kick_Array, Toms_Array, num_notes));
-			}
-
-			break;
-		}
+		var fullABC = generate_ABC(renderWidth);
 
 		document.getElementById("ABCsource").value = fullABC;
 		root.updateGrooveDBSource();
@@ -2901,7 +2907,7 @@ function GrooveWriter() { "use strict";
 		root.displayNewSVG();
 	}
 
-	// called by create_ABC to remake the sheet music on the page
+	// called by generate_ABC to remake the sheet music on the page
 	root.displayNewSVG = function () {
 		var svgTarget = document.getElementById("svgTarget"),
 		diverr = document.getElementById("diverr");
@@ -2915,8 +2921,32 @@ function GrooveWriter() { "use strict";
 	};
 
 	root.PNG_save_as = function () {
-		var svg_elements = document.getElementById("svgTarget").querySelectorAll("SVG");
+		var abc_source = generate_ABC(1200);
+		var svg_obj = root.myGrooveUtils.renderABCtoSVG(abc_source);
 
+		var svg_images = svg_obj.svg.split("</svg>");
+		// that split should always create at least 2 since it will match that </svg> if there is only one
+		// since the split creates an extra one reduce the length by 1
+		for (var i=0; i < svg_images.length-1; i++) {
+			var filename;
+			var tune_title = document.getElementById("tuneTitle").value;
+			if (tune_title.length == 0) {
+				filename = "notation";
+			} else {
+				filename = tune_title;
+			}
+			filename += '.png';
+
+			var myPablo = Pablo(svg_images[i] + "</svg>");
+			myPablo.download('png', filename, function (result) {
+				if (result.error) {
+					alert("An error occurred when trying to convert the sheet music to a PNG file.")
+				}
+			});
+		}
+
+		/* This code downloads the on screen SVG directly
+		var svg_elements = document.getElementById("svgTarget").querySelectorAll("SVG");
 		Pablo.support.image.png(function(support){
 			if (support) {
 				for (var i=0; i < svg_elements.length; i++) {
@@ -2931,11 +2961,11 @@ function GrooveWriter() { "use strict";
 			else {
 				alert("Unfortunately your browser does not support PNG image saving.")
 			}
-		});
+		}); */
 	}
 
 	root.SVG_save_as = function () {
-		var abc_source = document.getElementById("ABCsource").value;
+		var abc_source = generate_ABC(1200);
 		var svg_obj = root.myGrooveUtils.renderABCtoSVG(abc_source);
 
 		var svg_images = svg_obj.svg.split("</svg>");
@@ -3009,7 +3039,7 @@ function GrooveWriter() { "use strict";
 
 		changeDivisionWithNotes(class_time_division, uiStickings, uiHH, uiTom1, uiTom4, uiSnare, uiKick);
 
-		create_ABC();
+		updateSheetMusic();
 	};
 
 	// add a measure to the page
@@ -3057,7 +3087,7 @@ function GrooveWriter() { "use strict";
 		if(add_measure_button)
 			add_measure_button.scrollIntoView({block: "start", behavior: "smooth"});
 
-		create_ABC();
+		updateSheetMusic();
 
 		if(class_number_of_measures === 5)
 			window.alert("Please be aware that the Groove Scribe is not designed to write an entire musical score.\n" +
@@ -3122,7 +3152,7 @@ function GrooveWriter() { "use strict";
 			set_snare_state(i, 'off');
 			set_kick_state(i, 'off');
 		}
-		create_ABC();
+		updateSheetMusic();
 	}
 
 	function isTomsVisible() {
@@ -3144,7 +3174,7 @@ function GrooveWriter() { "use strict";
 			addOrRemoveKeywordFromClassById("showHideTomsButton", "ClickToHide", false);
 
 		if (!dontRefreshScreen)
-			create_ABC();
+			updateSheetMusic();
 
 		return false; // don't follow the link
 	};
@@ -3169,7 +3199,7 @@ function GrooveWriter() { "use strict";
 			addOrRemoveKeywordFromClassById("showHideStickingsButton", "ClickToHide", false);
 
 		if (!dontRefreshScreen)
-			create_ABC();
+			updateSheetMusic();
 
 		return false; // don't follow the link
 	};
@@ -4017,7 +4047,7 @@ function GrooveWriter() { "use strict";
 
 		root.setMetronomeFrequency(myGrooveData.metronomeFrequency);
 
-		create_ABC();
+		updateSheetMusic();
 	}
 
 	root.loadNewGroove = function (encodedURLData) {
@@ -4183,7 +4213,7 @@ function GrooveWriter() { "use strict";
 
 		changeDivisionWithNotes(newDivision, uiStickings, uiHH, uiTom1, uiTom4, uiSnare, uiKick);
 
-		create_ABC();
+		updateSheetMusic();
 	};
 
 	// public function
