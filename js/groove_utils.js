@@ -1502,7 +1502,19 @@ function GrooveUtils() {
 	// We output 48 notes in the ABC rather than the traditional 16 or 32 for 4/4 time.
 	// This is because of the stickings above the bar are a separate voice and should not have the "3" above them
 	// This could be changed to using the normal number and moving all the stickings down to be comments on each note in one voice (But is a pretty big change)
-	function snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, sub_division, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
+	function snare_HH_kick_ABC_for_triplets(sticking_array,
+																					HH_array,
+																					snare_array,
+																					kick_array,
+																					toms_array,
+																					post_voice_abc,
+																					num_notes,
+																					sub_division,
+																					notes_per_measure,
+																					kick_stems_up,
+																					timeSigTop,
+																					timeSigBottom,
+																					numberOfMeasuresPerLine) {
 
 		var scaler = 1; // we are always in 48 notes here, and the ABC needs to think we are in 48 since the specified division is 1/32
 		var ABC_String = "";
@@ -1719,8 +1731,8 @@ function GrooveUtils() {
 				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
 
-				// add a line break every 2 measures
-				if (i < num_notes-1 && ((i + 1) % ((12 * timeSigTop * (4/timeSigBottom)) * 2)) === 0) {
+				// add a line break every numberOfMeasuresPerLine measures
+				if (i < num_notes-1 && ((i + 1) % ((12 * timeSigTop * (4/timeSigBottom)) * numberOfMeasuresPerLine)) === 0) {
 					stickings_voice_string += "\n";
 					hh_snare_voice_string += "\n";
 					kick_voice_string += "\n";
@@ -1741,7 +1753,19 @@ function GrooveUtils() {
 	// translates them to an ABC string in 3 voices
 	// post_voice_abc is a string added to the end of each voice line that can end the line
 	//
-	function snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, sub_division, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
+	function snare_HH_kick_ABC_for_quads(sticking_array,
+																			 HH_array,
+																			 snare_array,
+																			 kick_array,
+																			 toms_array,
+																			 post_voice_abc,
+																			 num_notes,
+																			 sub_division,
+																			 notes_per_measure,
+																			 kick_stems_up,
+																			 timeSigTop,
+																			 timeSigBottom,
+																			 numberOfMeasuresPerLine) {
 
 		var scaler = 1; // we are always in 32ths notes here
 		var ABC_String = "";
@@ -1749,7 +1773,6 @@ function GrooveUtils() {
 		var hh_snare_voice_string = "V:Hands stem=up\n%%voicemap drum\n"; // for hh and snare
 		var kick_voice_string = "V:Feet stem=down\n%%voicemap drum\n"; // for kick drum
 		var all_drum_array_of_array;
-
 
 		all_drum_array_of_array = [snare_array, HH_array];  // exclude the kick
 		if(toms_array)
@@ -1817,8 +1840,8 @@ function GrooveUtils() {
 				hh_snare_voice_string += "|";
 				kick_voice_string += "|";
 			}
-			// add a line break every 2 measures, except the last
-			if (i < num_notes-1 && ((i + 1) % ((32/timeSigBottom) * timeSigTop * 2)) === 0) {
+			// add a line break every numberOfMeasuresPerLine measures, except the last
+			if (i < num_notes-1 && ((i + 1) % ((32/timeSigBottom) * timeSigTop * numberOfMeasuresPerLine)) === 0) {
 				stickings_voice_string += "\n";
 				hh_snare_voice_string += "\n";
 				kick_voice_string += "\n";
@@ -1947,18 +1970,60 @@ function GrooveUtils() {
 	// create ABC from note arrays
 	// The Arrays passed in must be 32 or 48 notes long
 	// notes_per_measure denotes the number of notes that _should_ be in the measure even though the arrays are always scaled up and large (48 or 32)
-	root.create_ABC_from_snare_HH_kick_arrays = function (sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, time_division, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom) {
+	root.create_ABC_from_snare_HH_kick_arrays = function (sticking_array,
+																												HH_array,
+																												snare_array,
+																												kick_array,
+																												toms_array,
+																												post_voice_abc,
+																												num_notes,
+																												time_division,
+																												notes_per_measure,
+																												kick_stems_up,
+																												timeSigTop,
+																												timeSigBottom) {
 
 		// convert sticking count symbol to the actual count
 		// do this right before ABC output so it can't every get encoded into something that gets saved.
 		root.convert_sticking_counts_to_actual_counts(sticking_array, time_division, timeSigTop, timeSigBottom);
 
-		if(root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom)) {
-			return snare_HH_kick_ABC_for_triplets(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, time_division, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);
-		} else {
-			return snare_HH_kick_ABC_for_quads(sticking_array, HH_array, snare_array, kick_array, toms_array, post_voice_abc, num_notes, time_division, notes_per_measure, kick_stems_up, timeSigTop, timeSigBottom);
+		var numberOfMeasuresPerLine = 2;   // Default
+
+		if (notes_per_measure >= 32) {
+			// Only put one measure per line for 32nd notes and above because of width issues
+			numberOfMeasuresPerLine = 1;
 		}
-	};
+
+		if(root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom)) {
+			return snare_HH_kick_ABC_for_triplets(sticking_array,
+																						HH_array,
+																						snare_array,
+																						kick_array,
+																						toms_array,
+																						post_voice_abc,
+																						num_notes,
+																						time_division,
+																						notes_per_measure,
+																						kick_stems_up,
+																						timeSigTop,
+																						timeSigBottom,
+																						numberOfMeasuresPerLine);
+		} else {
+			return snare_HH_kick_ABC_for_quads(sticking_array,
+																				 HH_array,
+																				 snare_array,
+																				 kick_array,
+																				 toms_array,
+																				 post_voice_abc,
+																				 num_notes,
+																				 time_division,
+																				 notes_per_measure,
+																				 kick_stems_up,
+																				 timeSigTop,
+																				 timeSigBottom,
+																				 numberOfMeasuresPerLine);
+		}
+	}
 
 	// create ABC notation from a GrooveData class
 	// returns a string of ABC Notation data

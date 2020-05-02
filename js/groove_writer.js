@@ -2848,7 +2848,13 @@ function GrooveWriter() {
 				fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), true, class_num_beats_per_measure, class_note_value_per_measure, renderWidth);
 				root.myGrooveUtils.note_mapping_array = [];
 
+				var numberOfMeasuresPerLine = 2;
 				var addon_abc;
+
+				if (class_notes_per_measure >= 32) {
+					// Only put one measure per line for 32nd notes and above because of width issues
+					numberOfMeasuresPerLine = 1;
+				}
 
 				for (i = 0; i < class_number_of_measures; i++) {
 
@@ -2866,12 +2872,12 @@ function GrooveWriter() {
 					if (i == class_number_of_measures - 1) {
 						// last measure
 						addon_abc = "|\n";
-					} else if (i % 2 === 0) {
-						// even measure
-						addon_abc = "\\\n";
-					} else {
-						// odd measure
+					} else if ((i % numberOfMeasuresPerLine) === 0) {
+						// new line measure
 						addon_abc = "\n";
+					} else {
+						// continuation measure
+						addon_abc = "\\\n";
 					}
 					fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, addon_abc, num_notes, class_time_division, num_notes, true, class_num_beats_per_measure, class_note_value_per_measure);
 					root.myGrooveUtils.note_mapping_array = root.myGrooveUtils.note_mapping_array.concat(root.myGrooveUtils.create_note_mapping_array_for_highlighting(HH_Array, Snare_Array, Kick_Array, Toms_Array, num_notes));
