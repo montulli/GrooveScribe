@@ -2940,14 +2940,21 @@ function GrooveWriter() {
 		// since the split creates an extra one reduce the length by 1
 		for (var i=0; i < svg_images.length-1; i++) {
 			var myPablo = Pablo(svg_images[i] + "</svg>");
-			myPablo.attr('width', '2000px')
-			myPablo.attr('height', '200px')
-			myPablo.attr('viewBox', '0 0 1600 160')
-			myPablo.children('g').attr('transform', 'scale(2)')
+			var width = parseFloat(myPablo.attr('width'));
+			var height = parseFloat(myPablo.attr('height'));
+			var imageRatio = height/width;
+			var newWidth = 2000;
+			var newHeight = Math.round(newWidth * imageRatio);
+			var newBoxWidth = Math.round(newWidth * .8);
+			var newBoxHeight = Math.round(newHeight * .8);
+			myPablo.attr('width', newWidth + 'px');
+			myPablo.attr('height', newHeight +'px');
+			myPablo.attr('viewBox', '0 0 ' + newBoxWidth + ' ' + newBoxHeight);
+			myPablo.children('g').attr('transform', 'scale(2)');
 
 			myPablo.download(imageType, filename, function (result) {
 				if (result.error) {
-					alert("An error occurred when trying to convert the sheet music to a PNG file.")
+					alert("An error occurred when trying to convert the sheet music to a PNG file.");
 				}
 			});
 		}
@@ -2958,7 +2965,7 @@ function GrooveWriter() {
 			if(acceptable) {
 				downloadImages('png');
 			} else {
-				alert("Sorry, this browser can't export PNG images")
+				alert("Sorry, this browser can't export PNG images");
 			}
 		});
 	}
