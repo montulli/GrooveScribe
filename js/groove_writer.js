@@ -2869,10 +2869,10 @@ function GrooveWriter() {
 						get32NoteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, class_notes_per_measure * i);
 					}
 
-					if (i == class_number_of_measures - 1) {
+					if ((i + 1) == class_number_of_measures) {
 						// last measure
 						addon_abc = "|\n";
-					} else if ((i % numberOfMeasuresPerLine) === 0) {
+					} else if (((i + 1) % numberOfMeasuresPerLine) === 0) {
 						// new line measure
 						addon_abc = "\n";
 					} else {
