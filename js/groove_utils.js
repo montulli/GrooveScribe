@@ -282,6 +282,12 @@ function GrooveUtils() {
 		contextMenu.style.display = "block";
 		root.visible_context_menu = contextMenu;
 
+		// Check for screen visibility of the bottom of the menu
+		if(contextMenu.offsetTop + contextMenu.clientHeight > document.documentElement.clientHeight) {
+			// the menu has gone off the bottom of the screen
+			contextMenu.style.top = document.documentElement.clientHeight - contextMenu.clientHeight + 'px';
+		}
+
 		// use a timeout to setup the onClick handler.
 		// otherwise the click that opened the menu will close it
 		// right away.  :(

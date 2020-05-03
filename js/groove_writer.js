@@ -1047,9 +1047,12 @@ function GrooveWriter() {
 			var anchorPoint = document.getElementById("downloadButton");
 
 			if (anchorPoint) {
-				var anchorPos = getTagPosition(anchorPoint);
-				contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight - 150 + "px";
-				contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + "px";
+				if (!event)
+					event = window.event;
+				if (event.clientX || event.clientY) {
+					contextMenu.style.top = event.clientY - 150 + "px";
+					contextMenu.style.left = event.clientX - 150 + "px";
+				}
 			}
 			root.myGrooveUtils.showContextMenu(contextMenu);
 		}
@@ -1334,9 +1337,9 @@ function GrooveWriter() {
 		if (contextMenu) {
 			if (!event)
 				event = window.event;
-			if (event.pageX || event.pageY) {
-				contextMenu.style.top = event.pageY - 30 + "px";
-				contextMenu.style.left = event.pageX - 35 + "px";
+			if (event.clientX || event.clientY) {
+				contextMenu.style.top = event.clientY - 30 + "px";
+				contextMenu.style.left = event.clientX - 35 + "px";
 			}
 			root.myGrooveUtils.showContextMenu(contextMenu);
 		}
@@ -1485,14 +1488,12 @@ function GrooveWriter() {
 		}
 
 		if (contextMenu) {
-
 			if (!event)
 				event = window.event;
-			if (event.pageX || event.pageY) {
-				contextMenu.style.top = event.pageY - 30 + "px";
-				contextMenu.style.left = event.pageX - 75 + "px";
+			if (event.clientX || event.clientY) {
+				contextMenu.style.top = event.clientY - 30 + "px";
+				contextMenu.style.left = event.clientX - 75 + "px";
 			}
-
 			root.myGrooveUtils.showContextMenu(contextMenu);
 		} else {
 			return true; //error
