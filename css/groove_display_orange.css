@@ -249,8 +249,8 @@
 		fill-opactity: 0.25;
 	}
 	.abcr.highlighted {
-		fill:#990000 !important;
-		fill-opacity: 0.25;
+		fill: var(--highlight-color) !important;
+		fill-opacity: 0.20;
 	}
 	#GrooveDB_MetaData , #debugDisplayArea {
 		background-color: #DDD;
