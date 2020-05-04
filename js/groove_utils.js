@@ -345,7 +345,7 @@ function GrooveUtils() {
 	// will advance the position of the rotation and return TRUE
 	// returns FALSE if rotation is OFF
   root.advanceMetronomeOptionsOffsetClickStartRotation = function (isTriplets) {
-  	if(root.getMetronomeOffsetClickStartIsRotating) {
+  	if(root.getMetronomeOffsetClickStartIsRotating()) {
       root.metronomeOffsetClickStartRotation++;
       return true;
     } else {
