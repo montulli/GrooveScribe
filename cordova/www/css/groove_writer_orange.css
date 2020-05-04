@@ -35,7 +35,7 @@
 		font-family: monospace;
 		display: none;
 	}
-	
+
 	.Printable {
 		display: block;
 	}
@@ -97,7 +97,7 @@
 		overflow-y: auto;
 	}
 	#divisionButtonContainer {
-		
+
 	}
 	#metronomeContainer {
 	}
@@ -148,7 +148,7 @@
 		left: 72px;
 		z-index: 999;
 		border-bottom: 1px solid #000;
-		
+
 	}
 	#logoInSubdivision, #timeLabel, .subdivision, #advancedEditAnchor {
 		display: block;
@@ -183,7 +183,7 @@
 		color: #FFF;
 		cursor: auto;
 		transform: scale(1.1);
-	}	
+	}
 	.myButton:hover, .subdivision:hover {
 	   border-top-color: #28597a;
 	   background: #555555;
@@ -220,7 +220,7 @@
 		padding-top: 13px;
 		border-bottom:1px solid #AAA;
 		background-color: #DDD;
-	
+
 	}
 	#NotationLabel {
 		display: inline-block;
@@ -290,7 +290,7 @@
 	.stickings-label {
 		display: none;
 		height: 25px;
-		background: #f7f1cf;
+		background: #000;
 		color: #2484C0;
 		padding-top: 9px;
 		padding-left: 1px;
@@ -319,20 +319,20 @@
 		text-align: center;
 	}
 	.stickings-label:hover {
-		color: #000;
+		color: #f7f1cf;
 	}
 	.hh-label:hover, .snare-label:hover, .kick-label:hover {
 		color: #2484C0;
 	}
 	.music-line-container {
-		display: inline-block; 
-		/top: 30px; 
+		display: inline-block;
+		/top: 30px;
 		z-index: 3;
 		display: table-cell;
 	}
 	.notes-container {
 		font-family:  Times New Roman;  /* parens around snare ghost note, R for Ride */
-		position: relative; 
+		position: relative;
 		z-index: 4;
 	}
 	.stickings-container {
@@ -372,33 +372,33 @@
 	}
 	.staff-line-1{
 		position: absolute; top: 42px;
-		width:100%; 
-		height:0px; 
-		border-top:3px solid #cacaca; 
+		width:100%;
+		height:0px;
+		border-top:3px solid #cacaca;
 	}
 	.staff-line-2{
 		position: absolute; top: 72px;
-		width:100%; 
-		height:0px; 
-		border-top:3px solid #cacaca; 
+		width:100%;
+		height:0px;
+		border-top:3px solid #cacaca;
 	}
 	.staff-line-3{
 		position: absolute; top: 103px;
-		width:100%; 
-		height:0px; 
-		border-top:3px solid #cacaca; 
+		width:100%;
+		height:0px;
+		border-top:3px solid #cacaca;
 	}
 	.staff-line-4{
 		position: absolute; top: 132px;
-		width:100%; 
-		height:0px; 
-		border-top:3px solid #cacaca; 
+		width:100%;
+		height:0px;
+		border-top:3px solid #cacaca;
 	}
 	.staff-line-5{
 		position: absolute; top: 163px;
-		width:100%; 
-		height:0px; 
-		border-top:3px solid #cacaca; 
+		width:100%;
+		height:0px;
+		border-top:3px solid #cacaca;
 	}
 	.sticking {
 		display: inline-block;
@@ -580,7 +580,7 @@
 		border-radius: 40px 40px 40px 40px;
 		cursor: pointer;
 	}
-	
+
 	.kick_splash {
 		position: absolute; top: 55px; left: 3px;
 		font-size: 30px;
@@ -612,9 +612,9 @@
 		cursor: pointer;
 		font-size: 40px;
 		padding-top: 2px;
-		margin-top: 73px;		
+		margin-top: 73px;
 	}
-	
+
 	.closeMeasureButton {
 		vertical-align: top;
 		display: inline-block;
@@ -709,11 +709,11 @@
 		margin: 0px 10px;
 	}
 	.sheetMusicInputField {
-	
+
 	}
 	// Context Menu
-	.noteContextMenu { 
-		
+	.noteContextMenu {
+
 	}
 	#permutationContextMenu, #helpContextMenu, #metronomeOptionsContextMenu, #metronomeOptionsOffsetClickContextMenu {
 		position: fixed;
@@ -723,14 +723,14 @@
 	.metronomeOptionsContextMenuItem:before, .metronomeOptionsOffsetClickContextMenuItem:before {
 		font-family: FontAwesome;
 		content: "\00a0";  /* blank space */
-		letter-spacing: 17px; 
+		letter-spacing: 17px;
 	} /* unchecked icon */
 	.menuChecked:before {
 		font-family: FontAwesome;
-		content: "\f00c"; 
-		letter-spacing: 5px; 
+		content: "\f00c";
+		letter-spacing: 5px;
 	} /* checked icon */
-	.noteContextMenu>ul.list  { 
+	.noteContextMenu>ul.list  {
 		display: none;
 		position:fixed; left:30px; top:-30px; z-index:999;
 		width:150px;
@@ -748,7 +748,7 @@
 	.noteContextMenu>ul.list li:hover, ul.list a:hover {
 		background: #cccccc;
 	}
-	.noteContextMenu>ul.list li:last-child { 
+	.noteContextMenu>ul.list li:last-child {
 		border:none;
 	}
 	#grooveListWrapper {
@@ -786,9 +786,9 @@
 		width: 795px;
 		margin-left: 0px;
 	}
-	
+
 	#ABCSource {
-		font-family: monospace; 
+		font-family: monospace;
 		font-size: 14px;
 	}
 	#fullURLPopup, #metronomeAutoSpeedupConfiguration, #timeSigPopup {
@@ -908,7 +908,7 @@
 	#shareButton {
 	}
 	.sharer-0 label {
-		background: #E79700 !important;	
+		background: #E79700 !important;
 		color: #FFF !important;
 	}
 	.metronomeAutoSpeedupInputRow {
@@ -957,17 +957,17 @@
 	}
 	#showHideStickingsButton {
 	}
-	#showHideStickingsButton:before  { 
+	#showHideStickingsButton:before  {
 		font-family: FontAwesome;
 		font-size: 2em;
-		letter-spacing: -3px; 
+		letter-spacing: -3px;
 		content: "\f065";
 		line-height: 32px;
 	}
 	#showHideStickingsButton.ClickToHide:before {
 		font-family: FontAwesome;
 		font-size: 2em;
-		letter-spacing: -3px; 
+		letter-spacing: -3px;
 		content: "\f066";
 		line-height: 32px;
 	}
@@ -984,8 +984,8 @@
 	button {
 		cursor: pointer;
 	}
-	
-		
+
+
 	input[type=checkbox]:checked  + label {
 		color: #000;
 		cursor: pointer;
@@ -1005,25 +1005,25 @@
 	.totalTimeNum {
 		color: #CC6500;
 	}
-	.myCheckbox { 
-		display:none; 
+	.myCheckbox {
+		display:none;
 	} /* to hide the checkbox itself */
-	.myCheckbox + label:before 
-	{ 
+	.myCheckbox + label:before
+	{
 		font-family: FontAwesome;
 		display: inline-block;
 	 /* content: "\f096";  /* uncheck box */
 		content: "\00a0";  /* blank space */
-		letter-spacing: 17px; 
+		letter-spacing: 17px;
 	} /* unchecked icon */
-	.myCheckbox:checked + label:before 
-	{ 
-		content: "\f00c"; 
-		letter-spacing: 5px; 
+	.myCheckbox:checked + label:before
+	{
+		content: "\f00c";
+		letter-spacing: 5px;
 	} /* checked icon */
 	.hiddenCheckbox {
 		/* checkbox for the key (legend) */
-		visibility: hidden;	
+		visibility: hidden;
 	}
 	#LegendLabel {
 		border: 1px solid #CCC;
@@ -1057,7 +1057,7 @@
 	.bottomButtonIcon {
 		display:block;
 	}
-	
+
 	.bottomButtonLabel {
 		margin-top: 2px;
 		display: block;
@@ -1068,7 +1068,7 @@
 		#GrooveWriter {
 			min-width: 10px;
 		}
-		
+
 		#RightHandContent {
 			margin-left: 0px;
 			padding-top: 0px;
@@ -1077,7 +1077,7 @@
 			overflow-y: visible;
 			width: 100% !important;
 		}
-		
+
 		.svgTarget svg {
 			margin: 0px 0px !important;
 			width: 100% !important;

@@ -307,7 +307,7 @@
 		display: none;
 		height: 25px;
 		background: #f7f1cf;
-		color: #2484C0;
+		color: #000;
 		padding-top: 9px;
 		padding-left: 1px;
 		font-size: 12px;
@@ -353,10 +353,10 @@
 		text-align: center;
 	}
 	.stickings-label:hover {
-		color: #000;
+		color: var(--highlight-color);
 	}
 	.hh-label:hover, .snare-label:hover, .kick-label:hover {
-		color: #2484C0;
+		color: var(--highlight-color);
 	}
 	.music-line-container {
 		display: inline-block;
