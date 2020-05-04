@@ -1132,10 +1132,11 @@
 		bottom: 3px;
 		right: 3px;
 		margin-right: 20px;
+		color: var(--highlight-color)
 		background-color: rgba(50, 126, 173, 0.3);
 	}
 	.totalTimeNum {
-		color: var(--highlight-color);
+		color: #EEE;
 	}
 	.myCheckbox {
 		display:none;
