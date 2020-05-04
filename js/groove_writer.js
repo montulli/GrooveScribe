@@ -3917,6 +3917,16 @@ function GrooveWriter() {
 			fillInShortenedURLInFullURLPopup(get_FullURLForPage(), 'fullURLPopupTextField');
 	};
 
+	root.copyShareURLToClipboard = function() {
+		var copyText = document.getElementById("fullURLPopupTextField");
+
+		copyText.select();
+		// hack fix for mobile
+		copyText.setSelectionRange(0, 99999);
+
+		document.execCommand("copy");
+	}
+
 	root.close_FullURLPopup = function () {
 		var popup = document.getElementById("fullURLPopup");
 

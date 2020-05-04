@@ -1025,6 +1025,15 @@
 		border-radius: 5px;
 		text-align: center;
 	}
+	#fullURLPopupCopyButton {
+		font-size: 16px;
+		font-family: Lato,sans-serif;
+		font-weight: 700;
+		color: #000;
+		border: 0px;
+		border-radius: 5px;
+		padding: 5px 10px;
+	}
 	#shareButtonContainer {
 		text-align: center;
 	}
