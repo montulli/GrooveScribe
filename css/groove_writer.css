@@ -763,7 +763,7 @@
 		background-color: rgba(50, 126, 173, 0.3);
 	}
 	.totalTimeNum {
-		color: #CC6500;
+		color: var(--highlight-color);
 	}
 	.myCheckbox {
 		display:none;
