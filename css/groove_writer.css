@@ -679,7 +679,7 @@
 		/visibility: hidden;
 		display: none;
 		position:absolute; left:250px; top:250px; z-index:999;
-		background-color: #CCCC52;
+		background-color: var(--highlight-color);
 		width: 500px;
 		padding: 10px;
 		border: solid 5px #000;
@@ -698,7 +698,7 @@
 		vertical-align: text-bottom;
 	}
 	#metronomeAutoSpeedupTempoIncreaseAmount, #metronomeAutoSpeedupTempoIncreaseInterval {
-		background: #CCCC52;
+		background: var(--highlight-color);
 		width: 300px;
 	}
 	#metronomeAutoSpeedupInputTable {
