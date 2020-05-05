@@ -1039,6 +1039,9 @@
 	}
 	#shareButton {
 	}
+	.sharer-0::before {
+		top: 7px;
+	}
 	.sharer-0 label {
 		background: var(--highlight-color) !important;
 		color: #FFF !important;

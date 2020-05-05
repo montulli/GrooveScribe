@@ -3867,6 +3867,12 @@ function GrooveWriter() {
 		var popup = document.getElementById("fullURLPopup");
 
 		var ShareBut = new ShareButton({
+				ui: {
+					flyout: 'bottom center', // change the flyout direction of the shares. chose from `top left`, `top center`, `top right`, `bottom left`, `bottom right`, `bottom center`, `middle left`, or `middle right` [Default: `top center`]
+					button_font: false, // include the Lato font set from the Google Fonts API. [Default: `true`]
+					buttonText: 'SHARE', // change the text of the button, [Default: `Share`]
+					icon_font: false,   // include the minified Entypo font set. [Default: `true`]
+				},
 				networks: {
 					facebook: {
 						before: function () {
