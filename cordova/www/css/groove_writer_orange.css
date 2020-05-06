@@ -409,7 +409,7 @@
 		height: 100%;
 		margin-right: 2px;
 		margin-left: 2px;
-		margin-bottom: -1;
+		margin-bottom: 0;
 		}
 	.hi-hat {
 		display: inline-block;
@@ -711,7 +711,7 @@
 	.sheetMusicInputField {
 
 	}
-	// Context Menu
+	/* Context Menu */
 	.noteContextMenu {
 
 	}
