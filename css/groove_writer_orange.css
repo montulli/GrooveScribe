@@ -130,7 +130,7 @@
 		cursor: pointer;
 		display: inline-block;
 		/background: #0071ad;
-		color: #AAA;
+		color: #EEE;
 		border: 0px solid #00B;
 		text-align: center;
 		border-radius: 20px;
@@ -188,12 +188,12 @@
 		height: 48px;  /* Override from above */
 	}
 	#timeSigLabel {
-		color: #FFF;
+		color: #62C04C;
 		font-size: 20px;
 		margin-bottom: -5px;
 	}
 	#timeSubLabel {
-		color: #FFF;
+		color: #62C04C;
 		font-size: 12px;
 	}
 	.left-button.disabled, .left-button.disabled:hover {
@@ -750,7 +750,7 @@
 		color: #555;
 	}
 	#permutationAnchor.enabled {
-		color: #FFF;
+		color: #EEE;
 	}
 	#PermutationOptions.displayed {
 		padding: 3px 0px 0px 10px;
