@@ -175,7 +175,18 @@
 		-webkit-flex: none;
 		flex: none;
 	}
-	.tempoOutput, .swingOutput {
+	.tempoTextField {
+		margin: 0 6px;
+		color: #999999;
+		background-color: #222;
+		border: none;
+		width: 30px;
+		text-align: center;
+		font-size: 16px;
+		padding: 0;
+		height: 18px;
+	}
+	.swingOutput {
 		display: inline-block;
 		vertical-align: top;
 		text-align: left;

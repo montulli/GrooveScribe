@@ -3086,7 +3086,7 @@ function GrooveUtils() {
 	// update the tempo string display
 	// called by the oninput handler everytime the range slider changes
 	root.tempoUpdate = function (tempo) {
-		document.getElementById('tempoOutput' + root.grooveUtilsUniqueIndex).innerHTML = "" + tempo;
+		document.getElementById('tempoTextField' + root.grooveUtilsUniqueIndex).value = "" + tempo;
 
 		updateRangeSlider('tempoInput' + root.grooveUtilsUniqueIndex);
 		root.midiNoteHasChanged();
@@ -3095,8 +3095,15 @@ function GrooveUtils() {
 			root.tempoChangeCallback(tempo);
 	};
 
+	root.tempoUpdateFromTextField = function (event) {
+		var newTempo = event.target.value;
+
+		document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex).value = newTempo;
+		root.tempoUpdate(newTempo);
+	};
+
 	// update the tempo string display
-	root.tempoUpdateEvent = function (event) {
+	root.tempoUpdateFromSlider = function (event) {
 		root.tempoUpdate(event.target.value);
 	};
 
@@ -3320,7 +3327,7 @@ function GrooveUtils() {
 		newHTML +=	'<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
 			'			<div class="tempoRow">' +
 			'				<span class="tempoLabel">BPM</span>' +
-			'				<span for="tempo" class="tempoOutput" id="tempoOutput' + root.grooveUtilsUniqueIndex + '">80</span>' +
+			'				<input type="text" for="tempo" class="tempoTextField" id="tempoTextField' + root.grooveUtilsUniqueIndex + '" value="80"></input>' +
 			'				<input type=range min=30 max=300 value=90 class="tempoInput' + (root.is_touch_device() ? ' touch' : '') + '" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings">' +
 			'			</div>' +
 			'			<div class="swingRow">' +
@@ -3357,11 +3364,15 @@ function GrooveUtils() {
 		// now attach the onclicks
 		html_element = document.getElementById("tempoInput" + root.grooveUtilsUniqueIndex);
 		if (html_element) {
-
 			if(isIE10)
-				html_element.addEventListener("click", root.tempoUpdateEvent, false);
+				html_element.addEventListener("click", root.tempoUpdateFromSlider, false);
 			else
-				html_element.addEventListener("input", root.tempoUpdateEvent, false);
+				html_element.addEventListener("input", root.tempoUpdateFromSlider, false);
+		}
+
+		html_element = document.getElementById("tempoTextField" + root.grooveUtilsUniqueIndex);
+		if (html_element) {
+			html_element.addEventListener("change", root.tempoUpdateFromTextField, false);
 		}
 
 		html_element = document.getElementById("swingInput" + root.grooveUtilsUniqueIndex);
