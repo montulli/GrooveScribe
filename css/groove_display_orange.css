@@ -176,7 +176,7 @@
 		flex: none;
 	}
 	.tempoTextField {
-		margin: 0 6px;
+		margin: 1px 6px 0 6px;
 		color: #999999;
 		background-color: #222;
 		border: none;
