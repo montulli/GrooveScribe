@@ -3327,7 +3327,7 @@ function GrooveUtils() {
 		newHTML +=	'<span class="tempoAndProgress" id="tempoAndProgress' + root.grooveUtilsUniqueIndex + '">' +
 			'			<div class="tempoRow">' +
 			'				<span class="tempoLabel">BPM</span>' +
-			'				<input type="text" for="tempo" class="tempoTextField" id="tempoTextField' + root.grooveUtilsUniqueIndex + '" value="80"></input>' +
+			'				<input type="text" for="tempo" class="tempoTextField" pattern="\\d+" id="tempoTextField' + root.grooveUtilsUniqueIndex + '" value="80"></input>' +
 			'				<input type=range min=30 max=300 value=90 class="tempoInput' + (root.is_touch_device() ? ' touch' : '') + '" id="tempoInput' + root.grooveUtilsUniqueIndex + '" list="tempoSettings">' +
 			'			</div>' +
 			'			<div class="swingRow">' +
