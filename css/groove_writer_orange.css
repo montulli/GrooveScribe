@@ -65,8 +65,8 @@
 		margin-left: 72px;
 		height: 48px;  /* total 48 */
 		border-bottom: 1px solid #000;
-		background: #E69D02;
-		background: linear-gradient(to right, #E69D02, #CC6500);
+		background: var(--header-bg-color);
+		background: linear-gradient(to right, var(--header-bg-start-color), var(--header-bg-end-color));
 		display: block;
 	}
 	#midiPlayer {  /* more #midiPlayer css in groove_display.css */
@@ -130,7 +130,7 @@
 		cursor: pointer;
 		display: inline-block;
 		/background: #0071ad;
-		color: #FFF;
+		color: #EEE;
 		border: 0px solid #00B;
 		text-align: center;
 		border-radius: 20px;
@@ -151,7 +151,7 @@
 		width: 75px;
 	}
 	.metronomeButton.buttonSelected, .metronomeButton.selected, .rightButtons.buttonSelected {  /* is a button and is selected */
-		color: #444444;
+		color: #FFF;
 		font-weight: 700;
 		/background: #68c2ff;
 	}
@@ -188,12 +188,12 @@
 		height: 48px;  /* Override from above */
 	}
 	#timeSigLabel {
-		color: #E69D02;
+		color: #62C04C;
 		font-size: 20px;
 		margin-bottom: -5px;
 	}
 	#timeSubLabel {
-		color: #E69D02;
+		color: #62C04C;
 		font-size: 12px;
 	}
 	.left-button.disabled, .left-button.disabled:hover {
@@ -307,7 +307,7 @@
 		display: none;
 		height: 25px;
 		background: #f7f1cf;
-		color: #2484C0;
+		color: #000;
 		padding-top: 9px;
 		padding-left: 1px;
 		font-size: 12px;
@@ -353,10 +353,10 @@
 		text-align: center;
 	}
 	.stickings-label:hover {
-		color: #000;
+		color: var(--highlight-color);
 	}
 	.hh-label:hover, .snare-label:hover, .kick-label:hover {
-		color: #2484C0;
+		color: var(--highlight-color);
 	}
 	.music-line-container {
 		display: inline-block;
@@ -467,7 +467,7 @@
 		height: 100%;
 		margin-right: 2px;
 		margin-left: 2px;
-		margin-bottom: -1;
+		margin-bottom: 0;
 	}
 	.bg-highlight {
 		display: inline-block;
@@ -729,7 +729,7 @@
 	#addMeasureButton {
 		vertical-align: top;
 		display: inline-block;
-		color: #E79700;
+		color: var(--highlight-color-on-white);
 		cursor: pointer;
 		font-size: 40px;
 		padding-top: 2px;
@@ -741,7 +741,7 @@
 		display: inline-block;
 		margin-top: 3px;
 		cursor: pointer;
-		color: #E79700;
+		color: var(--highlight-color-on-white);
 	}
 	.closeMeasureButton:hover, #addMeasureButton:hover {
 		color: #000;
@@ -750,7 +750,7 @@
 		color: #555;
 	}
 	#permutationAnchor.enabled {
-		color: #FFF;
+		color: #EEE;
 	}
 	#PermutationOptions.displayed {
 		padding: 3px 0px 0px 10px;
@@ -809,12 +809,15 @@
 	.svgTarget {
 		background: #FFF;
 	}
-	.svgTarget svg {
+
+	/* override the normal 100% width that is in groove_display for editing */
+	#RightHandContent .svgTarget svg {
 		margin-left: 5%;
 		margin-right: 5%;
-		width: 90% !important;
-		//height: auto;
+		width: 90%;
+		/* height: auto; */
 	}
+
 	#sheetMusicTextFields {
 		border-top: 1px solid #999;
 		padding: 8px 0px;
@@ -890,7 +893,7 @@
 	}
 	.grooveListHeaderLI {
 		padding:15px;
-		background: #FAB51A;
+		background: var(--highlight-color);
 		font-size: 18px;
 		font-weight: bold;
 	}
@@ -963,7 +966,7 @@
 	#timeSigPopupOK {
 		font-size: 16px;
 		font-weight: 500;
-		background: #E79700;
+		background: var(--highlight-color);
 		color: #FFF;
 		border: 0px;
 		border-radius: 5px;
@@ -987,7 +990,7 @@
 		text-align: center;
 	}
 	#fullURLPopupSubTitle {
-		color: #E79700;
+		color: var(--highlight-color);
 		font-size: 14px;
 		font-weight: 700;
 		text-align: center;
@@ -1022,13 +1025,25 @@
 		border-radius: 5px;
 		text-align: center;
 	}
+	#fullURLPopupCopyButton {
+		font-size: 16px;
+		font-family: Lato,sans-serif;
+		font-weight: 700;
+		color: #000;
+		border: 0px;
+		border-radius: 5px;
+		padding: 5px 10px;
+	}
 	#shareButtonContainer {
 		text-align: center;
 	}
 	#shareButton {
 	}
+	.sharer-0::before {
+		top: 7px;
+	}
 	.sharer-0 label {
-		background: #E79700 !important;
+		background: var(--highlight-color) !important;
 		color: #FFF !important;
 	}
 	.metronomeAutoSpeedupInputRow {
@@ -1039,7 +1054,7 @@
 		margin: 0px auto;
 	}
 	#metronomeAutoSpeedupTempoIncreaseAmount, #metronomeAutoSpeedupTempoIncreaseInterval {
-		background: #CCCC52;
+		background: var(--highlight-color);
 		width: 365px;
 	}
 	#metronomeAutoSpeedupOutputText {
@@ -1047,7 +1062,7 @@
 		text-align: center;
 	}
 	#metronomeAutoSpeedupTempoIncreaseAmountOutput, #metronomeAutoSpeedupTempoIncreaseIntervalOutput {
-		color: #E79700;
+		color: var(--highlight-color);
 		font-weight: 700;
 	}
 	#metronomeAutoSpeedupConfigurationAmountLable, #metronomeAutoSpeedupConfigurationIntervalLable {
@@ -1055,7 +1070,7 @@
 	}
 	#metronomeAutoSpeedupConfigurationKeepIncreasing {
 		font-size: 12px;
-		color: #E79700;
+		color: var(--highlight-color);
 		text-align: center;
 		vertical-align: middle;
 		margin-bottom: 10px;
@@ -1067,7 +1082,7 @@
 	#metronomeAutoSpeedupConfigurationCloseButton {
 		font-size: 16px;
 		font-weight: 500;
-		background: #E79700;
+		background: var(--highlight-color);
 		color: #FFF;
 		border: 0px;
 		border-radius: 5px;
@@ -1093,7 +1108,7 @@
 	}
 	#printButton {
 	}
-	#exportMidiButton {
+	#downloadButton {
 	}
 	#shareSaveButton {
 	}
@@ -1120,10 +1135,10 @@
 		bottom: 3px;
 		right: 3px;
 		margin-right: 20px;
-		background-color: rgba(221, 221, 221, 0.3);
+		color: var(--highlight-color);
 	}
 	.totalTimeNum {
-		color: #CC6500;
+		color: #EEE;
 	}
 	.myCheckbox {
 		display:none;
@@ -1184,7 +1199,7 @@
 	.edit-block {
 		display: none;
 	}
-	// 3 circles make up the tom icon.  Position them
+	/*  3 circles make up the tom icon.  Position them */
 	#icon-tom1 {
 		font-size: 16px;
 		margin-top: 16px;

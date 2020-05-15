@@ -349,7 +349,7 @@
 		height: 100%;
 		margin-right: 2px;
 		margin-left: 2px;
-		margin-bottom: -1;
+		margin-bottom: 0;
 		}
 	.hi-hat {
 		display: inline-block;
@@ -592,10 +592,8 @@
 		display: flex;
 		justify-content: space-between;
 	}
-	.sheetMusicInputField {
 
-	}
-	// Context Menu
+	/*  Context Menu */
 	.noteContextMenu {
 
 	}
@@ -681,7 +679,7 @@
 		/visibility: hidden;
 		display: none;
 		position:absolute; left:250px; top:250px; z-index:999;
-		background-color: #CCCC52;
+		background-color: var(--highlight-color);
 		width: 500px;
 		padding: 10px;
 		border: solid 5px #000;
@@ -700,7 +698,7 @@
 		vertical-align: text-bottom;
 	}
 	#metronomeAutoSpeedupTempoIncreaseAmount, #metronomeAutoSpeedupTempoIncreaseInterval {
-		background: #CCCC52;
+		background: var(--highlight-color);
 		width: 300px;
 	}
 	#metronomeAutoSpeedupInputTable {
@@ -736,7 +734,7 @@
 	}
 	#printButton {
 	}
-	#exportMidiButton {
+	#downloadButton {
 	}
 	#shareSaveButton {
 	}
@@ -762,10 +760,10 @@
 		position: fixed;
 		bottom: 3px;
 		right: 3px;
-		background-color: rgba(221, 221, 221, 0.3);
+		background-color: rgba(50, 126, 173, 0.3);
 	}
 	.totalTimeNum {
-		color: #CC6500;
+		color: var(--highlight-color);
 	}
 	.myCheckbox {
 		display:none;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html unused_manifest="gscribe.manifest">
 	<!-- HTML for the Groove Writer part of the Groove Scribe HTML application -->
-	<!--Copyright 2015-2017 Lou Montulli, Mike Johnston  GPL V2.0 Please See LICENSE.txt for more details -->
+	<!--Copyright 2015-2020 Lou Montulli, Mike Johnston  GPL V2.0 Please See LICENSE.txt for more details -->
 
     <head>
 		<title>Groove Scribe</title>
@@ -42,6 +42,9 @@
 
 		<!-- script to render ABC to an SVG image -->
 		<script type="text/javascript" src="./js/abc2svg-1.js"></script>
+
+		<!-- script to convert SVG to PNGs for download -->
+		<script type="text/javascript" src="./js/pablo.min.js"></script>
 
 		<!-- script for sharing to social sites -->
 		<script src="js/share-button.min.js"></script>
@@ -138,7 +141,7 @@
 				<!-- rendering area -->
 				<div id="sheetMusicDiv" class="fullWidthEle">
 					<div id="svgTarget" class="svgTarget">
-				<!-- space for the SVG music go display -->
+						<!-- space for the SVG sheet music to display -->
 					</div>
 				</div>
 			</div>
@@ -174,7 +177,7 @@
 					<span class="pageBottomButton edit-block" id="clearAllNotesButton" onclick="event.preventDefault(); myGrooveWriter.clearAllNotes();"><span class="bottomButtonIcon"><i class="fa fa-trash fa-2x"></i></span><span class="bottomButtonLabel">CLEAR ALL</span></span>
 					<span class="pageBottomButton edit-block" id="showHideTomsButton" onclick="event.preventDefault(); myGrooveWriter.showHideToms(false, false);"><span class="bottomButtonIcon"><i id="icon-tom1" class="fa fa-circle"></i><i id="icon-tom2" class="fa fa-circle-o"></i><i id="icon-tom3" class="fa fa-circle-o"></i></span><span class="bottomButtonLabel">TOMS</span></span>
 					<span class=" grooveDB_hidden pageBottomButton edit-block" id="showHideStickingsButton" onclick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);"><span class="bottomButtonLabel">STICKINGS</span></span>
-					<span class=" grooveDB_hidden pageBottomButton" id="exportMidiButton" onclick="myGrooveWriter.MIDI_save_as();"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></i></span><span class="bottomButtonLabel">MIDI</span></span>
+					<span class=" grooveDB_hidden pageBottomButton" id="downloadButton" onclick="myGrooveWriter.DownloadAnchorClick();"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></i></span><span class="bottomButtonLabel">DOWNLOAD</span></span>
 					<span class=" grooveDB_hidden pageBottomButton" id="printButton" onclick="myGrooveWriter.printMusic();"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
 					<span class=" grooveDB_hidden pageBottomButton" id="shareSaveButton" onclick="event.preventDefault(); myGrooveWriter.show_FullURLPopup();"><span class="bottomButtonIcon"><i class="fa fa-share fa-2x"></i></span><span class="bottomButtonLabel">SHARE</span></span>
 				</div>
@@ -382,6 +385,13 @@
 				<li onclick='myGrooveWriter.helpMenuPopupClick("about");'>About</li>
 			</ul>
 		</div>
+		<div class="noteContextMenu">
+			<ul id="downloadContextMenu" class="list" style="width: 200px;">
+				<li onclick='myGrooveWriter.SVG_save_as();'><b>Download SVG Images</b></li>
+				<li onclick='myGrooveWriter.PNG_save_as();'><b>Download PNG Images</b></li>
+				<li onclick='myGrooveWriter.MIDI_save_as();'><b>Download MIDI file</b></li>
+			</ul>
+		</div>
 		<div id="grooveListWrapper">
 			<script>
 				document.write(grooves.getGroovesAsHTML());
@@ -434,6 +444,8 @@
 			<div id="fullURLPopupTextFieldContainer"><input type="text" id="fullURLPopupTextField"></div>
 			<br>
 			<div id="shareButtonContainer">
+				<button id="fullURLPopupCopyButton" onclick="myGrooveWriter.copyShareURLToClipboard();">&nbsp;<i class="fa fa-copy"></i> &nbsp;COPY&nbsp;</button>
+				&nbsp; &nbsp; &nbsp;
 				<share-button id="shareButton"></share-button>
 			</div>
 		</div>
