@@ -3889,7 +3889,7 @@ function GrooveWriter() {
 					email: {
 						before : function () {
 							this.url = document.getElementById("fullURLPopupTextField").value;
-							this.description = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
+							this.description = "Dá uma olhada nesse groove. JP Music. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
 						}
 					},
 					pinterest: {
@@ -3899,7 +3899,10 @@ function GrooveWriter() {
 						enabled: false
 					},
 					whatsapp: {
-						enabled: true
+						before : function () {
+							this.url = document.getElementById("fullURLPopupTextField").value;
+							this.description = "Dá uma olhada nesse groove. JP Music. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
+						}
 					}
 				}
 			});
