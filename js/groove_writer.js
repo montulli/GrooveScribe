@@ -3875,29 +3875,16 @@ function GrooveWriter() {
 				},
 				networks: {
 					facebook: {
-						before: function () {
-							this.url = document.getElementById("fullURLPopupTextField").value;
-							this.description = "Check out this groove.";
-						},
-						//app_id : "839699029418014"    // staging id
-						// app_id : "1499163983742002"   // MLDC id, lou created
-						appId: "445510575651140",   // MLDC id, brad created
-						loadSdk: true
+						enabled: false
 					},
 					googlePlus : {
 						enabled : false
 					},
 					twitter: {
-						before: function () {
-							this.url = encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
-							this.description = "Check out this groove:  " + document.getElementById("fullURLPopupTextField").value;
-						}
+						enabled: false
 					},
 					reddit: {
-						before: function () {
-							this.url = document.getElementById("fullURLPopupTextField").value;
-							this.title = "Check out this groove: " + document.getElementById("fullURLPopupTextField").value;
-						}
+						enabled: false
 					},
 					email: {
 						before : function () {
@@ -3912,7 +3899,7 @@ function GrooveWriter() {
 						enabled: false
 					},
 					whatsapp: {
-						enabled: false
+						enabled: true
 					}
 				}
 			});
