@@ -152,6 +152,17 @@
 		-webkit-flex-flow: flex-start;
 		-webkit-flex-wrap: nowrap;
 	}
+	.tempoTextField {
+		margin: 2px 6px 0 6px;
+		color: #878795;
+		background-color: #f0f0f0;
+		border: none;
+		width: 30px;
+		text-align: center;
+		font-size: 16px;
+		padding: 0;
+		height: 18px;
+	}
 	.tempoInput, .swingInput {
 		background-color: none;
 		padding: 0px;
