@@ -4331,12 +4331,7 @@ function GrooveWriter() {
 								</div>\
 								<div class="music-line-container">\
 									\
-									<div class="notes-container">\
-									<div class="staff-line-1"></div>\
-									<div class="staff-line-2"></div>\
-									<div class="staff-line-3"></div>\
-									<div class="staff-line-4"></div>\
-									<div class="staff-line-5"></div>\n');
+									<div class="notes-container">\n');
 
 		// backgrounds for highlighting.  Evenly spaced cols of space
 		newHTML += ('\
