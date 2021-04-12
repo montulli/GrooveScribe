@@ -955,16 +955,16 @@
 	}
 	#showHideSecondMeasureButton {
 	}
-	#showHideStickingsButton {
+	#stickingsButton {
 	}
-	#showHideStickingsButton:before  {
+	#stickingsButton:before  {
 		font-family: FontAwesome;
 		font-size: 2em;
 		letter-spacing: -3px;
 		content: "\f065";
 		line-height: 32px;
 	}
-	#showHideStickingsButton.ClickToHide:before {
+	#stickingsButton.ClickToHide:before {
 		font-family: FontAwesome;
 		font-size: 2em;
 		letter-spacing: -3px;

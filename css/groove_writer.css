@@ -718,15 +718,15 @@
 	}
 	#showHideSecondMeasureButton {
 	}
-	#showHideStickingsButton {
+	#stickingsButton {
 	}
-	#showHideStickingsButton:before  {
+	#stickingsButton:before  {
 		font-family: FontAwesome;
 		font-size: 30px;
 		letter-spacing: -3px;
 		content: "\f065";
 	}
-	#showHideStickingsButton.ClickToHide:before {
+	#stickingsButton.ClickToHide:before {
 		font-family: FontAwesome;
 		font-size: 30px;
 		letter-spacing: -3px;
