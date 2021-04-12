@@ -1,8 +1,22 @@
+:root {
+	--header-bg-color: #243640;
+	--header-bg-start-color: #2a404d;
+	--header-bg-end-color: #1c2b33;
+	--bpm-bg-color: #222222;
+	--side-bg-color: #393939;
+	--bottom-bg-color: #393939;
+	--side-highlight-bg-color: #2484C0;
+	--note-overlay-bg-color: #BDEBDD;
+
+	--highlight-color: #2484C0;
+	--highlight-color-on-white: #2484C0;
+}
+
 
 	/* this is for debugging layout issues - puts a read border around everything */
 	/* body * { border: 1px solid red; }		 */
 	body {
-		
+
 	}
 	.warnings {
 		font-family: monospace;
@@ -15,7 +29,7 @@
 	.nonPrintable {
 		display: block;
 	}
-	
+
 	/* there is another .svgTarget definitiion in groove_writer.css */
 	.svgTarget {
 		width: 100%;
@@ -77,7 +91,7 @@
 	.midiPlayImage, .midiRepeatImage {
 		background: #666666;
 		margin: 4px 4px 4px 4px;
-		
+
 	}
 	.midiPlayImage:hover, .midiRepeatImage:hover {
 		color: #ffffff;
@@ -95,27 +109,27 @@
 		color: #68c2ff;
 		transform: scale(.8);
 	}
-	.midiPlayImage:before   { 
+	.midiPlayImage:before   {
 		color: #DD4444;
 	 	content: "\f05e";
-	} 
-	.midiPlayImage.Stopped:before ,  .midiPlayImage.Paused:before   { 
+	}
+	.midiPlayImage.Stopped:before ,  .midiPlayImage.Paused:before   {
 	 	color: #FFF;
-		letter-spacing: -3px; 
+		letter-spacing: -3px;
 		content: "\f04b";
-	} 
-	.midiPlayImage.Playing:before  { 
+	}
+	.midiPlayImage.Playing:before  {
 		color: #FFF;
-		content: "\f04c"; 
-	} 
-	.midiExpandImage.small:before   { 
-	 	letter-spacing: -3px; 
+		content: "\f04c";
+	}
+	.midiExpandImage.small:before   {
+	 	letter-spacing: -3px;
 		content: "\f065";
-	} 
-	.midiExpandImage.large:before   { 
-	 	letter-spacing: -3px; 
+	}
+	.midiExpandImage.large:before   {
+	 	letter-spacing: -3px;
 		content: "\f066";
-	} 
+	}
 	.tempoAndProgress {
 		display: inline-block;
 		width: 60%;
@@ -161,11 +175,22 @@
 		-webkit-flex: none;
 		flex: none;
 	}
-	.tempoOutput, .swingOutput {
+	.tempoTextField {
+		margin: 1px 6px 0 6px;
+		color: #999999;
+		background-color: #222;
+		border: none;
+		width: 30px;
+		text-align: center;
+		font-size: 16px;
+		padding: 0;
+		height: 18px;
+	}
+	.swingOutput {
 		display: inline-block;
 		vertical-align: top;
 		text-align: left;
-		padding-top: 0px;
+		padding-top: 0;
 		font-size: 16px;
 		color: #999999;
 		padding-left: 8px;
@@ -220,28 +245,28 @@
 	.MIDIProgress.large {
 		margin-top: 3px;
 	}
-	
+
 	#ABCSource {
-		font-family: monospace; 
+		font-family: monospace;
 		font-size: 14px;
 	}
-	
+
 	button {
 		cursor: pointer;
 	}
-	
+
 	.abcr {  /* rectangles enclosing notes in ABC SVG */
-		fill: transparent; 
+		fill: transparent;
 		fill-opactity: 0.25;
 	}
 	.abcr.highlighted {
-		fill:#990000 !important; 
-		fill-opacity: 0.25;
+		fill: var(--highlight-color) !important;
+		fill-opacity: 0.20;
 	}
 	#GrooveDB_MetaData , #debugDisplayArea {
 		background-color: #DDD;
 	}
- 	
+
 input[type=range] {
   -webkit-appearance: none;
   background: #888888;
@@ -250,17 +275,17 @@ input[type=range] {
 
 /* MSIE hacks for range sliders */
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-	input[type=range] { 
-		margin-top: 0px; 
+	input[type=range] {
+		margin-top: 0px;
 		background: #222222;
-		height: 24px; 
+		height: 24px;
 	}
 }
 @supports (-ms-accelerator:true) {
-	input[type=range] { 
-		margin-top: 0px; 
+	input[type=range] {
+		margin-top: 0px;
 		background: #222222;
-		height: 24px; 
+		height: 24px;
 	}
 }
 
@@ -357,7 +382,7 @@ input[type=range]:active::-webkit-slider-thumb {
 	body {margin:0; padding:0; border:0; background-color: transparent}
 	div.newpage {page-break-before: always}
 	div.nobrk {page-break-inside: avoid}
-	
+
 	.nonPrintable {
 		display: none !important;
 	}
