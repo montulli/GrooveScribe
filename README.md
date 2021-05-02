@@ -9,6 +9,7 @@ Readme for Groove Scribe
 ### How do I use it ###
 
 * Hosted here: http://www.mikeslessons.com/gscribe/
+* Also here: http://montulli.github.io/GrooveScribe/
 
 ### How do I get set up? ###
 
