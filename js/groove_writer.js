@@ -675,8 +675,6 @@ function GrooveWriter() {
 			returnType = "ABC";
 		}
 
-		var element = document.getElementById("sticking_right" + id);
-
 		var right_ele = document.getElementById("sticking_right" + id);
 		var left_ele = document.getElementById("sticking_left" + id);
 		var both_ele = document.getElementById("sticking_both" + id);
@@ -1039,7 +1037,26 @@ function GrooveWriter() {
 		}
 	};
 
-	// the user has clicked on the download menu
+	// the user has clicked on the stickings menu (at bottom)
+	root.stickingsAnchorClick = function (event) {
+
+		var contextMenu = document.getElementById("stickingsContextMenu");
+		if (contextMenu) {
+			var anchorPoint = document.getElementById("stickingsButton");
+
+			if (anchorPoint) {
+				if (!event)
+					event = window.event;
+				if (event.clientX || event.clientY) {
+					contextMenu.style.top = event.clientY - 100 + "px";
+					contextMenu.style.left = event.clientX - 150 + "px";
+				}
+			}
+			root.myGrooveUtils.showContextMenu(contextMenu);
+		}
+	};
+
+	// the user has clicked on the download menu (at bottom)
 	root.DownloadAnchorClick = function (event) {
 
 		var contextMenu = document.getElementById("downloadContextMenu");
@@ -2530,7 +2547,7 @@ function GrooveWriter() {
 		return midi_url;
 	}
 
-	root.MIDI_save_as = function () {
+	root.MIDISaveAs = function () {
 		var midi_url = createMidiUrlFromClickableUI("general_MIDI");
 
 		// save as
@@ -2967,7 +2984,7 @@ function GrooveWriter() {
 		}
 	}
 
-	root.PNG_save_as = function () {
+	root.PNGSaveAs = function () {
 		Pablo.support.image.png(function(acceptable) {
 			if(acceptable) {
 				downloadImages('png');
@@ -2977,7 +2994,7 @@ function GrooveWriter() {
 		});
 	}
 
-	root.SVG_save_as = function () {
+	root.SVGSaveAs = function () {
 		downloadImages('svg');
 	};
 
@@ -3174,20 +3191,42 @@ function GrooveWriter() {
 		return false;
 	}
 
-	root.showHideStickings = function (force, showElseHide, dontRefreshScreen) {
+	root.stickingsShowHide = function (force, showElseHide, dontRefreshScreen) {
 
 		var OnElseOff = showHideCSS_ClassDisplay(".stickings-container", force, showElseHide, "block");
 		showHideCSS_ClassDisplay(".stickings-label", force, showElseHide, "block");
-		if (OnElseOff)
-			addOrRemoveKeywordFromClassById("showHideStickingsButton", "ClickToHide", true);
-		else
-			addOrRemoveKeywordFromClassById("showHideStickingsButton", "ClickToHide", false);
+		if (OnElseOff) {
+			addOrRemoveKeywordFromClassById("stickingsButton", "ClickToHide", true);
+		} else {
+			addOrRemoveKeywordFromClassById("stickingsButton", "ClickToHide", false);
+		}
 
-		if (!dontRefreshScreen)
+		if (!dontRefreshScreen) {
 			updateSheetMusic();
+		}
 
 		return false; // don't follow the link
 	};
+
+	// if stickings are shown, hide them and vice versa
+	root.stickingsShowHideToggle = function () {
+
+		var stickingsAreCurrentlyShown = isStickingsVisible();
+		root.stickingsShowHide(true, !stickingsAreCurrentlyShown, false);
+	}
+
+	// Swap Right and Left stickings if any are shown
+	root.stickingsReverseRL = function () {
+		for (var i = 0; i < class_number_of_measures * class_notes_per_measure; i++) {
+			var cur_state = get_sticking_state(i, "URL");
+			if (cur_state === "R") {
+				set_sticking_state(i, "left", false);
+			} else if (cur_state === "L") {
+				set_sticking_state(i, "right", false);
+			}
+		}
+		updateSheetMusic();
+	}
 
 	root.printMusic = function () {
 
@@ -4034,7 +4073,7 @@ function GrooveWriter() {
 			root.showHideToms(true, true, true);
 
 		if (myGrooveData.showStickings)
-			root.showHideStickings(true, true, true);
+			root.stickingsShowHide(true, true, true);
 
 		document.getElementById("tuneTitle").value = myGrooveData.title;
 
@@ -4101,7 +4140,7 @@ function GrooveWriter() {
 		document.getElementById("PermutationOptions").innerHTML = newHTML;
 
 		if (wasStickingsVisable)
-			root.showHideStickings(true, true, true);
+			root.stickingsShowHide(true, true, true);
 
 		if (wasTomsVisable)
 			root.showHideToms(true, true, true);

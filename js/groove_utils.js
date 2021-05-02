@@ -2788,7 +2788,7 @@ function GrooveUtils() {
 		MIDI.Player.loadFile(midiURL, midiLoaderCallback());
 	};
 
-	root.MIDI_save_as = function (midiURL) {
+	root.MIDISaveAs = function (midiURL) {
 
 		// save as
 		document.location = midiURL;

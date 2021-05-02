@@ -176,7 +176,7 @@
 				<div id="bottomButtonRow" class="fullWidthEle">
 					<span class="pageBottomButton edit-block" id="clearAllNotesButton" onclick="event.preventDefault(); myGrooveWriter.clearAllNotes();"><span class="bottomButtonIcon"><i class="fa fa-trash fa-2x"></i></span><span class="bottomButtonLabel">CLEAR ALL</span></span>
 					<span class="pageBottomButton edit-block" id="showHideTomsButton" onclick="event.preventDefault(); myGrooveWriter.showHideToms(false, false);"><span class="bottomButtonIcon"><i id="icon-tom1" class="fa fa-circle"></i><i id="icon-tom2" class="fa fa-circle-o"></i><i id="icon-tom3" class="fa fa-circle-o"></i></span><span class="bottomButtonLabel">TOMS</span></span>
-					<span class=" grooveDB_hidden pageBottomButton edit-block" id="showHideStickingsButton" onclick="event.preventDefault(); myGrooveWriter.showHideStickings(false, false);"><span class="bottomButtonLabel">STICKINGS</span></span>
+					<span class=" grooveDB_hidden pageBottomButton" id="stickingsButton" onclick="myGrooveWriter.stickingsAnchorClick();"><span class="bottomButtonLabel">STICKINGS</span></span>
 					<span class=" grooveDB_hidden pageBottomButton" id="downloadButton" onclick="myGrooveWriter.DownloadAnchorClick();"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></i></span><span class="bottomButtonLabel">DOWNLOAD</span></span>
 					<span class=" grooveDB_hidden pageBottomButton" id="printButton" onclick="myGrooveWriter.printMusic();"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
 					<span class=" grooveDB_hidden pageBottomButton" id="shareSaveButton" onclick="event.preventDefault(); myGrooveWriter.show_FullURLPopup();"><span class="bottomButtonIcon"><i class="fa fa-share fa-2x"></i></span><span class="bottomButtonLabel">SHARE</span></span>
@@ -386,10 +386,16 @@
 			</ul>
 		</div>
 		<div class="noteContextMenu">
+			<ul id="stickingsContextMenu" class="list" style="width: 200px;">
+				<li onclick='myGrooveWriter.stickingsShowHideToggle();'><b>Show or Hide stickings</b></li>
+				<li onclick='myGrooveWriter.stickingsReverseRL();'><b>Reverse stickings R/L</b></li>
+			</ul>
+		</div>
+		<div class="noteContextMenu">
 			<ul id="downloadContextMenu" class="list" style="width: 200px;">
-				<li onclick='myGrooveWriter.SVG_save_as();'><b>Download SVG Images</b></li>
-				<li onclick='myGrooveWriter.PNG_save_as();'><b>Download PNG Images</b></li>
-				<li onclick='myGrooveWriter.MIDI_save_as();'><b>Download MIDI file</b></li>
+				<li onclick='myGrooveWriter.SVGSaveAs();'><b>Download SVG Images</b></li>
+				<li onclick='myGrooveWriter.PNGSaveAs();'><b>Download PNG Images</b></li>
+				<li onclick='myGrooveWriter.MIDISaveAs();'><b>Download MIDI file</b></li>
 			</ul>
 		</div>
 		<div id="grooveListWrapper">
