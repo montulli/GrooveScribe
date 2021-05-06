@@ -14,7 +14,7 @@
 
 		<!--meta property="og:image" content="https://mikeslessons.com/groove/images/GScribe_Logo_on_orange.png"> -->
 		<meta property="og:description" content="Groove Scribe allows drummers to easily create grooves, listen, share, print sheet music, and more. Use the Groove Scribe to create new grooves, figure out the groove to your favorite song, or write down the groove to your latest tune."/>
-		<meta property="og:site_name" content="GrooveScribe at MikesLessons.com"/>
+		<meta property="og:site_name" content="GrooveScribe"/>
 
 		<script>
 			document.write('<meta property="og:image" content="https://gscribe-png-image.herokuapp.com/' + window.location.search + '">');
@@ -23,7 +23,7 @@
 
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="css/share-button.min.css">
-	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css">
+	  <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css">
 		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css">
 		<link href='https://fonts.googleapis.com/css?family=Lato:400,700,300' rel='stylesheet' type='text/css'>
 
@@ -261,10 +261,15 @@
 		<div class="noteContextMenu">
 			<ul id="stickingContextMenu" class="list">
 				<li onclick='myGrooveWriter.notePopupClick("sticking", "off");'>Off</li>
+				<li onclick='myGrooveWriter.notePopupClick("sticking", "count");'>Count</li>
+			</ul>
+		</div>
+    <div class="noteContextMenu">
+			<ul id="sticking2ContextMenu" class="list">
+				<li onclick='myGrooveWriter.notePopupClick("sticking", "off");'>Off</li>
 				<li onclick='myGrooveWriter.notePopupClick("sticking","right");'><b>R</b>ight</li>
 				<li onclick='myGrooveWriter.notePopupClick("sticking","left");'><b>L</b>eft</li>
 				<li onclick='myGrooveWriter.notePopupClick("sticking","both");'><b>R/L</b></li>
-				<li onclick='myGrooveWriter.notePopupClick("sticking", "count");'>Count</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
@@ -289,6 +294,12 @@
 				<li onclick='myGrooveWriter.notePopupClick("tom1", "normal");'>Tom Normal</li>
 			</ul>
 		</div>
+    <div class="noteContextMenu">
+      <ul id="tom2ContextMenu" class="list">
+        <li onclick='myGrooveWriter.notePopupClick("tom2", "off");'>Off</li>
+        <li onclick='myGrooveWriter.notePopupClick("tom2", "normal");'>Tom Normal</li>
+      </ul>
+    </div>
 		<div class="noteContextMenu">
 			<ul id="tom4ContextMenu" class="list">
 				<li onclick='myGrooveWriter.notePopupClick("tom4", "off");'>Off</li>
@@ -317,9 +328,9 @@
 		<div class="noteContextMenu">
 			<ul id="stickingsLabelContextMenu" class="list">
 				<li onclick='myGrooveWriter.noteLabelPopupClick("stickings", "all_off");'>all <b>Off</b></li>
-				<li onclick='myGrooveWriter.noteLabelPopupClick("stickings", "alternate");'>alternate <b>R</b>/<b>L</b></li>
-				<li onclick='myGrooveWriter.noteLabelPopupClick("stickings", "all_right");'>all <b>R</b>s</li>
-				<li onclick='myGrooveWriter.noteLabelPopupClick("stickings", "all_left");'>all <b>L</b>s</li>
+        <li onclick='myGrooveWriter.noteLabelPopupClick("stickings", "alternate");'>alternate <b>R</b>/<b>L</b></li>
+        <li onclick='myGrooveWriter.noteLabelPopupClick("stickings", "all_right");'>all <b>R</b>s</li>
+        <li onclick='myGrooveWriter.noteLabelPopupClick("stickings", "all_left");'>all <b>L</b>s</li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("stickings", "all_count");'><b>C</b>ounts</li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("stickings", "cancel");'>cancel</li>
 			</ul>
@@ -342,6 +353,14 @@
 				<li onclick='myGrooveWriter.noteLabelPopupClick("tom1", "cancel");'>cancel</li>
 			</ul>
 		</div>
+    <div class="noteContextMenu">
+      <ul id="tom2LabelContextMenu" class="list">
+        <li onclick='myGrooveWriter.noteLabelPopupClick("tom2", "all_off");'>all Toms <b>Off</b></li>
+        <li onclick='myGrooveWriter.noteLabelPopupClick("tom2", "all_on");'>all Toms <b>On</b></li>
+        <li id='mute_tom2_menu_item' onclick='myGrooveWriter.noteLabelPopupClick("tom2", "mute");'>mute tom sound</li>
+        <li onclick='myGrooveWriter.noteLabelPopupClick("tom2", "cancel");'>cancel</li>
+      </ul>
+    </div>
 		<div class="noteContextMenu">
 			<ul id="tom4LabelContextMenu" class="list">
 				<li onclick='myGrooveWriter.noteLabelPopupClick("tom4", "all_off");'>all Toms <b>Off</b></li>
