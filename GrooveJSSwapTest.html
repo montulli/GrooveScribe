@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Groove changing based on JavaScript actions</title>
+
+    <script src="./js/groove_display.js"></script>
+</head>
+<body>
+
+<h1>Groove changing based on JavaScript actions</h1>
+This is an example page.   This should serve as an example of how to you JS to dynamically update the GrooveScribe in a page.
+<br>
+<br>
+<br>
+
+<button onClick="GrooveDisplay.AddGrooveDisplayToElementId(
+                                'GrooveJSSwapTestGrooveDivId',
+                                '?Mode=view&Div=16&Title=Funk&Tempo=90&Measures=1&H=|X-x-X-x-X-x-X-x-|&S=|-----g-o-o--x--o|&K=|o-o-------o--o--|',
+                                true, true);">
+    Show Groove 1
+</button>
+<button onClick="GrooveDisplay.AddGrooveDisplayToElementId(
+                                'GrooveJSSwapTestGrooveDivId',
+                                '?Mode=view&Div=24&Title=Rosanna%20Shuffle&Author=Jeff%20Pocaro&Tempo=85&Measures=1&H=|x-xx-xx-xx-xx-xx-xx-xx-x|&S=|-g--g-Og--g--g--g-Og--g-|&K=|o----o---o----o---o----o|',
+                                true, true);">
+    Show Groove 2
+</button>
+
+<button onClick="GrooveDisplay.AddGrooveDisplayToElementId(
+                                'GrooveJSSwapTestGrooveDivId',
+                                '?Mode=view&Div=16&Title=Samba&Tempo=100&Measures=1&H=|xxXxxxXxxxXxxxXx|&S=|x-x--x-x-x-x-xx-|&K=|o--oo--oo--oo--o|',
+                                true, true);">
+    Show Groove 3
+</button>
+
+
+<br>
+<br>
+<div id="GrooveJSSwapTestGrooveDivId">
+    This is where the groove should appear when you click buttons
+</div>
