@@ -440,6 +440,11 @@ function GrooveUtils() {
 		return root.GetEmptyGroove(notes_per_measure, numMeasures);
 	};
 
+	root.GetDefaultTom2Groove = function (notes_per_measure, timeSigTop, timeSigBottom, numMeasures) {
+
+		return root.GetEmptyGroove(notes_per_measure, numMeasures);
+	};
+
 	root.GetDefaultTom4Groove = function (notes_per_measure, timeSigTop, timeSigBottom, numMeasures) {
 
 		return root.GetEmptyGroove(notes_per_measure, numMeasures);
@@ -655,6 +660,9 @@ function GrooveUtils() {
 				//break;
 			case "T1":
 				return constant_ABC_T1_Normal;
+				//break;
+			case "T2":
+				return constant_ABC_T2_Normal;
 				//break;
 			case "T4":
 				return constant_ABC_T4_Normal;
@@ -1095,8 +1103,9 @@ function GrooveUtils() {
 		// only add if we need them.  // they are long and ugly. :)
 		if (myGrooveData.showToms) {
 			var Tom1 = "&T1=|" + root.tabLineFromAbcNoteArray('T1', myGrooveData.toms_array[0], true, true, total_notes, myGrooveData.notesPerMeasure);
+			var Tom2 = "&T2=|" + root.tabLineFromAbcNoteArray('T2', myGrooveData.toms_array[1], true, true, total_notes, myGrooveData.notesPerMeasure);
 			var Tom4 = "&T4=|" + root.tabLineFromAbcNoteArray('T4', myGrooveData.toms_array[3], true, true, total_notes, myGrooveData.notesPerMeasure);
-			fullURL += Tom1 + Tom4;
+			fullURL += Tom1 + Tom2 + Tom4;
 		}
 
 		// only add if we need them.  // they are long and ugly. :)
@@ -1227,7 +1236,7 @@ function GrooveUtils() {
 			'V:Hands stem=up \n' +
 			'%%voicemap drum\n' +
 			'"^Hi-Hat"^g4 "^Open"!open!^g4 ' +
-			'"^Crash"^c\'4 "^Stacker"^d\'4 "^Ride"^A\'4 "^Ride Bell"^B\'4 x2 "^Tom"e4 "^Tom"A4 "^Snare"c4 "^Buzz"!///!c4 "^Cross"^c4 "^Ghost  "!(.!!).!c4 "^Flam"{/c}c4  x10 ||\n' +
+			'"^Crash"^c\'4 "^Stacker"^d\'4 "^Ride"^A\'4 "^Ride Bell"^B\'4 x2 "^H Tom"e4 "^M Tom"d4 "^F Tom"A4 "^Snare"c4 "^Buzz"!///!c4 "^Cross"^c4 "^Ghost  "!(.!!).!c4 "^Flam"{/c}c4  x10 ||\n' +
 			'V:Feet stem=down \n' +
 			'%%voicemap drum\n' +
 			'x52 "^Kick"F4 "^HH foot"^d,4 x4 ||\n' +
