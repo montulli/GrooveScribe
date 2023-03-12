@@ -21,18 +21,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with Groove Scribe.  If not, see <http://www.gnu.org/licenses/>.
 
-/*jshint multistr: true */
-/*jslint browser:true devel:true */
-
-/*global GrooveUtils, Midi, Share */
-/*global MIDI, constant_MAX_MEASURES, constant_DEFAULT_TEMPO, constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_BOTH, constant_ABC_STICK_OFF, constant_ABC_STICK_COUNT, constant_ABC_HH_Ride, constant_ABC_HH_Ride_Bell, constant_ABC_HH_Cow_Bell, constant_ABC_HH_Crash, constant_ABC_HH_Stacker, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Buzz, constant_ABC_SN_Flam, constant_ABC_SN_Drag, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T2_Normal, constant_ABC_T3_Normal, constant_ABC_T4_Normal, constant_NUMBER_OF_TOMS, constant_ABC_OFF, constant_OUR_MIDI_VELOCITY_NORMAL, constant_OUR_MIDI_VELOCITY_ACCENT, constant_OUR_MIDI_VELOCITY_GHOST, constant_OUR_MIDI_METRONOME_1, constant_OUR_MIDI_METRONOME_NORMAL, constant_OUR_MIDI_HIHAT_NORMAL, constant_OUR_MIDI_HIHAT_OPEN, constant_OUR_MIDI_HIHAT_ACCENT, constant_OUR_MIDI_HIHAT_CRASH, constant_OUR_MIDI_HIHAT_STACKER, constant_OUR_MIDI_HIHAT_RIDE, constant_OUR_MIDI_HIHAT_FOOT, constant_OUR_MIDI_SNARE_NORMAL, constant_OUR_MIDI_SNARE_ACCENT, constant_OUR_MIDI_SNARE_GHOST, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_FLAM, onstant_OUR_MIDI_SNARE_DRAG, constant_OUR_MIDI_KICK_NORMAL, constant_OUR_MIDI_TOM1_NORMAL, constant_OUR_MIDI_TOM2_NORMAL, constant_OUR_MIDI_TOM4_NORMAL, constant_OUR_MIDI_TOM4_NORMAL */
-
 // GrooveWriter class.   The only one in this file.
-
 function GrooveWriter() {
 	"use strict";
-
 	var root = this;
+	console.log(root)
 
 	root.myGrooveUtils = new GrooveUtils();
 
@@ -888,7 +881,7 @@ function GrooveWriter() {
 
 	function getTagPosition(tag) {
 		var xVal = 0,
-				yVal = 0;
+			yVal = 0;
 		while (tag) {
 			xVal += (tag.offsetLeft - tag.scrollLeft + tag.clientLeft);
 			yVal += (tag.offsetTop - tag.scrollTop + tag.clientTop);
@@ -932,7 +925,7 @@ function GrooveWriter() {
 				id = "metronome16ths";
 				break;
 			case 0:
-				/* falls through */
+			/* falls through */
 			default:
 				id = "metronomeOff";
 				if (root.myGrooveUtils.getMetronomeSolo()) {
@@ -1079,8 +1072,8 @@ function GrooveWriter() {
 	root.metronomeOptionsMenuSetSelectedState = function () {
 
 		if (root.myGrooveUtils.getMetronomeSolo() ||
-				class_metronome_auto_speed_up_active ||
-				root.myGrooveUtils.getMetronomeOffsetClickStart() != "1") {
+			class_metronome_auto_speed_up_active ||
+			root.myGrooveUtils.getMetronomeOffsetClickStart() != "1") {
 			// make menu look active
 			addOrRemoveKeywordFromClassById("metronomeOptionsAnchor", "selected", true)
 		} else {
@@ -1241,7 +1234,7 @@ function GrooveWriter() {
 				break;
 
 			case "none":
-				/* falls through */
+			/* falls through */
 			default:
 				showHideCSS_ClassVisibility(".kick-container", true, true); // show it
 				showHideCSS_ClassVisibility(".snare-container", true, true); // show it
@@ -1855,7 +1848,7 @@ function GrooveWriter() {
 					"F", false, "F", false, false, false, "F", false];
 				break;
 			case 15:
-				/* falls through */
+			/* falls through */
 			default:
 				kick_array = ["F", false, "F", false, "F", false, "F", false,
 					"F", false, "F", false, "F", false, "F", false,
@@ -1962,7 +1955,7 @@ function GrooveWriter() {
 						"F", false, "F", false, false, false, "F", false];
 					break;
 				case 15:
-					/* falls through */
+				/* falls through */
 				default:
 					// every 0th note of 2  (quads)
 					kick_array.push((index % 2) ? false : 'F');
@@ -2026,7 +2019,7 @@ function GrooveWriter() {
 						kick_array.push(false);
 					break;
 
-					// these cases should not be called
+				// these cases should not be called
 				case 4: // 4th single
 				case 8: // 4th double
 				case 9: // 1st up/down
@@ -2039,7 +2032,7 @@ function GrooveWriter() {
 					break;
 
 				case 11: // first triplet
-					/* falls through */
+				/* falls through */
 				default:
 					// use default
 					// every 4th note
@@ -2222,99 +2215,99 @@ function GrooveWriter() {
 		switch (sectionNum) {
 			case 0:
 				if (document.getElementById("PermuationOptionsOstinato").checked &&
-						(!document.getElementById("PermuationOptionsOstinato_sub1") ||
-								document.getElementById("PermuationOptionsOstinato_sub1").checked))
+					(!document.getElementById("PermuationOptionsOstinato_sub1") ||
+						document.getElementById("PermuationOptionsOstinato_sub1").checked))
 					ret_val = true;
 				break;
 			case 1:
 				if (document.getElementById("PermuationOptionsSingles").checked &&
-						document.getElementById("PermuationOptionsSingles_sub1").checked)
+					document.getElementById("PermuationOptionsSingles_sub1").checked)
 					ret_val = true;
 				break;
 			case 2:
 				if (document.getElementById("PermuationOptionsSingles").checked &&
-						document.getElementById("PermuationOptionsSingles_sub2").checked)
+					document.getElementById("PermuationOptionsSingles_sub2").checked)
 					ret_val = true;
 				break;
 			case 3:
 				if (document.getElementById("PermuationOptionsSingles").checked &&
-						document.getElementById("PermuationOptionsSingles_sub3").checked)
+					document.getElementById("PermuationOptionsSingles_sub3").checked)
 					ret_val = true;
 				break;
 			case 4:
 				if (!usingTriplets() &&
-						document.getElementById("PermuationOptionsSingles").checked &&
-						document.getElementById("PermuationOptionsSingles_sub4").checked)
+					document.getElementById("PermuationOptionsSingles").checked &&
+					document.getElementById("PermuationOptionsSingles_sub4").checked)
 					ret_val = true;
 				break;
 			case 5:
 				if (document.getElementById("PermuationOptionsDoubles").checked &&
-						document.getElementById("PermuationOptionsDoubles_sub1").checked)
+					document.getElementById("PermuationOptionsDoubles_sub1").checked)
 					ret_val = true;
 				break;
 			case 6:
 				if (document.getElementById("PermuationOptionsDoubles").checked &&
-						document.getElementById("PermuationOptionsDoubles_sub2").checked)
+					document.getElementById("PermuationOptionsDoubles_sub2").checked)
 					ret_val = true;
 				break;
 			case 7:
 				if (document.getElementById("PermuationOptionsDoubles").checked &&
-						document.getElementById("PermuationOptionsDoubles_sub3").checked)
+					document.getElementById("PermuationOptionsDoubles_sub3").checked)
 					ret_val = true;
 				break;
 			case 8:
 				if (!usingTriplets() &&
-						document.getElementById("PermuationOptionsDoubles").checked &&
-						document.getElementById("PermuationOptionsDoubles_sub4").checked)
+					document.getElementById("PermuationOptionsDoubles").checked &&
+					document.getElementById("PermuationOptionsDoubles_sub4").checked)
 					ret_val = true;
 				break;
 			case 9:
 				if (!usingTriplets() &&
-						document.getElementById("PermuationOptionsUpsDowns").checked &&
-						document.getElementById("PermuationOptionsUpsDowns_sub1").checked)
+					document.getElementById("PermuationOptionsUpsDowns").checked &&
+					document.getElementById("PermuationOptionsUpsDowns_sub1").checked)
 					ret_val = true;
 				break;
 			case 10:
 				if (!usingTriplets() &&
-						document.getElementById("PermuationOptionsUpsDowns").checked &&
-						document.getElementById("PermuationOptionsUpsDowns_sub2").checked)
+					document.getElementById("PermuationOptionsUpsDowns").checked &&
+					document.getElementById("PermuationOptionsUpsDowns_sub2").checked)
 					ret_val = true;
 				break;
 			case 11:
 				if (document.getElementById("PermuationOptionsTriples").checked &&
-						(!document.getElementById("PermuationSubOptionsTriples1") ||
-								document.getElementById("PermuationOptionsTriples_sub1").checked))
+					(!document.getElementById("PermuationSubOptionsTriples1") ||
+						document.getElementById("PermuationOptionsTriples_sub1").checked))
 					ret_val = true;
 				break;
 			case 12:
 				if (!usingTriplets() &&
-						document.getElementById("PermuationOptionsTriples").checked &&
-						document.getElementById("PermuationOptionsTriples_sub2").checked)
+					document.getElementById("PermuationOptionsTriples").checked &&
+					document.getElementById("PermuationOptionsTriples_sub2").checked)
 					ret_val = true;
 				break;
 			case 13:
 				if (!usingTriplets() &&
-						document.getElementById("PermuationOptionsTriples").checked &&
-						document.getElementById("PermuationOptionsTriples_sub3").checked)
+					document.getElementById("PermuationOptionsTriples").checked &&
+					document.getElementById("PermuationOptionsTriples_sub3").checked)
 					ret_val = true;
 				break;
 			case 14:
 				if (!usingTriplets() &&
-						document.getElementById("PermuationOptionsTriples").checked &&
-						document.getElementById("PermuationOptionsTriples_sub4").checked)
+					document.getElementById("PermuationOptionsTriples").checked &&
+					document.getElementById("PermuationOptionsTriples_sub4").checked)
 					ret_val = true;
 				break;
 			case 15:
 				if (!usingTriplets() &&
-						document.getElementById("PermuationOptionsQuads").checked &&
-						(!document.getElementById("PermuationOptionsQuads_sub1") ||
-								document.getElementById("PermuationOptionsQuads_sub1").checked))
+					document.getElementById("PermuationOptionsQuads").checked &&
+					(!document.getElementById("PermuationOptionsQuads_sub1") ||
+						document.getElementById("PermuationOptionsQuads_sub1").checked))
 					ret_val = true;
 				break;
 			default:
 				console.log("bad case in groove_writer.js:shouldDisplayPermutationForSection()");
 				return false;
-				//break;
+			//break;
 		}
 
 		return ret_val;
@@ -2388,7 +2381,7 @@ function GrooveWriter() {
 
 		for (var i in old_kick_array) {
 			if (old_kick_array[i] == constant_ABC_KI_Splash ||
-					old_kick_array[i] == constant_ABC_KI_SandK)
+				old_kick_array[i] == constant_ABC_KI_SandK)
 				new_kick_array.push(constant_ABC_KI_Splash);
 			else
 				new_kick_array.push(false);
@@ -2419,7 +2412,7 @@ function GrooveWriter() {
 
 				case constant_ABC_KI_Normal:
 					if (secondary_kick_array[i] == constant_ABC_KI_SandK ||
-							secondary_kick_array[i] == constant_ABC_KI_Splash)
+						secondary_kick_array[i] == constant_ABC_KI_Splash)
 						new_kick_array.push(constant_ABC_KI_SandK);
 					else
 						new_kick_array.push(constant_ABC_KI_Normal);
@@ -2427,7 +2420,7 @@ function GrooveWriter() {
 
 				case constant_ABC_KI_Splash:
 					if (secondary_kick_array[i] == constant_ABC_KI_Normal ||
-							secondary_kick_array[i] == constant_ABC_KI_SandK)
+						secondary_kick_array[i] == constant_ABC_KI_SandK)
 						new_kick_array.push(constant_ABC_KI_SandK);
 					else
 						new_kick_array.push(constant_ABC_KI_Splash);
@@ -2451,8 +2444,8 @@ function GrooveWriter() {
 		var Toms_Array = [get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds()];
 
 		var i,
-				new_snare_array,
-				num_notes_for_swing = 16;
+			new_snare_array,
+			num_notes_for_swing = 16;
 
 		var metronomeFrequency = root.getMetronomeFrequency();
 
@@ -2515,7 +2508,7 @@ function GrooveWriter() {
 				break;
 
 			case "none":
-				/* falls through */
+			/* falls through */
 			default:
 				if (class_time_division < 16)
 					num_notes_for_swing = 8 * class_num_beats_per_measure / class_note_value_per_measure;
@@ -2790,9 +2783,9 @@ function GrooveWriter() {
 		var Toms_Array = [get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds(), get_empty_note_array_in_32nds()];
 		var numSections = get_numSectionsFor_permutation_array();
 		var i,
-				new_snare_array,
-				post_abc,
-				num_sections;
+			new_snare_array,
+			post_abc,
+			num_sections;
 		var num_notes = get32NoteArrayFromClickableUI(Sticking_Array, HH_Array, Snare_Array, Kick_Array, Toms_Array, 0);
 
 		// abc header boilerplate
@@ -2861,7 +2854,7 @@ function GrooveWriter() {
 				break;
 
 			case "none":
-				/* falls through */
+			/* falls through */
 			default:
 				fullABC = root.myGrooveUtils.get_top_ABC_BoilerPlate(class_permutation_type != "none", tuneTitle, tuneAuthor, tuneComments, showLegend, usingTriplets(), true, class_num_beats_per_measure, class_note_value_per_measure, renderWidth);
 				root.myGrooveUtils.note_mapping_array = [];
@@ -2934,7 +2927,7 @@ function GrooveWriter() {
 	// called by generate_ABC to remake the sheet music on the page
 	root.displayNewSVG = function () {
 		var svgTarget = document.getElementById("svgTarget"),
-		diverr = document.getElementById("diverr");
+			diverr = document.getElementById("diverr");
 
 		var abc_source = document.getElementById("ABCsource").value;
 		var svg_return = root.myGrooveUtils.renderABCtoSVG(abc_source);
@@ -2962,17 +2955,17 @@ function GrooveWriter() {
 		var svg_images = svg_obj.svg.split("</svg>");
 		// that split should always create at least 2 since it will match that </svg> if there is only one
 		// since the split creates an extra one reduce the length by 1
-		for (var i=0; i < svg_images.length-1; i++) {
+		for (var i = 0; i < svg_images.length - 1; i++) {
 			var myPablo = Pablo(svg_images[i] + "</svg>");
 			var width = parseFloat(myPablo.attr('width'));
 			var height = parseFloat(myPablo.attr('height'));
-			var imageRatio = height/width;
+			var imageRatio = height / width;
 			var newWidth = 2000;
 			var newHeight = Math.round(newWidth * imageRatio);
 			var newBoxWidth = Math.round(newWidth * .8);
 			var newBoxHeight = Math.round(newHeight * .8);
 			myPablo.attr('width', newWidth + 'px');
-			myPablo.attr('height', newHeight +'px');
+			myPablo.attr('height', newHeight + 'px');
 			myPablo.attr('viewBox', '0 0 ' + newBoxWidth + ' ' + newBoxHeight);
 			myPablo.children('g').attr('transform', 'scale(2)');
 
@@ -2985,8 +2978,8 @@ function GrooveWriter() {
 	}
 
 	root.PNGSaveAs = function () {
-		Pablo.support.image.png(function(acceptable) {
-			if(acceptable) {
+		Pablo.support.image.png(function (acceptable) {
+			if (acceptable) {
 				downloadImages('png');
 			} else {
 				alert("Sorry, this browser can't export PNG images");
@@ -3086,15 +3079,15 @@ function GrooveWriter() {
 
 		// reference the button and scroll it into view
 		var add_measure_button = document.getElementById("addMeasureButton");
-		if(add_measure_button)
-			add_measure_button.scrollIntoView({block: "start", behavior: "smooth"});
+		if (add_measure_button)
+			add_measure_button.scrollIntoView({ block: "start", behavior: "smooth" });
 
 		updateSheetMusic();
 
-		if(class_number_of_measures === 5)
+		if (class_number_of_measures === 5)
 			window.alert("Please be aware that the Groove Scribe is not designed to write an entire musical score.\n" +
-						"You can create as many measures as you want, but your browser may slow down as more measures are added.\n" +
-						"There are also many notation features that would be useful for score writing that are not part of Groove Scribe");
+				"You can create as many measures as you want, but your browser may slow down as more measures are added.\n" +
+				"There are also many notation features that would be useful for score writing that are not part of Groove Scribe");
 	};
 
 	function showHideCSS_ClassDisplay(className, force, showElseHide, showState) {
@@ -3260,68 +3253,68 @@ function GrooveWriter() {
 			// only accept the event if it not going to an INPUT field   (allow for range types)
 			if (e.target.type == "range" || (e.target.tagName.toUpperCase() != "INPUT" && e.target.tagName.toUpperCase() != "TEXTAREA")) {
 				switch (e.which) {
-				case 90: // ctrl-z
-					if (e.ctrlKey) {
-						// ctrl-z
-						root.undoCommand();
-						return false;
-					}
-					break;
+					case 90: // ctrl-z
+						if (e.ctrlKey) {
+							// ctrl-z
+							root.undoCommand();
+							return false;
+						}
+						break;
 
-				case 89: // ctrl-y
-					if (e.ctrlKey) {
-						// ctrl-y
-						root.redoCommand();
-						return false;
-					}
-					break;
+					case 89: // ctrl-y
+						if (e.ctrlKey) {
+							// ctrl-y
+							root.redoCommand();
+							return false;
+						}
+						break;
 
-				case 37: // left arrow
-					// left arrow
-					root.myGrooveUtils.downTempo();
-					return false;
+					case 37: // left arrow
+						// left arrow
+						root.myGrooveUtils.downTempo();
+						return false;
 					//break;
 
-				case 39: // right arrow
-					// right arrow
-					root.myGrooveUtils.upTempo();
-					return false;
+					case 39: // right arrow
+						// right arrow
+						root.myGrooveUtils.upTempo();
+						return false;
 					//break;
 
-				default:
-					/* DEBUG
-					else if(e.ctrlKey && e.which !=17 && e.target.type != "text") {
-					alert("Key is: " + e.which);
-					}
-					 */
-					break;
+					default:
+						/* DEBUG
+						else if(e.ctrlKey && e.which !=17 && e.target.type != "text") {
+						alert("Key is: " + e.which);
+						}
+						 */
+						break;
 				}
 			}
 			return true; // let the default handler deal with the keypress
 		});
 	};
 
-	root.swapViewEditMode = function(dontUpdateURL) {
+	root.swapViewEditMode = function (dontUpdateURL) {
 		var view_edit_button = document.getElementById("view-edit-switch");
 
-		if(root.myGrooveUtils.viewMode) {
+		if (root.myGrooveUtils.viewMode) {
 
 			showHideCSS_ClassDisplay(".edit-block", true, true, "block"); // show
 
-			if(view_edit_button)
+			if (view_edit_button)
 				view_edit_button.innerHTML = "Switch to VIEW mode";
 			root.myGrooveUtils.viewMode = false;
 
-			if(!dontUpdateURL)
+			if (!dontUpdateURL)
 				root.updateCurrentURL();
 		} else {
 
 			showHideCSS_ClassDisplay(".edit-block", true, false, "block"); // hide
 
-			if(view_edit_button)
+			if (view_edit_button)
 				view_edit_button.innerHTML = "Switch to EDIT mode";
 			root.myGrooveUtils.viewMode = true;
-			if(!dontUpdateURL)
+			if (!dontUpdateURL)
 				root.updateCurrentURL();
 		}
 	};
@@ -3336,7 +3329,7 @@ function GrooveWriter() {
 		root.setTimeSigLabel();
 
 		// if Mode != "view" put into edit mode  (we default to view mode to prevent screen flicker)
-		if("view" != root.myGrooveUtils.getQueryVariableFromURL("Mode", "edit"))
+		if ("view" != root.myGrooveUtils.getQueryVariableFromURL("Mode", "edit"))
 			root.swapViewEditMode(true);
 
 		// set the background and text color of the current subdivision
@@ -3355,12 +3348,12 @@ function GrooveWriter() {
 
 				midiURL = root.myGrooveUtils.MIDI_build_midi_url_count_in_track(class_num_beats_per_measure, class_note_value_per_measure);
 				root.myGrooveUtils.midiNoteHasChanged(); // this track is temporary
-        class_metronome_count_in_is_playing = true;
+				class_metronome_count_in_is_playing = true;
 			} else {
-				if(class_metronome_count_in_is_playing) {
+				if (class_metronome_count_in_is_playing) {
 					// we saved the state above so that we could reset the Offset click start, otherwise it starts on the 'e'
-          class_metronome_count_in_is_playing = false;
-          root.myGrooveUtils.resetMetronomeOptionsOffsetClickStartRotation();
+					class_metronome_count_in_is_playing = false;
+					root.myGrooveUtils.resetMetronomeOptionsOffsetClickStartRotation();
 				}
 				midiURL = createMidiUrlFromClickableUI("our_MIDI");
 				root.myGrooveUtils.midiResetNoteHasChanged();
@@ -3392,14 +3385,14 @@ function GrooveWriter() {
 		} else if (root.browserInfo.browser == "Safari" && root.browserInfo.platform == "windows" && root.browserInfo.version < 535) {
 			window.alert("This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".\n" + 'This version of Safari is unsupported.   Please use Chrome instead');
 		}
-		if(root.myGrooveUtils.debugMode) {
+		if (root.myGrooveUtils.debugMode) {
 			var debugOutput = document.getElementById("debugOutput");
-			if(debugOutput) {
+			if (debugOutput) {
 				debugOutput.innerHTML += "<div>This browser has been detected as: " + root.browserInfo.browser + " ver: " + root.browserInfo.version + ".<br>" + root.browserInfo.uastring + "<br>Running on: " + root.browserInfo.platform + "</div>";
 			}
 		}
 
-		if(root.myGrooveUtils.is_touch_device()) {
+		if (root.myGrooveUtils.is_touch_device()) {
 			setTimeout(function () {
 				window.scrollTo(0, 1);
 			}, 1000);
@@ -3487,7 +3480,7 @@ function GrooveWriter() {
 	//      o: normal
 	//      O: accent
 	//      f: flam
-    //      d: drag
+	//      d: drag
 	//      g: ghost
 	//      x: cross stick
 	//      -: off
@@ -3548,102 +3541,102 @@ function GrooveWriter() {
 		for (var i = 0; i < notes.length && displayIndex < topDisplay; i += noteStringScaler, displayIndex += displayScaler) {
 
 			switch (notes[i]) {
-			case "$":
-				setFunction(displayIndex, "and", false);
-				break;
-			case "1":
-				setFunction(displayIndex, "1", false);
-				break;
-			case "a":
-				setFunction(displayIndex, "a", false);
-				break;
-			case "B":
-				if (drumType == "Stickings")
-					setFunction(displayIndex, "both", false);
-				break;
-			case "b":
-				if (drumType == "H")
-					setFunction(displayIndex, "ride_bell", false);
-				else if (drumType == "S")
-					setFunction(displayIndex, "buzz", false);
-				break;
-			case "c":
-				if (drumType == "Stickings")
-					setFunction(displayIndex, "count", false);
-				else
-					setFunction(displayIndex, "crash", false);
-				break;
-			case "e":
-				setFunction(displayIndex, "e", false);
-				break;
-			case "g":
-				setFunction(displayIndex, "ghost", false);
-				break;
-			case "f":
-				setFunction(displayIndex, "flam", false);
-				break;
-			case "d":
-				setFunction(displayIndex, "drag", false);
-				break;
-			case "l":
-			case "L":
-				if (drumType == "Stickings")
-					setFunction(displayIndex, "left", false);
-				break;
-			case "m":
-				if (drumType == "H")
-					setFunction(displayIndex, "cow_bell", false);
-				break;
-			case "n":
-				if (drumType == "H")
-					setFunction(displayIndex, "metronome_normal", false);
-				break;
-			case "N":
-				if (drumType == "H")
-					setFunction(displayIndex, "metronome_accent", false);
-				break;
-			case "O":
-				setFunction(displayIndex, "accent", false);
-				break;
-			case "o":
-				if (drumType == "H")
-					setFunction(displayIndex, "open", false);
-				else
-					setFunction(displayIndex, "normal", false);
-				break;
-			case "r":
-			case "R":
-				if (drumType == "H")
-					setFunction(displayIndex, "ride", false);
-				else if (drumType == "Stickings")
-					setFunction(displayIndex, "right", false);
-				break;
-			case "s":
-				setFunction(displayIndex, "stacker", false);
-				break;
-			case "x":
-				if (drumType == "S")
-					setFunction(displayIndex, "xstick", false);
-				else if (drumType == "K")
-					setFunction(displayIndex, "splash", false);
-				else
-					setFunction(displayIndex, "normal", false);
-				break;
-			case "X":
-				if (drumType == "K")
-					setFunction(displayIndex, "kick_and_splash", false);
-				else
+				case "$":
+					setFunction(displayIndex, "and", false);
+					break;
+				case "1":
+					setFunction(displayIndex, "1", false);
+					break;
+				case "a":
+					setFunction(displayIndex, "a", false);
+					break;
+				case "B":
+					if (drumType == "Stickings")
+						setFunction(displayIndex, "both", false);
+					break;
+				case "b":
+					if (drumType == "H")
+						setFunction(displayIndex, "ride_bell", false);
+					else if (drumType == "S")
+						setFunction(displayIndex, "buzz", false);
+					break;
+				case "c":
+					if (drumType == "Stickings")
+						setFunction(displayIndex, "count", false);
+					else
+						setFunction(displayIndex, "crash", false);
+					break;
+				case "e":
+					setFunction(displayIndex, "e", false);
+					break;
+				case "g":
+					setFunction(displayIndex, "ghost", false);
+					break;
+				case "f":
+					setFunction(displayIndex, "flam", false);
+					break;
+				case "d":
+					setFunction(displayIndex, "drag", false);
+					break;
+				case "l":
+				case "L":
+					if (drumType == "Stickings")
+						setFunction(displayIndex, "left", false);
+					break;
+				case "m":
+					if (drumType == "H")
+						setFunction(displayIndex, "cow_bell", false);
+					break;
+				case "n":
+					if (drumType == "H")
+						setFunction(displayIndex, "metronome_normal", false);
+					break;
+				case "N":
+					if (drumType == "H")
+						setFunction(displayIndex, "metronome_accent", false);
+					break;
+				case "O":
 					setFunction(displayIndex, "accent", false);
-				break;
-			case "+":
-				setFunction(displayIndex, "close", false);
-				break;
-			case "-":
-				setFunction(displayIndex, "off", false);
-				break;
-			default:
-				console.log("Bad note in setNotesFromURLData: " + notes[i]);
-				break;
+					break;
+				case "o":
+					if (drumType == "H")
+						setFunction(displayIndex, "open", false);
+					else
+						setFunction(displayIndex, "normal", false);
+					break;
+				case "r":
+				case "R":
+					if (drumType == "H")
+						setFunction(displayIndex, "ride", false);
+					else if (drumType == "Stickings")
+						setFunction(displayIndex, "right", false);
+					break;
+				case "s":
+					setFunction(displayIndex, "stacker", false);
+					break;
+				case "x":
+					if (drumType == "S")
+						setFunction(displayIndex, "xstick", false);
+					else if (drumType == "K")
+						setFunction(displayIndex, "splash", false);
+					else
+						setFunction(displayIndex, "normal", false);
+					break;
+				case "X":
+					if (drumType == "K")
+						setFunction(displayIndex, "kick_and_splash", false);
+					else
+						setFunction(displayIndex, "accent", false);
+					break;
+				case "+":
+					setFunction(displayIndex, "close", false);
+					break;
+				case "-":
+					setFunction(displayIndex, "off", false);
+					break;
+				default:
+					console.log("Bad note in setNotesFromURLData: " + notes[i]);
+					break;
 			}
 		}
 	}
@@ -3684,96 +3677,96 @@ function GrooveWriter() {
 		for (var i = 0; i < abcArray.length && displayIndex < topDisplay; i += noteStringScaler, displayIndex += displayScaler) {
 
 			switch (abcArray[i]) {
-			case constant_ABC_STICK_R:
-				setFunction(displayIndex, "right", false);
-				break;
-			case constant_ABC_STICK_L:
-				setFunction(displayIndex, "left", false);
-				break;
-			case constant_ABC_STICK_BOTH:
-				setFunction(displayIndex, "both", false);
-				break;
-			case constant_ABC_STICK_COUNT:
-				setFunction(displayIndex, "count", false);
-				break;
-			case constant_ABC_STICK_OFF:
-				setFunction(displayIndex, "off", false);
-				break;
-			case constant_ABC_HH_Ride:
-				setFunction(displayIndex, "ride", false);
-				break;
-			case constant_ABC_HH_Ride_Bell:
-				setFunction(displayIndex, "ride_bell", false);
-				break;
-			case constant_ABC_HH_Cow_Bell:
-				setFunction(displayIndex, "cow_bell", false);
-				break;
-			case constant_ABC_HH_Crash:
-				setFunction(displayIndex, "crash", false);
-				break;
-			case constant_ABC_HH_Stacker:
-				setFunction(displayIndex, "stacker", false);
-				break;
-			case constant_ABC_HH_Metronome_Normal:
-				setFunction(displayIndex, "metronome_normal", false);
-				break;
-			case constant_ABC_HH_Metronome_Accent:
-				setFunction(displayIndex, "metronome_accent", false);
-				break;
-			case constant_ABC_HH_Open:
-				setFunction(displayIndex, "open", false);
-				break;
-			case constant_ABC_HH_Close:
-				setFunction(displayIndex, "close", false);
-				break;
-			case constant_ABC_HH_Accent:
-				setFunction(displayIndex, "accent", false);
-				break;
-			case constant_ABC_HH_Normal:
-				setFunction(displayIndex, "normal", false);
-				break;
-			case constant_ABC_T1_Normal:
-				setFunction(displayIndex, "normal", false);
-				break;
-			case constant_ABC_T4_Normal:
-				setFunction(displayIndex, "normal", false);
-				break;
-			case constant_ABC_SN_Ghost:
-				setFunction(displayIndex, "ghost", false);
-				break;
-			case constant_ABC_SN_Accent:
-				setFunction(displayIndex, "accent", false);
-				break;
-			case constant_ABC_SN_Normal:
-				setFunction(displayIndex, "normal", false);
-				break;
-			case constant_ABC_SN_Flam:
-				setFunction(displayIndex, "flam", false);
-				break;
-			case constant_ABC_SN_Drag:
-				setFunction(displayIndex, "drag", false);
-				break;
-			case constant_ABC_SN_XStick:
-				setFunction(displayIndex, "xstick", false);
-				break;
-			case constant_ABC_SN_Buzz:
-				setFunction(displayIndex, "buzz", false);
-				break;
-			case constant_ABC_KI_SandK:
-				setFunction(displayIndex, "kick_and_splash", false);
-				break;
-			case constant_ABC_KI_Splash:
-				setFunction(displayIndex, "splash", false);
-				break;
-			case constant_ABC_KI_Normal:
-				setFunction(displayIndex, "normal", false);
-				break;
-			case false:
-				setFunction(displayIndex, "off", false);
-				break;
-			default:
-				console.log("Bad note in setNotesFromABCArray: " + abcArray[i]);
-				break;
+				case constant_ABC_STICK_R:
+					setFunction(displayIndex, "right", false);
+					break;
+				case constant_ABC_STICK_L:
+					setFunction(displayIndex, "left", false);
+					break;
+				case constant_ABC_STICK_BOTH:
+					setFunction(displayIndex, "both", false);
+					break;
+				case constant_ABC_STICK_COUNT:
+					setFunction(displayIndex, "count", false);
+					break;
+				case constant_ABC_STICK_OFF:
+					setFunction(displayIndex, "off", false);
+					break;
+				case constant_ABC_HH_Ride:
+					setFunction(displayIndex, "ride", false);
+					break;
+				case constant_ABC_HH_Ride_Bell:
+					setFunction(displayIndex, "ride_bell", false);
+					break;
+				case constant_ABC_HH_Cow_Bell:
+					setFunction(displayIndex, "cow_bell", false);
+					break;
+				case constant_ABC_HH_Crash:
+					setFunction(displayIndex, "crash", false);
+					break;
+				case constant_ABC_HH_Stacker:
+					setFunction(displayIndex, "stacker", false);
+					break;
+				case constant_ABC_HH_Metronome_Normal:
+					setFunction(displayIndex, "metronome_normal", false);
+					break;
+				case constant_ABC_HH_Metronome_Accent:
+					setFunction(displayIndex, "metronome_accent", false);
+					break;
+				case constant_ABC_HH_Open:
+					setFunction(displayIndex, "open", false);
+					break;
+				case constant_ABC_HH_Close:
+					setFunction(displayIndex, "close", false);
+					break;
+				case constant_ABC_HH_Accent:
+					setFunction(displayIndex, "accent", false);
+					break;
+				case constant_ABC_HH_Normal:
+					setFunction(displayIndex, "normal", false);
+					break;
+				case constant_ABC_T1_Normal:
+					setFunction(displayIndex, "normal", false);
+					break;
+				case constant_ABC_T4_Normal:
+					setFunction(displayIndex, "normal", false);
+					break;
+				case constant_ABC_SN_Ghost:
+					setFunction(displayIndex, "ghost", false);
+					break;
+				case constant_ABC_SN_Accent:
+					setFunction(displayIndex, "accent", false);
+					break;
+				case constant_ABC_SN_Normal:
+					setFunction(displayIndex, "normal", false);
+					break;
+				case constant_ABC_SN_Flam:
+					setFunction(displayIndex, "flam", false);
+					break;
+				case constant_ABC_SN_Drag:
+					setFunction(displayIndex, "drag", false);
+					break;
+				case constant_ABC_SN_XStick:
+					setFunction(displayIndex, "xstick", false);
+					break;
+				case constant_ABC_SN_Buzz:
+					setFunction(displayIndex, "buzz", false);
+					break;
+				case constant_ABC_KI_SandK:
+					setFunction(displayIndex, "kick_and_splash", false);
+					break;
+				case constant_ABC_KI_Splash:
+					setFunction(displayIndex, "splash", false);
+					break;
+				case constant_ABC_KI_Normal:
+					setFunction(displayIndex, "normal", false);
+					break;
+				case false:
+					setFunction(displayIndex, "off", false);
+					break;
+				default:
+					console.log("Bad note in setNotesFromABCArray: " + abcArray[i]);
+					break;
 			}
 		}
 	}
@@ -3804,7 +3797,7 @@ function GrooveWriter() {
 			popup.style.display = "none";
 	};
 
-	root.timeSigPopupOpen = function(type) {
+	root.timeSigPopupOpen = function (type) {
 		var popup = document.getElementById("timeSigPopup");
 
 		if (popup)
@@ -3813,16 +3806,16 @@ function GrooveWriter() {
 	};
 
 	// turns on or off triplet 1/4 and 1/8 note selection based on the current time sig setting
-	root.setTimeDivisionSelectionOnOrOff = function() {
+	root.setTimeDivisionSelectionOnOrOff = function () {
 
 		// check for incompatible odd time signature division  9/16 and 1/8 notes for instance
-		if( (8 * class_num_beats_per_measure / class_note_value_per_measure) % 1 != 0 ) {
+		if ((8 * class_num_beats_per_measure / class_note_value_per_measure) % 1 != 0) {
 			addOrRemoveKeywordFromClassById("subdivision_8ths", "disabled", true);
 		} else {
 			addOrRemoveKeywordFromClassById("subdivision_8ths", "disabled", false);
 		}
 
-		if(class_note_value_per_measure != 4) {
+		if (class_note_value_per_measure != 4) {
 			// triplets are too complicated right now outside of x/4 time.
 			// disable them
 
@@ -3839,25 +3832,25 @@ function GrooveWriter() {
 	};
 
 
-	root.setTimeSigLabel = function() {
+	root.setTimeSigLabel = function () {
 		// turn on/off special features that are only available in 4/4 time
 
 		// set the label
 		document.getElementById("timeSigLabel").innerHTML = '<sup>' + class_num_beats_per_measure + "</sup>/<sub>" + class_note_value_per_measure + "</sub>";
 	};
 
-	root.timeSigPopupClose = function(type, callback) {
+	root.timeSigPopupClose = function (type, callback) {
 		var popup = document.getElementById("timeSigPopup");
 
 		if (popup)
 			popup.style.display = "none";
 
 		// ignore type "cancel"
-		if(type == "ok") {
+		if (type == "ok") {
 			var newTimeSigTop = document.getElementById("timeSigPopupTimeSigTop").value;
 			var newTimeSigBottom = document.getElementById("timeSigPopupTimeSigBottom").value;
 
-			if(usingTriplets() && newTimeSigBottom != 4) {
+			if (usingTriplets() && newTimeSigBottom != 4) {
 				root.changeDivision(16);  // switch to a non triplet division since they are not supported in this time signature
 			}
 
@@ -3867,7 +3860,7 @@ function GrooveWriter() {
 			// If new_notes_per_measure is greater it will cause the changeDivision code to error
 			// as it tries to read the notes from the UI.   Setting it lower will allow the code to truncate
 			// the groove properly to something smaller rather than interpolating the groove into something weird
-			if(new_notes_per_measure < class_notes_per_measure)
+			if (new_notes_per_measure < class_notes_per_measure)
 				class_notes_per_measure = new_notes_per_measure;
 			root.changeDivision(class_time_division);   // use this function because it will relayout everything
 		}
@@ -3906,63 +3899,63 @@ function GrooveWriter() {
 		var popup = document.getElementById("fullURLPopup");
 
 		var ShareBut = new ShareButton({
-				ui: {
-					flyout: 'bottom center', // change the flyout direction of the shares. chose from `top left`, `top center`, `top right`, `bottom left`, `bottom right`, `bottom center`, `middle left`, or `middle right` [Default: `top center`]
-					button_font: false, // include the Lato font set from the Google Fonts API. [Default: `true`]
-					buttonText: 'SHARE', // change the text of the button, [Default: `Share`]
-					icon_font: false,   // include the minified Entypo font set. [Default: `true`]
+			ui: {
+				flyout: 'bottom center', // change the flyout direction of the shares. chose from `top left`, `top center`, `top right`, `bottom left`, `bottom right`, `bottom center`, `middle left`, or `middle right` [Default: `top center`]
+				button_font: false, // include the Lato font set from the Google Fonts API. [Default: `true`]
+				buttonText: 'SHARE', // change the text of the button, [Default: `Share`]
+				icon_font: false,   // include the minified Entypo font set. [Default: `true`]
+			},
+			networks: {
+				facebook: {
+					before: function () {
+						this.url = document.getElementById("fullURLPopupTextField").value;
+						this.description = "Check out this groove.";
+					},
+					//app_id : "839699029418014"    // staging id
+					// app_id : "1499163983742002"   // MLDC id, lou created
+					appId: "445510575651140",   // MLDC id, brad created
+					loadSdk: true
 				},
-				networks: {
-					facebook: {
-						before: function () {
-							this.url = document.getElementById("fullURLPopupTextField").value;
-							this.description = "Check out this groove.";
-						},
-						//app_id : "839699029418014"    // staging id
-						// app_id : "1499163983742002"   // MLDC id, lou created
-						appId: "445510575651140",   // MLDC id, brad created
-						loadSdk: true
-					},
-					googlePlus : {
-						enabled : false
-					},
-					twitter: {
-						before: function () {
-							this.url = encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
-							this.description = "Check out this groove:  " + document.getElementById("fullURLPopupTextField").value;
-						}
-					},
-					reddit: {
-						before: function () {
-							this.url = document.getElementById("fullURLPopupTextField").value;
-							this.title = "Check out this groove: " + document.getElementById("fullURLPopupTextField").value;
-						}
-					},
-					email: {
-						before : function () {
-							this.url = document.getElementById("fullURLPopupTextField").value;
-							this.description = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
-						}
-					},
-					pinterest: {
-						enabled: false
-					},
-					linkedin: {
-						enabled: false
-					},
-					whatsapp: {
-						enabled: false
+				googlePlus: {
+					enabled: false
+				},
+				twitter: {
+					before: function () {
+						this.url = encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
+						this.description = "Check out this groove:  " + document.getElementById("fullURLPopupTextField").value;
 					}
+				},
+				reddit: {
+					before: function () {
+						this.url = document.getElementById("fullURLPopupTextField").value;
+						this.title = "Check out this groove: " + document.getElementById("fullURLPopupTextField").value;
+					}
+				},
+				email: {
+					before: function () {
+						this.url = document.getElementById("fullURLPopupTextField").value;
+						this.description = "Check out this groove. %0A%0A " + encodeURIComponent(document.getElementById("fullURLPopupTextField").value);
+					}
+				},
+				pinterest: {
+					enabled: false
+				},
+				linkedin: {
+					enabled: false
+				},
+				whatsapp: {
+					enabled: false
 				}
-			});
+			}
+		});
 
-			// open the popup with full url and try to load short in the background
-			root.fillInFullURLInFullURLPopup();
-			// default is to use shortened url
-			fillInShortenedURLInFullURLPopup(get_FullURLForPage(), 'fullURLPopupTextField');
+		// open the popup with full url and try to load short in the background
+		root.fillInFullURLInFullURLPopup();
+		// default is to use shortened url
+		fillInShortenedURLInFullURLPopup(get_FullURLForPage(), 'fullURLPopupTextField');
 	};
 
-	root.copyShareURLToClipboard = function() {
+	root.copyShareURLToClipboard = function () {
 		var copyText = document.getElementById("fullURLPopupTextField");
 
 		copyText.select();
@@ -3992,7 +3985,7 @@ function GrooveWriter() {
 		var xhr = new XMLHttpRequest();
 		xhr.open('POST', 'https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyBx4So11fGFPgTI62nP-JmxrxHmuRpJ120');
 		xhr.setRequestHeader('Content-Type', 'application/json');
-		xhr.onload = function() {
+		xhr.onload = function () {
 			if (xhr.status === 200) {
 				// success
 				var response = JSON.parse(xhr.responseText);
@@ -4200,7 +4193,7 @@ function GrooveWriter() {
 		var uiSnare = "|";
 		var uiKick = "|";
 
-		if(newDivision == 48 && !have_shown_mixed_division_message) {
+		if (newDivision == 48 && !have_shown_mixed_division_message) {
 			have_shown_mixed_division_message = true;
 			alert("The MIXED subdivision allows you to create a combination of triplets and non-triplet notes in one measure.  Set every 3rd note for 16ths and every 6th note for 8th notes")
 		}
@@ -4209,11 +4202,11 @@ function GrooveWriter() {
 		var new_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure((isNewDivisionTriplets ? 48 : 32), class_num_beats_per_measure, class_note_value_per_measure);
 
 		// check for incompatible odd time signature division   9/8 and 1/4notes for instance or 9/16 and 1/8notes
-		if( (newDivision * class_num_beats_per_measure / class_note_value_per_measure) % 1 != 0 ) {
+		if ((newDivision * class_num_beats_per_measure / class_note_value_per_measure) % 1 != 0) {
 			alert("1/" + newDivision + " notes are disabled in " + class_num_beats_per_measure + "/" + class_note_value_per_measure + " time.  This combination would result in a half note.");
 			return;
 		}
-		if(isNewDivisionTriplets && class_note_value_per_measure != 4) {
+		if (isNewDivisionTriplets && class_note_value_per_measure != 4) {
 			alert("Triplets are disabled in " + class_num_beats_per_measure + "/" + class_note_value_per_measure + " time.  Use x/4 time for triplets.");
 			return;
 		}
@@ -4382,56 +4375,56 @@ function GrooveWriter() {
 											<div class="opening_note_space"> </div> ');
 		for (i = indexStartForNotes; i < class_notes_per_measure + indexStartForNotes; i++) {
 			newHTML += ('' +
-						'<div id="snare' + i + '" class="snare" onClick="myGrooveWriter.noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'snare\', ' + i + ')">' +
-							'<div class="snare_ghost note_part"  id="snare_ghost' + i + '">(<i class="fa fa-circle dot_in_snare_ghost_note"></i>)</div>' +
-							'<div class="snare_circle note_part" id="snare_circle' + i + '"></div>' +
-							'<div class="snare_xstick note_part" id="snare_xstick' + i + '"><i class="fa fa-times"></i></div>' +
-							'<div class="snare_buzz note_part" id="snare_buzz' + i + '"><i class="fa fa-bars"></i></div>' +
-							'<div class="snare_flam note_part" id="snare_flam' + i + '"><i class="fa ">' +
-								'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="30" height="30">' +
-								'	<style type="text/css">' +
-								'		.flam_fill {fill: currentColor}' +
-								'		.flam_stroke {stroke: currentColor; fill: none; stroke-width: .7}' +
-								'	</style>' +
-								'	<defs>' +
-								'		<path id="flam_ghd" class="flam_fill" d="m1.7-1c-1-1.7-4.5 0.2-3.4 2 1 1.7 4.5-0.2 3.4-2"></path>' +
-								'		<ellipse id="flam_hd" rx="4.1" ry="2.9" transform="rotate(-20)" class="flam_fill"></ellipse>' +
-								'	</defs>' +
-								'	<g id="note" transform="translate(-44 -35)">' +
-								'		<path class="flam_stroke" d="m52.1 53.34v-14M52.1 39.34c0.6 3.4 5.6 3.8 3 10 1.2-4.4-1.4-7-3-7"></path>' +
-								'		<use x="50.50" y="53.34" xlink:href="#flam_ghd"></use>' +
-								'		<path class="flam_stroke" d="m49.5 49.34l9-5"></path>' +
-								'		<path class="flam_stroke" d="m50.5 58.34c2.9 3 11.6 3 14.5 0M69.5 53.34v-21"></path><use x="66.00" y="53.34" xlink:href="#flam_hd"></use>' +
-								'	</g>' +
-								'</svg>' +
-							'</i></div>' +
-							'<div class="snare_drag note_part" id="snare_drag' + i + '"><i class="fa ">' +
-							'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="30" height="30">' +
-							'	<style type="text/css">' +
-							'		.drag_fill {fill: currentColor}' +
-							'		.drag_stroke {stroke: currentColor; fill: none; stroke-width: .7}' +
-							'	</style>' +
-							'	<defs>' +
-							'		<path id="drag_ghd" class="drag_fill" d="m1.7-1c-1-1.7-4.5 0.2-3.4 2 1 1.7 4.5-0.2 3.4-2"></path>' +
-							'		<ellipse id="drag_hd" rx="4.1" ry="2.9" transform="rotate(-20)" class="drag_fill"></ellipse>' +
-							'	</defs>' +
-							'	<g id="note" transform="translate(-44 -35)">' +
-							'       <path class="fill" d="m51.81 38.34 l8.58 0.00v1.60l-8.58 0.00"></path>' +
-							'	    <path class="fill" d="m52.10 41.34 l8.00 0.00v1.60l-8.00 0.00"></path>' +
-							'		<path class="drag_stroke" d="m52.1 53.34v-15.00"></path>' +
-							'		<use x="50.50" y="53.34" xlink:href="#drag_ghd"></use>' +
-							'		<path class="drag_stroke" d="m49.50 49.34l8.00 -15.00"></path>' +
-							'		<path class="drag_stroke" d="m60.10 53.34v-15.00"></path>' +
-							'		<use x="58.50" y="53.34" xlink:href="#drag_ghd"></use>' +
-							'		<path class="drag_stroke" d="m50.5 58.34c2.9 3 11.6 3 14.5 0M69.5 53.34v-21"></path><use x="66.00" y="53.34" xlink:href="#drag_hd"></use>' +
+				'<div id="snare' + i + '" class="snare" onClick="myGrooveWriter.noteLeftClick(event, \'snare\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'snare\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'snare\', ' + i + ')">' +
+				'<div class="snare_ghost note_part"  id="snare_ghost' + i + '">(<i class="fa fa-circle dot_in_snare_ghost_note"></i>)</div>' +
+				'<div class="snare_circle note_part" id="snare_circle' + i + '"></div>' +
+				'<div class="snare_xstick note_part" id="snare_xstick' + i + '"><i class="fa fa-times"></i></div>' +
+				'<div class="snare_buzz note_part" id="snare_buzz' + i + '"><i class="fa fa-bars"></i></div>' +
+				'<div class="snare_flam note_part" id="snare_flam' + i + '"><i class="fa ">' +
+				'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="30" height="30">' +
+				'	<style type="text/css">' +
+				'		.flam_fill {fill: currentColor}' +
+				'		.flam_stroke {stroke: currentColor; fill: none; stroke-width: .7}' +
+				'	</style>' +
+				'	<defs>' +
+				'		<path id="flam_ghd" class="flam_fill" d="m1.7-1c-1-1.7-4.5 0.2-3.4 2 1 1.7 4.5-0.2 3.4-2"></path>' +
+				'		<ellipse id="flam_hd" rx="4.1" ry="2.9" transform="rotate(-20)" class="flam_fill"></ellipse>' +
+				'	</defs>' +
+				'	<g id="note" transform="translate(-44 -35)">' +
+				'		<path class="flam_stroke" d="m52.1 53.34v-14M52.1 39.34c0.6 3.4 5.6 3.8 3 10 1.2-4.4-1.4-7-3-7"></path>' +
+				'		<use x="50.50" y="53.34" xlink:href="#flam_ghd"></use>' +
+				'		<path class="flam_stroke" d="m49.5 49.34l9-5"></path>' +
+				'		<path class="flam_stroke" d="m50.5 58.34c2.9 3 11.6 3 14.5 0M69.5 53.34v-21"></path><use x="66.00" y="53.34" xlink:href="#flam_hd"></use>' +
+				'	</g>' +
+				'</svg>' +
+				'</i></div>' +
+				'<div class="snare_drag note_part" id="snare_drag' + i + '"><i class="fa ">' +
+				'<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="30" height="30">' +
+				'	<style type="text/css">' +
+				'		.drag_fill {fill: currentColor}' +
+				'		.drag_stroke {stroke: currentColor; fill: none; stroke-width: .7}' +
+				'	</style>' +
+				'	<defs>' +
+				'		<path id="drag_ghd" class="drag_fill" d="m1.7-1c-1-1.7-4.5 0.2-3.4 2 1 1.7 4.5-0.2 3.4-2"></path>' +
+				'		<ellipse id="drag_hd" rx="4.1" ry="2.9" transform="rotate(-20)" class="drag_fill"></ellipse>' +
+				'	</defs>' +
+				'	<g id="note" transform="translate(-44 -35)">' +
+				'       <path class="fill" d="m51.81 38.34 l8.58 0.00v1.60l-8.58 0.00"></path>' +
+				'	    <path class="fill" d="m52.10 41.34 l8.00 0.00v1.60l-8.00 0.00"></path>' +
+				'		<path class="drag_stroke" d="m52.1 53.34v-15.00"></path>' +
+				'		<use x="50.50" y="53.34" xlink:href="#drag_ghd"></use>' +
+				'		<path class="drag_stroke" d="m49.50 49.34l8.00 -15.00"></path>' +
+				'		<path class="drag_stroke" d="m60.10 53.34v-15.00"></path>' +
+				'		<use x="58.50" y="53.34" xlink:href="#drag_ghd"></use>' +
+				'		<path class="drag_stroke" d="m50.5 58.34c2.9 3 11.6 3 14.5 0M69.5 53.34v-21"></path><use x="66.00" y="53.34" xlink:href="#drag_hd"></use>' +
 
-							'	</g>' +
-							'</svg>' +
-							'</i></div>' +
-							'<div class="snare_accent note_part" id="snare_accent' + i + '">' +
-							'  <i class="fa fa-chevron-right"></i>' +
-							'</div>' +
-						'</div> \n');
+				'	</g>' +
+				'</svg>' +
+				'</i></div>' +
+				'<div class="snare_accent note_part" id="snare_accent' + i + '">' +
+				'  <i class="fa fa-chevron-right"></i>' +
+				'</div>' +
+				'</div> \n');
 
 
 
@@ -4547,30 +4540,30 @@ function GrooveWriter() {
 			return "";
 
 		var optionTypeArray = [{
-				id : "PermuationOptionsOstinato",
-				subid : "PermuationOptionsOstinato_sub",
-				name : "Ostinato",
-				SubOptions : [],
-				defaultOn : false
-			}, {
-				id : "PermuationOptionsSingles",
-				subid : "PermuationOptionsSingles_sub",
-				name : "Singles",
-				SubOptions : ["1", "&", "a"],
-				defaultOn : true
-			}, {
-				id : "PermuationOptionsDoubles",
-				subid : "PermuationOptionsDoubles_sub",
-				name : "Doubles",
-				SubOptions : ["1", "&", "a"],
-				defaultOn : true
-			}, {
-				id : "PermuationOptionsTriples",
-				subid : "PermuationOptionsTriples_sub",
-				name : "Triples",
-				SubOptions : [],
-				defaultOn : true
-			}
+			id: "PermuationOptionsOstinato",
+			subid: "PermuationOptionsOstinato_sub",
+			name: "Ostinato",
+			SubOptions: [],
+			defaultOn: false
+		}, {
+			id: "PermuationOptionsSingles",
+			subid: "PermuationOptionsSingles_sub",
+			name: "Singles",
+			SubOptions: ["1", "&", "a"],
+			defaultOn: true
+		}, {
+			id: "PermuationOptionsDoubles",
+			subid: "PermuationOptionsDoubles_sub",
+			name: "Doubles",
+			SubOptions: ["1", "&", "a"],
+			defaultOn: true
+		}, {
+			id: "PermuationOptionsTriples",
+			subid: "PermuationOptionsTriples_sub",
+			name: "Triples",
+			SubOptions: [],
+			defaultOn: true
+		}
 		];
 
 		// change and add other options for non triplet based ostinatos
@@ -4582,44 +4575,44 @@ function GrooveWriter() {
 			optionTypeArray[2].SubOptions = ["1", "e", "&", "a"]; // doubles
 			optionTypeArray[3].SubOptions = ["1", "e", "&", "a"]; // triples
 			optionTypeArray.splice(3, 0, {
-				id : "PermuationOptionsUpsDowns",
-				subid : "PermuationOptionsUpsDowns_sub",
-				name : "Downbeats/Upbeats",
-				SubOptions : ["downs", "ups"],
-				defaultOn : false
+				id: "PermuationOptionsUpsDowns",
+				subid: "PermuationOptionsUpsDowns_sub",
+				name: "Downbeats/Upbeats",
+				SubOptions: ["downs", "ups"],
+				defaultOn: false
 			});
 			optionTypeArray.splice(5, 0, {
-				id : "PermuationOptionsQuads",
-				subid : "PermuationOptionsQuads_sub",
-				name : "Quads",
-				SubOptions : [],
-				defaultOn : false
+				id: "PermuationOptionsQuads",
+				subid: "PermuationOptionsQuads_sub",
+				name: "Quads",
+				SubOptions: [],
+				defaultOn: false
 			});
 		}
 
 		switch (class_permutation_type) {
-		case "snare_16ths":
-			optionTypeArray.splice(0, 0, {
-				id : "PermuationOptionsAccentGrid",
-				subid : "",
-				name : "Use Accent Grid",
-				SubOptions : [],
-				defaultOn : false
-			});
-			break;
-		case "kick_16ths":
-			if (!usingTriplets())
+			case "snare_16ths":
 				optionTypeArray.splice(0, 0, {
-					id : "PermuationOptionsSkipSomeFirstNotes",
-					subid : "",
-					name : "Simplify multiple kicks",
-					SubOptions : [],
-					defaultOn : false
+					id: "PermuationOptionsAccentGrid",
+					subid: "",
+					name: "Use Accent Grid",
+					SubOptions: [],
+					defaultOn: false
 				});
-			break;
-		default:
-			console.log("Bad case in HTMLforPermutationOptions()");
-			break;
+				break;
+			case "kick_16ths":
+				if (!usingTriplets())
+					optionTypeArray.splice(0, 0, {
+						id: "PermuationOptionsSkipSomeFirstNotes",
+						subid: "",
+						name: "Simplify multiple kicks",
+						SubOptions: [],
+						defaultOn: false
+					});
+				break;
+			default:
+				console.log("Bad case in HTMLforPermutationOptions()");
+				break;
 		}
 
 		var newHTML = '<span id="PermutationOptionsHeader">Permutation Options</span>\n';
@@ -4629,26 +4622,26 @@ function GrooveWriter() {
 		for (var optionType in optionTypeArray) {
 
 			newHTML += '' +
-			'<div class="PermutationOptionGroup" id="' + optionTypeArray[optionType].id + 'Group">\n' +
-			'<div class="PermutationOption">\n' +
-			'<input ' + (optionTypeArray[optionType].defaultOn ? "checked" : "") + ' type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].id + '" onClick="myGrooveWriter.permutationOptionClick(event)">' +
-			'<label for="' + optionTypeArray[optionType].id + '">' + optionTypeArray[optionType].name + '</label>\n' +
-			'</div>' +
-			'<span class="permutationSubOptionContainer" id="' + optionTypeArray[optionType].subid + '">\n';
+				'<div class="PermutationOptionGroup" id="' + optionTypeArray[optionType].id + 'Group">\n' +
+				'<div class="PermutationOption">\n' +
+				'<input ' + (optionTypeArray[optionType].defaultOn ? "checked" : "") + ' type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].id + '" onClick="myGrooveWriter.permutationOptionClick(event)">' +
+				'<label for="' + optionTypeArray[optionType].id + '">' + optionTypeArray[optionType].name + '</label>\n' +
+				'</div>' +
+				'<span class="permutationSubOptionContainer" id="' + optionTypeArray[optionType].subid + '">\n';
 
 			var count = 0;
 			for (var optionName in optionTypeArray[optionType].SubOptions) {
 				count++;
 				newHTML += '' +
-				'<span class="PermutationSubOption">\n' +
-				'	<input ' + (optionTypeArray[optionType].defaultOn ? "checked" : "") + ' type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].subid + count + '" onClick="myGrooveWriter.permutationSubOptionClick(event)">' +
-				'	<label for="' + optionTypeArray[optionType].subid + count + '">' + optionTypeArray[optionType].SubOptions[optionName] + '</label>' +
-				'</span>';
+					'<span class="PermutationSubOption">\n' +
+					'	<input ' + (optionTypeArray[optionType].defaultOn ? "checked" : "") + ' type="checkbox" class="myCheckbox" id="' + optionTypeArray[optionType].subid + count + '" onClick="myGrooveWriter.permutationSubOptionClick(event)">' +
+					'	<label for="' + optionTypeArray[optionType].subid + count + '">' + optionTypeArray[optionType].SubOptions[optionName] + '</label>' +
+					'</span>';
 			}
 
 			newHTML += '' +
-			'	</span>\n' +
-			'</div>\n';
+				'	</span>\n' +
+				'</div>\n';
 		}
 
 		newHTML += '</span>\n';

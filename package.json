@@ -1,0 +1,30 @@
+{
+  "name": "groovescribe",
+  "version": "1.0.0",
+  "description": "Readme for Groove Scribe",
+  "main": "MIDI.js",
+  "scripts": {
+    "dev": "vite --port 3000",
+    "build": "vite preview",
+    "test": "cypress open",
+    "serve": "vite --port 3000 preview",
+    "cypress:run": "cypress run",
+    "test:ci": "start-server-and-test dev http://localhost:3000 cypress:run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sbstn-jmnz/GrooveScribe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sbstn-jmnz/GrooveScribe/issues"
+  },
+  "homepage": "https://github.com/sbstn-jmnz/GrooveScribe#readme",
+  "devDependencies": {
+    "cypress": "^12.7.0",
+    "start-server-and-test": "^2.0.0",
+    "vite": "^4.1.4"
+  }
+}
