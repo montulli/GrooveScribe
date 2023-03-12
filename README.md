@@ -41,3 +41,7 @@ To edit this Readme:
 ### See also ###
 
 * [SOURCE_CODE_README.md](SOURCE_CODE_README.md)
+
+### Cypress E2E test ###
+`npm install`
+`npm run test`

@@ -6,3 +6,4 @@ cordova/platforms/
 mikeLessons.html
 cordova/plugins/
 .idea/
+node_modules

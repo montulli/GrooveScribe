@@ -1,92 +1,110 @@
 <!DOCTYPE html>
 <html unused_manifest="gscribe.manifest">
-	<!-- HTML for the Groove Writer part of the Groove Scribe HTML application -->
-	<!--Copyright 2015-2020 Lou Montulli, Mike Johnston  GPL V2.0 Please See LICENSE.txt for more details -->
+<!-- HTML for the Groove Writer part of the Groove Scribe HTML application -->
+<!--Copyright 2015-2020 Lou Montulli, Mike Johnston  GPL V2.0 Please See LICENSE.txt for more details -->
 
-    <head>
-		<title>Groove Scribe</title>
+<head>
+	<title>Groove Scribe</title>
 
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="mobile-web-app-capable" content="yes">
-		<link rel="icon" sizes="192x192" href="images/gscribe-icon-192.png">
-		<link rel="icon" sizes="96x96" href="images/gscribe-icon-96.png">
-		<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="mobile-web-app-capable" content="yes">
+	<link rel="icon" sizes="192x192" href="images/gscribe-icon-192.png">
+	<link rel="icon" sizes="96x96" href="images/gscribe-icon-96.png">
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
 
-		<!--meta property="og:image" content="https://mikeslessons.com/groove/images/GScribe_Logo_on_orange.png"> -->
-		<meta property="og:description" content="Groove Scribe allows drummers to easily create grooves, listen, share, print sheet music, and more. Use the Groove Scribe to create new grooves, figure out the groove to your favorite song, or write down the groove to your latest tune."/>
-		<meta property="og:site_name" content="GrooveScribe at MikesLessons.com"/>
+	<meta property="og:description"
+		content="Groove Scribe allows drummers to easily create grooves, listen, share, print sheet music, and more. Use the Groove Scribe to create new grooves, figure out the groove to your favorite song, or write down the groove to your latest tune." />
+	<meta property="og:site_name" content="GrooveScribe at MikesLessons.com" />
 
-		<script>
-			document.write('<meta property="og:image" content="https://gscribe-png-image.herokuapp.com/' + window.location.search + '">');
-		</script>
-		<meta property="og:image" content="https://mikeslessons.com/groove/images/GScribe_Logo_on_orange.png">
+	<script>
+		document.write('<meta property="og:image" content="https://gscribe-png-image.herokuapp.com/' + window.location.search + '">');
+	</script>
+	<meta property="og:image" content="https://mikeslessons.com/groove/images/GScribe_Logo_on_orange.png">
 
-		<link rel="stylesheet" type="text/css" href="font-awesome/4.7.0/css/font-awesome.min.css">
-		<link rel="stylesheet" type="text/css" href="css/share-button.min.css">
-	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css">
-		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css">
-		<link href='https://fonts.googleapis.com/css?family=Lato:400,700,300' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="css/share-button.min.css">
+	<link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css">
+	<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css">
+	<link href='https://fonts.googleapis.com/css?family=Lato:400,700,300' rel='stylesheet' type='text/css'>
 
-		<!--   Other peoples JS libraries    -->
-		<!-- <script src="./MIDI.js/js/MIDI/MIDI.JS.min.js" type="text/javascript"></script> -->
-		<script src="./MIDI.js/js/MIDI/AudioDetect.js" type="text/javascript"></script>
-		<script src="./MIDI.js/js/MIDI/LoadPlugin.js" type="text/javascript"></script>
-		<script src="./MIDI.js/js/MIDI/Plugin.js" type="text/javascript"></script>
-		<script src="./MIDI.js/js/MIDI/Player.js" type="text/javascript"></script>
-		<script src="./MIDI.js/inc/DOMLoader.XMLHttp.js" type="text/javascript"></script>
-		<script src="./MIDI.js/inc/jasmid/stream.js"></script>
-		<script src="./MIDI.js/inc/jasmid/midifile.js"></script>
-		<script src="./MIDI.js/inc/jasmid/replayer.js"></script>
-		<script src="./MIDI.js/inc/Base64.js"></script>
-		<script src="./MIDI.js/inc/base64binary.js"></script>
+	<!--   Other peoples JS libraries    -->
+	<!-- <script src="./MIDI.js/js/MIDI/MIDI.JS.min.js" type="text/javascript"></script> -->
+	<script src="./MIDI.js/js/MIDI/AudioDetect.js" type="text/javascript"></script>
+	<script src="./MIDI.js/js/MIDI/LoadPlugin.js" type="text/javascript"></script>
+	<script src="./MIDI.js/js/MIDI/Plugin.js" type="text/javascript"></script>
+	<script src="./MIDI.js/js/MIDI/Player.js" type="text/javascript"></script>
+	<script src="./MIDI.js/inc/DOMLoader.XMLHttp.js" type="text/javascript"></script>
+	<script src="./MIDI.js/inc/jasmid/stream.js"></script>
+	<script src="./MIDI.js/inc/jasmid/midifile.js"></script>
+	<script src="./MIDI.js/inc/jasmid/replayer.js"></script>
+	<script src="./MIDI.js/inc/Base64.js"></script>
+	<script src="./MIDI.js/inc/base64binary.js"></script>
 
-		<!-- script to render ABC to an SVG image -->
-		<script type="text/javascript" src="./js/abc2svg-1.js"></script>
+	<!-- script to render ABC to an SVG image -->
+	<script type="text/javascript" src="./js/abc2svg-1.js"></script>
 
-		<!-- script to convert SVG to PNGs for download -->
-		<script type="text/javascript" src="./js/pablo.min.js"></script>
+	<!-- script to convert SVG to PNGs for download -->
+	<script type="text/javascript" src="./js/pablo.min.js"></script>
 
-		<!-- script for sharing to social sites -->
-		<script src="js/share-button.min.js"></script>
+	<!-- script for sharing to social sites -->
+	<script src="js/share-button.min.js"></script>
 
 
-		<!-- Minified version: <script src="./js/groove_writer.min.js" type="text/javascript"></script> -->
+	<!-- Minified version: <script src="./js/groove_writer.min.js" type="text/javascript"></script> -->
 
-		<!-- jsmidgen for generating a midi file -->
-		<script src="./js/jsmidgen.js" type="text/javascript"></script>
-		<!--   our custom JS  -->
-		<script src="js/groove_writer.js"></script>
-		<script src="js/groove_utils.js"></script>
-		<script src="js/grooves.js"></script>
+	<!-- jsmidgen for generating a midi file -->
+	<script src="./js/jsmidgen.js" type="text/javascript"></script>
+	<!--   our custom JS  -->
+	<script src="js/groove_writer.js"></script>
+	<script src="js/groove_utils.js"></script>
+	<script src="js/grooves.js"></script>
 
-		<script type="text/javascript">
-			/*jslint browser:true evil:true on:true */
-			/*global GrooveWriter, grooves */
-			// instantiate a global instance of the GrooveWriterClass.    This page only uses one
-			var myGrooveWriter = new GrooveWriter();
-			if (myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
-				document.write('<link rel="stylesheet" type="text/css" href="css/grooveDB_authoring.css">');
-			}
-			if (myGrooveWriter.myGrooveUtils.debugMode) {
-				document.write('<link rel="stylesheet" type="text/css" href="css/groove_debug.css">');
-			}
-		</script>
+	<script type="text/javascript">
+		// instantiate a global instance of the GrooveWriterClass.
+		// This page only uses one
+		var myGrooveWriter = new GrooveWriter();
+		if (myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
+			document.write('<link rel="stylesheet" type="text/css" href="css/grooveDB_authoring.css">');
+		}
+		if (myGrooveWriter.myGrooveUtils.debugMode) {
+			document.write('<link rel="stylesheet" type="text/css" href="css/groove_debug.css">');
+		}
+	</script>
 
-    </head>
-    <body>
+</head>
+
+<body>
 
 	<div id="GrooveWriter">
+		<!-- Not printable elements of the UI -->
+		<!-- Nav/SideBar and midiPlayer -->
 		<div class="nonPrintable">
+			<!-- Side Bar -->
 			<div id="LeftHandNav">
 				<span id="divisionButtonContainer">
 					<span id="logoInSubdivision" class="left-button-content"><img src="images/GScribe_Logo_lone_g.svg"></span>
-					<span class="left-button edit-block" id="timeLabel" onclick="myGrooveWriter.timeSigPopupOpen();"><span class="left-button-content"><span><span id="timeSigLabel" class="buttonFraction"><sup>4</sup>/<sub>4</sub></span><span id="timeSubLabel">TIME</span></span></span></span>
-					<span class="left-button subdivision edit-block" id="subdivision_8ths"  onclick="myGrooveWriter.changeDivision(8);"><span class="left-button-content"><span><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>NOTES</span></span></span>
-					<span class="left-button subdivision edit-block" id="subdivision_16ths" onclick="myGrooveWriter.changeDivision(16);"><span class="left-button-content"><span><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>NOTES</span></span></span>
-					<span class="left-button subdivision edit-block" id="subdivision_32ths" onclick="myGrooveWriter.changeDivision(32);"><span class="left-button-content"><span><span class="buttonFraction"><sup>1</sup>/<sub>32</sub></span>NOTES</span></span></span>
-					<span class="left-button subdivision edit-block" id="subdivision_12ths" onclick="myGrooveWriter.changeDivision(12);"><span class="left-button-content"><span><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>TRIPLETS</span></span></span>
-					<span class="left-button subdivision edit-block" id="subdivision_24ths" onclick="myGrooveWriter.changeDivision(24);"><span class="left-button-content"><span><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>TRIPLETS</span></span></span>
-					<span class="left-button subdivision edit-block" id="subdivision_48ths" onclick="myGrooveWriter.changeDivision(48);"><span class="left-button-content"><span>MIXED<br>Division</span></span></span>
+					<span class="left-button edit-block" id="timeLabel" onclick="myGrooveWriter.timeSigPopupOpen();"><span
+							class="left-button-content"><span><span id="timeSigLabel"
+									class="buttonFraction"><sup>4</sup>/<sub>4</sub></span><span
+									id="timeSubLabel">TIME</span></span></span></span>
+					<span class="left-button subdivision edit-block" id="subdivision_8ths"
+						onclick="myGrooveWriter.changeDivision(8);"><span class="left-button-content"><span><span
+									class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>NOTES</span></span></span>
+					<span class="left-button subdivision edit-block" id="subdivision_16ths"
+						onclick="myGrooveWriter.changeDivision(16);"><span class="left-button-content"><span><span
+									class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>NOTES</span></span></span>
+					<span class="left-button subdivision edit-block" id="subdivision_32ths"
+						onclick="myGrooveWriter.changeDivision(32);"><span class="left-button-content"><span><span
+									class="buttonFraction"><sup>1</sup>/<sub>32</sub></span>NOTES</span></span></span>
+					<span class="left-button subdivision edit-block" id="subdivision_12ths"
+						onclick="myGrooveWriter.changeDivision(12);"><span class="left-button-content"><span><span
+									class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>TRIPLETS</span></span></span>
+					<span class="left-button subdivision edit-block" id="subdivision_24ths"
+						onclick="myGrooveWriter.changeDivision(24);"><span class="left-button-content"><span><span
+									class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>TRIPLETS</span></span></span>
+					<span class="left-button subdivision edit-block" id="subdivision_48ths"
+						onclick="myGrooveWriter.changeDivision(48);"><span
+							class="left-button-content"><span>MIXED<br>Division</span></span></span>
 
 					<script>
 						if (!myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
@@ -100,39 +118,52 @@
 						}
 					</script>
 
-					<span class="left-button edit-block" id="undoButton" onclick="myGrooveWriter.undoCommand();"><span class="left-button-content"><i class="fa fa-undo"></i>&nbsp;&nbsp;Undo</span></span>
+					<span class="left-button edit-block" id="undoButton" onclick="myGrooveWriter.undoCommand();"><span
+							class="left-button-content"><i class="fa fa-undo"></i>&nbsp;&nbsp;Undo</span></span>
 				</span>
 
 			</div>
+			<!-- Nav Bar -->
 			<div id="TopNav" class="fullWidthEle">
 				<span id="logoTextUpperLeft"><img src="images/GScribe_Logo_word_stack.svg"></span>
 				<span id="upperLeft">
 					<span id="metronomeContainer">
 						<span id="metronomeLabel">METRONOME:</span>
-						<span class="metronomeButton" id="metronomeOff" onclick="myGrooveWriter.setMetronomeFrequency(0);">OFF</span>
-						<span class="metronomeButton" id="metronome4ths" onclick="myGrooveWriter.setMetronomeFrequency(4);">4th</span>
-						<span class="metronomeButton" id="metronome8ths" onclick="myGrooveWriter.setMetronomeFrequency(8);">8th</span>
-						<span class="metronomeButton" id="metronome16ths" onclick="myGrooveWriter.setMetronomeFrequency(16);">16th</span>
-						<span class="metronomeButton Options grooveDB_hidden" id="metronomeOptionsAnchor" onclick="myGrooveWriter.metronomeOptionsAnchorClick(event);">Options</span>
+						<span class="metronomeButton" id="metronomeOff"
+							onclick="myGrooveWriter.setMetronomeFrequency(0);">OFF</span>
+						<span class="metronomeButton" id="metronome4ths"
+							onclick="myGrooveWriter.setMetronomeFrequency(4);">4th</span>
+						<span class="metronomeButton" id="metronome8ths"
+							onclick="myGrooveWriter.setMetronomeFrequency(8);">8th</span>
+						<span class="metronomeButton" id="metronome16ths"
+							onclick="myGrooveWriter.setMetronomeFrequency(16);">16th</span>
+						<span class="metronomeButton Options grooveDB_hidden" id="metronomeOptionsAnchor"
+							onclick="myGrooveWriter.metronomeOptionsAnchorClick(event);">Options</span>
 					</span>
 				</span>
 				<span id="upperRight">
-					<span class="rightButtons grooveDB_hidden" id="permutationAnchor" onclick="myGrooveWriter.permutationAnchorClick(event);"><i class="fa fa-bars"></i> Permutations</span>
-					<span class="rightButtons" id="groovesAnchor" onclick="myGrooveWriter.groovesAnchorClick(event);"><i class="fa fa-bars"></i> Grooves</span>
-					<span class="rightButtons" id="helpAnchor" onclick="myGrooveWriter.helpAnchorClick(event);"><i class="fa fa-bars"></i> Help</span>
+					<span class="rightButtons grooveDB_hidden" id="permutationAnchor"
+						onclick="myGrooveWriter.permutationAnchorClick(event);"><i class="fa fa-bars"></i> Permutations</span>
+					<span class="rightButtons" id="groovesAnchor" onclick="myGrooveWriter.groovesAnchorClick(event);"><i
+							class="fa fa-bars"></i> Grooves</span>
+					<span class="rightButtons" id="helpAnchor" onclick="myGrooveWriter.helpAnchorClick(event);"><i
+							class="fa fa-bars"></i> Help</span>
 				</span>
 			</div>
-			<div id="midiPlayer" class="fullWidthEle"><!-- space for the midiplayer to be attached by the javascript --></div>
+			<!-- space for the midiplayer to be attached by the javascript -->
+			<div id="midiPlayer" class="fullWidthEle"></div>
 		</div>
 
+		<!-- Main Section with Viewer and Editor -->
 		<div id="RightHandContent">
+			<!-- Not printable elements -->
+			<!-- Permutation Options Section -->
 			<div class="nonPrintable">
-
 				<div id="PermutationOptions">
 					<script type="text/javascript">
-							var genHTML = "";
-							genHTML += myGrooveWriter.HTMLforPermutationOptions();
-							document.write(genHTML);
+						var genHTML = "";
+						genHTML += myGrooveWriter.HTMLforPermutationOptions();
+						document.write(genHTML);
 					</script>
 				</div>
 			</div>
@@ -145,28 +176,32 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="nonPrintable">
-
 				<p class="warnings">Warnings:</p>
-				<div class="warnings" id="diverr">
-				</div>
-
+				<div class="warnings" id="diverr"></div>
+				<!-- Text Fields:  Title Author Comment ans ShowLegend -->
 				<div id="sheetMusicTextFields" class="fullWidthEle grooveDB_hidden edit-block">
-					<span class="sheetMusicTextField"><b>Title:</b> <input class="sheetMusicInputField" id="tuneTitle" onchange="myGrooveWriter.refresh_ABC();" type="text"></span>
-					<span class="sheetMusicTextField"><b>Author:</b> <input class="sheetMusicInputField" id="tuneAuthor" onchange="myGrooveWriter.refresh_ABC();"  type="text"></span>
-					<span class="sheetMusicTextField"><b>Comment:</b> <input class="sheetMusicInputField" id="tuneComments" onchange="myGrooveWriter.refresh_ABC();"  type="text"></span>
-					<span id='KeyButton'><input type="checkbox" class="hiddenCheckbox" id="showLegend" onclick="myGrooveWriter.refresh_ABC();"><label id="LegendLabel" for="showLegend"><i class="fa fa-key"></i></label></span>
+					<span class="sheetMusicTextField"><b>Title:</b> <input class="sheetMusicInputField" id="tuneTitle"
+							onchange="myGrooveWriter.refresh_ABC();" type="text"></span>
+					<span class="sheetMusicTextField"><b>Author:</b> <input class="sheetMusicInputField" id="tuneAuthor"
+							onchange="myGrooveWriter.refresh_ABC();" type="text"></span>
+					<span class="sheetMusicTextField"><b>Comment:</b> <input class="sheetMusicInputField" id="tuneComments"
+							onchange="myGrooveWriter.refresh_ABC();" type="text"></span>
+					<span id='KeyButton'><input type="checkbox" class="hiddenCheckbox" id="showLegend"
+							onclick="myGrooveWriter.refresh_ABC();"><label id="LegendLabel" for="showLegend"><i
+								class="fa fa-key"></i></label></span>
 				</div>
 
 				<div id="musicalInput" class="fullWidthEle edit-block">
 					<div id="measureContainer">
 						<script type="text/javascript">
-              var genHTML = "";
-              var cur_measure;
-              for (cur_measure = 1; cur_measure <= myGrooveWriter.numberOfMeasures(); cur_measure++) {
-                genHTML += myGrooveWriter.HTMLforStaffContainer(cur_measure, (cur_measure - 1) * myGrooveWriter.notesPerMeasure());
-              }
-              document.write(genHTML);
+							var genHTML = "";
+							var cur_measure;
+							for (cur_measure = 1; cur_measure <= myGrooveWriter.numberOfMeasures(); cur_measure++) {
+								genHTML += myGrooveWriter.HTMLforStaffContainer(cur_measure, (cur_measure - 1) * myGrooveWriter.notesPerMeasure());
+							}
+							document.write(genHTML);
               //console.log(genHTML);
 						</script>
 					</div>
@@ -174,12 +209,25 @@
 
 
 				<div id="bottomButtonRow" class="fullWidthEle">
-					<span class="pageBottomButton edit-block" id="clearAllNotesButton" onclick="event.preventDefault(); myGrooveWriter.clearAllNotes();"><span class="bottomButtonIcon"><i class="fa fa-trash fa-2x"></i></span><span class="bottomButtonLabel">CLEAR ALL</span></span>
-					<span class="pageBottomButton edit-block" id="showHideTomsButton" onclick="event.preventDefault(); myGrooveWriter.showHideToms(false, false);"><span class="bottomButtonIcon"><i id="icon-tom1" class="fa fa-circle"></i><i id="icon-tom2" class="fa fa-circle-o"></i><i id="icon-tom3" class="fa fa-circle-o"></i></span><span class="bottomButtonLabel">TOMS</span></span>
-					<span class=" grooveDB_hidden pageBottomButton" id="stickingsButton" onclick="myGrooveWriter.stickingsAnchorClick();"><span class="bottomButtonLabel">STICKINGS</span></span>
-					<span class=" grooveDB_hidden pageBottomButton" id="downloadButton" onclick="myGrooveWriter.DownloadAnchorClick();"><span class="bottomButtonIcon"><i class="fa fa-download fa-2x"></i></span><span class="bottomButtonLabel">DOWNLOAD</span></span>
-					<span class=" grooveDB_hidden pageBottomButton" id="printButton" onclick="myGrooveWriter.printMusic();"><span class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span class="bottomButtonLabel">PRINT</span></span>
-					<span class=" grooveDB_hidden pageBottomButton" id="shareSaveButton" onclick="event.preventDefault(); myGrooveWriter.show_FullURLPopup();"><span class="bottomButtonIcon"><i class="fa fa-share fa-2x"></i></span><span class="bottomButtonLabel">SHARE</span></span>
+					<span class="pageBottomButton edit-block" id="clearAllNotesButton"
+						onclick="event.preventDefault(); myGrooveWriter.clearAllNotes();"><span class="bottomButtonIcon"><i
+								class="fa fa-trash fa-2x"></i></span><span class="bottomButtonLabel">CLEAR ALL</span></span>
+					<span class="pageBottomButton edit-block" id="showHideTomsButton"
+						onclick="event.preventDefault(); myGrooveWriter.showHideToms(false, false);"><span
+							class="bottomButtonIcon"><i id="icon-tom1" class="fa fa-circle"></i><i id="icon-tom2"
+								class="fa fa-circle-o"></i><i id="icon-tom3" class="fa fa-circle-o"></i></span><span
+							class="bottomButtonLabel">TOMS</span></span>
+					<span class=" grooveDB_hidden pageBottomButton" id="stickingsButton"
+						onclick="myGrooveWriter.stickingsAnchorClick();"><span class="bottomButtonLabel">STICKINGS</span></span>
+					<span class=" grooveDB_hidden pageBottomButton" id="downloadButton"
+						onclick="myGrooveWriter.DownloadAnchorClick();"><span class="bottomButtonIcon"><i
+								class="fa fa-download fa-2x"></i></span><span class="bottomButtonLabel">DOWNLOAD</span></span>
+					<span class=" grooveDB_hidden pageBottomButton" id="printButton" onclick="myGrooveWriter.printMusic();"><span
+							class="bottomButtonIcon"><i class="fa fa-print fa-2x"></i></span><span
+							class="bottomButtonLabel">PRINT</span></span>
+					<span class=" grooveDB_hidden pageBottomButton" id="shareSaveButton"
+						onclick="event.preventDefault(); myGrooveWriter.show_FullURLPopup();"><span class="bottomButtonIcon"><i
+								class="fa fa-share fa-2x"></i></span><span class="bottomButtonLabel">SHARE</span></span>
 				</div>
 
 				<div id="midiTextOutput">
@@ -194,11 +242,11 @@
 				<!-- GrooveDB output area -->
 				<div id="GrooveDB_MetaData" class="grooveDB_show" style="display:none;">
 					<div id="grooveDBInstructions">
-					This is the text that should be added to the GrooveDB for this groove.  <br>
-					<b>Copy and paste it into the GrooveDB edit window </b>
+						This is the text that should be added to the GrooveDB for this groove. <br>
+						<b>Copy and paste it into the GrooveDB edit window </b>
 					</div>
 					<div>
-					<textarea id="GrooveDB_source" class="fullWidthEle"></textarea>
+						<textarea id="GrooveDB_source" class="fullWidthEle"></textarea>
 					</div>
 				</div>
 
@@ -207,15 +255,17 @@
 					<span id="redoStack"></span>
 					<span id="URLSearchData"></span>
 					<!-- ABC notation -->
-					<A href="" id="showHideABC" onclick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide ABC Notation</a>
+					<A href="" id="showHideABC" onclick="event.preventDefault(); myGrooveWriter.ShowHideABCResults();">Show/Hide
+						ABC Notation</a>
 
 					<div id="ABC_Results">
-						ABC Notation is used for rendering the music.  You can see what is being generated below.
-						You can even edit it.  <br>
+						ABC Notation is used for rendering the music. You can see what is being generated below.
+						You can even edit it. <br>
 						NOTE: whenever the page is modified, the ABC Notation below will be overwritten automatically. <br>
-						For more information about ABC Notation go here: <a href="http://abcnotation.com/">http://abcnotation.com/</a>
+						For more information about ABC Notation go here: <a
+							href="http://abcnotation.com/">http://abcnotation.com/</a>
 						<p></p>
-						<textarea id="ABCsource" rows="10" cols="72" ></textarea>
+						<textarea id="ABCsource" rows="10" cols="72"></textarea>
 						<br>
 						<button type="button" onclick="myGrooveWriter.displayNewSVG();">Re-render the music</button>
 						<button type="button" onclick="myGrooveWriter.saveABCtoFile();">Save ABC to file</button>
@@ -232,10 +282,17 @@
 		<!-- context menu that will pop up over notes in advaced edit mode or right click -->
 		<div class="noteContextMenu">
 			<ul id="metronomeOptionsContextMenu" class="list">
-				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuSolo"      onclick='myGrooveWriter.metronomeOptionsMenuPopupClick("Solo");'  title="Just hear the metronome." >Solo</li>
-				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuSpeedUp"   onclick='myGrooveWriter.metronomeOptionsMenuPopupClick("SpeedUp");' title="Increase the tempo automatically" >Auto speed up</li>
-				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuCountIn"   onclick='myGrooveWriter.metronomeOptionsMenuPopupClick("CountIn");' title="One measure of metronome count in at the start" >Count it in</li>
-				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuOffTheOne" onclick='myGrooveWriter.metronomeOptionsMenuPopupClick("OffTheOne");' title="Click on the e, &, or a">Offset click</li>
+				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuSolo"
+					onclick='myGrooveWriter.metronomeOptionsMenuPopupClick("Solo");' title="Just hear the metronome.">Solo</li>
+				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuSpeedUp"
+					onclick='myGrooveWriter.metronomeOptionsMenuPopupClick("SpeedUp");' title="Increase the tempo automatically">
+					Auto speed up</li>
+				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuCountIn"
+					onclick='myGrooveWriter.metronomeOptionsMenuPopupClick("CountIn");'
+					title="One measure of metronome count in at the start">Count it in</li>
+				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuOffTheOne"
+					onclick='myGrooveWriter.metronomeOptionsMenuPopupClick("OffTheOne");' title="Click on the e, &, or a">Offset
+					click</li>
 				<!--
 				<li id="metronomeOptionsContextMenuDropper"   onclick='myGrooveWriter.metronomeOptionsMenuPopupClick("Dropper")'  >Beat Dropper</li>
 				-->
@@ -243,19 +300,30 @@
 		</div>
 		<div class="noteContextMenu">
 			<ul id="metronomeOptionsOffsetClickContextMenu" class="list">
-				<li class="metronomeOptionsOffsetClickContextMenuItem menuChecked" id="metronomeOptionsOffsetClickContextMenuOnThe1"   onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("1");'>Start on "<b>1</b>"</li>
-				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheE"   onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("E");'>Start on "<b>E</b>"</li>
-				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheAND" onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("AND");'>Start on "<b>&amp;</b>"</li>
-				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheA"   onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("A");'>Start on "<b>A</b>"</li>
-				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheROTATE"  onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("ROTATE");'>Rotate through</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem menuChecked"
+					id="metronomeOptionsOffsetClickContextMenuOnThe1"
+					onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("1");'>Start on "<b>1</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheE"
+					onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("E");'>Start on "<b>E</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheAND"
+					onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("AND");'>Start on "<b>&amp;</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheA"
+					onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("A");'>Start on "<b>A</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheROTATE"
+					onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("ROTATE");'>Rotate through</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
 			<ul id="metronomeOptionsOffsetClickForTripletsContextMenu" class="list">
-				<li class="metronomeOptionsOffsetClickContextMenuItem menuChecked" id="metronomeOptionsOffsetClickContextMenuOnThe1Triplet"  onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("1");'>Start on "<b>1</b>"</li>
-				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheTI" onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("TI");'>Start on "<b>&amp;</b>"</li>
-				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheTA" onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("TA");'>Start on "<b>A</b>"</li>
-				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheROTATE"   onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("ROTATE");'>Rotate through</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem menuChecked"
+					id="metronomeOptionsOffsetClickContextMenuOnThe1Triplet"
+					onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("1");'>Start on "<b>1</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheTI"
+					onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("TI");'>Start on "<b>&amp;</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheTA"
+					onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("TA");'>Start on "<b>A</b>"</li>
+				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheROTATE"
+					onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("ROTATE");'>Rotate through</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
@@ -356,7 +424,8 @@
 				<li onclick='myGrooveWriter.noteLabelPopupClick("snare", "all_on");'>all <b>Accented</b></li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("snare", "all_on_normal");'>all <b>Normal</b></li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("snare", "all_on_ghost");'>all <b>Ghosts</b></li>
-				<li id='mute_snare_menu_item' onclick='myGrooveWriter.noteLabelPopupClick("snare", "mute");'>mute snare sound</li>
+				<li id='mute_snare_menu_item' onclick='myGrooveWriter.noteLabelPopupClick("snare", "mute");'>mute snare sound
+				</li>
 				<li onclick='myGrooveWriter.noteLabelPopupClick("snare", "cancel");'>cancel</li>
 			</ul>
 		</div>
@@ -408,49 +477,53 @@
 		<div id="timeSigPopup">
 			<div id="timeSigPopupTitle">Choose a Time Signature</div>
 			<div id="timeSigPopupOptions">
-			 <select id="timeSigPopupTimeSigTop">
-			  <option value="2">2</option>
-			  <option value="3">3</option>
-			  <option selected value="4">4</option>
-			  <option value="5">5</option>
-			  <option value="6">6</option>
-			  <option value="7">7</option>
-			  <option value="8">8</option>
-			  <option value="9">9</option>
-			  <option value="10">10</option>
-			  <option value="11">11</option>
-			  <option value="12">12</option>
-			  <option value="13">13</option>
-			  <option value="14">14</option>
-			  <option value="15">15</option>
-			</select>
-			<b id="timeSigPopupSlash">/</b>
-			<select id="timeSigPopupTimeSigBottom">
-			  <option selected value="4">4</option>
-			  <option value="8">8</option>
-			  <option value="16">16</option>
-			</select>
+				<select id="timeSigPopupTimeSigTop">
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option selected value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+					<option value="13">13</option>
+					<option value="14">14</option>
+					<option value="15">15</option>
+				</select>
+				<b id="timeSigPopupSlash">/</b>
+				<select id="timeSigPopupTimeSigBottom">
+					<option selected value="4">4</option>
+					<option value="8">8</option>
+					<option value="16">16</option>
+				</select>
 			</div>
 			<div id="timeSigPopupButtons">
-			<button id="timeSigPopupCancel" onclick="myGrooveWriter.timeSigPopupClose('cancel');">Cancel</button>
-			<button id="timeSigPopupOK" onclick="myGrooveWriter.timeSigPopupClose('ok');">Done</button>
+				<button id="timeSigPopupCancel" onclick="myGrooveWriter.timeSigPopupClose('cancel');">Cancel</button>
+				<button id="timeSigPopupOK" onclick="myGrooveWriter.timeSigPopupClose('ok');">Done</button>
 			</div>
 		</div>
 
 		<!-- this is used by the share/save button, and is hidden by default -->
 		<div id="fullURLPopup">
-			<span id="fullURLPopupCloseButton" onclick="myGrooveWriter.close_FullURLPopup();"><i class="fa fa-lg fa-times-circle"></i></span>
+			<span id="fullURLPopupCloseButton" onclick="myGrooveWriter.close_FullURLPopup();"><i
+					class="fa fa-lg fa-times-circle"></i></span>
 			<div id="fullURLPopupTitle">Share Your Groove</div>
 			<div id="fullURLPopupSubTitle">Use this URL to share or save this groove</div>
 			<div id="fullURLPopupSubSubTitle">(You can also bookmark this page)</div>
 			<div id="fullURLPopupCheckboxes">
-				<span><label  id="shortURLLabel" class="fullURLPopupCheckboxLabel"><input type="checkbox" id="shortenerCheckbox" onchange="myGrooveWriter.shortenerCheckboxChanged();">Short URL</label></span>
-				<span><label id="embedCodeLabel" class="fullURLPopupCheckboxLabel"><input type="checkbox" id="embedCodeCheckbox" onchange="myGrooveWriter.embedCodeCheckboxChanged();">Embed Code</label></span>
+				<span><label id="shortURLLabel" class="fullURLPopupCheckboxLabel"><input type="checkbox" id="shortenerCheckbox"
+							onchange="myGrooveWriter.shortenerCheckboxChanged();">Short URL</label></span>
+				<span><label id="embedCodeLabel" class="fullURLPopupCheckboxLabel"><input type="checkbox" id="embedCodeCheckbox"
+							onchange="myGrooveWriter.embedCodeCheckboxChanged();">Embed Code</label></span>
 			</div>
 			<div id="fullURLPopupTextFieldContainer"><input type="text" id="fullURLPopupTextField"></div>
 			<br>
 			<div id="shareButtonContainer">
-				<button id="fullURLPopupCopyButton" onclick="myGrooveWriter.copyShareURLToClipboard();">&nbsp;<i class="fa fa-copy"></i> &nbsp;COPY&nbsp;</button>
+				<button id="fullURLPopupCopyButton" onclick="myGrooveWriter.copyShareURLToClipboard();">&nbsp;<i
+						class="fa fa-copy"></i> &nbsp;COPY&nbsp;</button>
 				&nbsp; &nbsp; &nbsp;
 				<share-button id="shareButton"></share-button>
 			</div>
@@ -464,29 +537,36 @@
 				<span id="metronomeAutoSpeedupTempoIncreaseIntervalOutput">2</span> min
 			</div>
 			<div id="metronomeAutoSpeedupConfigurationKeepIncreasing">
-				<input type="checkbox" checked id="metronomeAutoSpeedUpKeepGoingForever"><label for="metronomeAutoSpeedUpKeepGoingForever">Keep increasing after the first interval</label>
+				<input type="checkbox" checked id="metronomeAutoSpeedUpKeepGoingForever"><label
+					for="metronomeAutoSpeedUpKeepGoingForever">Keep increasing after the first interval</label>
 			</div>
 			<div id="metronomeAutoSpeedupConfigurationSliders">
 				<div id="metronomeAutoSpeedupConfigurationAmountLable">Amount in BPM</div>
-				<input type=range min=1 max=100 value=5 class="metronomeAutoSpeedUpRange" id="metronomeAutoSpeedupTempoIncreaseAmount" oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseAmountOutput');">
+				<input type=range min=1 max=100 value=5 class="metronomeAutoSpeedUpRange"
+					id="metronomeAutoSpeedupTempoIncreaseAmount"
+					oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseAmountOutput');">
 				<div id="metronomeAutoSpeedupConfigurationIntervalLable">Interval in Minutes</div>
-				<input type=range min=1 max=20 value=2 class="metronomeAutoSpeedUpRange" id="metronomeAutoSpeedupTempoIncreaseInterval" step="1" oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseIntervalOutput');">
+				<input type=range min=1 max=20 value=2 class="metronomeAutoSpeedUpRange"
+					id="metronomeAutoSpeedupTempoIncreaseInterval" step="1"
+					oninput="myGrooveWriter.updateRangeLabel(event, 'metronomeAutoSpeedupTempoIncreaseIntervalOutput');">
 			</div>
 			<div id="metronomeAutoSpeedupCloseButtonDiv">
-				<button id="metronomeAutoSpeedupConfigurationCloseButton" onclick="myGrooveWriter.close_MetronomeAutoSpeedupConfiguration('ok');">Done</button>
+				<button id="metronomeAutoSpeedupConfigurationCloseButton"
+					onclick="myGrooveWriter.close_MetronomeAutoSpeedupConfiguration('ok');">Done</button>
 			</div>
 		</div>
 
 
 		<script>
 			// set up the page after it has fully loaded
-			window.onload = function () { 'use strict';
+			window.onload = function () {
+				'use strict';
 				myGrooveWriter.runsOnPageLoad();   // Initialize the notes
 			};
 		</script>
-
-
 	</div>
 
-    </body>
+	<script type="module" src="/main.js"></script>
+</body>
+
 </html>
