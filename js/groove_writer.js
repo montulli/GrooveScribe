@@ -2376,6 +2376,7 @@ function GrooveWriter() {
 
 			if (isTomsVisible()) {
 				Toms_Array[0][array_index] = get_tom_state(i + startIndexForClickableUI, 1, "ABC");
+				Toms_Array[1][array_index] = get_tom_state(i + startIndexForClickableUI, 2, "ABC");
 				Toms_Array[3][array_index] = get_tom_state(i + startIndexForClickableUI, 4, "ABC");
 			}
 
