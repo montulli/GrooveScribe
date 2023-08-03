@@ -266,7 +266,7 @@
 	}
 	.music-line-container {
 		display: inline-block;
-		/top: 30px;
+		top: 30px;
 		z-index: 3;
 		display: table-cell;
 	}
@@ -335,6 +335,12 @@
 		border-top:3px solid #cacaca;
 	}
 	.staff-line-5{
+		position: absolute; top: 167px;
+		width:100%;
+		height:0px;
+		border-top:3px solid #cacaca;
+	}
+	.staff-line-6{
 		position: absolute; top: 167px;
 		width:100%;
 		height:0px;

@@ -331,6 +331,15 @@
 		text-align: center;
 		visibility: hidden;
 	}
+	#tom2-label {
+		display: block;
+		white-space:nowrap;
+		margin-top: 5px;
+		margin-left: 8px;
+		cursor: pointer;
+		text-align: center;
+		visibility: hidden;
+	}
 	.snare-label {
 		margin-top: 5px;
 		margin-left: 8px;
@@ -403,6 +412,15 @@
 		-ms-user-select: none;
 		visibility: hidden;
 	}
+	#tom2-container {
+		height: 28px;
+		white-space:nowrap;
+		border: 1px solid transparent;
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+		visibility: hidden;
+	}
 	.snare-container {
 		border: 1px solid transparent;
 		height: 28px;
@@ -453,6 +471,12 @@
 		border-top:3px solid #cacaca;
 	}
 	.staff-line-5{
+		position: absolute; top: 163px;
+		width:100%;
+		height:0px;
+		border-top:3px solid #cacaca;
+	}
+	.staff-line-6{
 		position: absolute; top: 163px;
 		width:100%;
 		height:0px;

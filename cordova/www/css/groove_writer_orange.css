@@ -400,6 +400,12 @@
 		height:0px;
 		border-top:3px solid #cacaca;
 	}
+	.staff-line-6{
+		position: absolute; top: 163px;
+		width:100%;
+		height:0px;
+		border-top:3px solid #cacaca;
+	}
 	.sticking {
 		display: inline-block;
 		position: relative;

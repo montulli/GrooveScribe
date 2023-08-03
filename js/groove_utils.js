@@ -92,8 +92,8 @@ var constant_OUR_MIDI_SNARE_BUZZ = 104;
 var constant_OUR_MIDI_SNARE_FLAM = 107;
 var constant_OUR_MIDI_SNARE_DRAG = 103;
 var constant_OUR_MIDI_KICK_NORMAL = 35;
-var constant_OUR_MIDI_TOM1_NORMAL = 48;
-var constant_OUR_MIDI_TOM2_NORMAL = 47;
+var constant_OUR_MIDI_TOM1_NORMAL = 48; // var constant_OUR_MIDI_TOM1_NORMAL = 48;
+var constant_OUR_MIDI_TOM2_NORMAL = 48; //var constant_OUR_MIDI_TOM2_NORMAL = 47;
 var constant_OUR_MIDI_TOM3_NORMAL = 45;
 var constant_OUR_MIDI_TOM4_NORMAL = 43;
 
@@ -656,6 +656,9 @@ function GrooveUtils() {
 			case "T1":
 				return constant_ABC_T1_Normal;
 				//break;
+			case "T2":
+				return constant_ABC_T2_Normal;
+				//break;
 			case "T4":
 				return constant_ABC_T4_Normal;
 				//break;
@@ -1095,8 +1098,9 @@ function GrooveUtils() {
 		// only add if we need them.  // they are long and ugly. :)
 		if (myGrooveData.showToms) {
 			var Tom1 = "&T1=|" + root.tabLineFromAbcNoteArray('T1', myGrooveData.toms_array[0], true, true, total_notes, myGrooveData.notesPerMeasure);
+			var Tom2 = "&T2=|" + root.tabLineFromAbcNoteArray('T2', myGrooveData.toms_array[1], true, true, total_notes, myGrooveData.notesPerMeasure);
 			var Tom4 = "&T4=|" + root.tabLineFromAbcNoteArray('T4', myGrooveData.toms_array[3], true, true, total_notes, myGrooveData.notesPerMeasure);
-			fullURL += Tom1 + Tom4;
+			fullURL += Tom1 + Tom2 + Tom4;
 		}
 
 		// only add if we need them.  // they are long and ugly. :)
@@ -2152,6 +2156,7 @@ function GrooveUtils() {
 	// converts incoming ABC notation source into an svg image.
 	// returns an object with two items.   "svg" and "error_html"
 	root.renderABCtoSVG = function (abc_source) {
+		debugger
 		root.abc_obj = new Abc(abcToSVGCallback);
 		if ((root.myGrooveData && root.myGrooveData.showLegend) || root.isLegendVisable)
 			root.abcNoteNumIndex = -15; // subtract out the legend notes for a proper index.
