@@ -25,9 +25,9 @@ Readme for Groove Scribe
 
 ### Contribution guidelines
 
-* Writing tests
-* Code review
-* Other guidelines
+* [ ] Writing tests
+* [ ] Code review
+* [ ] Other guidelines
 
 ### Who do I talk to?
 
