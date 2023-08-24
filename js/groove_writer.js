@@ -2935,8 +2935,8 @@ function GrooveWriter() {
 
 	// this is called by a bunch of places anytime we modify the musical notes on the page
 	// this will recreate the ABC code and will then use the ABC to rerender the sheet music
-	// on the page.
 	function updateSheetMusic() {
+	// on the page.
 		var renderWidth = 600;
 		var svgTarget = document.getElementById("svgTarget");
 		if (svgTarget) {
@@ -3041,6 +3041,7 @@ function GrooveWriter() {
 		var uiStickings = "";
 		var uiHH = "";
 		var uiTom1 = "";
+		var uiTom2 = "";
 		var uiTom4 = "";
 		var uiSnare = "";
 		var uiKick = "";
@@ -3055,6 +3056,7 @@ function GrooveWriter() {
 				uiStickings += get_sticking_state(i, "URL");
 				uiHH += get_hh_state(i, "URL");
 				uiTom1 += get_tom_state(i, 1, "URL");
+				uiTom2 += get_tom_state(i, 2, "URL");
 				uiTom4 += get_tom_state(i, 4, "URL");
 				uiSnare += get_snare_state(i, "URL");
 				uiKick += get_kick_state(i, "URL");
@@ -3065,7 +3067,7 @@ function GrooveWriter() {
 
 		root.expandAuthoringViewWhenNecessary(class_notes_per_measure, class_number_of_measures);
 
-		changeDivisionWithNotes(class_time_division, uiStickings, uiHH, uiTom1, uiTom4, uiSnare, uiKick);
+		changeDivisionWithNotes(class_time_division, uiStickings, uiHH, uiTom1, uiTom2, uiTom4, uiSnare, uiKick);
 
 		updateSheetMusic();
 	};
@@ -3077,6 +3079,7 @@ function GrooveWriter() {
 		var uiStickings = "";
 		var uiHH = "";
 		var uiTom1 = "";
+		var uiTom2 = "";
 		var uiTom4 = "";
 		var uiSnare = "";
 		var uiKick = "";
@@ -3089,6 +3092,7 @@ function GrooveWriter() {
 			uiStickings += get_sticking_state(i, "URL");
 			uiHH += get_hh_state(i, "URL");
 			uiTom1 += get_tom_state(i, 1, "URL");
+			uiTom2 += get_tom_state(i, 2, "URL");
 			uiTom4 += get_tom_state(i, 4, "URL");
 			uiSnare += get_snare_state(i, "URL");
 			uiKick += get_kick_state(i, "URL");
@@ -3099,6 +3103,7 @@ function GrooveWriter() {
 			uiStickings += get_sticking_state(i, "URL");
 			uiHH += get_hh_state(i, "URL");
 			uiTom1 += get_tom_state(i, 1, "URL");
+			uiTom2 += get_tom_state(i, 2, "URL");
 			uiTom4 += get_tom_state(i, 4, "URL");
 			uiSnare += get_snare_state(i, "URL");
 			uiKick += get_kick_state(i, "URL");
@@ -3108,7 +3113,7 @@ function GrooveWriter() {
 
 		root.expandAuthoringViewWhenNecessary(class_notes_per_measure, class_number_of_measures);
 
-		changeDivisionWithNotes(class_time_division, uiStickings, uiHH, uiTom1, uiTom4, uiSnare, uiKick);
+		changeDivisionWithNotes(class_time_division, uiStickings, uiHH, uiTom1, uiTom2, uiTom4, uiSnare, uiKick);
 
 		// reference the button and scroll it into view
 		var add_measure_button = document.getElementById("addMeasureButton");
@@ -4122,7 +4127,7 @@ function GrooveWriter() {
 	//
 	// OMG this needs to be refactored really bad.   There is a GrooveData struct from groove utils that
 	//      would make this whole thing much easier.  :(
-	function changeDivisionWithNotes(newDivision, Stickings, HH, Tom1, Tom4, Snare, Kick) {
+	function changeDivisionWithNotes(newDivision, Stickings, HH, Tom1, Tom2, Tom4, Snare, Kick) {
 		var oldDivision = class_time_division;
 		var wasStickingsVisable = isStickingsVisible();
 		var wasTomsVisable = isTomsVisible();
