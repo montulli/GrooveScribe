@@ -227,7 +227,8 @@
 	}
 	.buttonText {
 	}
-	#undoButton {
+	#undoButton,
+	#redoButton {
 		font-size: 14px;
 	}
 	#NotationLine {
