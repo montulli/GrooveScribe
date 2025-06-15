@@ -1,0 +1,75 @@
+#!/bin/bash
+
+echo "🎵 GrooveScribe Audio Debug Helper"
+echo "=================================="
+
+# Deploy to MAMP
+echo "📦 Deploying to MAMP..."
+if [ -f "./deploy_to_mamp.sh" ]; then
+    ./deploy_to_mamp.sh
+    if [ $? -eq 0 ]; then
+        echo "✅ Deploy successful!"
+    else
+        echo "❌ Deploy failed!"
+        exit 1
+    fi
+else
+    echo "❌ deploy_to_mamp.sh not found!"
+    exit 1
+fi
+
+echo ""
+echo "🔍 Debug Instructions:"
+echo "====================="
+echo ""
+echo "1. Open your web browser and go to your MAMP server URL"
+echo "   (typically http://localhost:8888/GrooveScribe/ or similar)"
+echo ""
+echo "2. Open the browser's Developer Console (F12 → Console tab)"
+echo ""
+echo "3. Look for these messages in the console:"
+echo "   🎵 Debug Audio System Loading..."
+echo "   🔧 Creating DebugAudioManager..."
+echo "   ✅ Successfully loaded: [sample name]"
+echo "   🎉 Debug audio system initialized successfully!"
+echo ""
+echo "4. Run these commands in the console to diagnose:"
+echo "   getDetailedAudioStatus()           - Complete system status"
+echo "   getAudioInitLog()                  - Initialization log"
+echo "   testDrumSound(35)                  - Test kick drum"
+echo "   testDrumSound(38)                  - Test snare drum"
+echo "   testDrumSound(47)                  - Test tom 2 (previously broken)"
+echo ""
+echo "5. Also test the dedicated test page:"
+echo "   Go to: test_drum_sounds.html"
+echo "   Click 'Show Debug Log' to see detailed information"
+echo "   Click 'Run All Tests' for comprehensive testing"
+echo ""
+echo "6. Expected Success Rate:"
+echo "   If working properly: 80-90%+ success rate"
+echo "   If still broken: ~19% success rate (legacy fallback)"
+echo ""
+echo "7. Common Issues to Look For:"
+echo "   - 404 errors loading MP3 files from soundfont/NewDrumSamples/MP3/"
+echo "   - CORS errors (shouldn't happen with MAMP)"
+echo "   - Audio context errors"
+echo "   - Missing initialization messages"
+echo ""
+echo "📊 Expected Console Output (if working):"
+echo "========================================="
+echo "🎵 Debug Audio System Loading..."
+echo "🎵 [timestamp] Starting initialization..."
+echo "🎵 [timestamp] Current location: http://localhost:8888/..."
+echo "🎵 [timestamp] Testing base path access: soundfont/NewDrumSamples/MP3/Kick.mp3"
+echo "🎵 [timestamp] Base path test response: 200 OK"
+echo "🎵 [timestamp] Starting to load [X] audio samples from: soundfont/NewDrumSamples/MP3/"
+echo "🎵 [timestamp] Loading kick: soundfont/NewDrumSamples/MP3/Kick.mp3"
+echo "🎵 [timestamp] ✅ Successfully loaded: kick"
+echo "... (similar for all samples)"
+echo "🎵 [timestamp] Audio loading complete: [X]/[X] samples loaded successfully"
+echo "🎵 [timestamp] Initialization completed successfully! Loaded [X]/[X] samples"
+echo "🎉 Debug audio system initialized successfully!"
+echo ""
+echo "🚨 If you see errors or missing samples, that's the root cause!"
+echo ""
+echo "Happy debugging! 🎵" 

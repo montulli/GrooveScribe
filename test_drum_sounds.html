@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrooveScribe Drum Sound Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background-color: #2484C0;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .test-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            color: #333;
+            border-bottom: 2px solid #2484C0;
+            padding-bottom: 10px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .test-result.pass {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .test-result.fail {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .test-result.warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .test-button {
+            background-color: #2484C0;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background-color: #1c6ea4;
+        }
+        .test-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .play-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .play-button:hover {
+            background-color: #218838;
+        }
+        .summary {
+            background-color: #e9ecef;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #2484C0;
+            transition: width 0.3s ease;
+        }
+        .note-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .note-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🥁 GrooveScribe Drum Sound Test</h1>
+        <p>Comprehensive test suite for all drum sounds and MIDI mappings</p>
+    </div>
+
+    <div class="test-section">
+        <h2>🔧 System Check</h2>
+        <button class="test-button" onclick="runTests()">Run Enhanced Audio Test</button>
+        <div id="systemResults"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎵 Modern Audio System</h2>
+        <p>The comprehensive test below includes system check, MIDI tests, soundfont validation, and function tests.</p>
+        <button class="test-button" onclick="runTests()">Run Complete Test Suite</button>
+        <div class="progress-bar" style="display: none;" id="testProgress">
+            <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+        </div>
+        <div id="midiResults"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Debug Information</h2>
+        <button class="test-button" onclick="showDebugInfo()">Show Debug Log</button>
+        <div id="debugInfo"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎼 Quick Debug Commands</h2>
+        <p>Use these commands in the browser console:</p>
+        <ul>
+            <li><code>testDrumSound(35)</code> - Test kick drum (MIDI 35)</li>
+            <li><code>getAvailableAudioSamples()</code> - List loaded audio samples</li>
+            <li><code>getMidiMapping()</code> - Show MIDI note mappings</li>
+            <li><code>getDetailedAudioStatus()</code> - Complete system status</li>
+            <li><code>getAudioInitLog()</code> - Show initialization log</li>
+            <li><code>window.debugAudioManager</code> - Access debug audio manager</li>
+        </ul>
+        <div id="functionResults"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>📊 Test Summary</h2>
+        <div id="testSummary" class="summary">
+            Click "Run All Tests" to start comprehensive testing.
+        </div>
+        <button class="test-button" onclick="runTests()" style="font-size: 18px; padding: 15px 30px;">
+            🚀 Run All Tests
+        </button>
+    </div>
+
+    <!-- Include GrooveScribe dependencies -->
+    <script src="./MIDI.js/js/MIDI/AudioDetect.js"></script>
+    <script src="./MIDI.js/js/MIDI/LoadPlugin.js"></script>
+    <script src="./MIDI.js/js/MIDI/Plugin.js"></script>
+    <script src="./MIDI.js/js/MIDI/Player.js"></script>
+    <script src="./MIDI.js/inc/DOMLoader.XMLHttp.js"></script>
+    <script src="./MIDI.js/inc/jasmid/stream.js"></script>
+    <script src="./MIDI.js/inc/jasmid/midifile.js"></script>
+    <script src="./MIDI.js/inc/jasmid/replayer.js"></script>
+    <script src="./MIDI.js/inc/Base64.js"></script>
+    <script src="./MIDI.js/inc/base64binary.js"></script>
+    <script src="js/groove_utils.js"></script>
+    
+    <!-- Debug Audio System (comprehensive logging) -->
+    <script src="js/debug-audio-system.js"></script>
+
+            <script>
+            console.log('Drum Sound Test initialized');
+            
+            // Define all drum notes used in GrooveScribe (for legacy fallback)
+            const DRUM_NOTES = {
+                // Kick drum
+                'Kick Normal': { midi: 35, constant: 'constant_OUR_MIDI_KICK_NORMAL' },
+                'Hi-hat Foot': { midi: 44, constant: 'constant_OUR_MIDI_HIHAT_FOOT' },
+                
+                // Snare drum  
+                'Snare Normal': { midi: 38, constant: 'constant_OUR_MIDI_SNARE_NORMAL' },
+                'Snare Accent': { midi: 22, constant: 'constant_OUR_MIDI_SNARE_ACCENT' },
+                'Snare Ghost': { midi: 21, constant: 'constant_OUR_MIDI_SNARE_GHOST' },
+                'Cross Stick': { midi: 37, constant: 'constant_OUR_MIDI_SNARE_XSTICK' },
+                
+                // Hi-hat
+                'Hi-hat Normal': { midi: 42, constant: 'constant_OUR_MIDI_HIHAT_NORMAL' },
+                'Hi-hat Open': { midi: 46, constant: 'constant_OUR_MIDI_HIHAT_OPEN' },
+                
+                // Toms
+                'Tom 1 Normal': { midi: 48, constant: 'constant_OUR_MIDI_TOM1_NORMAL' },
+                'Tom 2 Normal': { midi: 47, constant: 'constant_OUR_MIDI_TOM2_NORMAL' },
+                'Tom 3 Normal': { midi: 45, constant: 'constant_OUR_MIDI_TOM3_NORMAL' },
+                'Tom 4 Normal': { midi: 43, constant: 'constant_OUR_MIDI_TOM4_NORMAL' },
+                
+                // Cymbals
+                'Crash': { midi: 49, constant: 'constant_OUR_MIDI_CRASH' },
+                'Ride': { midi: 51, constant: 'constant_OUR_MIDI_RIDE' },
+                'Ride Bell': { midi: 53, constant: 'constant_OUR_MIDI_RIDE_BELL' },
+                
+                // Metronome
+                'Metronome Normal': { midi: 76, constant: 'constant_OUR_MIDI_METRONOME_NORMAL' },
+                'Metronome Accent': { midi: 77, constant: 'constant_OUR_MIDI_METRONOME_ACCENT' }
+            };
+            
+            // Wait for audio system to be ready
+        function waitForModernAudio() {
+            return new Promise((resolve) => {
+                const checkAudio = () => {
+                    if (window.debugAudioManager && window.debugAudioManager.isInitialized) {
+                        console.log('Debug audio system detected and ready');
+                        resolve(true);
+                    } else if (window.simpleAudioManager && window.simpleAudioManager.isInitialized) {
+                        console.log('Simple audio system detected and ready');
+                        resolve(true);
+                    } else if (window.modernAudioManager && window.modernAudioManager.isInitialized) {
+                        console.log('Audio system detected and ready (modernAudioManager alias)');
+                        resolve(true);
+                    } else if (window.MIDI && (window.MIDI.WebAudio || window.MIDI.AudioTag)) {
+                        console.log('Legacy MIDI.js system detected');
+                        resolve(false);
+                    } else {
+                        setTimeout(checkAudio, 100);
+                    }
+                };
+                checkAudio();
+            });
+        }
+
+        // Enhanced test with modern audio diagnostics
+        async function runTests() {
+            console.log('Starting enhanced drum sound tests...');
+            
+            const isModernAudio = await waitForModernAudio();
+            const results = [];
+            let passCount = 0;
+            
+            // Audio System Diagnostics
+            results.push({
+                name: 'Audio System Type',
+                test: () => isModernAudio,
+                result: isModernAudio ? 'Simple HTML5 Audio' : 'Legacy MIDI.js',
+                status: isModernAudio ? 'info' : 'warning'
+            });
+
+            if (isModernAudio) {
+                // Modern audio system tests
+                const audioManager = window.debugAudioManager || window.modernAudioManager || window.simpleAudioManager;
+                
+                results.push({
+                    name: 'Audio System Status',
+                    test: () => audioManager && audioManager.isInitialized,
+                    result: audioManager ? (audioManager.isInitialized ? 'Initialized' : 'Not Initialized') : 'Not Found'
+                });
+
+                results.push({
+                    name: 'Audio Samples Loaded',
+                    test: () => {
+                        const samples = audioManager.getAvailableSamples();
+                        return samples.length > 0;
+                    },
+                    result: `${audioManager.getAvailableSamples().length} samples loaded`
+                });
+
+                // Test each MIDI mapping
+                const midiMapping = audioManager.getMidiMapping();
+                console.log('Testing MIDI mappings:', midiMapping);
+                
+                for (const [midiNote, sampleName] of Object.entries(midiMapping)) {
+                    const testResult = audioManager.playMidiNote(9, parseInt(midiNote), 127, 0);
+                    results.push({
+                        name: `MIDI ${midiNote} (${sampleName})`,
+                        test: () => testResult,
+                        result: testResult ? 'PASS' : 'FAIL'
+                    });
+                    if (testResult) passCount++;
+                }
+            } else {
+                // Legacy MIDI.js tests (fallback)
+                console.log('Testing legacy MIDI.js system...');
+                
+                for (const [name, config] of Object.entries(DRUM_NOTES)) {
+                    let testResult = false;
+                    try {
+                        if (window.MIDI && window.MIDI.WebAudio) {
+                            window.MIDI.WebAudio.noteOn(9, config.midi, 127, 0);
+                            testResult = true;
+                        } else if (window.MIDI && window.MIDI.AudioTag) {
+                            window.MIDI.AudioTag.noteOn(9, config.midi, 127, 0);
+                            testResult = true;
+                        }
+                    } catch (error) {
+                        console.error(`Error testing ${name}:`, error);
+                    }
+                    
+                    results.push({
+                        name: `${name} (MIDI ${config.midi})`,
+                        test: () => testResult,
+                        result: testResult ? 'PASS' : 'FAIL'
+                    });
+                    if (testResult) passCount++;
+                }
+            }
+
+            // Function availability tests
+            const functionTests = [
+                {
+                    name: 'play_single_note_for_note_setting',
+                    test: () => typeof play_single_note_for_note_setting === 'function'
+                },
+                {
+                    name: 'Tom Functions',
+                    test: () => typeof set_tom_state === 'function' && typeof get_tom_state === 'function'
+                },
+                {
+                    name: 'Drum State Functions', 
+                    test: () => typeof set_kick_state === 'function' && typeof set_snare_state === 'function' && typeof set_hh_state === 'function'
+                }
+            ];
+
+            for (const funcTest of functionTests) {
+                const passed = funcTest.test();
+                results.push({
+                    name: funcTest.name,
+                    test: funcTest.test,
+                    result: passed ? 'AVAILABLE' : 'MISSING'
+                });
+                if (passed) passCount++;
+            }
+
+            // Display results
+            displayResults(results, passCount);
+        }
+
+        function displayResults(results, passCount) {
+            const totalTests = results.length;
+            const successRate = Math.round((passCount / totalTests) * 100);
+            
+            console.log(`\n=== DRUM SOUND TEST RESULTS ===`);
+            console.log(`Overall Success Rate: ${successRate}%`);
+            console.log(`✅ Passed: ${passCount}`);
+            console.log(`❌ Failed: ${totalTests - passCount}`);
+            console.log(`📊 Total: ${totalTests}`);
+
+            const failedTests = results.filter(r => {
+                const result = r.test();
+                return !result && r.status !== 'info';
+            });
+
+            if (failedTests.length > 0) {
+                console.log(`❌ Failed Tests:`);
+                failedTests.forEach(test => {
+                    console.log(`   - ${test.name}: ${test.result || 'FAILED'}`);
+                });
+            }
+
+            const testSummary = `
+Test Results Summary
+Overall Success Rate: ${successRate}%
+✅ Passed: ${passCount}
+❌ Failed: ${totalTests - passCount}
+📊 Total: ${totalTests}`;
+
+            if (failedTests.length > 0) {
+                testSummary += `
+❌ Failed Tests:
+${failedTests.map(t => t.name).join(', ')}`;
+            }
+
+            if (successRate < 80) {
+                console.warn('❌ Significant issues detected. GrooveScribe may not function properly.');
+            } else if (successRate < 95) {
+                console.log('⚠️ Some issues detected. Most functionality should work.');
+            } else {
+                console.log('✅ All systems operational!');
+            }
+
+            // Display in UI
+            const resultDiv = document.getElementById('testResults') || document.createElement('div');
+            resultDiv.id = 'testResults';
+            resultDiv.innerHTML = `
+                <h2>Audio System Test Results</h2>
+                <div style="background: ${successRate >= 80 ? '#d4edda' : '#f8d7da'}; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                    <h3>Success Rate: ${successRate}%</h3>
+                    <p>✅ Passed: ${passCount} | ❌ Failed: ${totalTests - passCount} | 📊 Total: ${totalTests}</p>
+                </div>
+                <div style="max-height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+                    ${results.map(r => {
+                        const status = r.test() ? '✅' : '❌';
+                        const bgColor = r.test() ? '#d4edda' : '#f8d7da';
+                        return `<div style="background: ${bgColor}; padding: 5px; margin: 2px 0; border-radius: 3px;">
+                            ${status} ${r.name}: ${r.result || (r.test() ? 'PASS' : 'FAIL')}
+                        </div>`;
+                    }).join('')}
+                </div>
+            `;
+            
+            if (!document.getElementById('testResults')) {
+                document.body.appendChild(resultDiv);
+            }
+
+            // Copy results to clipboard for easy sharing
+            const resultsText = testSummary + '\n' + results.map(r => 
+                `${r.test() ? '✅' : '❌'} ${r.name}: ${r.result || (r.test() ? 'PASS' : 'FAIL')}`
+            ).join('\n');
+            
+            window.testResultsText = resultsText;
+            console.log('\n📋 Test results copied to window.testResultsText');
+            console.log('💡 You can copy these results to share them!');
+        }
+
+        // Start tests when page loads
+        window.addEventListener('load', () => {
+            setTimeout(runTests, 1000); // Give time for everything to initialize
+        });
+
+        // Debug info display
+        function showDebugInfo() {
+            const debugDiv = document.getElementById('debugInfo');
+            let html = '<h3>Debug Information</h3>';
+            
+            if (window.debugAudioManager) {
+                const status = window.debugAudioManager.getDetailedStatus();
+                const initLog = window.debugAudioManager.getInitializationLog();
+                
+                html += `
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                        <h4>System Status</h4>
+                        <p><strong>Initialized:</strong> ${status.initialized}</p>
+                        <p><strong>Samples Loaded:</strong> ${status.samplesLoaded}/${status.totalSamples}</p>
+                        <p><strong>Available Samples:</strong> ${status.availableSamples.join(', ')}</p>
+                        <p><strong>Load Errors:</strong> ${status.loadErrors.length}</p>
+                        ${status.loadErrors.length > 0 ? `
+                            <div style="background: #f8d7da; padding: 10px; border-radius: 3px; margin: 5px 0;">
+                                <strong>Errors:</strong><br>
+                                ${status.loadErrors.map(e => `${e.sample}: ${e.error}`).join('<br>')}
+                            </div>
+                        ` : ''}
+                    </div>
+                    <div style="background: #e9ecef; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                        <h4>Initialization Log</h4>
+                        <div style="max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px;">
+                            ${initLog.map(entry => `<div>${entry}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += '<p style="color: red;">Debug audio manager not found!</p>';
+            }
+            
+            debugDiv.innerHTML = html;
+        }
+
+        // Manual test trigger
+        window.runDrumTests = runTests;
+        window.showDebugInfo = showDebugInfo;
+    </script>
+</body>
+</html> 

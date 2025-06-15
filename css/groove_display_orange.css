@@ -122,6 +122,56 @@
 		color: #FFF;
 		content: "\f04c";
 	}
+
+	/* Green Play+ button styling */
+	.midiPlayPlusImage {
+		display: inline-block;
+		width: 40px;
+		height: 40px;
+		cursor: pointer;
+		margin: 4px 4px 4px 0px;
+		border: 0px solid #000;
+		color: #ffffff;
+		font-size: 20px;
+		font-family: FontAwesome;
+		text-align: center;
+		line-height: 40px;
+		vertical-align: top;
+		border-radius: 50%;
+		background: #22aa22;
+		-webkit-flex: none;
+		flex: none;
+		position: relative;
+	}
+
+	.midiPlayPlusImage:hover {
+		background: #33bb33;
+	}
+
+	.midiPlayPlusImage.Stopped:before, .midiPlayPlusImage.Paused:before {
+		color: #FFF;
+		letter-spacing: -3px;
+		content: "\f04b";
+	}
+
+	.midiPlayPlusImage.Playing:before {
+		color: #FFF;
+		content: "\f04c";
+	}
+
+	.midiPlayPlusImage:after {
+		content: "\f067";
+		position: absolute;
+		top: -2px;
+		right: -2px;
+		font-size: 12px;
+		background: #ffffff;
+		color: #22aa22;
+		border-radius: 50%;
+		width: 16px;
+		height: 16px;
+		line-height: 16px;
+	}
 	.midiExpandImage.small:before   {
 	 	letter-spacing: -3px;
 		content: "\f065";

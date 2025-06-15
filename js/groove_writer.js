@@ -249,6 +249,9 @@ function GrooveWriter() {
 					case 1:
 						return constant_ABC_T1_Normal; // normal
 						break;
+					case 2:
+						return constant_ABC_T2_Normal; // normal
+						break;
 					case 4:
 						return constant_ABC_T4_Normal; // normal
 						break;
@@ -282,6 +285,9 @@ function GrooveWriter() {
 						case 1:
 							play_single_note_for_note_setting(constant_OUR_MIDI_TOM1_NORMAL);
 							break;
+						case 2:
+							play_single_note_for_note_setting(constant_OUR_MIDI_TOM2_NORMAL);
+							break;
 						case 4:
 							play_single_note_for_note_setting(constant_OUR_MIDI_TOM4_NORMAL);
 							break;
@@ -299,6 +305,10 @@ function GrooveWriter() {
 	// silly helpers, but needed for argument compatibility with the other set states
 	function set_tom1_state(id, mode, make_sound) {
 		set_tom_state(id, 1, mode, make_sound);
+	}
+
+	function set_tom2_state(id, mode, make_sound) {
+		set_tom_state(id, 2, mode, make_sound);
 	}
 
 	function set_tom4_state(id, mode, make_sound) {
@@ -1337,6 +1347,9 @@ function GrooveWriter() {
 			case "tom1":
 				contextMenu = document.getElementById("tom1LabelContextMenu");
 				break;
+			case "tom2":
+				contextMenu = document.getElementById("tom2LabelContextMenu");
+				break;
 			case "tom4":
 				contextMenu = document.getElementById("tom4LabelContextMenu");
 				break;
@@ -1377,6 +1390,9 @@ function GrooveWriter() {
 				break;
 			case "tom1":
 				setFunction = set_tom1_state;
+				break;
+			case "tom2":
+				setFunction = set_tom2_state;
 				break;
 			case "tom4":
 				setFunction = set_tom4_state;
@@ -2355,6 +2371,7 @@ function GrooveWriter() {
 
 			if (isTomsVisible()) {
 				Toms_Array[0][array_index] = get_tom_state(i + startIndexForClickableUI, 1, "ABC");
+				Toms_Array[1][array_index] = get_tom_state(i + startIndexForClickableUI, 2, "ABC");
 				Toms_Array[3][array_index] = get_tom_state(i + startIndexForClickableUI, 4, "ABC");
 			}
 
@@ -2596,9 +2613,11 @@ function GrooveWriter() {
 
 				if (isTomsVisible()) {
 					myGrooveData.toms_array[0].push(get_tom_state(i, 1, "ABC"));
+					myGrooveData.toms_array[1].push(get_tom_state(i, 2, "ABC"));
 					myGrooveData.toms_array[3].push(get_tom_state(i, 4, "ABC"));
 				} else {
 					myGrooveData.toms_array[0].push(false);
+					myGrooveData.toms_array[1].push(false);
 					myGrooveData.toms_array[3].push(false);
 				}
 			}
@@ -2646,6 +2665,7 @@ function GrooveWriter() {
 		myGrooveData.snare_array = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		myGrooveData.kick_array = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		myGrooveData.toms_array[0] = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[0], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.toms_array[1] = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[1], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		myGrooveData.toms_array[3] = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[3], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 
 		var DBString = "{{GrooveTab";
@@ -2662,6 +2682,7 @@ function GrooveWriter() {
 		DBString += "\n|HasKickTab=" + root.myGrooveUtils.tabLineFromAbcNoteArray("K", myGrooveData.kick_array, true, false, maxNotesInTab, 0);
 		DBString += "\n|HasFootOtherTab=" + root.myGrooveUtils.tabLineFromAbcNoteArray("K", myGrooveData.kick_array, false, true, maxNotesInTab, 0);
 		DBString += "\n|HasTom1Tab=" + root.myGrooveUtils.tabLineFromAbcNoteArray("T1", myGrooveData.toms_array[0], false, true, maxNotesInTab, 0);
+		DBString += "\n|HasTom2Tab=" + root.myGrooveUtils.tabLineFromAbcNoteArray("T2", myGrooveData.toms_array[1], false, true, maxNotesInTab, 0);
 		DBString += "\n|HasTom4Tab=" + root.myGrooveUtils.tabLineFromAbcNoteArray("T4", myGrooveData.toms_array[3], false, true, maxNotesInTab, 0);
 		DBString += "\n|HasEditData=" + class_undo_stack[class_undo_stack.length - 1]
 
@@ -3015,6 +3036,7 @@ function GrooveWriter() {
 		var uiStickings = "";
 		var uiHH = "";
 		var uiTom1 = "";
+		var uiTom2 = "";
 		var uiTom4 = "";
 		var uiSnare = "";
 		var uiKick = "";
@@ -3029,6 +3051,7 @@ function GrooveWriter() {
 				uiStickings += get_sticking_state(i, "URL");
 				uiHH += get_hh_state(i, "URL");
 				uiTom1 += get_tom_state(i, 1, "URL");
+				uiTom2 += get_tom_state(i, 2, "URL");
 				uiTom4 += get_tom_state(i, 4, "URL");
 				uiSnare += get_snare_state(i, "URL");
 				uiKick += get_kick_state(i, "URL");
@@ -3039,7 +3062,7 @@ function GrooveWriter() {
 
 		root.expandAuthoringViewWhenNecessary(class_notes_per_measure, class_number_of_measures);
 
-		changeDivisionWithNotes(class_time_division, uiStickings, uiHH, uiTom1, uiTom4, uiSnare, uiKick);
+		changeDivisionWithNotes(class_time_division, uiStickings, uiHH, uiTom1, uiTom2, uiTom4, uiSnare, uiKick);
 
 		updateSheetMusic();
 	};
@@ -3051,6 +3074,7 @@ function GrooveWriter() {
 		var uiStickings = "";
 		var uiHH = "";
 		var uiTom1 = "";
+		var uiTom2 = "";
 		var uiTom4 = "";
 		var uiSnare = "";
 		var uiKick = "";
@@ -3063,6 +3087,7 @@ function GrooveWriter() {
 			uiStickings += get_sticking_state(i, "URL");
 			uiHH += get_hh_state(i, "URL");
 			uiTom1 += get_tom_state(i, 1, "URL");
+			uiTom2 += get_tom_state(i, 2, "URL");
 			uiTom4 += get_tom_state(i, 4, "URL");
 			uiSnare += get_snare_state(i, "URL");
 			uiKick += get_kick_state(i, "URL");
@@ -3073,6 +3098,7 @@ function GrooveWriter() {
 			uiStickings += get_sticking_state(i, "URL");
 			uiHH += get_hh_state(i, "URL");
 			uiTom1 += get_tom_state(i, 1, "URL");
+			uiTom2 += get_tom_state(i, 2, "URL");
 			uiTom4 += get_tom_state(i, 4, "URL");
 			uiSnare += get_snare_state(i, "URL");
 			uiKick += get_kick_state(i, "URL");
@@ -3082,7 +3108,7 @@ function GrooveWriter() {
 
 		root.expandAuthoringViewWhenNecessary(class_notes_per_measure, class_number_of_measures);
 
-		changeDivisionWithNotes(class_time_division, uiStickings, uiHH, uiTom1, uiTom4, uiSnare, uiKick);
+		changeDivisionWithNotes(class_time_division, uiStickings, uiHH, uiTom1, uiTom2, uiTom4, uiSnare, uiKick);
 
 		// reference the button and scroll it into view
 		var add_measure_button = document.getElementById("addMeasureButton");
@@ -3150,6 +3176,7 @@ function GrooveWriter() {
 			set_sticking_state(i, 'off');
 			set_hh_state(i, 'off');
 			set_tom1_state(i, 'off');
+			set_tom2_state(i, 'off');
 			set_tom4_state(i, 'off');
 			set_snare_state(i, 'off');
 			set_kick_state(i, 'off');
@@ -3406,7 +3433,13 @@ function GrooveWriter() {
 		}
 
 		// get updates when the tempo changes
-		root.myGrooveUtils.tempoChangeCallback = root.tempoChangeCallback
+		root.myGrooveUtils.tempoChangeCallback = root.tempoChangeCallback;
+
+		// Initialize the My Groove menu
+		root.initializeMyGrooveMenu();
+
+		// Update save button for edit mode
+		root.updateSaveButtonForEditMode();
 	};
 
 	// called right before the midi reloads for the next replay
@@ -3515,6 +3548,8 @@ function GrooveWriter() {
 			setFunction = set_hh_state;
 		} else if (drumType == "T1") {
 			setFunction = set_tom1_state;
+		} else if (drumType == "T2") {
+			setFunction = set_tom2_state;
 		} else if (drumType == "T4") {
 			setFunction = set_tom4_state;
 		} else if (drumType == "S") {
@@ -3670,6 +3705,8 @@ function GrooveWriter() {
 			setFunction = set_hh_state;
 		} else if (drumType == "T1") {
 			setFunction = set_tom1_state;
+		} else if (drumType == "T2") {
+			setFunction = set_tom2_state;
 		} else if (drumType == "T4") {
 			setFunction = set_tom4_state;
 		} else if (drumType == "S") {
@@ -3735,6 +3772,9 @@ function GrooveWriter() {
 			case constant_ABC_T1_Normal:
 				setFunction(displayIndex, "normal", false);
 				break;
+			case constant_ABC_T2_Normal:
+				setFunction(displayIndex, "normal", false);
+				break;
 			case constant_ABC_T4_Normal:
 				setFunction(displayIndex, "normal", false);
 				break;
@@ -3793,6 +3833,14 @@ function GrooveWriter() {
 			popup.style.display = "block";
 		}
 
+		// Load defaults if they exist
+		var defaults = root.loadAutoSpeedUpDefaults();
+		if (defaults) {
+			document.getElementById('metronomeAutoSpeedupTempoIncreaseAmount').value = defaults.bpmAmount;
+			document.getElementById('metronomeAutoSpeedupTempoIncreaseInterval').value = defaults.intervalMinutes;
+			document.getElementById('metronomeAutoSpeedUpKeepGoingForever').checked = defaults.keepIncreasing;
+		}
+
 		document.getElementById('metronomeAutoSpeedupTempoIncreaseAmountOutput').innerHTML = document.getElementById('metronomeAutoSpeedupTempoIncreaseAmount').value;
 		document.getElementById('metronomeAutoSpeedupTempoIncreaseIntervalOutput').innerHTML = document.getElementById('metronomeAutoSpeedupTempoIncreaseInterval').value;
 	};
@@ -3800,8 +3848,56 @@ function GrooveWriter() {
 	root.close_MetronomeAutoSpeedupConfiguration = function (type) {
 		var popup = document.getElementById("metronomeAutoSpeedupConfiguration");
 
+		// Save as default if checkbox is checked
+		var setAsDefaultCheckbox = document.getElementById("metronomeAutoSpeedUpSetAsDefault");
+		if (setAsDefaultCheckbox && setAsDefaultCheckbox.checked) {
+			root.saveAutoSpeedUpDefaults();
+		}
+
 		if (popup)
 			popup.style.display = "none";
+	};
+
+	// Save auto speed up settings as defaults
+	root.saveAutoSpeedUpDefaults = function() {
+		var defaults = {
+			bpmAmount: parseInt(document.getElementById("metronomeAutoSpeedupTempoIncreaseAmount").value, 10),
+			intervalMinutes: parseInt(document.getElementById("metronomeAutoSpeedupTempoIncreaseInterval").value, 10),
+			keepIncreasing: document.getElementById("metronomeAutoSpeedUpKeepGoingForever").checked
+		};
+
+		localStorage.setItem('autoSpeedUpDefaults', JSON.stringify(defaults));
+		console.log('Auto Speed Up defaults saved:', defaults);
+	};
+
+	// Load auto speed up defaults
+	root.loadAutoSpeedUpDefaults = function() {
+		var defaults = localStorage.getItem('autoSpeedUpDefaults');
+		if (defaults) {
+			try {
+				defaults = JSON.parse(defaults);
+				return defaults;
+			} catch (e) {
+				console.log('Error parsing auto speed up defaults:', e);
+			}
+		}
+		return null;
+	};
+
+	// Enable auto speed up (called by the Play+ button)
+	root.enableAutoSpeedUp = function() {
+		class_metronome_auto_speed_up_active = true;
+		addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSpeedUp", "menuChecked", true);
+		root.metronomeOptionsMenuSetSelectedState();
+		console.log('Auto Speed Up enabled via Play+ button');
+	};
+
+	// Disable auto speed up (called by the regular Play button)
+	root.disableAutoSpeedUp = function() {
+		class_metronome_auto_speed_up_active = false;
+		addOrRemoveKeywordFromClassById("metronomeOptionsContextMenuSpeedUp", "menuChecked", false);
+		root.metronomeOptionsMenuSetSelectedState();
+		console.log('Auto Speed Up disabled via regular Play button');
 	};
 
 	root.timeSigPopupOpen = function(type) {
@@ -4065,6 +4161,7 @@ function GrooveWriter() {
 		setNotesFromABCArray("Stickings", myGrooveData.sticking_array, class_number_of_measures);
 		setNotesFromABCArray("H", myGrooveData.hh_array, class_number_of_measures);
 		setNotesFromABCArray("T1", myGrooveData.toms_array[0], class_number_of_measures);
+		setNotesFromABCArray("T2", myGrooveData.toms_array[1], class_number_of_measures);
 		setNotesFromABCArray("T4", myGrooveData.toms_array[3], class_number_of_measures);
 		setNotesFromABCArray("S", myGrooveData.snare_array, class_number_of_measures);
 		setNotesFromABCArray("K", myGrooveData.kick_array, class_number_of_measures);
@@ -4119,7 +4216,7 @@ function GrooveWriter() {
 	//
 	// OMG this needs to be refactored really bad.   There is a GrooveData struct from groove utils that
 	//      would make this whole thing much easier.  :(
-	function changeDivisionWithNotes(newDivision, Stickings, HH, Tom1, Tom4, Snare, Kick) {
+	function changeDivisionWithNotes(newDivision, Stickings, HH, Tom1, Tom2, Tom4, Snare, Kick) {
 		var oldDivision = class_time_division;
 		var wasStickingsVisable = isStickingsVisible();
 		var wasTomsVisable = isTomsVisible();
@@ -4241,6 +4338,7 @@ function GrooveWriter() {
 			uiStickings = root.myGrooveUtils.GetDefaultStickingsGroove(new_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure, class_number_of_measures);
 			uiHH = root.myGrooveUtils.GetDefaultHHGroove(new_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure, class_number_of_measures);
 			uiTom1 = root.myGrooveUtils.GetDefaultTom1Groove(new_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure, class_number_of_measures);
+			uiTom2 = root.myGrooveUtils.GetDefaultTom2Groove(new_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure, class_number_of_measures);
 			uiTom4 = root.myGrooveUtils.GetDefaultTom4Groove(new_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure, class_number_of_measures);
 			uiSnare = root.myGrooveUtils.GetDefaultSnareGroove(new_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure, class_number_of_measures);
 			uiKick = root.myGrooveUtils.GetDefaultKickGroove(new_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure, class_number_of_measures);
@@ -4251,7 +4349,7 @@ function GrooveWriter() {
 
 		root.expandAuthoringViewWhenNecessary(newDivision, class_number_of_measures);
 
-		changeDivisionWithNotes(newDivision, uiStickings, uiHH, uiTom1, uiTom4, uiSnare, uiKick);
+		changeDivisionWithNotes(newDivision, uiStickings, uiHH, uiTom1, uiTom2, uiTom4, uiSnare, uiKick);
 
 		updateSheetMusic();
 	};
@@ -4302,6 +4400,7 @@ function GrooveWriter() {
 								<div class="line-labels">\
 									<div class="hh-label" onClick="myGrooveWriter.noteLabelClick(event, \'hh\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'hh\', ' + baseindex + ')">Hi-hat</div>\
 									<div class="tom-label" id="tom1-label" onClick="myGrooveWriter.noteLabelClick(event, \'tom1\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'tom1\', ' + baseindex + ')">Tom</div>\
+									<div class="tom-label" id="tom2-label" onClick="myGrooveWriter.noteLabelClick(event, \'tom2\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'tom2\', ' + baseindex + ')">Tom</div>\
 									<div class="snare-label" onClick="myGrooveWriter.noteLabelClick(event, \'snare\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'snare\', ' + baseindex + ')">Snare</div>\
 									<div class="tom-label" id="tom4-label" onClick="myGrooveWriter.noteLabelClick(event, \'tom4\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'tom4\', ' + baseindex + ')">Tom</div>\
 									<div class="kick-label" onClick="myGrooveWriter.noteLabelClick(event, \'kick\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'kick\', ' + baseindex + ')">Kick</div>\
@@ -4374,6 +4473,24 @@ function GrooveWriter() {
 			}
 		}
 		newHTML += '<span class="unmuteTom1Button" id="unmutetom1Button' + baseindex + '" onClick=\'myGrooveWriter.muteInstrument("tom1", ' + baseindex + ', false)\'><span class="fa-stack unmuteStack"><i class="fa fa-ban fa-stack-2x" style="color:red"></i><i class="fa fa-volume-down fa-stack-1x"></i></span>';
+		newHTML += ('<div class="end_note_space"></div>\n</div>\n');
+
+		// Toms 2
+		newHTML += ('\
+										<div class="toms-container" id="tom2-container">\
+											<div class="opening_note_space"> </div>');
+		for (i = indexStartForNotes; i < class_notes_per_measure + indexStartForNotes; i++) {
+			newHTML += ('\
+						<div id="tom2-' + i + '" class="tom" onClick="myGrooveWriter.noteLeftClick(event, \'tom2\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'tom2\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'tom2\', ' + i + ')">\
+							<div class="tom_circle note_part"  id="tom_circle2-' + i + '"></div>\
+						</div>\n\
+						');
+
+			if ((i - (indexStartForNotes - 1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure) === 0 && i < class_notes_per_measure + indexStartForNotes - 1) {
+				newHTML += ('<div class="space_between_note_groups"> </div> \n');
+			}
+		}
+		newHTML += '<span class="unmuteTom2Button" id="unmutetom2Button' + baseindex + '" onClick=\'myGrooveWriter.muteInstrument("tom2", ' + baseindex + ', false)\'><span class="fa-stack unmuteStack"><i class="fa fa-ban fa-stack-2x" style="color:red"></i><i class="fa fa-volume-down fa-stack-1x"></i></span>';
 		newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 
 		// Snare stuff
@@ -4653,6 +4770,423 @@ function GrooveWriter() {
 
 		newHTML += '</span>\n';
 		return newHTML;
+	};
+
+	// Save current groove to local storage
+	root.saveCurrentGroove = function() {
+		try {
+			// Get current groove data
+			var currentURL = get_FullURLForPage();
+			console.log('Current URL:', currentURL);
+
+			var urlParams = new URLSearchParams(currentURL.split('?')[1] || '');
+
+			// Extract title, author, and comment from URL
+			var title = urlParams.get('Title') || 'Untitled Groove';
+			var author = urlParams.get('Author') || 'Unknown';
+			var comment = urlParams.get('Comments') || '';
+
+			console.log('Extracted data - Title:', title, 'Author:', author, 'Comment:', comment);
+
+			// Get existing grooves from localStorage
+			var savedGrooves = JSON.parse(localStorage.getItem('myGrooves') || '[]');
+			console.log('Existing grooves:', savedGrooves.length);
+
+			// Check if we're editing an existing groove
+			var editingGrooveId = root.getEditingGrooveId();
+			var isEditing = editingGrooveId !== null;
+
+			if (isEditing) {
+				// Update existing groove
+				var existingGrooveIndex = savedGrooves.findIndex(function(g) { return g.id == editingGrooveId; });
+				if (existingGrooveIndex !== -1) {
+					// Update the existing groove, keeping the original ID and creation date
+					savedGrooves[existingGrooveIndex] = {
+						id: editingGrooveId,
+						title: title,
+						author: author,
+						comment: comment,
+						url: currentURL,
+						dateCreated: savedGrooves[existingGrooveIndex].dateCreated,
+						dateModified: new Date().toISOString()
+					};
+					console.log('Updated existing groove with ID:', editingGrooveId);
+					alert('Groove updated successfully!\nTitle: ' + title + '\nAuthor: ' + author);
+				} else {
+					console.log('Warning: Could not find groove to update, creating new one instead');
+					isEditing = false;
+				}
+			}
+
+			if (!isEditing) {
+				// Create new groove
+				var groove = {
+					id: Date.now(), // Use timestamp as unique ID
+					title: title,
+					author: author,
+					comment: comment,
+					url: currentURL,
+					dateCreated: new Date().toISOString()
+				};
+				savedGrooves.push(groove);
+				console.log('Created new groove with ID:', groove.id);
+				alert('Groove saved successfully!\nTitle: ' + title + '\nAuthor: ' + author);
+			}
+
+			// Save back to localStorage
+			localStorage.setItem('myGrooves', JSON.stringify(savedGrooves));
+			console.log('Total grooves:', savedGrooves.length);
+
+			// Clear editing mode
+			root.clearEditingMode();
+
+			// Update the My Groove menu
+			root.updateMyGrooveMenu();
+		} catch (error) {
+			console.error('Error saving groove:', error);
+			alert('Error saving groove: ' + error.message);
+		}
+	};
+
+	// Load a saved groove
+	root.loadSavedGroove = function(grooveId) {
+		var savedGrooves = JSON.parse(localStorage.getItem('myGrooves') || '[]');
+		var groove = savedGrooves.find(function(g) { return g.id == grooveId; });
+
+		if (groove) {
+			// Load the groove by navigating to its URL
+			window.location.href = groove.url;
+		}
+	};
+
+	// Edit a saved groove
+	root.editSavedGroove = function(grooveId) {
+		var savedGrooves = JSON.parse(localStorage.getItem('myGrooves') || '[]');
+		var groove = savedGrooves.find(function(g) { return g.id == grooveId; });
+
+		if (groove) {
+			// Set the editing mode in session storage
+			root.setEditingMode(grooveId);
+
+			// Add editing parameter to the groove URL
+			var editURL = groove.url;
+			var separator = editURL.includes('?') ? '&' : '?';
+			editURL += separator + 'editGrooveId=' + grooveId;
+
+			// Load the groove by navigating to its URL with edit parameter
+			window.location.href = editURL;
+		}
+	};
+
+	// Delete a saved groove
+	root.deleteSavedGroove = function(grooveId) {
+		if (confirm('Are you sure you want to delete this groove?')) {
+			var savedGrooves = JSON.parse(localStorage.getItem('myGrooves') || '[]');
+			savedGrooves = savedGrooves.filter(function(g) { return g.id != grooveId; });
+			localStorage.setItem('myGrooves', JSON.stringify(savedGrooves));
+			root.updateMyGrooveMenu();
+		}
+	};
+
+	// Update the My Groove context menu with saved grooves
+	root.updateMyGrooveMenu = function(searchTerm) {
+		var savedGrooves = JSON.parse(localStorage.getItem('myGrooves') || '[]');
+		var menu = document.getElementById('myGrooveContextMenu');
+
+		if (!menu) {
+			console.log('Error: myGrooveContextMenu element not found');
+			return;
+		}
+
+		// Clear existing menu items
+		menu.innerHTML = '';
+
+		// Add search box if there are grooves
+		if (savedGrooves.length > 0) {
+			var searchLi = document.createElement('li');
+			searchLi.className = 'groove-search-container';
+
+			var searchInput = document.createElement('input');
+			searchInput.type = 'text';
+			searchInput.id = 'grooveSearchInput';
+			searchInput.className = 'groove-search-input';
+			searchInput.placeholder = 'Search grooves...';
+			searchInput.value = searchTerm || '';
+
+			var searchIcon = document.createElement('i');
+			searchIcon.className = 'fa fa-search groove-search-icon';
+
+			var clearIcon = document.createElement('i');
+			clearIcon.className = 'fa fa-times groove-search-clear';
+			clearIcon.title = 'Clear search';
+			clearIcon.style.display = searchTerm ? 'inline' : 'none';
+
+			searchInput.oninput = function() {
+				var term = this.value.trim();
+				clearIcon.style.display = term ? 'inline' : 'none';
+
+				// Store cursor position before update
+				var cursorPosition = this.selectionStart;
+
+				// Update the menu
+				root.updateMyGrooveMenu(term);
+
+				// Restore focus and cursor position after update
+				setTimeout(function() {
+					var newSearchInput = document.getElementById('grooveSearchInput');
+					if (newSearchInput) {
+						newSearchInput.focus();
+						newSearchInput.setSelectionRange(cursorPosition, cursorPosition);
+					}
+				}, 10);
+			};
+
+			searchInput.onkeydown = function(e) {
+				if (e.key === 'Escape') {
+					this.value = '';
+					clearIcon.style.display = 'none';
+					root.updateMyGrooveMenu('');
+					e.preventDefault();
+
+					// Restore focus after clearing
+					setTimeout(function() {
+						var newSearchInput = document.getElementById('grooveSearchInput');
+						if (newSearchInput) {
+							newSearchInput.focus();
+						}
+					}, 10);
+				}
+				// Prevent the context menu from closing when typing
+				e.stopPropagation();
+			};
+
+			// Prevent menu from closing when clicking in search area
+			searchInput.onclick = function(e) {
+				e.stopPropagation();
+			};
+
+			searchLi.onclick = function(e) {
+				e.stopPropagation();
+			};
+
+			clearIcon.onclick = function(e) {
+				e.stopPropagation();
+				searchInput.value = '';
+				clearIcon.style.display = 'none';
+				root.updateMyGrooveMenu('');
+
+				// Restore focus after clearing
+				setTimeout(function() {
+					var newSearchInput = document.getElementById('grooveSearchInput');
+					if (newSearchInput) {
+						newSearchInput.focus();
+					}
+				}, 10);
+			};
+
+			searchLi.appendChild(searchIcon);
+			searchLi.appendChild(searchInput);
+			searchLi.appendChild(clearIcon);
+			menu.appendChild(searchLi);
+		}
+
+		// Filter grooves based on search term
+		var filteredGrooves = savedGrooves;
+		if (searchTerm && searchTerm.trim() !== '') {
+			var term = searchTerm.toLowerCase().trim();
+			filteredGrooves = savedGrooves.filter(function(groove) {
+				return (groove.title && groove.title.toLowerCase().includes(term)) ||
+				       (groove.author && groove.author.toLowerCase().includes(term)) ||
+				       (groove.comment && groove.comment.toLowerCase().includes(term));
+			});
+		}
+
+		if (savedGrooves.length === 0) {
+			var li = document.createElement('li');
+			li.className = 'no-grooves';
+			li.textContent = 'No saved grooves';
+			menu.appendChild(li);
+		} else if (filteredGrooves.length === 0) {
+			var li = document.createElement('li');
+			li.className = 'no-grooves';
+			li.textContent = 'No grooves match your search';
+			menu.appendChild(li);
+		} else {
+			// Add each filtered groove as a menu item
+			filteredGrooves.forEach(function(groove) {
+				var li = document.createElement('li');
+
+				// Create action buttons container
+				var actionsDiv = document.createElement('div');
+				actionsDiv.className = 'groove-actions';
+
+				var editBtn = document.createElement('span');
+				editBtn.className = 'groove-edit';
+				editBtn.innerHTML = '<i class="fa fa-edit"></i>';
+				editBtn.title = 'Edit groove';
+				editBtn.onclick = function(e) {
+					e.stopPropagation();
+					root.editSavedGroove(groove.id);
+				};
+
+				var deleteBtn = document.createElement('span');
+				deleteBtn.className = 'groove-delete';
+				deleteBtn.innerHTML = '<i class="fa fa-trash"></i>';
+				deleteBtn.title = 'Delete groove';
+				deleteBtn.onclick = function(e) {
+					e.stopPropagation();
+					root.deleteSavedGroove(groove.id);
+				};
+
+				actionsDiv.appendChild(editBtn);
+				actionsDiv.appendChild(deleteBtn);
+
+				var titleDiv = document.createElement('div');
+				titleDiv.className = 'groove-title';
+				titleDiv.innerHTML = root.highlightSearchTerm(groove.title, searchTerm);
+				titleDiv.onclick = function() { root.loadSavedGroove(groove.id); };
+
+				var authorDiv = document.createElement('div');
+				authorDiv.className = 'groove-author';
+				authorDiv.innerHTML = 'by ' + root.highlightSearchTerm(groove.author, searchTerm);
+
+				var commentDiv = document.createElement('div');
+				commentDiv.className = 'groove-comment';
+				if (groove.comment) {
+					commentDiv.innerHTML = root.highlightSearchTerm(groove.comment, searchTerm);
+				}
+
+				li.appendChild(actionsDiv);
+				li.appendChild(titleDiv);
+				li.appendChild(authorDiv);
+				if (groove.comment) {
+					li.appendChild(commentDiv);
+				}
+
+				menu.appendChild(li);
+			});
+		}
+	};
+
+	// Handle My Groove menu anchor click
+	root.myGrooveAnchorClick = function(event) {
+		// Update menu before showing
+		root.updateMyGrooveMenu();
+
+		var contextMenu = document.getElementById("myGrooveContextMenu");
+		if (contextMenu) {
+			var anchorPoint = document.getElementById("myGrooveAnchor");
+
+			if (anchorPoint) {
+				var anchorPos = getTagPosition(anchorPoint);
+				contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + "px";
+				// Adjust positioning for wider modal (450px instead of 150px)
+				// Position it so it doesn't go off the right edge of the screen
+				var leftPos = anchorPos.x + anchorPoint.offsetWidth - 450;
+				if (leftPos < 10) {
+					leftPos = 10; // Minimum distance from left edge
+				}
+				contextMenu.style.left = leftPos + "px";
+			}
+			root.myGrooveUtils.showContextMenu(contextMenu);
+
+			// Auto-focus the search input after a short delay to ensure the menu is visible
+			setTimeout(function() {
+				var searchInput = document.getElementById('grooveSearchInput');
+				if (searchInput) {
+					searchInput.focus();
+				}
+			}, 100);
+		}
+	};
+
+	// Initialize the My Groove menu on page load
+	root.initializeMyGrooveMenu = function() {
+		// Make sure the menu is populated when the page loads
+		setTimeout(function() {
+			root.updateMyGrooveMenu();
+			root.updateSaveButtonForEditMode();
+		}, 100);
+	};
+
+	// Update save button text based on edit mode
+	root.updateSaveButtonForEditMode = function() {
+		var saveButton = document.getElementById('saveGrooveButton');
+		var saveLabel = saveButton ? saveButton.querySelector('.bottomButtonLabel') : null;
+
+		if (saveLabel) {
+			var isEditing = root.getEditingGrooveId() !== null;
+			saveLabel.textContent = isEditing ? 'UPDATE' : 'SAVE';
+
+			if (isEditing) {
+				saveButton.style.backgroundColor = '#ff8800';
+				saveButton.title = 'Update the existing groove';
+			} else {
+				saveButton.style.backgroundColor = '';
+				saveButton.title = 'Save as new groove';
+			}
+		}
+	};
+
+	// Helper functions for edit mode management
+	root.getEditingGrooveId = function() {
+		// Check URL parameters for editing groove ID
+		var urlParams = new URLSearchParams(window.location.search);
+		var editId = urlParams.get('editGrooveId');
+		if (editId) {
+			return parseInt(editId, 10);
+		}
+
+		// Check session storage as fallback
+		var sessionEditId = sessionStorage.getItem('editingGrooveId');
+		if (sessionEditId) {
+			return parseInt(sessionEditId, 10);
+		}
+
+		return null;
+	};
+
+	root.setEditingMode = function(grooveId) {
+		sessionStorage.setItem('editingGrooveId', grooveId.toString());
+	};
+
+	root.clearEditingMode = function() {
+		sessionStorage.removeItem('editingGrooveId');
+		// Also remove from URL if present
+		var url = new URL(window.location);
+		url.searchParams.delete('editGrooveId');
+		window.history.replaceState({}, document.title, url.toString());
+	};
+
+	// Helper function to highlight search terms in text
+	root.highlightSearchTerm = function(text, searchTerm) {
+		if (!text || !searchTerm || searchTerm.trim() === '') {
+			return text || '';
+		}
+
+		var term = searchTerm.trim();
+		var regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+		return text.replace(regex, '<span class="search-highlight">$1</span>');
+	};
+
+	// Test function for debugging - can be called from browser console
+	root.testMyGrooveFeatures = function() {
+		console.log('Testing My Groove features...');
+
+		// Test saving a groove
+		console.log('1. Testing save functionality...');
+		root.saveCurrentGroove();
+
+		// Test menu update
+		console.log('2. Testing menu update...');
+		root.updateMyGrooveMenu();
+
+		// Check localStorage
+		console.log('3. Checking localStorage...');
+		var saved = localStorage.getItem('myGrooves');
+		console.log('Saved grooves:', saved);
+
+		console.log('Test complete!');
 	};
 
 } // end of class

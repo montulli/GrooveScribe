@@ -440,6 +440,11 @@ function GrooveUtils() {
 		return root.GetEmptyGroove(notes_per_measure, numMeasures);
 	};
 
+	root.GetDefaultTom2Groove = function (notes_per_measure, timeSigTop, timeSigBottom, numMeasures) {
+
+		return root.GetEmptyGroove(notes_per_measure, numMeasures);
+	};
+
 	root.GetDefaultTom4Groove = function (notes_per_measure, timeSigTop, timeSigBottom, numMeasures) {
 
 		return root.GetEmptyGroove(notes_per_measure, numMeasures);
@@ -655,6 +660,9 @@ function GrooveUtils() {
 				//break;
 			case "T1":
 				return constant_ABC_T1_Normal;
+				//break;
+			case "T2":
+				return constant_ABC_T2_Normal;
 				//break;
 			case "T4":
 				return constant_ABC_T4_Normal;
@@ -1095,8 +1103,9 @@ function GrooveUtils() {
 		// only add if we need them.  // they are long and ugly. :)
 		if (myGrooveData.showToms) {
 			var Tom1 = "&T1=|" + root.tabLineFromAbcNoteArray('T1', myGrooveData.toms_array[0], true, true, total_notes, myGrooveData.notesPerMeasure);
+			var Tom2 = "&T2=|" + root.tabLineFromAbcNoteArray('T2', myGrooveData.toms_array[1], true, true, total_notes, myGrooveData.notesPerMeasure);
 			var Tom4 = "&T4=|" + root.tabLineFromAbcNoteArray('T4', myGrooveData.toms_array[3], true, true, total_notes, myGrooveData.notesPerMeasure);
-			fullURL += Tom1 + Tom4;
+			fullURL += Tom1 + Tom2 + Tom4;
 		}
 
 		// only add if we need them.  // they are long and ugly. :)
@@ -1227,7 +1236,7 @@ function GrooveUtils() {
 			'V:Hands stem=up \n' +
 			'%%voicemap drum\n' +
 			'"^Hi-Hat"^g4 "^Open"!open!^g4 ' +
-			'"^Crash"^c\'4 "^Stacker"^d\'4 "^Ride"^A\'4 "^Ride Bell"^B\'4 x2 "^Tom"e4 "^Tom"A4 "^Snare"c4 "^Buzz"!///!c4 "^Cross"^c4 "^Ghost  "!(.!!).!c4 "^Flam"{/c}c4  x10 ||\n' +
+			'"^Crash"^c\'4 "^Stacker"^d\'4 "^Ride"^A\'4 "^Ride Bell"^B\'4 x2 "^H Tom"e4 "^M Tom"d4 "^F Tom"A4 "^Snare"c4 "^Buzz"!///!c4 "^Cross"^c4 "^Ghost  "!(.!!).!c4 "^Flam"{/c}c4  x10 ||\n' +
 			'V:Feet stem=down \n' +
 			'%%voicemap drum\n' +
 			'x52 "^Kick"F4 "^HH foot"^d,4 x4 ||\n' +
@@ -2272,12 +2281,19 @@ function GrooveUtils() {
 		this.noteHasChangedSinceLastDataLoad = false;
 
 		this.playEvent = function (root) {
-			var icon = document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex);
-			if (icon)
-				icon.className = "midiPlayImage Playing";
-				if (root.playEventCallback) {
-					root.playEventCallback();
-				}
+			// Update the button that was actually clicked
+			if (root.lastClickedButton === 'plus') {
+				var plusIcon = document.getElementById("midiPlayPlusImage" + root.grooveUtilsUniqueIndex);
+				if (plusIcon)
+					plusIcon.className = "midiPlayPlusImage Playing";
+			} else {
+				var icon = document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex);
+				if (icon)
+					icon.className = "midiPlayImage Playing";
+			}
+			if (root.playEventCallback) {
+				root.playEventCallback();
+			}
 		};
 		// default loadMIDIDataEvent.  You probably want to override this
 		// it will only make changes to the tempo and swing
@@ -2297,16 +2313,31 @@ function GrooveUtils() {
 			return root.midiEventCallbacks.noteHasChangedSinceLastDataLoad;
 		};
 		this.pauseEvent = function (root) {
-			var icon = document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex);
-			if (icon)
-				icon.className = "midiPlayImage Paused";
+			// Update the button that was actually clicked
+			if (root.lastClickedButton === 'plus') {
+				var plusIcon = document.getElementById("midiPlayPlusImage" + root.grooveUtilsUniqueIndex);
+				if (plusIcon)
+					plusIcon.className = "midiPlayPlusImage Paused";
+			} else {
+				var icon = document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex);
+				if (icon)
+					icon.className = "midiPlayImage Paused";
+			}
 		};
 
 		this.resumeEvent = function (root) {};
 		this.stopEvent = function (root) {
+			// Reset both buttons to stopped state
 			var icon = document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex);
 			if (icon)
 				icon.className = "midiPlayImage Stopped";
+
+			var plusIcon = document.getElementById("midiPlayPlusImage" + root.grooveUtilsUniqueIndex);
+			if (plusIcon)
+				plusIcon.className = "midiPlayPlusImage Stopped";
+
+			// Clear the last clicked button
+			root.lastClickedButton = null;
 		};
 		this.repeatChangeEvent = function (root, newValue) {
 			if (newValue)
@@ -2321,9 +2352,16 @@ function GrooveUtils() {
 			var icon = document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex);
 			if (icon)
 				icon.className = "midiPlayImage Stopped";
+
+			var plusIcon = document.getElementById("midiPlayPlusImage" + root.grooveUtilsUniqueIndex);
+			if (plusIcon)
+				plusIcon.className = "midiPlayPlusImage Stopped";
+
 			document.getElementById("midiPlayImage" + root.grooveUtilsUniqueIndex).onclick = function (event) {
+				root.lastClickedButton = 'normal';
 				root.startOrStopMIDI_playback();
-			}; // enable play button
+			}; // enable regular play button
+
 			setupHotKeys(); // spacebar to play
 		};
 	};
@@ -2843,6 +2881,10 @@ function GrooveUtils() {
 		if (MIDI.Player.playing) {
 			root.stopMIDI_playback();
 		} else {
+			// If this is the regular play button, disable auto speed up
+			if (root.lastClickedButton === 'normal' && typeof myGrooveWriter !== 'undefined') {
+				myGrooveWriter.disableAutoSpeedUp();
+			}
 			root.startMIDI_playback();
 		}
 	};
@@ -2853,6 +2895,48 @@ function GrooveUtils() {
 		if (MIDI.Player.playing) {
 			root.pauseMIDI_playback();
 		} else {
+			root.startMIDI_playback();
+		}
+	};
+
+	// Auto Speed Up play button
+	root.startAutoSpeedUpPlayback = function () {
+		if (MIDI.Player.playing) {
+			// If playing, stop playback
+			root.stopMIDI_playback();
+		} else {
+			// Set the button state to indicate this is the plus button
+			root.lastClickedButton = 'plus';
+
+			// Load default settings if they exist
+			if (typeof myGrooveWriter !== 'undefined' && myGrooveWriter.loadAutoSpeedUpDefaults) {
+				var defaults = myGrooveWriter.loadAutoSpeedUpDefaults();
+				if (defaults) {
+					// Apply the default settings
+					var amountSlider = document.getElementById("metronomeAutoSpeedupTempoIncreaseAmount");
+					var intervalSlider = document.getElementById("metronomeAutoSpeedupTempoIncreaseInterval");
+					var keepIncreasingCheckbox = document.getElementById("metronomeAutoSpeedUpKeepGoingForever");
+
+					if (amountSlider) amountSlider.value = defaults.bpmAmount;
+					if (intervalSlider) intervalSlider.value = defaults.intervalMinutes;
+					if (keepIncreasingCheckbox) keepIncreasingCheckbox.checked = defaults.keepIncreasing;
+
+					// Update the output displays
+					if (document.getElementById('metronomeAutoSpeedupTempoIncreaseAmountOutput')) {
+						document.getElementById('metronomeAutoSpeedupTempoIncreaseAmountOutput').innerHTML = defaults.bpmAmount;
+					}
+					if (document.getElementById('metronomeAutoSpeedupTempoIncreaseIntervalOutput')) {
+						document.getElementById('metronomeAutoSpeedupTempoIncreaseIntervalOutput').innerHTML = defaults.intervalMinutes;
+					}
+				}
+			}
+
+			// Enable auto speed up
+			if (typeof myGrooveWriter !== 'undefined') {
+				myGrooveWriter.enableAutoSpeedUp();
+			}
+
+			// Start playback
 			root.startMIDI_playback();
 		}
 	};
@@ -3315,6 +3399,7 @@ function GrooveUtils() {
 			'<div id="playerControl' + root.grooveUtilsUniqueIndex + '" class="playerControl">' +
 			'	<div class="playerControlsRow" id="playerControlsRow' + root.grooveUtilsUniqueIndex + '">' +
 			'		<span title="Play/Pause" class="midiPlayImage" id="midiPlayImage' + root.grooveUtilsUniqueIndex + '"></span>' +
+			'		<span title="Play with Auto Speed Up" class="midiPlayPlusImage" id="midiPlayPlusImage' + root.grooveUtilsUniqueIndex + '"></span>' +
 			'       <span class="MIDIPlayTime" id="MIDIPlayTime' + root.grooveUtilsUniqueIndex + '">' + CONSTANT_Midi_play_time_zero + '</span>';
 
 			if(expandable)
@@ -3401,6 +3486,11 @@ function GrooveUtils() {
 		html_element = document.getElementById("midiMetronomeMenu" + root.grooveUtilsUniqueIndex);
 		if (html_element) {
 			html_element.addEventListener("click", root.metronomeMiniMenuClick, false);
+		}
+
+		html_element = document.getElementById("midiPlayPlusImage" + root.grooveUtilsUniqueIndex);
+		if (html_element) {
+			html_element.addEventListener("click", root.startAutoSpeedUpPlayback, false);
 		}
 
 		// enable or disable swing
