@@ -1,0 +1,251 @@
+/* Drum Coach Styles */
+
+#coach-feedback-layer circle {
+    stroke: white;
+    stroke-width: 1px;
+    pointer-events: none;
+}
+
+.coach-grayed-out {
+    opacity: 0.4;
+    pointer-events: none !important;
+}
+
+/* Settings Dialog - matches app's native popup style */
+#coachSettingsDialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #FFF;
+    color: #333;
+    padding: 15px 20px;
+    border: solid 2px #999;
+    border-radius: 5px;
+    z-index: 2000;
+    display: none;
+    width: 350px;
+    font-family: 'Lato', sans-serif;
+}
+
+#coachSettingsDialog h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--highlight-color, #f08d49);
+}
+
+.coach-setting-row {
+    margin: 12px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.coach-setting-row label {
+    font-weight: 500;
+    color: #333;
+}
+
+.coach-setting-row select,
+.coach-setting-row input[type="number"] {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    background-color: #EEE;
+    border: 1px solid #CCC;
+    padding: 5px 10px;
+    border-radius: 4px;
+    min-width: 140px;
+}
+
+.coach-setting-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--highlight-color, #f08d49);
+}
+
+.coach-dialog-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.coach-btn {
+    font-size: 16px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 500;
+    padding: 8px 20px;
+    border: 0px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.coach-btn-primary {
+    background: var(--highlight-color, #f08d49);
+    color: #FFF;
+}
+
+.coach-btn-primary:hover {
+    filter: brightness(1.1);
+}
+
+.coach-btn-secondary {
+    background: #FFF;
+    color: #CCC;
+}
+
+/* Option Menu Icon */
+#coach-toggle-icon.active {
+    color: #3498db;
+}
+
+#coachToggleBtn.coaching-active {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    animation: coaching-pulse 1.5s ease-in-out infinite;
+}
+
+#coachToggleBtn.coaching-active i {
+    animation: coaching-icon-pulse 1s ease-in-out infinite;
+}
+
+@keyframes coaching-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes coaching-icon-pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Debug Panel */
+#coachDebugPanel {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #00ff00;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    z-index: 1000;
+    display: none;
+    pointer-events: none;
+}
+
+/* Results Dialog - matches app's native popup style */
+#coachResultsDialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #FFF;
+    color: #333;
+    padding: 20px;
+    border: solid 2px #999;
+    border-radius: 5px;
+    z-index: 2001;
+    display: none;
+    width: 400px;
+    font-family: 'Lato', sans-serif;
+}
+
+#coachResultsDialog h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--highlight-color, #f08d49);
+}
+
+.coach-results-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 15px 0;
+}
+
+.coach-result-tile {
+    background: #EEE;
+    border-radius: 5px;
+    padding: 12px 8px;
+    text-align: center;
+}
+
+.coach-result-tile.perfect {
+    border-top: 3px solid #3498db;
+}
+
+.coach-result-tile.good {
+    border-top: 3px solid #27ae60;
+}
+
+.coach-result-tile.close {
+    border-top: 3px solid #f1c40f;
+}
+
+.coach-result-tile.miss {
+    border-top: 3px solid #e74c3c;
+}
+
+.coach-result-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+}
+
+.coach-result-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    color: #888;
+    margin-top: 4px;
+}
+
+.coach-results-summary {
+    background: #EEE;
+    border-radius: 5px;
+    padding: 12px 15px;
+    margin: 15px 0;
+}
+
+.coach-score-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #DDD;
+    color: #555;
+}
+
+.coach-score-row:last-child {
+    border-bottom: none;
+}
+
+.coach-score-final {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--highlight-color, #f08d49);
+    padding-top: 12px;
+    margin-top: 8px;
+    border-top: 2px solid var(--highlight-color, #f08d49);
+}

@@ -1,0 +1,30 @@
+{
+  "name": "groovescribe",
+  "version": "1.0.0",
+  "description": "Readme for Groove Scribe",
+  "main": "MIDI.js",
+  "scripts": {
+    "test:headless": "NODE_OPTIONS=--experimental-vm-modules jest coach/tests/headless",
+    "test:visual": "NODE_OPTIONS=--experimental-vm-modules jest coach/tests/visual",
+    "test:integration": "NODE_OPTIONS=--experimental-vm-modules jest coach/tests/integration",
+    "test": "npm run test:headless && npm run test:visual"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2opremio/GrooveScribe.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/2opremio/GrooveScribe/issues"
+  },
+  "homepage": "https://github.com/2opremio/GrooveScribe#readme",
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "pixelmatch": "^7.1.0",
+    "pngjs": "^7.0.0",
+    "puppeteer": "^24.36.1"
+  }
+}

@@ -6,3 +6,14 @@ cordova/platforms/
 mikeLessons.html
 cordova/plugins/
 .idea/
+
+# Node.js
+node_modules/
+
+# Coach - generated files (can be regenerated)
+coach/tests/fixtures/generated/
+coach/tests/visual/screenshots/
+coach/tests/visual/diff/
+
+# Keep reference screenshots (do NOT ignore)
+!coach/tests/visual/reference/

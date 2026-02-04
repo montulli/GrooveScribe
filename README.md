@@ -11,18 +11,27 @@ Readme for Groove Scribe
 * Hosted here: http://www.mikeslessons.com/gscribe/
 * Also here: http://montulli.github.io/GrooveScribe/
 
+### How to run locally ###
+
+Because the application loads external assets (like soundfonts), opening the `index.html` file directly in your browser will result in CORS errors and the audio won't work. You must run it through a local web server.
+
+**Option 1: Python (Recommended for Mac/Linux)**
+1. Open your terminal in the project directory.
+2. Run: `python3 -m http.server 8000`
+3. Open your browser to: [http://localhost:8000](http://localhost:8000)
+
+**Option 2: Node.js (Static Server)**
+1. Open your terminal in the project directory.
+2. Run: `npx serve`
+3. Open the URL provided (usually [http://localhost:3000](http://localhost:3000)).
+
+**Option 3: Node.js (with HOT RELOAD)**
+If you want the page to automatically refresh whenever you save a file:
+1. Open your terminal in the project directory.
+2. Run: `npx browser-sync start --server --files "**/*"`
+3. This will open a browser window for you. Any changes to CSS, JS, or HTML files will trigger an instant reload.
+
 ### How do I get set up? ###
-
-* Summary of set up:  Just host all the files on a web server.   The application runs entirely in the browser with Javascript, HTML & CSS.
-
-* Configuration: None
-
-* Dependencies
-    * Google's Leto font
-    * Google's url shortening api
-
-* Deployment instructions
-Deploy the files to an HTTP server.
 
 ### Contribution guidelines ###
 
@@ -40,4 +49,4 @@ To edit this Readme:
 
 ### See also ###
 
-* [SOURCE_CODE_README.md](SOURCE_CODE_README.md)
+* [SOURCE_CODE_README.md (Architecture & Source Code)](SOURCE_CODE_README.md)
