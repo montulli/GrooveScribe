@@ -14,6 +14,26 @@ describe('Drum Coach Performance Playback UI', () => {
     const fixturesDir = path.resolve(process.cwd(), 'coach/tests/fixtures/generated');
 
     beforeAll(async () => {
+        // Cleanup prior screenshots and diffs
+        const screenshotsDir = path.resolve(process.cwd(), 'coach/tests/visual/screenshots');
+        const diffDir = path.resolve(process.cwd(), 'coach/tests/visual/diff');
+
+        [screenshotsDir, diffDir].forEach(dir => {
+            if (fs.existsSync(dir)) {
+                fs.readdirSync(dir).forEach(file => {
+                    if (file.endsWith('.png')) {
+                        try {
+                            fs.unlinkSync(path.join(dir, file));
+                        } catch (e) {
+                            // ignore
+                        }
+                    }
+                });
+            } else {
+                fs.mkdirSync(dir, { recursive: true });
+            }
+        });
+
         browser = await puppeteer.launch({
             headless: 'new',
             args: ['--no-sandbox', '--disable-setuid-sandbox']
@@ -29,7 +49,7 @@ describe('Drum Coach Performance Playback UI', () => {
     });
 
     afterAll(async () => {
-        await browser.close();
+        if (browser) await browser.close();
     });
 
     async function runFixtureTest(fixtureName, expectedMarkerCount) {
@@ -72,15 +92,24 @@ describe('Drum Coach Performance Playback UI', () => {
         // 7. Start coach session in headless mode (bypasses MIDI playback)
         await page.evaluate(() => window.CoachTestHelper.startSessionHeadless());
 
-        // 8. Play back the performance
-        await page.evaluate((p) => window.CoachTestHelper.simulatePerformance(p), fixture.performance);
+        // 8. Play back the performance INSTANTLY
+        await page.evaluate((p) => window.CoachTestHelper.simulatePerformanceInstant(p), fixture.performance);
 
-        // 9. Wait for the performance to finish
-        const beatDurationMs = 60000 / fixture.meta.bpm;
-        const durationMs = (fixture.groove.measures || 1) * 4 * beatDurationMs;
+        // 9. Wait for MIDI player UI to be ready (ensure no "forbidden" sign)
+        await page.waitForFunction(() => {
+            const playBtn = document.querySelector('.midiPlayImage');
+            return playBtn && (
+                playBtn.classList.contains('Stopped') ||
+                playBtn.classList.contains('Paused') ||
+                playBtn.classList.contains('Playing')
+            );
+        }, { timeout: 5000 }).catch(() => console.warn('Timeout waiting for MIDI player state'));
 
-        console.log(`Waiting ${durationMs + 1000}ms for performance to complete...`);
-        await new Promise(r => setTimeout(r, durationMs + 1000));
+        // 10. Wait for animations and fonts to settle
+        await new Promise(r => setTimeout(r, 1500));
+
+        // 11. Move mouse out of the way
+        await page.mouse.move(0, 0);
 
         // 10. Verify markers
         const result = await page.evaluate(() => {

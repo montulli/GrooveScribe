@@ -5,6 +5,7 @@ import { FeedbackRenderer } from './ui/FeedbackRenderer.js';
 import { CoachSettingsDialog } from './ui/CoachSettingsDialog.js';
 import { ResultsDialog } from './ui/ResultsDialog.js';
 import { coachState } from './state/CoachState.js';
+import { DrumType, SupportedDrumTypes } from './engine/DrumConstants.js';
 
 /**
  * CoachController - Orchestrates the entire Drum Coach feature
@@ -16,13 +17,14 @@ export class CoachController {
         this.midiHandler = new MidiInputHandler({
             onHit: (drum, timestamp, velocity) => this.handleMidiHit(drum, timestamp, velocity),
             drumMap: {
-                36: 'kick', 35: 'kick',
-                38: 'snare', 40: 'snare', 37: 'snare_side',
-                42: 'hh_normal', 44: 'hh_foot', 46: 'hh_open',
-                48: 'tom1', 47: 'tom2', 45: 'tom3', 43: 'tom4',
-                49: 'crash', 57: 'crash',
-                51: 'ride', 53: 'ride_bell',
-                39: 'snare_ghost' // Custom mapping for ghosts if needed
+                36: DrumType.KICK, 35: DrumType.KICK,
+                38: DrumType.SNARE, 40: DrumType.SNARE, 37: DrumType.SNARE_XSTICK,
+                42: DrumType.HH_NORMAL, 44: DrumType.HH_FOOT, 46: DrumType.HH_OPEN,
+                48: DrumType.TOM1, 50: DrumType.TOM1, 47: DrumType.TOM1,
+                45: DrumType.TOM4, 43: DrumType.TOM4, 41: DrumType.TOM4,
+                49: DrumType.CRASH, 57: DrumType.CRASH,
+                51: DrumType.RIDE, 53: DrumType.RIDE_BELL,
+                39: DrumType.SNARE // Remap ghost snare hits to regular snare
             }
         });
         this.latencyManager = new LatencyManager();
@@ -225,7 +227,12 @@ export class CoachController {
     handleMidiHit(drum, timestamp, velocity) {
         if (!this.engine.isPlaying) return;
 
-        const evaluation = this.engine.handleMidiHit(drum, timestamp);
+        // Normalize tom names for simulators/fixtures that might still use tom2/3
+        let normalizedDrum = drum;
+        if (drum === 'tom2') normalizedDrum = DrumType.TOM1;
+        else if (drum === 'tom3') normalizedDrum = DrumType.TOM4;
+
+        const evaluation = this.engine.handleMidiHit(normalizedDrum, timestamp);
         if (!evaluation) return;
 
         console.log(`[CoachController] Hit ${drum} evaluation: ${evaluation.tier} (match: ${evaluation.isMatch})`);
@@ -239,14 +246,14 @@ export class CoachController {
             if (matchedNote && matchedNote.tickIndex !== undefined) {
                 // Use the new instrument-aware mapping
                 // For flam grace notes, we draw at the flam position but with grace note offset
-                const effectiveDrum = evaluation.isGraceNote ? 'snare_flam' : drum;
+                const effectiveDrum = evaluation.isGraceNote ? 'snare_flam' : normalizedDrum;
                 const abcNoteIndex = this.getAbcIndexForHit(matchedNote.tickIndex, effectiveDrum);
                 if (abcNoteIndex >= 0) {
                     this.renderer.drawHitFeedback(
                         abcNoteIndex,
                         evaluation.tier,
                         evaluation.timingError,
-                        evaluation.isGraceNote ? 'flam_grace' : drum
+                        evaluation.isGraceNote ? 'flam_grace' : normalizedDrum
                     );
                 } else {
                     console.warn(`[CoachController] No ABC index found for ${drum} at tick ${matchedNote.tickIndex}`);
@@ -314,29 +321,41 @@ export class CoachController {
 
             if ((snareVal && snareVal !== "") || (hhVal && hhVal !== "") || hasToms || isKick || isSplash) {
                 if (snareVal && snareVal !== "") {
-                    this.abcNoteMap.set(`${i}:snare`, currentIndex);
-                    this.abcNoteMap.set(`${i}:snare_side`, currentIndex);
-                    this.abcNoteMap.set(`${i}:snare_ghost`, currentIndex);
-                    this.abcNoteMap.set(`${i}:snare_xstick`, currentIndex);
-                    this.abcNoteMap.set(`${i}:snare_flam`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.SNARE}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.SNARE_ACCENT}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.SNARE_GHOST}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.SNARE_XSTICK}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.SNARE_FLAM}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.SNARE_DRAG}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.SNARE_BUZZ}`, currentIndex);
                 }
                 if (hhVal && hhVal !== "") {
-                    this.abcNoteMap.set(`${i}:hh_normal`, currentIndex);
-                    this.abcNoteMap.set(`${i}:hh_open`, currentIndex);
-                    this.abcNoteMap.set(`${i}:hh_accent`, currentIndex);
-                    this.abcNoteMap.set(`${i}:crash`, currentIndex);
-                    this.abcNoteMap.set(`${i}:ride`, currentIndex);
-                    this.abcNoteMap.set(`${i}:ride_bell`, currentIndex);
-                    this.abcNoteMap.set(`${i}:splash`, currentIndex);
-                    this.abcNoteMap.set(`${i}:china`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.HH_NORMAL}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.HH_OPEN}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.HH_ACCENT}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.HH_CLOSE}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.CRASH}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.RIDE}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.RIDE_BELL}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.COWBELL}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.STACKER}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.METRONOME_NORMAL}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.METRONOME_ACCENT}`, currentIndex);
                 }
                 if (hasToms) {
                     data.toms_array.forEach((arr, tomIdx) => {
-                        if (arr[i] && arr[i] !== "") this.abcNoteMap.set(`${i}:tom${tomIdx + 1}`, currentIndex);
+                        let drumKey = `tom${tomIdx + 1}`;
+                        // Remap Tom 2 -> Tom 1, Tom 3 -> Tom 4
+                        if (drumKey === 'tom2') drumKey = DrumType.TOM1;
+                        if (drumKey === 'tom3') drumKey = DrumType.TOM4;
+
+                        if (SupportedDrumTypes.includes(drumKey) && arr[i] && arr[i] !== "") {
+                            this.abcNoteMap.set(`${i}:${drumKey}`, currentIndex);
+                        }
                     });
                 }
-                if (isKick) this.abcNoteMap.set(`${i}:kick`, currentIndex);
-                if (isSplash) this.abcNoteMap.set(`${i}:hh_foot`, currentIndex);
+                if (isKick) this.abcNoteMap.set(`${i}:${DrumType.KICK}`, currentIndex);
+                if (isSplash) this.abcNoteMap.set(`${i}:${DrumType.HH_FOOT}`, currentIndex);
 
                 currentIndex++; // One index for the whole chord/slice
             }
@@ -388,56 +407,66 @@ export class CoachController {
         console.log(`[CoachController] Generating timeline: ${totalTicks} ticks (${notesPerMeasure} n/m), ${bpm} BPM, ${msPerTick.toFixed(2)}ms/tick`);
 
         for (let i = 0; i < totalTicks; i++) {
+            const tickNotes = [];
             // HH
             if (data.hh_array[i] && data.hh_array[i] !== "") {
                 const val = data.hh_array[i];
-                let type = 'hh_normal';
+                let type = DrumType.HH_NORMAL;
                 // Check for all articulations/variants
-                if (val === 'o' || val === 'O' || val.includes('!open!')) type = 'hh_open';
-                else if (val === 'X' || val.includes('!accent!')) type = 'hh_accent';
-                else if (val === 'c' || val === 'C' || val.includes("^c'")) type = 'crash';
-                else if (val === 'r' || val === 'R' || val.includes("^A'")) type = 'ride';
-                else if (val === 'b' || val === 'B' || val.includes("^B'")) type = 'ride_bell';
-                else if (val === 's' || val === 'S') type = 'splash';
-                else if (val === 'k' || val === 'K') type = 'china';
-                timeline.push({ time: i * msPerTick, type, tickIndex: i });
-                console.log(`[TimelineLog] Tick ${i}: added ${type} (val: ${val}) at ${(i * msPerTick).toFixed(2)}ms`);
+                if (val === 'o' || val === 'O' || val.includes('!open!')) type = DrumType.HH_OPEN;
+                else if (val === 'X' || val.includes('!accent!')) type = DrumType.HH_ACCENT;
+                else if (val === '+' || val.includes('!plus!')) type = DrumType.HH_CLOSE;
+                else if (val === 'c' || val === 'C' || val.includes("^c'")) type = DrumType.CRASH;
+                else if (val === 'r' || val === 'R' || val.includes("^A'")) type = DrumType.RIDE;
+                else if (val === 'b' || val === 'B' || val.includes("^B'")) type = DrumType.RIDE_BELL;
+                else if (val === 'm' || val === 'M' || val.includes("^D'")) type = DrumType.COWBELL;
+                else if (val === 's' || val === 'S' || val.includes("^d'")) type = DrumType.STACKER;
+                else if (val === 'n' || val.includes("^e'")) type = DrumType.METRONOME_NORMAL;
+                else if (val === 'N' || val.includes("^f'")) type = DrumType.METRONOME_ACCENT;
+
+                if (SupportedDrumTypes.includes(type)) {
+                    tickNotes.push({ time: i * msPerTick, type, tickIndex: i });
+                }
             }
             // Snare
             if (data.snare_array[i] && data.snare_array[i] !== "") {
                 const val = data.snare_array[i];
-                let type = 'snare';
-                if (val === 'g' || val === 'G' || val.includes('!(')) type = 'snare_ghost';
-                else if (val === 'x' || val.includes('^c')) type = 'snare_xstick';
-                else if (val === 'f' || val === 'F' || val.includes('{/')) type = 'snare_flam';
-                timeline.push({ time: i * msPerTick, type, tickIndex: i });
-                console.log(`[TimelineLog] Tick ${i}: added ${type} (val: ${val}) at ${(i * msPerTick).toFixed(2)}ms`);
+                let type = DrumType.SNARE;
+                if (val === 'g' || val === 'G' || val.includes('!(')) type = DrumType.SNARE_GHOST;
+                else if (val === 'x' || val.includes('^c')) type = DrumType.SNARE_XSTICK;
+                else if (val === 'f' || val === 'F' || val.includes('{/')) type = DrumType.SNARE_FLAM;
+                else if (val === 'd' || val === 'D' || val.includes('{/cc}')) type = DrumType.SNARE_DRAG;
+                else if (val === 'b' || val === 'B' || val.includes('!///!')) type = DrumType.SNARE_BUZZ;
+                else if (val === 'O' || val.includes('!accent!')) type = DrumType.SNARE_ACCENT;
+
+                if (SupportedDrumTypes.includes(type)) {
+                    tickNotes.push({ time: i * msPerTick, type, tickIndex: i });
+                }
             }
             // Kick / HH Foot
             if (data.kick_array[i] && data.kick_array[i] !== "") {
                 const val = data.kick_array[i];
-                // Kick drum: 'o', 'O', 'F', or ABC notation with 'F'
                 const isKick = val === 'o' || val === 'O' || val === 'k' || val === 'F' || val === true || val === 'b' || val === 'X' || (typeof val === 'string' && (val.includes('F') || val.includes('[F')));
-                // Foot hi-hat: 'x', 'h', or ABC notation '^d,' (splash) or '[F^d,]' (kick+splash)
                 const isHHFoot = val === 'x' || val === 'h' || val === 'H' || (typeof val === 'string' && val.includes('^d,'));
 
-                if (isKick) {
-                    timeline.push({ time: i * msPerTick, type: 'kick', tickIndex: i });
-                    console.log(`[TimelineLog] Tick ${i}: added kick (val: ${val}) at ${(i * msPerTick).toFixed(2)}ms`);
-                }
-                if (isHHFoot) {
-                    timeline.push({ time: i * msPerTick, type: 'hh_foot', tickIndex: i });
-                    console.log(`[TimelineLog] Tick ${i}: added hh_foot (val: ${val}) at ${(i * msPerTick).toFixed(2)}ms`);
-                }
+                if (isKick) tickNotes.push({ time: i * msPerTick, type: DrumType.KICK, tickIndex: i });
+                if (isHHFoot) tickNotes.push({ time: i * msPerTick, type: DrumType.HH_FOOT, tickIndex: i });
             }
             // Toms
             if (data.toms_array) {
                 data.toms_array.forEach((row, idx) => {
-                    if (row && row[i] && row[i] !== "") {
-                        timeline.push({ time: i * msPerTick, type: `tom${idx + 1}`, tickIndex: i });
-                        console.log(`[TimelineLog] Tick ${i}: added tom${idx + 1} (val: ${row[i]}) at ${(i * msPerTick).toFixed(2)}ms`);
+                    let drumKey = `tom${idx + 1}`;
+                    if (drumKey === 'tom2') drumKey = DrumType.TOM1;
+                    if (drumKey === 'tom3') drumKey = DrumType.TOM4;
+
+                    if (SupportedDrumTypes.includes(drumKey) && row && row[i] && row[i] !== "") {
+                        tickNotes.push({ time: i * msPerTick, type: drumKey, tickIndex: i });
                     }
                 });
+            }
+
+            if (tickNotes.length > 0) {
+                timeline.push(...tickNotes);
             }
         }
 

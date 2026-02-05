@@ -4,6 +4,7 @@
  */
 import { jest } from '@jest/globals';
 import { MidiInputHandler } from '../../../coach/engine/MidiInputHandler.js';
+import { DrumType } from '../../../coach/engine/DrumConstants.js';
 
 describe('MidiInputHandler', () => {
     let handler;
@@ -28,11 +29,11 @@ describe('MidiInputHandler', () => {
         handler = new MidiInputHandler({
             onHit: mockOnHit,
             drumMap: {
-                36: 'kick',
-                38: 'snare',
-                40: 'snare', // Rim
-                42: 'hh_normal',
-                46: 'hh_open'
+                36: DrumType.KICK,
+                38: DrumType.SNARE,
+                40: DrumType.SNARE, // Rim
+                42: DrumType.HH_NORMAL,
+                46: DrumType.HH_OPEN
             }
         });
     });
@@ -40,7 +41,7 @@ describe('MidiInputHandler', () => {
     describe('Initialization', () => {
         test('creates handler with drum map', () => {
             expect(handler.drumMap).toBeDefined();
-            expect(handler.drumMap[36]).toBe('kick');
+            expect(handler.drumMap[36]).toBe(DrumType.KICK);
         });
 
         test('creates handler with onHit callback', () => {
@@ -93,7 +94,7 @@ describe('MidiInputHandler', () => {
             const event = createMidiEvent(0x99, 36, 100, 1000);
             handler.handleMidiMessage(event);
 
-            expect(mockOnHit).toHaveBeenCalledWith('kick', 1000, 100);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.KICK, 1000, 100);
         });
 
         test('ignores Note On with velocity 0 (note off)', () => {
@@ -114,49 +115,49 @@ describe('MidiInputHandler', () => {
             const event = createMidiEvent(0x99, 36, 80, 500);
             handler.handleMidiMessage(event);
 
-            expect(mockOnHit).toHaveBeenCalledWith('kick', 500, 80);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.KICK, 500, 80);
         });
 
         test('maps snare correctly (note 38)', () => {
             const event = createMidiEvent(0x99, 38, 90, 600);
             handler.handleMidiMessage(event);
 
-            expect(mockOnHit).toHaveBeenCalledWith('snare', 600, 90);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.SNARE, 600, 90);
         });
 
         test('maps snare rim correctly (note 40)', () => {
             const event = createMidiEvent(0x99, 40, 85, 700);
             handler.handleMidiMessage(event);
 
-            expect(mockOnHit).toHaveBeenCalledWith('snare', 700, 85);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.SNARE, 700, 85);
         });
 
         test('maps closed hi-hat correctly (note 42)', () => {
             const event = createMidiEvent(0x99, 42, 70, 800);
             handler.handleMidiMessage(event);
 
-            expect(mockOnHit).toHaveBeenCalledWith('hh_normal', 800, 70);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.HH_NORMAL, 800, 70);
         });
 
         test('maps open hi-hat correctly (note 46)', () => {
             const event = createMidiEvent(0x99, 46, 75, 900);
             handler.handleMidiMessage(event);
 
-            expect(mockOnHit).toHaveBeenCalledWith('hh_open', 900, 75);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.HH_OPEN, 900, 75);
         });
 
         test('preserves timestamp from MIDI event', () => {
             const event = createMidiEvent(0x99, 36, 100, 123456.789);
             handler.handleMidiMessage(event);
 
-            expect(mockOnHit).toHaveBeenCalledWith('kick', 123456.789, 100);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.KICK, 123456.789, 100);
         });
 
         test('preserves velocity from MIDI event', () => {
             const event = createMidiEvent(0x99, 36, 127, 1000);
             handler.handleMidiMessage(event);
 
-            expect(mockOnHit).toHaveBeenCalledWith('kick', 1000, 127);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.KICK, 1000, 127);
         });
 
         test('handles minimum velocity (1)', () => {
@@ -170,7 +171,7 @@ describe('MidiInputHandler', () => {
             const event = createMidiEvent(0x99, 36, 127, 1000);
             handler.handleMidiMessage(event);
 
-            expect(mockOnHit).toHaveBeenCalledWith('kick', 1000, 127);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.KICK, 1000, 127);
         });
     });
 
@@ -212,8 +213,8 @@ describe('MidiInputHandler', () => {
             handler.handleMidiMessage(createEvent(42, 80, 1000));
 
             expect(mockOnHit).toHaveBeenCalledTimes(2);
-            expect(mockOnHit).toHaveBeenCalledWith('kick', 1000, 100);
-            expect(mockOnHit).toHaveBeenCalledWith('hh_normal', 1000, 80);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.KICK, 1000, 100);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.HH_NORMAL, 1000, 80);
         });
 
         test('handles repeated notes on same drum', () => {
@@ -237,32 +238,32 @@ describe('MidiInputHandler', () => {
                 onHit: mockOnHit,
                 drumMap: {
                     // Kick
-                    35: 'kick', // Acoustic Bass Drum
-                    36: 'kick', // Bass Drum 1
+                    35: DrumType.KICK, // Acoustic Bass Drum
+                    36: DrumType.KICK, // Bass Drum 1
 
                     // Snare
-                    38: 'snare', // Acoustic Snare
-                    40: 'snare', // Electric Snare / Rim
+                    38: DrumType.SNARE, // Acoustic Snare
+                    40: DrumType.SNARE, // Electric Snare / Rim
 
                     // Hi-Hat
-                    42: 'hh_normal', // Closed Hi-Hat
-                    44: 'hh_normal', // Pedal Hi-Hat
-                    46: 'hh_open',   // Open Hi-Hat
+                    42: DrumType.HH_NORMAL, // Closed Hi-Hat
+                    44: DrumType.HH_NORMAL, // Pedal Hi-Hat
+                    46: DrumType.HH_OPEN,   // Open Hi-Hat
 
                     // Toms
-                    45: 'tom_low',   // Low Tom
-                    47: 'tom_low',   // Low-Mid Tom
-                    48: 'tom_mid',   // Hi-Mid Tom
-                    50: 'tom_high',  // High Tom
+                    45: DrumType.TOM4,   // Low Tom (remapped to Tom4)
+                    47: DrumType.TOM1,   // Low-Mid Tom (remapped to Tom1)
+                    48: DrumType.TOM1,   // Hi-Mid Tom
+                    50: DrumType.TOM1,   // High Tom
 
                     // Cymbals
-                    49: 'crash',     // Crash Cymbal 1
-                    52: 'crash',     // Chinese Cymbal
-                    55: 'crash',     // Splash Cymbal
-                    57: 'crash',     // Crash Cymbal 2
-                    51: 'ride',      // Ride Cymbal 1
-                    53: 'ride_bell', // Ride Bell
-                    59: 'ride',      // Ride Cymbal 2
+                    49: DrumType.CRASH,     // Crash Cymbal 1
+                    52: DrumType.CRASH,     // Chinese Cymbal
+                    55: DrumType.CRASH,     // Splash Cymbal
+                    57: DrumType.CRASH,     // Crash Cymbal 2
+                    51: DrumType.RIDE,      // Ride Cymbal 1
+                    53: DrumType.RIDE_BELL, // Ride Bell
+                    59: DrumType.RIDE,      // Ride Cymbal 2
                 }
             });
 
@@ -282,37 +283,37 @@ describe('MidiInputHandler', () => {
         test('maps acoustic bass drum (35)', () => {
             const event = { data: new Uint8Array([0x99, 35, 100]), timeStamp: 1000 };
             handler.handleMidiMessage(event);
-            expect(mockOnHit).toHaveBeenCalledWith('kick', 1000, 100);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.KICK, 1000, 100);
         });
 
         test('maps pedal hi-hat (44)', () => {
             const event = { data: new Uint8Array([0x99, 44, 100]), timeStamp: 1000 };
             handler.handleMidiMessage(event);
-            expect(mockOnHit).toHaveBeenCalledWith('hh_normal', 1000, 100);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.HH_NORMAL, 1000, 100);
         });
 
         test('maps crash cymbal (49)', () => {
             const event = { data: new Uint8Array([0x99, 49, 100]), timeStamp: 1000 };
             handler.handleMidiMessage(event);
-            expect(mockOnHit).toHaveBeenCalledWith('crash', 1000, 100);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.CRASH, 1000, 100);
         });
 
         test('maps ride cymbal (51)', () => {
             const event = { data: new Uint8Array([0x99, 51, 100]), timeStamp: 1000 };
             handler.handleMidiMessage(event);
-            expect(mockOnHit).toHaveBeenCalledWith('ride', 1000, 100);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.RIDE, 1000, 100);
         });
 
         test('maps ride bell (53)', () => {
             const event = { data: new Uint8Array([0x99, 53, 100]), timeStamp: 1000 };
             handler.handleMidiMessage(event);
-            expect(mockOnHit).toHaveBeenCalledWith('ride_bell', 1000, 100);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.RIDE_BELL, 1000, 100);
         });
 
         test('maps high tom (50)', () => {
             const event = { data: new Uint8Array([0x99, 50, 100]), timeStamp: 1000 };
             handler.handleMidiMessage(event);
-            expect(mockOnHit).toHaveBeenCalledWith('tom_high', 1000, 100);
+            expect(mockOnHit).toHaveBeenCalledWith(DrumType.TOM1, 1000, 100);
         });
     });
 

@@ -1,4 +1,5 @@
 import { evaluateHit } from './TimingEvaluator.js';
+import { DrumType } from './DrumConstants.js';
 
 /**
  * CoachEngine - Manages the coaching session
@@ -54,6 +55,34 @@ export class CoachEngine {
     }
 
     /**
+     * Helper to check if a MIDI drum type matches a timeline note type
+     * Handles articulations (e.g., SNARE matching SNARE_ACCENT)
+     */
+    _isTypeMatch(drum, noteType) {
+        if (drum === noteType) return true;
+
+        // Snare family (excluding flam which has special double-hit logic)
+        if (drum === DrumType.SNARE) {
+            return [
+                DrumType.SNARE_ACCENT,
+                DrumType.SNARE_GHOST,
+                DrumType.SNARE_DRAG,
+                DrumType.SNARE_BUZZ
+            ].includes(noteType);
+        }
+
+        // Hi-hat family
+        if (drum === DrumType.HH_NORMAL) {
+            return [
+                DrumType.HH_ACCENT,
+                DrumType.HH_CLOSE
+            ].includes(noteType);
+        }
+
+        return false;
+    }
+
+    /**
      * Handle an incoming MIDI hit
      * @param {string} drum - Normalized drum name (e.g., 'kick', 'snare')
      * @param {number} timestamp - The hardware timestamp from the MIDI event
@@ -71,10 +100,11 @@ export class CoachEngine {
         console.log(`[CoachEngine] searching for ${drum} hit at relTime ${relativeHitTime.toFixed(2)}ms (lat: ${this.audioLatency})`);
 
         for (const note of this.noteTimeline) {
-            // Match instrument and ensure not already matched
+            const isMatch = this._isTypeMatch(drum, note.type);
             // Special case: snare can match snare_flam as the grace note
-            const isFlameGraceMatch = (drum === 'snare' && note.type === 'snare_flam');
-            if (note.type !== drum && !isFlameGraceMatch) continue;
+            const isFlameGraceMatch = (drum === DrumType.SNARE && note.type === DrumType.SNARE_FLAM);
+
+            if (!isMatch && !isFlameGraceMatch) continue;
             if (note.matched) continue;
 
             const targetTime = note.time + (this.audioLatency || 0);
@@ -82,7 +112,7 @@ export class CoachEngine {
             const absDiff = Math.abs(diff);
 
             // For flam grace notes: allow early hits within 15-60ms before the flam
-            if (isFlameGraceMatch) {
+            if (isFlameGraceMatch && !isMatch) {
                 // Grace note should be early (negative diff) between 15-60ms
                 if (diff < 0 && absDiff >= 15 && absDiff <= 60) {
                     if (absDiff < minDiff) {
@@ -90,7 +120,7 @@ export class CoachEngine {
                         bestMatch = { ...note, isGraceNote: true };
                     }
                 }
-            } else {
+            } else if (isMatch) {
                 if (absDiff < minDiff && absDiff <= 150) { // More generous window for matching
                     minDiff = absDiff;
                     bestMatch = note;

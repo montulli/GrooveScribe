@@ -76,8 +76,22 @@ export class PerformanceGenerator {
                     timingErrorMs: Math.round(timingError)
                 });
             } else {
+                let hitDrum = note.drum;
+
+                // Use base types for realistic MIDI simulation
+                if (hitDrum === 'snare_ghost' || hitDrum === 'snare_accent' ||
+                    hitDrum === 'snare_drag' || hitDrum === 'snare_buzz') {
+                    hitDrum = 'snare';
+                } else if (hitDrum === 'hh_accent' || hitDrum === 'hh_close') {
+                    hitDrum = 'hh_normal';
+                }
+
+                // Remap toms to supported layout
+                if (hitDrum === 'tom2') hitDrum = 'tom1';
+                else if (hitDrum === 'tom3') hitDrum = 'tom4';
+
                 hits.push({
-                    drum: note.drum,
+                    drum: hitDrum,
                     beat: note.beat,
                     beatOffset: note.beat - 1, // 0-indexed
                     timingErrorMs: Math.round(timingError)
@@ -174,7 +188,7 @@ export class PerformanceGenerator {
      */
     generateExtraHits(groove, rate, beatDurationMs) {
         const extraHits = [];
-        const wrongDrums = ['tom1', 'tom2', 'tom3', 'tom4', 'crash', 'ride', 'ride_bell'];
+        const wrongDrums = ['tom1', 'tom4', 'crash', 'ride', 'ride_bell'];
         const measures = groove.measures || 1;
 
         for (let beat = 1; beat <= measures * 4; beat += 0.5) {
@@ -207,12 +221,12 @@ export class PerformanceGenerator {
 
         // Map of what wrong drums to hit instead
         const wrongDrumMap = {
-            'kick': ['snare', 'tom1', 'tom2'],
+            'kick': ['snare', 'tom1', 'tom4'],
             'snare': ['kick', 'tom1', 'hh_normal'],
             'hh_normal': ['ride', 'hh_open', 'crash'],
             'hh_open': ['hh_normal', 'ride', 'crash'],
-            'tom1': ['tom2', 'snare', 'kick'],
-            'tom2': ['tom1', 'tom3', 'snare'],
+            'tom1': ['tom4', 'snare', 'kick'],
+            'tom4': ['tom1', 'snare', 'kick'],
             'ride': ['crash', 'hh_normal', 'ride_bell']
         };
 
@@ -248,12 +262,12 @@ export class PerformanceGenerator {
     generateAllHitsPerformance(bpm = 120) {
         const beatDurationMs = 60000 / bpm;
         const allDrums = [
-            'kick', 'kick_splash',
+            'kick', 'hh_foot',
             'snare', 'snare_ghost', 'snare_xstick', 'snare_flam',
-            'hh_normal', 'hh_open', 'hh_accent', 'hh_foot',
-            'tom1', 'tom2', 'tom3', 'tom4',
+            'hh_normal', 'hh_open', 'hh_accent',
+            'tom1', 'tom4',
             'ride', 'ride_bell',
-            'crash', 'splash', 'china'
+            'crash'
         ];
 
         const hits = allDrums.map((drum, idx) => ({

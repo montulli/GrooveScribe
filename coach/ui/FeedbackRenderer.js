@@ -1,4 +1,5 @@
 import { coachState } from '../state/CoachState.js';
+import { DrumType } from '../engine/DrumConstants.js';
 
 /**
  * FeedbackRenderer - Draws feedback circles on notation staff
@@ -162,11 +163,10 @@ export class FeedbackRenderer {
         const staffPositions = [
             { name: 'HH', ratio: 0.11 },     // Above top line
             { name: 'Crash', ratio: -0.03 }, // Ledger above
-            { name: 'Tom1', ratio: 0.25 },   // Space 4
-            { name: 'Snare', ratio: 0.428 }, // Space 3
-            { name: 'Tom3', ratio: 0.55 },   // Space 2
-            { name: 'Tom4', ratio: 0.70 },   // Space 1 / Floor Tom
-            { name: 'Kick', ratio: 0.714 },  // Space 1
+            { name: DrumType.TOM1, ratio: 0.25 },   // Space 4
+            { name: DrumType.SNARE, ratio: 0.428 }, // Space 3
+            { name: DrumType.TOM4, ratio: 0.70 },   // Space 1 / Floor Tom
+            { name: DrumType.KICK, ratio: 0.714 },  // Space 1
             { name: 'HH Foot', ratio: 0.95 } // Below staff
         ];
 
@@ -224,11 +224,13 @@ export class FeedbackRenderer {
         const rect = targetInfo.element;
 
         const verticalOffsets = {
-            'hh_normal': 0.11, 'hh_open': 0.11, 'hh_accent': 0.11, 'hh_foot': 0.95,
-            'crash': -0.03, 'ride': 0.05, 'ride_bell': 0.05, 'splash': -0.15, 'china': -0.15,
-            'snare': 0.428, 'snare_ghost': 0.428, 'snare_side': 0.428, 'snare_flam': 0.428,
-            'snare_xstick': 0.428, 'flam_grace': 0.428, 'kick': 0.714, 'kick_splash': 0.714,
-            'tom1': 0.25, 'tom2': 0.35, 'tom3': 0.55, 'tom4': 0.70
+            [DrumType.HH_NORMAL]: 0.11, [DrumType.HH_OPEN]: 0.11, [DrumType.HH_ACCENT]: 0.11, [DrumType.HH_FOOT]: 0.95,
+            [DrumType.HH_CLOSE]: 0.11,
+            [DrumType.CRASH]: -0.03, [DrumType.RIDE]: 0.05, [DrumType.RIDE_BELL]: 0.05, [DrumType.COWBELL]: 0.05, [DrumType.STACKER]: 0.05,
+            [DrumType.SNARE]: 0.428, [DrumType.SNARE_GHOST]: 0.428, [DrumType.SNARE_XSTICK]: 0.428, [DrumType.SNARE_FLAM]: 0.428,
+            [DrumType.SNARE_DRAG]: 0.428, [DrumType.SNARE_BUZZ]: 0.428, [DrumType.SNARE_ACCENT]: 0.428,
+            [DrumType.FLAM_GRACE]: 0.428, [DrumType.KICK]: 0.714,
+            [DrumType.TOM1]: 0.25, [DrumType.TOM4]: 0.70
         };
         const vOffsetFactor = verticalOffsets[drumType] !== undefined ? verticalOffsets[drumType] : 0.5;
 
@@ -238,7 +240,7 @@ export class FeedbackRenderer {
             const pt = svg.createSVGPoint();
 
             const smartY = this._findSmartVerticalCenter(rect, drumType, vOffsetFactor);
-            const isGraceNote = (drumType === 'flam_grace');
+            const isGraceNote = (drumType === DrumType.FLAM_GRACE);
             const noteHeadX = this._findNoteHeadX(rect, smartY, isGraceNote);
 
             let centerX = noteHeadX !== null ? noteHeadX : (bbox.x + (bbox.width / 2));
@@ -265,7 +267,7 @@ export class FeedbackRenderer {
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
             circle.setAttribute('cx', finalPt.x + xOffset);
             circle.setAttribute('cy', finalPt.y);
-            circle.setAttribute('r', 6.0);
+            circle.setAttribute('r', 4.5);
             circle.setAttribute('fill', color);
             circle.setAttribute('stroke', 'white');
             circle.setAttribute('stroke-width', '1.5');

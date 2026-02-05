@@ -249,17 +249,12 @@ function GrooveWriter() {
 				switch (tom_num) {
 					case 1:
 						return constant_ABC_T1_Normal; // normal
-						break;
-					case 2:
-						return constant_ABC_T2_Normal; // normal
-						break;
-					case 3:
-						return constant_ABC_T3_Normal; // normal
-						break;
 					case 4:
 						return constant_ABC_T4_Normal; // normal
-						break;
 					default:
+						// Tom 2 and 3 are mapped to 1 and 4 for ABC generation of old grooves if needed
+						if (tom_num == 2) return constant_ABC_T1_Normal;
+						if (tom_num == 3) return constant_ABC_T4_Normal;
 						console.log("bad switch in get_tom_state. bad tom num:" + tom_num);
 						break;
 				}
@@ -276,30 +271,31 @@ function GrooveWriter() {
 	// set the tom note on with type
 	function set_tom_state(id, tom_num, mode, make_sound) {
 		// turn stuff on conditionally
+		var el = document.getElementById("tom_circle" + tom_num + "-" + id);
+		if (!el) {
+			// Redirect if element doesn't exist (2-tom mode)
+			if (tom_num == 2) return set_tom_state(id, 1, mode, make_sound);
+			if (tom_num == 3) return set_tom_state(id, 4, mode, make_sound);
+			return;
+		}
+
 		switch (mode) {
 			case "off":
-				document.getElementById("tom_circle" + tom_num + "-" + id).style.backgroundColor = constant_note_off_color_hex;
-				document.getElementById("tom_circle" + tom_num + "-" + id).style.borderColor = constant_note_border_color_hex;
+				el.style.backgroundColor = constant_note_off_color_hex;
+				el.style.borderColor = constant_note_border_color_hex;
 				break;
 			case "normal":
-				document.getElementById("tom_circle" + tom_num + "-" + id).style.backgroundColor = constant_note_on_color_hex;
-				document.getElementById("tom_circle" + tom_num + "-" + id).style.borderColor = constant_note_border_color_hex;
+				el.style.backgroundColor = constant_note_on_color_hex;
+				el.style.borderColor = constant_note_border_color_hex;
 				if (make_sound)
 					switch (tom_num) {
 						case 1:
 							play_single_note_for_note_setting(constant_OUR_MIDI_TOM1_NORMAL);
 							break;
-						case 2:
-							play_single_note_for_note_setting(constant_OUR_MIDI_TOM2_NORMAL);
-							break;
-						case 3:
-							play_single_note_for_note_setting(constant_OUR_MIDI_TOM3_NORMAL);
-							break;
 						case 4:
 							play_single_note_for_note_setting(constant_OUR_MIDI_TOM4_NORMAL);
 							break;
 						default:
-							console.log("bad switch in set_tom_state. bad tom num:" + tom_num);
 							break;
 					}
 				break;
@@ -4344,11 +4340,9 @@ function GrooveWriter() {
 							<span class="notes-row-container">\
 								<div class="line-labels">\
 									<div class="hh-label" onClick="myGrooveWriter.noteLabelClick(event, \'hh\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'hh\', ' + baseindex + ')">Hi-hat</div>\
-									<div class="tom-label" id="tom1-label" onClick="myGrooveWriter.noteLabelClick(event, \'tom1\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'tom1\', ' + baseindex + ')">Tom 1</div>\
-									<div class="tom-label" id="tom2-label" onClick="myGrooveWriter.noteLabelClick(event, \'tom2\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'tom2\', ' + baseindex + ')">Tom 2</div>\
+									<div class="tom-label" id="tom1-label" onClick="myGrooveWriter.noteLabelClick(event, \'tom1\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'tom1\', ' + baseindex + ')">Tom</div>\
 									<div class="snare-label" onClick="myGrooveWriter.noteLabelClick(event, \'snare\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'snare\', ' + baseindex + ')">Snare</div>\
-									<div class="tom-label" id="tom3-label" onClick="myGrooveWriter.noteLabelClick(event, \'tom3\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'tom3\', ' + baseindex + ')">Tom 3</div>\
-									<div class="tom-label" id="tom4-label" onClick="myGrooveWriter.noteLabelClick(event, \'tom4\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'tom4\', ' + baseindex + ')">Tom 4</div>\
+									<div class="tom-label" id="tom4-label" onClick="myGrooveWriter.noteLabelClick(event, \'tom4\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'tom4\', ' + baseindex + ')">Tom</div>\
 									<div class="kick-label" onClick="myGrooveWriter.noteLabelClick(event, \'kick\', ' + baseindex + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'kick\', ' + baseindex + ')">Kick</div>\
 								</div>\
 								<div class="music-line-container">\
@@ -4421,23 +4415,6 @@ function GrooveWriter() {
 		newHTML += '<span class="unmuteTom1Button" id="unmutetom1Button' + baseindex + '" onClick=\'myGrooveWriter.muteInstrument("tom1", ' + baseindex + ', false)\'><span class="fa-stack unmuteStack"><i class="fa fa-ban fa-stack-2x" style="color:red"></i><i class="fa fa-volume-down fa-stack-1x"></i></span></span>';
 		newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 
-		// Toms 2
-		newHTML += ('\
-										<div class="toms-container" id="tom2-container">\
-											<div class="opening_note_space"> </div>');
-		for (i = indexStartForNotes; i < class_notes_per_measure + indexStartForNotes; i++) {
-			newHTML += ('\
-						<div id="tom2-' + i + '" class="tom" onClick="myGrooveWriter.noteLeftClick(event, \'tom2\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'tom2\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'tom2\', ' + i + ')">\
-							<div class="tom_circle note_part"  id="tom_circle2-' + i + '"></div>\
-						</div>\n\
-						');
-
-			if ((i - (indexStartForNotes - 1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure) === 0 && i < class_notes_per_measure + indexStartForNotes - 1) {
-				newHTML += ('<div class="space_between_note_groups"> </div> \n');
-			}
-		}
-		newHTML += '<span class="unmuteTom2Button" id="unmutetom2Button' + baseindex + '" onClick=\'myGrooveWriter.muteInstrument("tom2", ' + baseindex + ', false)\'><span class="fa-stack unmuteStack"><i class="fa fa-ban fa-stack-2x" style="color:red"></i><i class="fa fa-volume-down fa-stack-1x"></i></span></span>';
-		newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 
 		// Snare stuff
 		newHTML += ('\
@@ -4505,23 +4482,6 @@ function GrooveWriter() {
 		newHTML += '<span class="unmuteSnareButton" id="unmutesnareButton' + baseindex + '" onClick=\'myGrooveWriter.muteInstrument("snare", ' + baseindex + ', false)\'><span class="fa-stack unmuteStack"><i class="fa fa-ban fa-stack-2x" style="color:red"></i><i class="fa fa-volume-down fa-stack-1x"></i></span></span>';
 		newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 
-		// Toms 3
-		newHTML += ('\
-										<div class="toms-container" id="tom3-container">\
-											<div class="opening_note_space"> </div>');
-		for (i = indexStartForNotes; i < class_notes_per_measure + indexStartForNotes; i++) {
-			newHTML += ('\
-						<div id="tom3-' + i + '" class="tom" onClick="myGrooveWriter.noteLeftClick(event, \'tom3\', ' + i + ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'tom3\', ' + i + ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'tom3\', ' + i + ')">\
-							<div class="tom_circle note_part"  id="tom_circle3-' + i + '"></div>\
-						</div>\n\
-						');
-
-			if ((i - (indexStartForNotes - 1)) % root.myGrooveUtils.noteGroupingSize(class_notes_per_measure, class_num_beats_per_measure, class_note_value_per_measure) === 0 && i < class_notes_per_measure + indexStartForNotes - 1) {
-				newHTML += ('<div class="space_between_note_groups"> </div> \n');
-			}
-		}
-		newHTML += '<span class="unmuteTom3Button" id="unmutetom3Button' + baseindex + '" onClick=\'myGrooveWriter.muteInstrument("tom3", ' + baseindex + ', false)\'><span class="fa-stack unmuteStack"><i class="fa fa-ban fa-stack-2x" style="color:red"></i><i class="fa fa-volume-down fa-stack-1x"></i></span></span>';
-		newHTML += ('<div class="end_note_space"></div>\n</div>\n');
 
 		// Toms 4
 		newHTML += ('\
