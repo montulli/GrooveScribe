@@ -29,6 +29,7 @@ export class CoachController {
         this.renderer = new FeedbackRenderer('#svgTarget');
         this.dialog = new CoachSettingsDialog();
         this.resultsDialog = new ResultsDialog();
+        this.state = coachState;
 
         this.isInitialized = false;
         this.isCoachingActive = false;
@@ -46,6 +47,19 @@ export class CoachController {
 
         // Listen for start requests from dialog
         window.addEventListener('coach-start-requested', () => this.startSession());
+
+        // Update debug grid immediately when toggled
+        coachState._manager.addEventListener('change', ({ property, value }) => {
+            if (property === 'showDebug') {
+                if (value) {
+                    this.renderer.refreshNoteRects(); // This calls renderDebugGrid
+                } else {
+                    // Just clear the grid if turned off
+                    const existingDebug = this.renderer.feedbackLayer?.querySelectorAll('.coach-debug-line');
+                    existingDebug?.forEach(el => el.remove());
+                }
+            }
+        });
 
         // Hook into GrooveWriter's playback system
         this._hookPlaybackEvents();

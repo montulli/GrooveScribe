@@ -383,6 +383,17 @@ window.CoachTestHelper = {
     },
 
     /**
+     * Enable/disable debug grid
+     */
+    setDebugMode(enabled) {
+        const controller = window.coachController;
+        if (controller && controller.state) {
+            controller.state.showDebug = enabled;
+            console.log(`[TestHelper] Debug grid ${enabled ? 'enabled' : 'disabled'}`);
+        }
+    },
+
+    /**
      * Run a full visual test
      */
     async runFullTest() {

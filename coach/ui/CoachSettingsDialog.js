@@ -4,16 +4,16 @@ import { coachState } from '../state/CoachState.js';
  * CoachSettingsDialog - Manages the settings UI
  */
 export class CoachSettingsDialog {
-    constructor() {
-        this.container = null;
-    }
+  constructor() {
+    this.container = null;
+  }
 
-    inject() {
-        if (document.getElementById('coachSettingsDialog')) return;
+  inject() {
+    if (document.getElementById('coachSettingsDialog')) return;
 
-        const dialog = document.createElement('div');
-        dialog.id = 'coachSettingsDialog';
-        dialog.innerHTML = `
+    const dialog = document.createElement('div');
+    dialog.id = 'coachSettingsDialog';
+    dialog.innerHTML = `
       <h2>Drum Coach Settings</h2>
       
       <div class="coach-setting-row">
@@ -44,6 +44,11 @@ export class CoachSettingsDialog {
           <option value="relaxed">Relaxed (±50ms)</option>
         </select>
       </div>
+
+      <div class="coach-setting-row">
+        <label>Show Debug Grid</label>
+        <input type="checkbox" id="coach-debug-check">
+      </div>
       
       <div class="coach-dialog-buttons">
         <button class="coach-btn coach-btn-secondary" id="coach-cancel-btn">Cancel</button>
@@ -51,54 +56,61 @@ export class CoachSettingsDialog {
       </div>
     `;
 
-        document.body.appendChild(dialog);
-        this.container = dialog;
-        this._setupEventListeners();
-    }
+    document.body.appendChild(dialog);
+    this.container = dialog;
+    this._setupEventListeners();
+  }
 
-    _setupEventListeners() {
-        const modeSelect = this.container.querySelector('#coach-mode-select');
-        const perfOptions = this.container.querySelector('#performance-options');
-        const startBtn = this.container.querySelector('#coach-start-btn');
-        const cancelBtn = this.container.querySelector('#coach-cancel-btn');
+  _setupEventListeners() {
+    const modeSelect = this.container.querySelector('#coach-mode-select');
+    const perfOptions = this.container.querySelector('#performance-options');
+    const startBtn = this.container.querySelector('#coach-start-btn');
+    const cancelBtn = this.container.querySelector('#coach-cancel-btn');
 
-        modeSelect.addEventListener('change', () => {
-            perfOptions.style.display = modeSelect.value === 'performance' ? 'block' : 'none';
-        });
+    modeSelect.addEventListener('change', () => {
+      perfOptions.style.display = modeSelect.value === 'performance' ? 'block' : 'none';
+    });
 
-        startBtn.addEventListener('click', () => {
-            this.save();
-            this.hide();
-            // Trigger session start event...
-            window.dispatchEvent(new CustomEvent('coach-start-requested'));
-        });
+    const debugCheck = this.container.querySelector('#coach-debug-check');
+    debugCheck.addEventListener('change', () => {
+      coachState.showDebug = debugCheck.checked;
+    });
 
-        cancelBtn.addEventListener('click', () => {
-            this.hide();
-        });
-    }
+    startBtn.addEventListener('click', () => {
+      this.save();
+      this.hide();
+      // Trigger session start event...
+      window.dispatchEvent(new CustomEvent('coach-start-requested'));
+    });
 
-    show() {
-        // Load current state into fields
-        this.container.querySelector('#coach-mode-select').value = coachState.mode;
-        this.container.querySelector('#coach-reps-input').value = coachState.reps;
-        this.container.querySelector('#coach-countin-check').checked = coachState.countInEnabled;
-        this.container.querySelector('#coach-tolerance-select').value = coachState.tolerance;
+    cancelBtn.addEventListener('click', () => {
+      this.hide();
+    });
+  }
 
-        this.container.querySelector('#performance-options').style.display = coachState.mode === 'performance' ? 'block' : 'none';
+  show() {
+    // Load current state into fields
+    this.container.querySelector('#coach-mode-select').value = coachState.mode;
+    this.container.querySelector('#coach-reps-input').value = coachState.reps;
+    this.container.querySelector('#coach-countin-check').checked = coachState.countInEnabled;
+    this.container.querySelector('#coach-tolerance-select').value = coachState.tolerance;
+    this.container.querySelector('#coach-debug-check').checked = coachState.showDebug;
 
-        this.container.style.display = 'block';
-    }
+    this.container.querySelector('#performance-options').style.display = coachState.mode === 'performance' ? 'block' : 'none';
 
-    hide() {
-        this.container.style.display = 'none';
-    }
+    this.container.style.display = 'block';
+  }
 
-    save() {
-        coachState.mode = this.container.querySelector('#coach-mode-select').value;
-        coachState.reps = parseInt(this.container.querySelector('#coach-reps-input').value);
-        coachState.countInEnabled = this.container.querySelector('#coach-countin-check').checked;
-        coachState.tolerance = this.container.querySelector('#coach-tolerance-select').value;
-        coachState.saveToStorage();
-    }
+  hide() {
+    this.container.style.display = 'none';
+  }
+
+  save() {
+    coachState.mode = this.container.querySelector('#coach-mode-select').value;
+    coachState.reps = parseInt(this.container.querySelector('#coach-reps-input').value);
+    coachState.countInEnabled = this.container.querySelector('#coach-countin-check').checked;
+    coachState.tolerance = this.container.querySelector('#coach-tolerance-select').value;
+    coachState.showDebug = this.container.querySelector('#coach-debug-check').checked;
+    coachState.saveToStorage();
+  }
 }

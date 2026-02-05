@@ -193,6 +193,9 @@ class LegacyCoachState {
     get countIn() { return this._manager.countIn; }
     set countIn(v) { this._manager.countIn = v; }
 
+    get showDebug() { return this._manager.showDebug; }
+    set showDebug(v) { this._manager.showDebug = v; }
+
     // Legacy compatibility: countInEnabled maps to countIn
     get countInEnabled() { return this._manager.countIn; }
     set countInEnabled(v) { this._manager.countIn = v; }
@@ -207,6 +210,7 @@ class LegacyCoachState {
                 if (settings.isEnabled !== undefined) this.isEnabled = settings.isEnabled;
                 if (settings.midiDevice !== undefined) this.midiDevice = settings.midiDevice;
                 if (settings.calibrationOffset !== undefined) this.calibrationOffset = settings.calibrationOffset;
+                if (settings.showDebug !== undefined) this.showDebug = settings.showDebug;
             }
         } catch (e) {
             console.warn('[CoachState] Failed to load legacy settings:', e);
@@ -224,7 +228,8 @@ class LegacyCoachState {
                 countInEnabled: this.countIn,
                 tolerance: this.tolerance,
                 midiDevice: this.midiDevice,
-                calibrationOffset: this.calibrationOffset
+                calibrationOffset: this.calibrationOffset,
+                showDebug: this.showDebug
             };
             localStorage.setItem('coach_settings', JSON.stringify(settings));
         } catch (e) {

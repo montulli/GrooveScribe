@@ -81,8 +81,8 @@ describe('Drum Coach Comprehensive Visual Tests', () => {
             fs.writeFileSync(diffPath, PNG.sync.write(diff));
         }
 
-        // Allow up to 0.1% difference for minor rendering variations
-        const match = diffPercent < 0.1;
+        // Allow up to 0.05% difference for minor rendering variations
+        const match = diffPercent < 0.05;
 
         return { match, diffPixels, diffPercent };
     }
@@ -123,7 +123,10 @@ describe('Drum Coach Comprehensive Visual Tests', () => {
         }, { timeout: 15000 });
 
 
-        // 6. Start coach session in headless mode (bypasses MIDI playback)
+        // 6. Enable debug grid for visual confirmation
+        await page.evaluate(() => window.CoachTestHelper.setDebugMode(true));
+
+        // 7. Start coach session in headless mode (bypasses MIDI playback)
         await page.evaluate(() => window.CoachTestHelper.startSessionHeadless());
 
 
