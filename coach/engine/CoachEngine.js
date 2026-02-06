@@ -1,5 +1,4 @@
-import { evaluateHit } from './TimingEvaluator.js';
-import { DrumType, EditorDrumToModuleDrum } from './DrumConstants.js';
+import { DrumType } from './DrumConstants.js';
 
 /**
  * CoachEngine - Manages the coaching session
@@ -28,12 +27,10 @@ export class CoachEngine {
         // For now, assume groove.target is already in ms relative to start
         // If it's in beats, we would convert here using bpm
         this.noteTimeline = (groove.target || []).map((note, index) => {
-            // Translate editor drum types (articulations) to base module drum types
-            const moduleType = EditorDrumToModuleDrum[note.type] || note.type;
             return {
                 ...note,
-                type: moduleType,
-                editorType: note.type, // Keep original for reference/UI
+                type: note.type, // Expect normalized types from editor
+                editorType: note.type,
                 originalIndex: index,
                 matched: false
             };

@@ -58,7 +58,7 @@ export class CoachController {
         window.addEventListener('coach-start-requested', () => this.startSession());
 
         // Update debug grid immediately when toggled
-        coachState._manager.addEventListener('change', ({ property, value }) => {
+        coachState.addEventListener('change', ({ property, value }) => {
             if (property === 'showDebug') {
                 if (!value) {
                     // Clear debug lines if turned off
@@ -290,12 +290,8 @@ export class CoachController {
     handleMidiHit(drum, timestamp, velocity) {
         if (!this.engine.isPlaying) return;
 
-        // Normalize tom names for simulators/fixtures that might still use legacy names
-        let normalizedDrum = drum;
-        if (drum === 'tom1' || drum === 'tom2') normalizedDrum = DrumType.TOM_HIGH;
-        else if (drum === 'tom3' || drum === 'tom4') normalizedDrum = DrumType.TOM_LOW;
-
-        const evaluation = this.engine.handleMidiHit(normalizedDrum, timestamp);
+        // Create evaluation
+        const evaluation = this.engine.handleMidiHit(drum, timestamp);
         if (!evaluation) return;
 
         console.log(`[CoachController] Hit ${drum} evaluation: ${evaluation.tier} (match: ${evaluation.isMatch})`);
@@ -303,12 +299,12 @@ export class CoachController {
         // Calculate hit time relative to groove start (subtract audio latency)
         const audioLatency = this.engine.audioLatency || 0;
         const hitTimeMs = timestamp - this.sessionStartTime - audioLatency;
-        const effectiveDrum = evaluation.isGraceNote ? DrumType.FLAM_GRACE : normalizedDrum;
+        const effectiveDrum = evaluation.isGraceNote ? DrumType.FLAM_GRACE : drum;
 
         if (evaluation.isMatch) {
             // Find target note for precise ABC indexing metadata
             const matchedNote = this.engine.noteTimeline.find(n => n.originalIndex === evaluation.noteIndex);
-            const abcIndex = matchedNote ? this.getAbcIndexForHit(matchedNote.tickIndex, evaluation.isGraceNote ? 'snare_flam' : normalizedDrum) : null;
+            const abcIndex = matchedNote ? this.getAbcIndexForHit(matchedNote.tickIndex, evaluation.isGraceNote ? 'snare_flam' : drum) : null;
 
             // Draw feedback at pre-calculated sniffed coordinate
             this.renderer.drawHitFeedbackByTime(
@@ -401,21 +397,21 @@ export class CoachController {
 
             if (hasSnare || hasHH || hasToms || isKick || isSplash) {
                 if (hasSnare) {
-                    [DrumType.SNARE, DrumType.SNARE_ACCENT, DrumType.SNARE_GHOST, DrumType.SNARE_XSTICK, DrumType.SNARE_FLAM, DrumType.SNARE_BUZZ].forEach(t => this.abcNoteMap.set(`${i}:${t}`, currentIndex));
+                    [DrumType.SNARE, DrumType.SNARE_ACCENT, DrumType.SNARE_GHOST, DrumType.SNARE_XSTICK, DrumType.SNARE_FLAM, DrumType.SNARE_BUZZ].forEach(t => this.abcNoteMap.set(`${i}:${t} `, currentIndex));
                 }
                 if (hasHH) {
-                    [DrumType.HH_CLOSED, DrumType.HH_OPEN, DrumType.HH_ACCENT, DrumType.CRASH, DrumType.RIDE, DrumType.RIDE_BELL, DrumType.COWBELL, DrumType.STACKER, DrumType.METRONOME_NORMAL, DrumType.METRONOME_ACCENT].forEach(t => this.abcNoteMap.set(`${i}:${t}`, currentIndex));
+                    [DrumType.HH_CLOSED, DrumType.HH_OPEN, DrumType.HH_ACCENT, DrumType.CRASH, DrumType.RIDE, DrumType.RIDE_BELL, DrumType.COWBELL, DrumType.STACKER, DrumType.METRONOME_NORMAL, DrumType.METRONOME_ACCENT].forEach(t => this.abcNoteMap.set(`${i}:${t} `, currentIndex));
                 }
                 if (hasToms) {
                     data.toms_array.forEach((arr, tomIdx) => {
                         if (arr[i]) {
                             const key = (tomIdx < 2) ? DrumType.TOM_HIGH : DrumType.TOM_LOW;
-                            this.abcNoteMap.set(`${i}:${key}`, currentIndex);
+                            this.abcNoteMap.set(`${i}:${key} `, currentIndex);
                         }
                     });
                 }
-                if (isKick) this.abcNoteMap.set(`${i}:${DrumType.KICK}`, currentIndex);
-                if (isSplash) this.abcNoteMap.set(`${i}:${DrumType.HH_FOOT}`, currentIndex);
+                if (isKick) this.abcNoteMap.set(`${i}:${DrumType.KICK} `, currentIndex);
+                if (isSplash) this.abcNoteMap.set(`${i}:${DrumType.HH_FOOT} `, currentIndex);
                 currentIndex++;
             }
         }
@@ -426,8 +422,8 @@ export class CoachController {
                 const val = data.kick_array[i];
                 if (val) {
                     const isKick = val === 'o' || val === 'O' || val === 'k' || val === 'F' || val === true;
-                    if (isKick) this.abcNoteMap.set(`${i}:kick`, currentIndex);
-                    else this.abcNoteMap.set(`${i}:hh_foot`, currentIndex);
+                    if (isKick) this.abcNoteMap.set(`${i}: kick`, currentIndex);
+                    else this.abcNoteMap.set(`${i}: hh_foot`, currentIndex);
                     currentIndex++;
                 }
             }
@@ -440,7 +436,7 @@ export class CoachController {
      */
     getAbcIndexForHit(tickIndex, instrument) {
         if (!this.abcNoteMap) this._refreshAbcMapping();
-        const index = this.abcNoteMap.get(`${tickIndex}:${instrument}`);
+        const index = this.abcNoteMap.get(`${tickIndex}:${instrument} `);
         return index !== undefined ? index : -1;
     }
 
@@ -457,7 +453,7 @@ export class CoachController {
         const msPerTick = ((60000 / bpm) * numBeats) / (data.notesPerMeasure || 16);
         const totalTicks = (data.notesPerMeasure || 16) * (data.numberOfMeasures || 1);
 
-        console.log(`[CoachController] Generating timeline: ${totalTicks} ticks, ${bpm} BPM, ${msPerTick.toFixed(2)}ms/tick`);
+        console.log(`[CoachController] Generating timeline: ${totalTicks} ticks, ${bpm} BPM, ${msPerTick.toFixed(2)} ms / tick`);
 
         for (let i = 0; i < totalTicks; i++) {
             // Hi-Hats & Cymbals

@@ -200,14 +200,14 @@ export class FeedbackRenderer {
         const staffY = this.sniffedData.staffY;
         const step = this.sniffedData.step || 4.5; // Fallback to standard 6pt * 0.75 scale
 
-        // Map legacy loop indices (start -4) to relative steps from Top Line (0)
-        // Old Index 4 = Staff Top = 0. Relative = Index - 4.
-        const legacyOffsets = {
+        // Map drum types to relative grid steps from Top Line (0)
+        // Standard mapping for drum kit notation
+        const drumOffsets = {
             [DrumType.KICK]: 12, [DrumType.SNARE]: 8, [DrumType.SNARE_FLAM]: 8, [DrumType.FLAM_GRACE]: 8,
             [DrumType.HH_CLOSED]: 4, [DrumType.HH_OPEN]: 4, [DrumType.HH_FOOT]: 14,
             [DrumType.TOM_HIGH]: 6, [DrumType.TOM_LOW]: 10, [DrumType.CRASH]: 2, [DrumType.RIDE]: 3
         };
-        const levelIdx = legacyOffsets[drumType] !== undefined ? legacyOffsets[drumType] : 8;
+        const levelIdx = drumOffsets[drumType] !== undefined ? drumOffsets[drumType] : 8;
         const relativeStep = levelIdx - 4;
 
         return staffY + (relativeStep * step);

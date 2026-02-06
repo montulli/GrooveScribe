@@ -16,13 +16,21 @@ const DEFAULTS = {
     tolerance: 'normal',
     reps: 4,
     countIn: true,
-    showDebug: true
+    showDebug: true,
+    midiDevice: null,
+    audioLatency: 50,
+    calibrationOffset: 0
 };
 
 export class CoachStateManager {
     constructor() {
         this._data = { ...DEFAULTS };
         this._listeners = [];
+
+        // Runtime state (not persisted)
+        this.isEnabled = false;
+        this.isActive = false;
+        this.currentRep = 0;
     }
 
     // Mode property
@@ -77,6 +85,10 @@ export class CoachStateManager {
         if (old !== this._data.countIn) this._dispatch('countIn', this._data.countIn);
     }
 
+    // Alias for compatibility
+    get countInEnabled() { return this.countIn; }
+    set countInEnabled(v) { this.countIn = v; }
+
     // ShowDebug property
     get showDebug() {
         return this._data?.showDebug ?? DEFAULTS.showDebug;
@@ -86,6 +98,30 @@ export class CoachStateManager {
         const old = this._data.showDebug;
         this._data.showDebug = Boolean(value);
         if (old !== this._data.showDebug) this._dispatch('showDebug', this._data.showDebug);
+    }
+
+    // MIDI Device property
+    get midiDevice() { return this._data?.midiDevice ?? DEFAULTS.midiDevice; }
+    set midiDevice(value) {
+        const old = this._data.midiDevice;
+        this._data.midiDevice = value;
+        if (old !== value) this._dispatch('midiDevice', value);
+    }
+
+    // Audio Latency property
+    get audioLatency() { return this._data?.audioLatency ?? DEFAULTS.audioLatency; }
+    set audioLatency(value) {
+        const old = this._data.audioLatency;
+        this._data.audioLatency = Number(value);
+        if (old !== value) this._dispatch('audioLatency', value);
+    }
+
+    // Calibration Offset property
+    get calibrationOffset() { return this._data?.calibrationOffset ?? DEFAULTS.calibrationOffset; }
+    set calibrationOffset(value) {
+        const old = this._data.calibrationOffset;
+        this._data.calibrationOffset = Number(value);
+        if (old !== value) this._dispatch('calibrationOffset', value);
     }
 
     // Get tolerance windows for current setting
@@ -100,7 +136,10 @@ export class CoachStateManager {
             tolerance: this.tolerance,
             reps: this.reps,
             countIn: this.countIn,
-            showDebug: this.showDebug
+            showDebug: this.showDebug,
+            midiDevice: this.midiDevice,
+            audioLatency: this.audioLatency,
+            calibrationOffset: this.calibrationOffset
         };
     }
 
@@ -111,6 +150,9 @@ export class CoachStateManager {
         if (obj.reps !== undefined) this.reps = obj.reps;
         if (obj.countIn !== undefined) this.countIn = obj.countIn;
         if (obj.showDebug !== undefined) this.showDebug = obj.showDebug;
+        if (obj.midiDevice !== undefined) this.midiDevice = obj.midiDevice;
+        if (obj.audioLatency !== undefined) this.audioLatency = obj.audioLatency;
+        if (obj.calibrationOffset !== undefined) this.calibrationOffset = obj.calibrationOffset;
     }
 
     // Reset to defaults
@@ -139,6 +181,10 @@ export class CoachStateManager {
             console.warn('[CoachState] Failed to load:', e);
         }
     }
+
+    // Alias for compatibility
+    loadFromStorage() { this.load(); }
+    saveToStorage() { this.save(); }
 
     // Validation
     isValid() {
@@ -169,80 +215,10 @@ export class CoachStateManager {
     }
 }
 
-// Backwards-compatible wrapper that exposes same properties
-class LegacyCoachState {
-    constructor() {
-        this._manager = new CoachStateManager();
-        this.isEnabled = false;
-        this.isActive = false;
-        this.currentRep = 0;
-        this.midiDevice = null;
-        this.audioLatency = 50;
-        this.calibrationOffset = 0;
-    }
-
-    get mode() { return this._manager.mode; }
-    set mode(v) { this._manager.mode = v; }
-
-    get tolerance() { return this._manager.tolerance; }
-    set tolerance(v) { this._manager.tolerance = v; }
-
-    get reps() { return this._manager.reps; }
-    set reps(v) { this._manager.reps = v; }
-
-    get countIn() { return this._manager.countIn; }
-    set countIn(v) { this._manager.countIn = v; }
-
-    get showDebug() { return this._manager.showDebug; }
-    set showDebug(v) { this._manager.showDebug = v; }
-
-    // Legacy compatibility: countInEnabled maps to countIn
-    get countInEnabled() { return this._manager.countIn; }
-    set countInEnabled(v) { this._manager.countIn = v; }
-
-    loadFromStorage() {
-        this._manager.load();
-        // Also load legacy properties
-        try {
-            const saved = localStorage.getItem('coach_settings');
-            if (saved) {
-                const settings = JSON.parse(saved);
-                if (settings.isEnabled !== undefined) this.isEnabled = settings.isEnabled;
-                if (settings.midiDevice !== undefined) this.midiDevice = settings.midiDevice;
-                if (settings.calibrationOffset !== undefined) this.calibrationOffset = settings.calibrationOffset;
-                // Force debug on for development session
-                this.showDebug = true; // settings.showDebug;
-            }
-        } catch (e) {
-            console.warn('[CoachState] Failed to load legacy settings:', e);
-        }
-    }
-
-    saveToStorage() {
-        this._manager.save();
-        // Also save legacy properties
-        try {
-            const settings = {
-                isEnabled: this.isEnabled,
-                mode: this.mode,
-                reps: this.reps,
-                countInEnabled: this.countIn,
-                tolerance: this.tolerance,
-                midiDevice: this.midiDevice,
-                calibrationOffset: this.calibrationOffset,
-                showDebug: this.showDebug
-            };
-            localStorage.setItem('coach_settings', JSON.stringify(settings));
-        } catch (e) {
-            console.warn('[CoachState] Failed to save legacy settings:', e);
-        }
-    }
-}
-
-// Global instance (using legacy wrapper for compatibility)
-export const coachState = new LegacyCoachState();
+// Global instance
+export const coachState = new CoachStateManager();
 
 // Only load if localStorage is available (not in Node.js tests)
 if (typeof localStorage !== 'undefined') {
-    coachState.loadFromStorage();
+    coachState.load();
 }
