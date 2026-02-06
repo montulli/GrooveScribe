@@ -3,6 +3,7 @@
  * Tests the fixture generation library itself
  */
 import { PerformanceGenerator, GROOVES } from '../lib/PerformanceGenerator.js';
+import { DrumType, ModuleDrumTypes } from '../../engine/DrumConstants.js';
 
 describe('PerformanceGenerator', () => {
     let generator;
@@ -272,7 +273,7 @@ describe('PerformanceGenerator', () => {
             });
 
             const extras = performance.hits.filter(h => h.isExtra);
-            const wrongDrums = ['tom1', 'tom2', 'tom3', 'tom4', 'crash', 'ride', 'ride_bell'];
+            const wrongDrums = ModuleDrumTypes.filter(d => d !== DrumType.UNKNOWN);
 
             for (const extra of extras) {
                 expect(wrongDrums).toContain(extra.drum);

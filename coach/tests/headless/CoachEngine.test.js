@@ -467,7 +467,7 @@ describe('CoachEngine', () => {
             // Hit all notes perfectly
             for (let i = 0; i < 16; i++) {
                 const hitTime = i * (beatDurationMs / 4);
-                engine.handleMidiHit('hh_normal', hitTime);
+                engine.handleMidiHit('hh_closed', hitTime);
             }
 
             const stats = engine.getResults();

@@ -1,3 +1,5 @@
+import { ModuleDrumTypes } from './DrumConstants.js';
+
 /**
  * MidiInputHandler - Wraps Web MIDI API
  */
@@ -32,8 +34,10 @@ export class MidiInputHandler {
         const isNoteOn = (status & 0xF0) === 0x90 && velocity > 0;
 
         if (isNoteOn) {
-            const drum = this.drumMap[note] || 'unknown';
-            this.onHit(drum, event.timeStamp, velocity);
+            const drum = this.drumMap[note];
+            if (drum && ModuleDrumTypes.includes(drum)) {
+                this.onHit(drum, event.timeStamp, velocity);
+            }
         }
     }
 }

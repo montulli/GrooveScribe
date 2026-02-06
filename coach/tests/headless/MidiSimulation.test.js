@@ -149,13 +149,13 @@ describe('MIDI Simulation', () => {
             engine.loadGroove({
                 target: [
                     { time: 0, type: 'kick' },
-                    { time: 0, type: 'hh_normal' }
+                    { time: 0, type: 'hh_closed' }
                 ]
             });
             engine.start(0);
 
             const result1 = engine.handleMidiHit('kick', 5);
-            const result2 = engine.handleMidiHit('hh_normal', 5);
+            const result2 = engine.handleMidiHit('hh_closed', 5);
 
             expect(result1.tier).toBe('perfect');
             expect(result2.tier).toBe('perfect');
@@ -323,7 +323,7 @@ describe('MIDI Simulation', () => {
 
             // Perfect 16th notes
             for (let i = 0; i < 16; i++) {
-                engine.handleMidiHit('hh_normal', i * sixteenthDuration);
+                engine.handleMidiHit('hh_closed', i * sixteenthDuration);
             }
 
             const stats = engine.getResults();
@@ -335,7 +335,7 @@ describe('MIDI Simulation', () => {
             const beatDurationMs = 60000 / bpm;
             const thirtySecondDuration = beatDurationMs / 8;
             const notes = Array.from({ length: 32 }, (_, i) => ({
-                drum: 'hh_normal',
+                drum: 'hh_closed',
                 beat: 1 + i * 0.125
             }));
 
@@ -348,7 +348,7 @@ describe('MIDI Simulation', () => {
             engine.start(0);
 
             for (let i = 0; i < 32; i++) {
-                engine.handleMidiHit('hh_normal', i * thirtySecondDuration);
+                engine.handleMidiHit('hh_closed', i * thirtySecondDuration);
             }
 
             const stats = engine.getResults();
@@ -438,7 +438,7 @@ describe('MIDI Simulation', () => {
         test('handles 100 note pattern', () => {
             const notes = Array.from({ length: 100 }, (_, i) => ({
                 time: i * 100,
-                type: i % 3 === 0 ? 'kick' : i % 3 === 1 ? 'snare' : 'hh_normal'
+                type: i % 3 === 0 ? 'kick' : i % 3 === 1 ? 'snare' : 'hh_closed'
             }));
 
             engine.loadGroove({ target: notes });
@@ -455,14 +455,14 @@ describe('MIDI Simulation', () => {
         test('handles rapid repeated hits on same drum', () => {
             const notes = Array.from({ length: 50 }, (_, i) => ({
                 time: i * 50,
-                type: 'hh_normal'
+                type: 'hh_closed'
             }));
 
             engine.loadGroove({ target: notes });
             engine.start(0);
 
             for (let i = 0; i < 50; i++) {
-                engine.handleMidiHit('hh_normal', i * 50);
+                engine.handleMidiHit('hh_closed', i * 50);
             }
 
             const stats = engine.getResults();

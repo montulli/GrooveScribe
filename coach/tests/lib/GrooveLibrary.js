@@ -30,9 +30,9 @@ function parseGrooveUrl(url) {
     hhNotes.forEach((char, idx) => {
         if (char !== '-' && char !== '') {
             const beat = 1 + (idx * gridBeat);
-            let drum = 'hh_normal';
+            let drum = 'hh_closed';
             if (char === 'o' || char === 'O') drum = 'hh_open';
-            else if (char === 'x') drum = 'hh_normal';
+            else if (char === 'x') drum = 'hh_closed';
             else if (char === 'X') drum = 'hh_accent';
             else if (char === 'r' || char === 'R') drum = 'ride';
             else if (char === 'b' || char === 'B') drum = 'ride_bell';
@@ -407,13 +407,13 @@ export const TEST_PATTERNS = {
         measures: 1,
         notes: [
             { drum: 'kick', beat: 1.0 },
-            { drum: 'hh_normal', beat: 1.0 },
-            { drum: 'hh_normal', beat: 1.5 },
+            { drum: 'hh_closed', beat: 1.0 },
+            { drum: 'hh_closed', beat: 1.5 },
             { drum: 'snare', beat: 2.0 },
-            { drum: 'hh_normal', beat: 2.0 },
-            { drum: 'hh_normal', beat: 2.5 },
+            { drum: 'hh_closed', beat: 2.0 },
+            { drum: 'hh_closed', beat: 2.5 },
             { drum: 'kick', beat: 3.0 },
-            { drum: 'hh_normal', beat: 3.0 }
+            { drum: 'hh_closed', beat: 3.0 }
         ]
     }
 };

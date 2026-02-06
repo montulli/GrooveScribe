@@ -163,9 +163,9 @@ export class FeedbackRenderer {
         const staffPositions = [
             { name: 'HH', ratio: 0.11 },     // Above top line
             { name: 'Crash', ratio: -0.03 }, // Ledger above
-            { name: DrumType.TOM1, ratio: 0.25 },   // Space 4
+            { name: DrumType.TOM_HIGH, ratio: 0.25 },   // Space 4
             { name: DrumType.SNARE, ratio: 0.428 }, // Space 3
-            { name: DrumType.TOM4, ratio: 0.70 },   // Space 1 / Floor Tom
+            { name: DrumType.TOM_LOW, ratio: 0.70 },   // Space 1 / Floor Tom
             { name: DrumType.KICK, ratio: 0.714 },  // Space 1
             { name: 'HH Foot', ratio: 0.95 } // Below staff
         ];
@@ -224,13 +224,12 @@ export class FeedbackRenderer {
         const rect = targetInfo.element;
 
         const verticalOffsets = {
-            [DrumType.HH_NORMAL]: 0.11, [DrumType.HH_OPEN]: 0.11, [DrumType.HH_ACCENT]: 0.11, [DrumType.HH_FOOT]: 0.95,
-            [DrumType.HH_CLOSE]: 0.11,
+            [DrumType.HH_CLOSED]: 0.11, [DrumType.HH_OPEN]: 0.11, [DrumType.HH_ACCENT]: 0.11, [DrumType.HH_FOOT]: 0.95,
             [DrumType.CRASH]: -0.03, [DrumType.RIDE]: 0.05, [DrumType.RIDE_BELL]: 0.05, [DrumType.COWBELL]: 0.05, [DrumType.STACKER]: 0.05,
             [DrumType.SNARE]: 0.428, [DrumType.SNARE_GHOST]: 0.428, [DrumType.SNARE_XSTICK]: 0.428, [DrumType.SNARE_FLAM]: 0.428,
-            [DrumType.SNARE_DRAG]: 0.428, [DrumType.SNARE_BUZZ]: 0.428, [DrumType.SNARE_ACCENT]: 0.428,
+            [DrumType.SNARE_BUZZ]: 0.428, [DrumType.SNARE_ACCENT]: 0.428,
             [DrumType.FLAM_GRACE]: 0.428, [DrumType.KICK]: 0.714,
-            [DrumType.TOM1]: 0.25, [DrumType.TOM4]: 0.70
+            [DrumType.TOM_HIGH]: 0.25, [DrumType.TOM_LOW]: 0.70
         };
         const vOffsetFactor = verticalOffsets[drumType] !== undefined ? verticalOffsets[drumType] : 0.5;
 

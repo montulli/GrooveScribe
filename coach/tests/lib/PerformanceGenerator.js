@@ -1,3 +1,5 @@
+import { DrumType, EditorDrumToModuleDrum, ModuleDrumTypes } from '../../engine/DrumConstants.js';
+
 /**
  * PerformanceGenerator - Generates simulated drum performances for testing.
  * INDEPENDENT of the Coach implementation.
@@ -54,14 +56,13 @@ export class PerformanceGenerator {
             let timingError = this.getTimingError(timingProfile, jitterMs);
 
             // Special handling for flams: generate grace note + primary hit
-            if (note.drum === 'snare_flam') {
+            if (note.drum === DrumType.SNARE_FLAM) {
                 // Flam grace note timing: 20-40ms before the primary (varies by tempo)
-                // At 80 BPM we use around 30ms, tighter at faster tempos
                 const flamGap = 25 + (this.rng() * 15); // 25-40ms
 
                 // Grace note (hits slightly before the beat)
                 hits.push({
-                    drum: 'snare', // Grace note is a regular snare hit
+                    drum: DrumType.SNARE, // Grace note is a regular snare hit
                     beat: note.beat,
                     beatOffset: note.beat - 1,
                     timingErrorMs: Math.round(timingError - flamGap),
@@ -70,25 +71,14 @@ export class PerformanceGenerator {
 
                 // Primary hit (on the beat)
                 hits.push({
-                    drum: 'snare_flam', // The main articulation
+                    drum: DrumType.SNARE, // Main flam note is also a snare hit
                     beat: note.beat,
                     beatOffset: note.beat - 1,
                     timingErrorMs: Math.round(timingError)
                 });
             } else {
-                let hitDrum = note.drum;
-
-                // Use base types for realistic MIDI simulation
-                if (hitDrum === 'snare_ghost' || hitDrum === 'snare_accent' ||
-                    hitDrum === 'snare_drag' || hitDrum === 'snare_buzz') {
-                    hitDrum = 'snare';
-                } else if (hitDrum === 'hh_accent' || hitDrum === 'hh_close') {
-                    hitDrum = 'hh_normal';
-                }
-
-                // Remap toms to supported layout
-                if (hitDrum === 'tom2') hitDrum = 'tom1';
-                else if (hitDrum === 'tom3') hitDrum = 'tom4';
+                // Normalize hit type using the mapping
+                let hitDrum = EditorDrumToModuleDrum[note.drum] || note.drum;
 
                 hits.push({
                     drum: hitDrum,
@@ -188,7 +178,7 @@ export class PerformanceGenerator {
      */
     generateExtraHits(groove, rate, beatDurationMs) {
         const extraHits = [];
-        const wrongDrums = ['tom1', 'tom4', 'crash', 'ride', 'ride_bell'];
+        const wrongDrums = ModuleDrumTypes.filter(d => d !== DrumType.UNKNOWN);
         const measures = groove.measures || 1;
 
         for (let beat = 1; beat <= measures * 4; beat += 0.5) {
@@ -221,13 +211,13 @@ export class PerformanceGenerator {
 
         // Map of what wrong drums to hit instead
         const wrongDrumMap = {
-            'kick': ['snare', 'tom1', 'tom4'],
-            'snare': ['kick', 'tom1', 'hh_normal'],
-            'hh_normal': ['ride', 'hh_open', 'crash'],
-            'hh_open': ['hh_normal', 'ride', 'crash'],
-            'tom1': ['tom4', 'snare', 'kick'],
-            'tom4': ['tom1', 'snare', 'kick'],
-            'ride': ['crash', 'hh_normal', 'ride_bell']
+            [DrumType.KICK]: [DrumType.SNARE, DrumType.TOM_HIGH, DrumType.TOM_LOW],
+            [DrumType.SNARE]: [DrumType.KICK, DrumType.TOM_HIGH, DrumType.HH_CLOSED],
+            [DrumType.HH_CLOSED]: [DrumType.RIDE, DrumType.HH_OPEN, DrumType.CRASH],
+            [DrumType.HH_OPEN]: [DrumType.HH_CLOSED, DrumType.RIDE, DrumType.CRASH],
+            [DrumType.TOM_HIGH]: [DrumType.TOM_LOW, DrumType.SNARE, DrumType.KICK],
+            [DrumType.TOM_LOW]: [DrumType.TOM_HIGH, DrumType.SNARE, DrumType.KICK],
+            [DrumType.RIDE]: [DrumType.CRASH, DrumType.HH_CLOSED, DrumType.RIDE_BELL]
         };
 
         for (const note of groove.notes) {
@@ -235,7 +225,7 @@ export class PerformanceGenerator {
             let isWrongPad = false;
 
             if (this.rng() < wrongPadRate) {
-                const alternatives = wrongDrumMap[note.drum] || ['snare', 'kick', 'tom1'];
+                const alternatives = wrongDrumMap[note.drum] || [DrumType.SNARE, DrumType.KICK, DrumType.TOM_HIGH];
                 hitDrum = alternatives[Math.floor(this.rng() * alternatives.length)];
                 isWrongPad = true;
             }
@@ -261,14 +251,7 @@ export class PerformanceGenerator {
      */
     generateAllHitsPerformance(bpm = 120) {
         const beatDurationMs = 60000 / bpm;
-        const allDrums = [
-            'kick', 'hh_foot',
-            'snare', 'snare_ghost', 'snare_xstick', 'snare_flam',
-            'hh_normal', 'hh_open', 'hh_accent',
-            'tom1', 'tom4',
-            'ride', 'ride_bell',
-            'crash'
-        ];
+        const allDrums = ModuleDrumTypes.filter(d => d !== DrumType.UNKNOWN);
 
         const hits = allDrums.map((drum, idx) => ({
             drum,
@@ -333,17 +316,17 @@ export const GROOVES = {
         bpm: 120,
         notes: [
             { drum: 'kick', beat: 1.0 },
-            { drum: 'hh_normal', beat: 1.0 },
-            { drum: 'hh_normal', beat: 1.5 },
+            { drum: 'hh_closed', beat: 1.0 },
+            { drum: 'hh_closed', beat: 1.5 },
             { drum: 'snare', beat: 2.0 },
-            { drum: 'hh_normal', beat: 2.0 },
-            { drum: 'hh_normal', beat: 2.5 },
+            { drum: 'hh_closed', beat: 2.0 },
+            { drum: 'hh_closed', beat: 2.5 },
             { drum: 'kick', beat: 3.0 },
-            { drum: 'hh_normal', beat: 3.0 },
-            { drum: 'hh_normal', beat: 3.5 },
+            { drum: 'hh_closed', beat: 3.0 },
+            { drum: 'hh_closed', beat: 3.5 },
             { drum: 'snare', beat: 4.0 },
-            { drum: 'hh_normal', beat: 4.0 },
-            { drum: 'hh_normal', beat: 4.5 }
+            { drum: 'hh_closed', beat: 4.0 },
+            { drum: 'hh_closed', beat: 4.5 }
         ]
     },
 
@@ -373,7 +356,7 @@ export const GROOVES = {
         measures: 1,
         bpm: 120,
         notes: Array.from({ length: 16 }, (_, i) => ({
-            drum: 'hh_normal',
+            drum: 'hh_closed',
             beat: 1 + i * 0.25
         }))
     },

@@ -1,5 +1,5 @@
 import { evaluateHit } from './TimingEvaluator.js';
-import { DrumType } from './DrumConstants.js';
+import { DrumType, EditorDrumToModuleDrum } from './DrumConstants.js';
 
 /**
  * CoachEngine - Manages the coaching session
@@ -27,11 +27,17 @@ export class CoachEngine {
         this.groove = groove;
         // For now, assume groove.target is already in ms relative to start
         // If it's in beats, we would convert here using bpm
-        this.noteTimeline = (groove.target || []).map((note, index) => ({
-            ...note,
-            originalIndex: index,
-            matched: false
-        }));
+        this.noteTimeline = (groove.target || []).map((note, index) => {
+            // Translate editor drum types (articulations) to base module drum types
+            const moduleType = EditorDrumToModuleDrum[note.type] || note.type;
+            return {
+                ...note,
+                type: moduleType,
+                editorType: note.type, // Keep original for reference/UI
+                originalIndex: index,
+                matched: false
+            };
+        });
         this.results = [];
     }
 
@@ -59,25 +65,14 @@ export class CoachEngine {
      * Handles articulations (e.g., SNARE matching SNARE_ACCENT)
      */
     _isTypeMatch(drum, noteType) {
+        // Since loadGroove already normalized noteType using EditorDrumToModuleDrum,
+        // and incoming MIDI drum hits should be in ModuleDrumTypes,
+        // a simple equality check is sufficient for most drums.
         if (drum === noteType) return true;
 
-        // Snare family (excluding flam which has special double-hit logic)
-        if (drum === DrumType.SNARE) {
-            return [
-                DrumType.SNARE_ACCENT,
-                DrumType.SNARE_GHOST,
-                DrumType.SNARE_DRAG,
-                DrumType.SNARE_BUZZ
-            ].includes(noteType);
-        }
-
-        // Hi-hat family
-        if (drum === DrumType.HH_NORMAL) {
-            return [
-                DrumType.HH_ACCENT,
-                DrumType.HH_CLOSE
-            ].includes(noteType);
-        }
+        // Special case: snare can match snare_flam as the grace note
+        // but snare_flam itself (the primary hit) would have been normalized to 'snare'
+        // in loadGroove. The grace note logic is handled separately in handleMidiHit.
 
         return false;
     }
@@ -102,7 +97,8 @@ export class CoachEngine {
         for (const note of this.noteTimeline) {
             const isMatch = this._isTypeMatch(drum, note.type);
             // Special case: snare can match snare_flam as the grace note
-            const isFlameGraceMatch = (drum === DrumType.SNARE && note.type === DrumType.SNARE_FLAM);
+            // Note: note.type is normalized, so we check the original editorType for flam
+            const isFlameGraceMatch = (drum === DrumType.SNARE && note.editorType === DrumType.SNARE_FLAM);
 
             if (!isMatch && !isFlameGraceMatch) continue;
             if (note.matched) continue;
@@ -111,17 +107,15 @@ export class CoachEngine {
             const diff = relativeHitTime - targetTime; // Signed diff (negative = early)
             const absDiff = Math.abs(diff);
 
-            // For flam grace notes: allow early hits within 15-60ms before the flam
-            if (isFlameGraceMatch && !isMatch) {
-                // Grace note should be early (negative diff) between 15-60ms
-                if (diff < 0 && absDiff >= 15 && absDiff <= 60) {
-                    if (absDiff < minDiff) {
-                        minDiff = absDiff;
-                        bestMatch = { ...note, isGraceNote: true };
-                    }
+            // For flam grace notes: allow early or slightly late hits within a generous window
+            if (isFlameGraceMatch && diff < 20 && absDiff <= 100 && !note.graceMatched) {
+                if (absDiff < minDiff) {
+                    minDiff = absDiff;
+                    bestMatch = { ...note, isGraceNote: true };
                 }
             } else if (isMatch) {
-                if (absDiff < minDiff && absDiff <= 150) { // More generous window for matching
+                // For normal hits or primary flam hits
+                if (absDiff < minDiff && absDiff <= 150) {
                     minDiff = absDiff;
                     bestMatch = note;
                 }
@@ -157,6 +151,9 @@ export class CoachEngine {
                     isGraceNote: true,
                     noteIndex: bestMatch.originalIndex
                 };
+                // Mark grace slot as matched so subsequent hits (even if very early) match the primary slot
+                const originalNote = this.noteTimeline.find(n => n.originalIndex === bestMatch.originalIndex);
+                if (originalNote) originalNote.graceMatched = true;
             } else {
                 // Normal hit evaluation
                 evaluation = evaluateHit(timestamp, this.startTime + bestMatch.time, this.audioLatency, this.windows);

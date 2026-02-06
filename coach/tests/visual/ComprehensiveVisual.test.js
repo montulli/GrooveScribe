@@ -4,7 +4,7 @@ import path from 'path';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 
-describe('Drum Coach Comprehensive Visual Tests - Parallel', () => {
+describe('Drum Coach Comprehensive Visual Tests - Sequential', () => {
     const testHelperPath = path.resolve(process.cwd(), 'coach/tests/visual/testHelper.js');
     const testHelperCode = fs.readFileSync(testHelperPath, 'utf8');
     const fixturesDir = path.resolve(process.cwd(), 'coach/tests/fixtures/generated');
@@ -12,7 +12,7 @@ describe('Drum Coach Comprehensive Visual Tests - Parallel', () => {
     const referenceDir = path.resolve(process.cwd(), 'coach/tests/visual/reference');
     const diffDir = path.resolve(process.cwd(), 'coach/tests/visual/diff');
 
-    // Dynamically get the fixture list based on what reference images we have
+    // Get only fixtures that have a reference image
     const getFixtures = () => {
         if (!fs.existsSync(referenceDir)) return [];
         return fs.readdirSync(referenceDir)
@@ -21,11 +21,8 @@ describe('Drum Coach Comprehensive Visual Tests - Parallel', () => {
             .sort();
     };
 
-    const chunkArray = (arr, n) => {
-        const chunks = Array.from({ length: n }, () => []);
-        arr.forEach((item, i) => chunks[i % n].push(item));
-        return chunks;
-    };
+    let browser;
+    let page;
 
     beforeAll(async () => {
         // Cleanup prior screenshots and diffs
@@ -40,6 +37,20 @@ describe('Drum Coach Comprehensive Visual Tests - Parallel', () => {
                 fs.mkdirSync(dir, { recursive: true });
             }
         });
+
+        browser = await puppeteer.launch({
+            headless: 'new',
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+        });
+        page = await browser.newPage();
+        await page.setViewport({ width: 1280, height: 800 });
+        await page.goto('http://localhost:8080/', { waitUntil: 'load' });
+        await page.waitForFunction(() => window.myGrooveWriter !== undefined, { timeout: 15000 });
+        await page.evaluate(testHelperCode);
+    }, 30000);
+
+    afterAll(async () => {
+        if (browser) await browser.close();
     });
 
     function compareScreenshots(screenshotPath, referencePath, diffPath) {
@@ -54,92 +65,61 @@ describe('Drum Coach Comprehensive Visual Tests - Parallel', () => {
         return { match: percent < 0.05, diffPercent: percent, diffPixels: pixels };
     }
 
-    async function runFixtureBatch(batch, batchId) {
-        const browser = await puppeteer.launch({
-            headless: 'new',
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
-        });
+    const fixtures = getFixtures();
 
-        try {
-            const page = await browser.newPage();
-            await page.setViewport({ width: 1280, height: 800 });
-            let isInitialized = false;
+    test.each(fixtures)('Fixture: %s', async (fixtureName) => {
+        const fixturePath = path.join(fixturesDir, fixtureName);
+        const fixture = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
 
-            for (const fixtureName of batch) {
-                const fixturePath = path.join(fixturesDir, fixtureName);
-                if (!fs.existsSync(fixturePath)) {
-                    console.warn(`[Batch ${batchId}] Fixture not found: ${fixtureName}`);
-                    continue;
-                }
-                const fixture = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
+        // Load and setup
+        await page.evaluate(async (g) => {
+            const target = document.querySelector('#svgTarget');
+            if (target) target.innerHTML = '';
+            window.CoachTestHelper.loadGroove(g);
+            window.CoachTestHelper.setDebugMode(true);
+        }, fixture.groove);
 
-                if (!isInitialized) {
-                    await page.goto('http://localhost:8080/', { waitUntil: 'load' });
-                    await page.waitForFunction(() => window.myGrooveWriter !== undefined, { timeout: 15000 });
-                    await page.evaluate(testHelperCode);
-                    isInitialized = true;
-                }
+        // Wait for SVG render
+        await page.waitForFunction(() => {
+            const svg = document.querySelector('#svgTarget svg');
+            return svg && svg.querySelectorAll('rect.abcr').length > 0;
+        }, { timeout: 15000 });
 
-                // Load and setup
-                await page.evaluate((g) => {
-                    window.CoachTestHelper.loadGroove(g);
-                    window.CoachTestHelper.setDebugMode(true);
-                }, fixture.groove);
+        // Run simulation
+        await page.evaluate((p) => {
+            window.CoachTestHelper.startSessionHeadless();
+            window.CoachTestHelper.simulatePerformanceInstant(p);
+        }, fixture.performance);
 
-                // Wait for SVG render
-                await page.waitForFunction(() => {
-                    const svg = document.querySelector('#svgTarget svg');
-                    return svg && svg.querySelectorAll('rect.abcr').length > 0;
-                }, { timeout: 15000 });
+        // Wait for UI to settle
+        await page.waitForFunction(() => {
+            const playBtn = document.querySelector('.midiPlayImage');
+            return playBtn && (playBtn.classList.contains('Stopped') || playBtn.classList.contains('Paused') || playBtn.classList.contains('Playing'));
+        }, { timeout: 5000 });
 
-                // Run simulation
-                await page.evaluate((p) => {
-                    window.CoachTestHelper.startSessionHeadless();
-                    window.CoachTestHelper.simulatePerformanceInstant(p);
-                }, fixture.performance);
+        await new Promise(r => setTimeout(r, 200));
+        await page.mouse.move(0, 0);
 
-                // Wait for UI to settle
-                await page.waitForFunction(() => {
-                    const playBtn = document.querySelector('.midiPlayImage');
-                    return playBtn && (playBtn.classList.contains('Stopped') || playBtn.classList.contains('Paused') || playBtn.classList.contains('Playing'));
-                }, { timeout: 5000 });
+        // Capture
+        const screenshotName = fixtureName.replace('.json', '.png');
+        const screenshotPath = path.join(screenshotsDir, screenshotName);
+        const referencePath = path.join(referenceDir, screenshotName);
+        const diffPath = path.join(diffDir, screenshotName);
 
-                await new Promise(r => setTimeout(r, 600));
-                await page.mouse.move(0, 0);
+        await page.screenshot({ path: screenshotPath });
 
-                // Capture
-                const screenshotName = fixtureName.replace('.json', '.png');
-                const screenshotPath = path.join(screenshotsDir, screenshotName);
-                const referencePath = path.join(referenceDir, screenshotName);
-                const diffPath = path.join(diffDir, screenshotName);
+        const result = await page.evaluate(() => ({ markerCount: document.querySelectorAll('.coach-hit-marker').length }));
+        console.log(`Fixture: ${fixtureName} | Markers Found: ${result.markerCount}`);
 
-                await page.screenshot({ path: screenshotPath });
+        const comparison = compareScreenshots(screenshotPath, referencePath, diffPath);
 
-                const result = await page.evaluate(() => ({ markerCount: document.querySelectorAll('.coach-hit-marker').length }));
-                const comparison = compareScreenshots(screenshotPath, referencePath, diffPath);
-
-                if (result.markerCount === 0) throw new Error(`${fixtureName}: Zero markers found`);
-                if (!comparison.noReference && !comparison.match) {
-                    throw new Error(`${fixtureName}: Visual mismatch (${comparison.diffPercent.toFixed(3)}%)`);
-                }
-
-                console.log(`[Batch ${batchId}] Passed: ${fixtureName}`);
-            }
-        } finally {
-            await browser.close();
+        if (result.markerCount === 0) throw new Error(`${fixtureName}: Zero markers found`);
+        if (!comparison.noReference && !comparison.match) {
+            console.warn(`[Visual Mismatch] ${fixtureName}: ${comparison.diffPercent.toFixed(3)}%`);
+            // We'll throw at the end if we want strict mode, but for now let's just log and continue if possible
+            // Actually Jest will fail the individual test, which is what we want.
+            throw new Error(`${fixtureName}: Visual mismatch (${comparison.diffPercent.toFixed(3)}%)`);
         }
-    }
-
-    const NUM_WORKERS = 5;
-    const allFixtures = getFixtures();
-    const fixtureChunks = chunkArray(allFixtures, NUM_WORKERS);
-
-    test.concurrent.each(fixtureChunks.map((chunk, idx) => [idx, chunk]))(
-        'Parallel Worker %s: Processing fixtures',
-        async (batchId, batch) => {
-            if (batch.length === 0) return;
-            await runFixtureBatch(batch, batchId);
-        },
-        300000
-    );
+        console.log(`Passed: ${fixtureName}`);
+    }, 30000);
 });

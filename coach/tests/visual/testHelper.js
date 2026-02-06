@@ -87,9 +87,9 @@ window.CoachTestHelper = {
                     else if (d === 'crash') data.hh_array[index] = 'c';
                     else if (d === 'splash') data.hh_array[index] = 's';
                     else if (d === 'china') data.hh_array[index] = 'k';
-                    else if (d === 'tom1') { data.toms_array[0][index] = 'o'; data.showToms = true; }
+                    else if (d === 'tom1' || d === 'tom_high') { data.toms_array[0][index] = 'o'; data.showToms = true; }
                     else if (d === 'tom2') { data.toms_array[1][index] = 'o'; data.showToms = true; }
-                    else if (d === 'tom3') { data.toms_array[2][index] = 'o'; data.showToms = true; }
+                    else if (d === 'tom3' || d === 'tom_low') { data.toms_array[2][index] = 'o'; data.showToms = true; }
                     else if (d === 'tom4') { data.toms_array[3][index] = 'o'; data.showToms = true; }
                 }
             });

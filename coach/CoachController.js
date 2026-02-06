@@ -5,7 +5,7 @@ import { FeedbackRenderer } from './ui/FeedbackRenderer.js';
 import { CoachSettingsDialog } from './ui/CoachSettingsDialog.js';
 import { ResultsDialog } from './ui/ResultsDialog.js';
 import { coachState } from './state/CoachState.js';
-import { DrumType, SupportedDrumTypes } from './engine/DrumConstants.js';
+import { DrumType, EditorDrumTypes } from './engine/DrumConstants.js';
 
 /**
  * CoachController - Orchestrates the entire Drum Coach feature
@@ -19,9 +19,9 @@ export class CoachController {
             drumMap: {
                 36: DrumType.KICK, 35: DrumType.KICK,
                 38: DrumType.SNARE, 40: DrumType.SNARE, 37: DrumType.SNARE_XSTICK,
-                42: DrumType.HH_NORMAL, 44: DrumType.HH_FOOT, 46: DrumType.HH_OPEN,
-                48: DrumType.TOM1, 50: DrumType.TOM1, 47: DrumType.TOM1,
-                45: DrumType.TOM4, 43: DrumType.TOM4, 41: DrumType.TOM4,
+                42: DrumType.HH_CLOSED, 44: DrumType.HH_FOOT, 46: DrumType.HH_OPEN,
+                48: DrumType.TOM_HIGH, 50: DrumType.TOM_HIGH, 47: DrumType.TOM_HIGH,
+                45: DrumType.TOM_LOW, 43: DrumType.TOM_LOW, 41: DrumType.TOM_LOW,
                 49: DrumType.CRASH, 57: DrumType.CRASH,
                 51: DrumType.RIDE, 53: DrumType.RIDE_BELL,
                 39: DrumType.SNARE // Remap ghost snare hits to regular snare
@@ -227,10 +227,10 @@ export class CoachController {
     handleMidiHit(drum, timestamp, velocity) {
         if (!this.engine.isPlaying) return;
 
-        // Normalize tom names for simulators/fixtures that might still use tom2/3
+        // Normalize tom names for simulators/fixtures that might still use legacy names
         let normalizedDrum = drum;
-        if (drum === 'tom2') normalizedDrum = DrumType.TOM1;
-        else if (drum === 'tom3') normalizedDrum = DrumType.TOM4;
+        if (drum === 'tom1' || drum === 'tom2') normalizedDrum = DrumType.TOM_HIGH;
+        else if (drum === 'tom3' || drum === 'tom4') normalizedDrum = DrumType.TOM_LOW;
 
         const evaluation = this.engine.handleMidiHit(normalizedDrum, timestamp);
         if (!evaluation) return;
@@ -253,7 +253,7 @@ export class CoachController {
                         abcNoteIndex,
                         evaluation.tier,
                         evaluation.timingError,
-                        evaluation.isGraceNote ? 'flam_grace' : normalizedDrum
+                        evaluation.isGraceNote ? DrumType.FLAM_GRACE : normalizedDrum
                     );
                 } else {
                     console.warn(`[CoachController] No ABC index found for ${drum} at tick ${matchedNote.tickIndex}`);
@@ -326,14 +326,12 @@ export class CoachController {
                     this.abcNoteMap.set(`${i}:${DrumType.SNARE_GHOST}`, currentIndex);
                     this.abcNoteMap.set(`${i}:${DrumType.SNARE_XSTICK}`, currentIndex);
                     this.abcNoteMap.set(`${i}:${DrumType.SNARE_FLAM}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.SNARE_DRAG}`, currentIndex);
                     this.abcNoteMap.set(`${i}:${DrumType.SNARE_BUZZ}`, currentIndex);
                 }
                 if (hhVal && hhVal !== "") {
-                    this.abcNoteMap.set(`${i}:${DrumType.HH_NORMAL}`, currentIndex);
+                    this.abcNoteMap.set(`${i}:${DrumType.HH_CLOSED}`, currentIndex);
                     this.abcNoteMap.set(`${i}:${DrumType.HH_OPEN}`, currentIndex);
                     this.abcNoteMap.set(`${i}:${DrumType.HH_ACCENT}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.HH_CLOSE}`, currentIndex);
                     this.abcNoteMap.set(`${i}:${DrumType.CRASH}`, currentIndex);
                     this.abcNoteMap.set(`${i}:${DrumType.RIDE}`, currentIndex);
                     this.abcNoteMap.set(`${i}:${DrumType.RIDE_BELL}`, currentIndex);
@@ -345,11 +343,11 @@ export class CoachController {
                 if (hasToms) {
                     data.toms_array.forEach((arr, tomIdx) => {
                         let drumKey = `tom${tomIdx + 1}`;
-                        // Remap Tom 2 -> Tom 1, Tom 3 -> Tom 4
-                        if (drumKey === 'tom2') drumKey = DrumType.TOM1;
-                        if (drumKey === 'tom3') drumKey = DrumType.TOM4;
+                        // Remap Toms 1 & 2 -> TOM_HIGH, Toms 3 & 4 -> TOM_LOW
+                        if (drumKey === 'tom1' || drumKey === 'tom2') drumKey = DrumType.TOM_HIGH;
+                        if (drumKey === 'tom3' || drumKey === 'tom4') drumKey = DrumType.TOM_LOW;
 
-                        if (SupportedDrumTypes.includes(drumKey) && arr[i] && arr[i] !== "") {
+                        if (EditorDrumTypes.includes(drumKey) && arr[i] && arr[i] !== "") {
                             this.abcNoteMap.set(`${i}:${drumKey}`, currentIndex);
                         }
                     });
@@ -411,11 +409,10 @@ export class CoachController {
             // HH
             if (data.hh_array[i] && data.hh_array[i] !== "") {
                 const val = data.hh_array[i];
-                let type = DrumType.HH_NORMAL;
+                let type = DrumType.HH_CLOSED;
                 // Check for all articulations/variants
                 if (val === 'o' || val === 'O' || val.includes('!open!')) type = DrumType.HH_OPEN;
                 else if (val === 'X' || val.includes('!accent!')) type = DrumType.HH_ACCENT;
-                else if (val === '+' || val.includes('!plus!')) type = DrumType.HH_CLOSE;
                 else if (val === 'c' || val === 'C' || val.includes("^c'")) type = DrumType.CRASH;
                 else if (val === 'r' || val === 'R' || val.includes("^A'")) type = DrumType.RIDE;
                 else if (val === 'b' || val === 'B' || val.includes("^B'")) type = DrumType.RIDE_BELL;
@@ -424,7 +421,7 @@ export class CoachController {
                 else if (val === 'n' || val.includes("^e'")) type = DrumType.METRONOME_NORMAL;
                 else if (val === 'N' || val.includes("^f'")) type = DrumType.METRONOME_ACCENT;
 
-                if (SupportedDrumTypes.includes(type)) {
+                if (EditorDrumTypes.includes(type)) {
                     tickNotes.push({ time: i * msPerTick, type, tickIndex: i });
                 }
             }
@@ -435,11 +432,10 @@ export class CoachController {
                 if (val === 'g' || val === 'G' || val.includes('!(')) type = DrumType.SNARE_GHOST;
                 else if (val === 'x' || val.includes('^c')) type = DrumType.SNARE_XSTICK;
                 else if (val === 'f' || val === 'F' || val.includes('{/')) type = DrumType.SNARE_FLAM;
-                else if (val === 'd' || val === 'D' || val.includes('{/cc}')) type = DrumType.SNARE_DRAG;
                 else if (val === 'b' || val === 'B' || val.includes('!///!')) type = DrumType.SNARE_BUZZ;
                 else if (val === 'O' || val.includes('!accent!')) type = DrumType.SNARE_ACCENT;
 
-                if (SupportedDrumTypes.includes(type)) {
+                if (EditorDrumTypes.includes(type)) {
                     tickNotes.push({ time: i * msPerTick, type, tickIndex: i });
                 }
             }
@@ -456,10 +452,11 @@ export class CoachController {
             if (data.toms_array) {
                 data.toms_array.forEach((row, idx) => {
                     let drumKey = `tom${idx + 1}`;
-                    if (drumKey === 'tom2') drumKey = DrumType.TOM1;
-                    if (drumKey === 'tom3') drumKey = DrumType.TOM4;
+                    // Remap Toms 1 & 2 -> TOM_HIGH, Toms 3 & 4 -> TOM_LOW
+                    if (drumKey === 'tom1' || drumKey === 'tom2') drumKey = DrumType.TOM_HIGH;
+                    if (drumKey === 'tom3' || drumKey === 'tom4') drumKey = DrumType.TOM_LOW;
 
-                    if (SupportedDrumTypes.includes(drumKey) && row && row[i] && row[i] !== "") {
+                    if (EditorDrumTypes.includes(drumKey) && row && row[i] && row[i] !== "") {
                         tickNotes.push({ time: i * msPerTick, type: drumKey, tickIndex: i });
                     }
                 });
