@@ -25,29 +25,40 @@ async function bootstrap() {
 }
 
 function addCoachToggleButton() {
-    const topNav = document.getElementById('upperRight');
-    if (!topNav) return;
+    // Try multiple possible containers if upperRight is missing or cleared
+    const topNav = document.getElementById('upperRight') || document.getElementById('TopNav');
+    if (!topNav) {
+        console.warn('[Drum Coach] Navigation container not found, retrying button injection...');
+        setTimeout(addCoachToggleButton, 1000);
+        return;
+    }
+
+    if (document.getElementById('coachToggleBtn')) return; // Already added
 
     const btn = document.createElement('span');
     btn.className = 'rightButtons';
     btn.id = 'coachToggleBtn';
+    btn.style.cursor = 'pointer';
+    btn.style.marginLeft = '10px';
+    btn.style.color = '#00BFFF'; // Bright blue to make it visible
     btn.innerHTML = '<i class="fa fa-graduation-cap"></i> Coach';
+
     btn.onclick = () => {
         const controller = window.coachController;
+        if (!controller) return;
+
         if (controller.isCoachingActive) {
-            // Stop the session
             controller.stopSession();
-            // Also stop playback
             if (controller.grooveWriter.myGrooveUtils.isPlaying()) {
                 controller.grooveWriter.myGrooveUtils.startOrPauseMIDI_playback();
             }
         } else {
-            // Show settings dialog
             controller.dialog.show();
         }
     };
 
     topNav.insertBefore(btn, topNav.firstChild);
+    console.log('[Drum Coach] Button injected into UI');
 }
 
 // Inject CSS

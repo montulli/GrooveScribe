@@ -315,6 +315,14 @@ window.CoachTestHelper = {
         // Manually trigger playback start (bypassing MIDI)
         controller.sessionStartTime = performance.now();
         controller._refreshAbcMapping();
+
+        // Ensure sniffer is hooked and has fresh data
+        const abc = controller.grooveWriter.myGrooveUtils.abc_obj;
+        if (abc && window.notationSniffer) {
+            window.notationSniffer.hook(abc);
+            controller.grooveWriter.myGrooveUtils.renderABCtoSVG();
+        }
+
         controller.engine.start(controller.sessionStartTime);
         controller._setRendererGrooveContext(); // Set groove context for time-based rendering
         controller.isSynced = true;

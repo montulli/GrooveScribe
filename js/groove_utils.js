@@ -2155,10 +2155,16 @@ function GrooveUtils() {
 	// returns an object with two items.   "svg" and "error_html"
 	root.renderABCtoSVG = function (abc_source) {
 		root.abc_obj = new Abc(abcToSVGCallback);
+
+		// Hook for Drum Coach coordinate extraction
+		if (window.notationSniffer) window.notationSniffer.hook(root.abc_obj);
+
 		if ((root.myGrooveData && root.myGrooveData.showLegend) || root.isLegendVisable)
 			root.abcNoteNumIndex = -15; // subtract out the legend notes for a proper index.
 		else
 			root.abcNoteNumIndex = 0;
+
+		if (window.notationSniffer) window.notationSniffer.reset(root.abcNoteNumIndex);
 		abcToSVGCallback.abc_svg_output = ''; // clear
 		abcToSVGCallback.abc_error_output = ''; // clear
 

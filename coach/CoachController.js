@@ -6,6 +6,10 @@ import { CoachSettingsDialog } from './ui/CoachSettingsDialog.js';
 import { ResultsDialog } from './ui/ResultsDialog.js';
 import { coachState } from './state/CoachState.js';
 import { DrumType, EditorDrumTypes } from './engine/DrumConstants.js';
+import { notationSniffer } from './engine/NotationSniffer.js';
+
+// Ensure global availability for legacy scripts (groove_utils.js)
+window.notationSniffer = notationSniffer;
 
 /**
  * CoachController - Orchestrates the entire Drum Coach feature
@@ -24,7 +28,7 @@ export class CoachController {
                 45: DrumType.TOM_LOW, 43: DrumType.TOM_LOW, 41: DrumType.TOM_LOW,
                 49: DrumType.CRASH, 57: DrumType.CRASH,
                 51: DrumType.RIDE, 53: DrumType.RIDE_BELL,
-                39: DrumType.SNARE // Remap ghost snare hits to regular snare
+                39: DrumType.SNARE
             }
         });
         this.latencyManager = new LatencyManager();
@@ -40,6 +44,9 @@ export class CoachController {
         this.currentRepetition = 0;
     }
 
+    /**
+     * Initialize the controller, inject UI components, and hook events
+     */
     async init() {
         if (this.isInitialized) return;
 
@@ -53,30 +60,29 @@ export class CoachController {
         // Update debug grid immediately when toggled
         coachState._manager.addEventListener('change', ({ property, value }) => {
             if (property === 'showDebug') {
-                if (value) {
-                    this.renderer.refreshNoteRects(); // This calls renderDebugGrid
-                } else {
-                    // Just clear the grid if turned off
+                if (!value) {
+                    // Clear debug lines if turned off
                     const existingDebug = this.renderer.feedbackLayer?.querySelectorAll('.coach-debug-line');
                     existingDebug?.forEach(el => el.remove());
+                } else if (this.isCoachingActive) {
+                    // Render debug grid if turning on during session
+                    this.renderer.renderDebugGrid();
                 }
             }
         });
 
         // Hook into GrooveWriter's playback system
         this._hookPlaybackEvents();
-
         this.isInitialized = true;
-        console.log('[Drum Coach] Initialized (MIDI will connect on first session)');
     }
 
     /**
-     * Hook into GrooveWriter's MIDI playback callbacks
+     * Hook into GrooveWriter's MIDI playback callbacks for synchronization
      */
     _hookPlaybackEvents() {
         const utils = this.grooveWriter.myGrooveUtils;
 
-        // Store original callbacks
+        // Store original callbacks to maintain existing functionality
         const originalPlayEvent = utils.midiEventCallbacks.playEvent;
         const originalStopEvent = utils.midiEventCallbacks.stopEvent;
         const originalRepeatCallback = utils.repeatCallback;
@@ -84,35 +90,41 @@ export class CoachController {
         // Intercept play event
         utils.midiEventCallbacks.playEvent = (root) => {
             if (originalPlayEvent) originalPlayEvent(root);
-            if (this.isCoachingActive) {
-                this._onPlaybackStart();
-            }
+            if (this.isCoachingActive) this._onPlaybackStart();
         };
 
         // Intercept stop event
         utils.midiEventCallbacks.stopEvent = (root) => {
             if (originalStopEvent) originalStopEvent(root);
-            if (this.isCoachingActive) {
-                this._onPlaybackStop();
-            }
+            if (this.isCoachingActive) this._onPlaybackStop();
         };
 
-        // Intercept repeat callback for multi-rep performance mode
+        // Intercept repeat callback for multi-repetition sessions
         utils.repeatCallback = () => {
             if (originalRepeatCallback) originalRepeatCallback();
-            if (this.isCoachingActive) {
-                this._onRepeat();
-            }
+            if (this.isCoachingActive) this._onRepeat();
         };
     }
 
+    /**
+     * Called when MIDI playback starts - synchronizes timing and prepares renderer
+     */
     _onPlaybackStart() {
         console.log('[CoachController] Playback started, syncing engine');
         // Record the playback start time for timing calculations
         this.sessionStartTime = performance.now();
         this._refreshAbcMapping(); // Map instruments to staff indices
+
+        // Ensure sniffer is hooked to the engine and has processed the current ABC
+        const abc = this.grooveWriter.myGrooveUtils.abc_obj;
+        if (abc && window.notationSniffer) {
+            // Re-hook and process if the ABC object might have changed or sniffer needs re-running
+            window.notationSniffer.hook(abc);
+            const sniffedData = window.notationSniffer.getSniffedData();
+            console.log('[CoachController] NotationSniffer re-hooked. Sniffed data notes:', sniffedData?.notes.length || 0);
+        }
+
         this.engine.start(this.sessionStartTime);
-        this.isSynced = true; // Flag for tests
 
         // Ensure visual feedback is ready
         this.renderer.init();
@@ -122,6 +134,9 @@ export class CoachController {
         this._setRendererGrooveContext();
     }
 
+    /**
+     * Called when MIDI playback stops - handles performance results
+     */
     _onPlaybackStop() {
         console.log('[CoachController] Playback stopped');
         if (coachState.mode === 'performance' && this.isCoachingActive) {
@@ -130,12 +145,15 @@ export class CoachController {
         this.engine.stop();
     }
 
+    /**
+     * Called at the end of each repetition in multi-repetition mode
+     */
     _onRepeat() {
         this.currentRepetition++;
         console.log(`[CoachController] Repeat ${this.currentRepetition}`);
 
         if (coachState.mode === 'performance' && this.currentRepetition >= coachState.reps) {
-            // Stop playback after reaching target reps
+            // Stop playback after reaching target repetitions in performance mode
             this.grooveWriter.myGrooveUtils.stopMIDI_playback();
             return;
         }
@@ -143,10 +161,17 @@ export class CoachController {
         // Reset engine timing for new repetition
         this.sessionStartTime = performance.now();
         this.engine.start(this.sessionStartTime);
-        this.isSynced = true; // Flag for tests
         this.renderer.clearFeedback();
+
+        // Re-render grid if enabled (in case SVG re-rendered or layer was cleared)
+        if (coachState.showDebug) {
+            this.renderer.renderDebugGrid();
+        }
     }
 
+    /**
+     * Display the performance results dialog
+     */
     _showResults() {
         const stats = this.engine.getResults();
         console.log('[CoachController] Session Results:', stats);
@@ -156,11 +181,10 @@ export class CoachController {
     }
 
     /**
-     * Called when user clicks "Start Session" in the dialog
+     * Start a coaching session - prepares metadata and triggers playback
      */
     async startSession() {
         try {
-            this.isSynced = false; // Reset sync flag
             // 0. Connect MIDI on first session (lazy initialization)
             if (!this.midiConnected) {
                 try {
@@ -176,7 +200,7 @@ export class CoachController {
             // 1. Get current groove data from writer
             const grooveData = this.getGrooveAsTimeline();
 
-            // 2. Setup engine with tolerance based on coachState
+            // 2. Setup engine with tolerance windows based on settings
             const toleranceWindows = {
                 strict: { perfect: 15, good: 25, close: 40 },
                 normal: { perfect: 20, good: 35, close: 50 },
@@ -195,7 +219,15 @@ export class CoachController {
             this.renderer.init();
             this.renderer.clearFeedback();
 
-            // 5. Trigger playback if not already playing
+            // 5. Initialize visual feedback context immediately (shows debug grid if enabled)
+            // Re-render the notation to capture coordinates via NotationSniffer
+            // The displayNewSVG call internally hooks the sniffer and triggers renderABCtoSVG
+            this.grooveWriter.displayNewSVG();
+
+            this._refreshAbcMapping();
+            this._setRendererGrooveContext();
+
+            // 6. Trigger playback if not already playing
             if (!this.grooveWriter.myGrooveUtils.isPlaying()) {
                 this.grooveWriter.myGrooveUtils.startOrPauseMIDI_playback();
             }
@@ -207,6 +239,9 @@ export class CoachController {
         }
     }
 
+    /**
+     * Stop the current coaching session
+     */
     stopSession() {
         this.isCoachingActive = false;
         this.engine.stop();
@@ -214,19 +249,24 @@ export class CoachController {
         console.log('[CoachController] Session Stopped');
     }
 
+    /**
+     * Update the UI toggle button state
+     */
     _updateButtonState(isActive) {
         const btn = document.getElementById('coachToggleBtn');
         if (!btn) return;
 
+        btn.classList.toggle('coaching-active', isActive);
         if (isActive) {
-            btn.classList.add('coaching-active');
             btn.innerHTML = '<i class="fa fa-stop"></i> Stop';
         } else {
-            btn.classList.remove('coaching-active');
             btn.innerHTML = '<i class="fa fa-graduation-cap"></i> Coach';
         }
     }
 
+    /**
+     * Route incoming MIDI drum hits to the engine and renderer
+     */
     handleMidiHit(drum, timestamp, velocity) {
         if (!this.engine.isPlaying) return;
 
@@ -241,44 +281,37 @@ export class CoachController {
         console.log(`[CoachController] Hit ${drum} evaluation: ${evaluation.tier} (match: ${evaluation.isMatch})`);
 
         // Calculate hit time relative to groove start (subtract audio latency)
-        // Timeline notes are at groove-relative times without latency
         const audioLatency = this.engine.audioLatency || 0;
         const hitTimeMs = timestamp - this.sessionStartTime - audioLatency;
         const effectiveDrum = evaluation.isGraceNote ? DrumType.FLAM_GRACE : normalizedDrum;
 
         if (evaluation.isMatch) {
-            // For matched notes, find the abcNoteIndex for Y reference
-            const matchedNote = this.engine.noteTimeline.find(
-                n => n.originalIndex === evaluation.noteIndex
-            );
+            // Find target note for precise ABC indexing metadata
+            const matchedNote = this.engine.noteTimeline.find(n => n.originalIndex === evaluation.noteIndex);
+            const abcIndex = matchedNote ? this.getAbcIndexForHit(matchedNote.tickIndex, evaluation.isGraceNote ? 'snare_flam' : normalizedDrum) : null;
 
-            const abcNoteIndex = matchedNote && matchedNote.tickIndex !== undefined
-                ? this.getAbcIndexForHit(matchedNote.tickIndex, evaluation.isGraceNote ? 'snare_flam' : normalizedDrum)
-                : null;
-
-            // Use time-based rendering
+            // Draw feedback at pre-calculated sniffed coordinate
             this.renderer.drawHitFeedbackByTime(
                 hitTimeMs,
                 evaluation.tier,
                 evaluation.timingError,
                 effectiveDrum,
-                abcNoteIndex >= 0 ? abcNoteIndex : null
+                abcIndex >= 0 ? abcIndex : null
             );
         } else {
-            // Extra hits (gray circles) - draw at exact time position
-            // Use time-based rendering without target note
+            // Extra hits (gray circles) - direct time position
             this.renderer.drawHitFeedbackByTime(
                 hitTimeMs,
                 'extra',
                 0,
                 normalizedDrum,
-                null // No target note
+                null
             );
         }
     }
 
     /**
-     * Set groove context on the renderer for time-based X interpolation
+     * Prepare context for coordinate-based rendering using the NotationSniffer payload
      */
     _setRendererGrooveContext() {
         const writer = this.grooveWriter;
@@ -287,44 +320,34 @@ export class CoachController {
         const data = writer.grooveDataFromClickableUI();
         if (!data) return;
 
-        const bpm = data.tempo || 80;
-        const numBeats = data.numBeats || 4;
-        const measures = data.numberOfMeasures || 1;
-        const notesPerMeasure = data.notesPerMeasure || 16;
-
         const context = {
-            bpm,
-            numBeats,
-            measures,
-            notesPerMeasure
+            bpm: data.tempo || 80,
+            numBeats: data.numBeats || 4,
+            measures: data.numberOfMeasures || 1,
+            notesPerMeasure: data.notesPerMeasure || 16
         };
 
-        // Build timeline with abcIndex for each note
+        // Capture high-precision sniffer data
+        const sniffedData = window.notationSniffer ? window.notationSniffer.getSniffedData() : null;
+        console.log('[CoachController] Captured Sniffed Data:', sniffedData ? (sniffedData.notes.length + ' notes, ' + sniffedData.bars.length + ' bars') : 'None');
+
         const timeline = [];
-        const msPerTick = ((60000 / bpm) * numBeats) / notesPerMeasure;
 
-        // Iterate through the engine's timeline and augment with abcIndex
+        // Augment engine timeline with ABC synchronization metadata
         for (const note of this.engine.noteTimeline) {
-            const tickIndex = note.tickIndex;
-            const type = note.type;
-            const editorType = note.editorType;
-
-            // Check if this is a grace note (flam grace)
-            const isGrace = (editorType === DrumType.SNARE_FLAM && note.graceMatched !== undefined);
-
-            // Get abcIndex for this note
-            const abcIndex = this.getAbcIndexForHit(tickIndex, editorType || type);
+            const isGrace = (note.editorType === DrumType.SNARE_FLAM && note.graceMatched !== undefined);
+            const abcIndex = this.getAbcIndexForHit(note.tickIndex, note.editorType || note.type);
 
             timeline.push({
                 time: note.time,
-                tickIndex: tickIndex,
-                type: type,
+                tickIndex: note.tickIndex,
+                type: note.type,
                 abcIndex: abcIndex >= 0 ? abcIndex : null,
                 isGrace: isGrace
             });
         }
 
-        this.renderer.setGrooveContext(context, timeline);
+        this.renderer.setGrooveContext(context, timeline, sniffedData);
         console.log(`[CoachController] Set renderer groove context: ${timeline.length} notes`);
     }
 
@@ -332,97 +355,69 @@ export class CoachController {
      * Build a mapping of (tickIndex, instrument) -> abcNoteIndex
      * This simulates abc2svg's rendering order to accurately target rectangles.
      */
-
     _refreshAbcMapping() {
-        console.log('[CoachController] Refreshing ABC mapping...');
         this.abcNoteMap = new Map();
-        const writer = this.grooveWriter;
-        if (!writer) return;
-
-        // Best data source is the UI-derived object that contains everything
-        const data = writer.grooveDataFromClickableUI();
+        const data = this.grooveWriter.grooveDataFromClickableUI();
         if (!data) return;
 
         let currentIndex = 0;
-        const numberOfMeasures = data.numberOfMeasures || 1;
+        const totalTicks = (data.notesPerMeasure || 16) * (data.numberOfMeasures || 1);
 
-        const notesPerMeasure = data.notesPerMeasure || 16;
-        const totalTicks = notesPerMeasure * numberOfMeasures;
-
-        // 1. Stickings Voice
+        // 1. Stickings Voice (Rendered first in abc2svg)
         for (let i = 0; i < totalTicks; i++) {
-            if (data.sticking_array && data.sticking_array[i] && data.sticking_array[i] !== "") currentIndex++;
+            if (data.sticking_array && data.sticking_array[i]) currentIndex++;
         }
 
         const kickStemsUp = !!data.kickStemsUp;
 
-        // 2. Hands Voice (and Feet if stems up)
+        // 2. Main Voice (Hands, and Feet if stems are unified)
         for (let i = 0; i < totalTicks; i++) {
-            const snareVal = data.snare_array[i];
-            const hhVal = data.hh_array[i];
+            const hasSnare = data.snare_array[i] && data.snare_array[i] !== "";
+            const hasHH = data.hh_array[i] && data.hh_array[i] !== "";
             const hasToms = data.toms_array && data.toms_array.some(arr => arr[i] && arr[i] !== "");
             const kickVal = data.kick_array[i];
-            const isKick = kickStemsUp && kickVal && (kickVal === 'o' || kickVal === 'O' || kickVal === 'k' || kickVal === 'F' || kickVal === true || kickVal === 'b' || kickVal === 'X' || (typeof kickVal === 'string' && (kickVal.includes('F') || kickVal.includes('[F'))));
-            const isSplash = kickStemsUp && kickVal && (kickVal === 'x' || kickVal === 'X' || kickVal === 's' || kickVal === 'S' || kickVal === 'd,' || kickVal === 'b' || (typeof kickVal === 'string' && (kickVal.includes('d,') || kickVal.includes('^d,'))));
+            const isKick = kickStemsUp && kickVal && (kickVal === 'o' || kickVal === 'O' || kickVal === 'k' || kickVal === 'F' || kickVal === true);
+            const isSplash = kickStemsUp && kickVal && (kickVal === 'x' || kickVal === 'X' || kickVal === 's' || kickVal === 'd,');
 
-            if ((snareVal && snareVal !== "") || (hhVal && hhVal !== "") || hasToms || isKick || isSplash) {
-                if (snareVal && snareVal !== "") {
-                    this.abcNoteMap.set(`${i}:${DrumType.SNARE}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.SNARE_ACCENT}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.SNARE_GHOST}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.SNARE_XSTICK}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.SNARE_FLAM}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.SNARE_BUZZ}`, currentIndex);
+            if (hasSnare || hasHH || hasToms || isKick || isSplash) {
+                if (hasSnare) {
+                    [DrumType.SNARE, DrumType.SNARE_ACCENT, DrumType.SNARE_GHOST, DrumType.SNARE_XSTICK, DrumType.SNARE_FLAM, DrumType.SNARE_BUZZ].forEach(t => this.abcNoteMap.set(`${i}:${t}`, currentIndex));
                 }
-                if (hhVal && hhVal !== "") {
-                    this.abcNoteMap.set(`${i}:${DrumType.HH_CLOSED}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.HH_OPEN}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.HH_ACCENT}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.CRASH}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.RIDE}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.RIDE_BELL}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.COWBELL}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.STACKER}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.METRONOME_NORMAL}`, currentIndex);
-                    this.abcNoteMap.set(`${i}:${DrumType.METRONOME_ACCENT}`, currentIndex);
+                if (hasHH) {
+                    [DrumType.HH_CLOSED, DrumType.HH_OPEN, DrumType.HH_ACCENT, DrumType.CRASH, DrumType.RIDE, DrumType.RIDE_BELL, DrumType.COWBELL, DrumType.STACKER, DrumType.METRONOME_NORMAL, DrumType.METRONOME_ACCENT].forEach(t => this.abcNoteMap.set(`${i}:${t}`, currentIndex));
                 }
                 if (hasToms) {
                     data.toms_array.forEach((arr, tomIdx) => {
-                        let drumKey = `tom${tomIdx + 1}`;
-                        // Remap Toms 1 & 2 -> TOM_HIGH, Toms 3 & 4 -> TOM_LOW
-                        if (drumKey === 'tom1' || drumKey === 'tom2') drumKey = DrumType.TOM_HIGH;
-                        if (drumKey === 'tom3' || drumKey === 'tom4') drumKey = DrumType.TOM_LOW;
-
-                        if (EditorDrumTypes.includes(drumKey) && arr[i] && arr[i] !== "") {
-                            this.abcNoteMap.set(`${i}:${drumKey}`, currentIndex);
+                        if (arr[i]) {
+                            const key = (tomIdx < 2) ? DrumType.TOM_HIGH : DrumType.TOM_LOW;
+                            this.abcNoteMap.set(`${i}:${key}`, currentIndex);
                         }
                     });
                 }
                 if (isKick) this.abcNoteMap.set(`${i}:${DrumType.KICK}`, currentIndex);
                 if (isSplash) this.abcNoteMap.set(`${i}:${DrumType.HH_FOOT}`, currentIndex);
-
-                currentIndex++; // One index for the whole chord/slice
+                currentIndex++;
             }
         }
 
-        // 3. Feet Voice (only if NOT stems up)
+        // 3. Lower Voice (Feet only if rendered on separate stems)
         if (!kickStemsUp) {
             for (let i = 0; i < totalTicks; i++) {
-                const kickVal = data.kick_array[i];
-                if (kickVal && kickVal !== "") {
-                    const isKick = kickVal === 'o' || kickVal === 'O' || kickVal === 'k' || kickVal === 'F' || kickVal === true || kickVal === 'b' || kickVal === 'X' || (typeof kickVal === 'string' && (kickVal.includes('F') || kickVal.includes('[F')));
-                    const isSplash = kickVal === 'x' || kickVal === 'X' || kickVal === 's' || kickVal === 'S' || kickVal === 'd,' || kickVal === 'b' || (typeof kickVal === 'string' && (kickVal.includes('d,') || kickVal.includes('^d,')));
-
+                const val = data.kick_array[i];
+                if (val) {
+                    const isKick = val === 'o' || val === 'O' || val === 'k' || val === 'F' || val === true;
                     if (isKick) this.abcNoteMap.set(`${i}:kick`, currentIndex);
-                    if (isSplash) this.abcNoteMap.set(`${i}:hh_foot`, currentIndex);
-
-                    currentIndex++; // Shared index for [Kick Splash] chord
+                    else this.abcNoteMap.set(`${i}:hh_foot`, currentIndex);
+                    currentIndex++;
                 }
             }
         }
-        console.log(`[CoachController] Mapped ${this.abcNoteMap.size} keys to ${currentIndex} indices across ${numberOfMeasures} measures`);
+        console.log(`[CoachController] Mapped ${this.abcNoteMap.size} keys to ${currentIndex} indices`);
     }
 
+    /**
+     * Resolve the target ABC index for a specific tick and instrument
+     */
     getAbcIndexForHit(tickIndex, instrument) {
         if (!this.abcNoteMap) this._refreshAbcMapping();
         const index = this.abcNoteMap.get(`${tickIndex}:${instrument}`);
@@ -430,92 +425,58 @@ export class CoachController {
     }
 
     /**
-     * Convert GrooveWriter's current pattern into a timeline of ms offsets
+     * Convert GrooveWriter's current pattern into a ms-based timeline for the Engine
      */
     getGrooveAsTimeline() {
-        const writer = this.grooveWriter;
-        if (!writer) return [];
-
-        const data = writer.grooveDataFromClickableUI();
+        const data = this.grooveWriter.grooveDataFromClickableUI();
         if (!data) return [];
 
         const timeline = [];
         const bpm = data.tempo || 80;
         const numBeats = data.numBeats || 4;
-        const noteValue = data.noteValue || 4;
-        const numberOfMeasures = data.numberOfMeasures || 1;
-        const notesPerMeasure = data.notesPerMeasure || 16;
-        const totalTicks = notesPerMeasure * numberOfMeasures;
-        const msPerTick = ((60000 / bpm) * numBeats) / notesPerMeasure;
+        const msPerTick = ((60000 / bpm) * numBeats) / (data.notesPerMeasure || 16);
+        const totalTicks = (data.notesPerMeasure || 16) * (data.numberOfMeasures || 1);
 
-        console.log(`[CoachController] Generating timeline: ${totalTicks} ticks (${notesPerMeasure} n/m), ${bpm} BPM, ${msPerTick.toFixed(2)}ms/tick`);
+        console.log(`[CoachController] Generating timeline: ${totalTicks} ticks, ${bpm} BPM, ${msPerTick.toFixed(2)}ms/tick`);
 
         for (let i = 0; i < totalTicks; i++) {
-            const tickNotes = [];
-            // HH
-            if (data.hh_array[i] && data.hh_array[i] !== "") {
+            // Hi-Hats & Cymbals
+            if (data.hh_array[i]) {
                 const val = data.hh_array[i];
                 let type = DrumType.HH_CLOSED;
-                // Check for all articulations/variants
                 if (val === 'o' || val === 'O' || val.includes('!open!')) type = DrumType.HH_OPEN;
                 else if (val === 'X' || val.includes('!accent!')) type = DrumType.HH_ACCENT;
-                else if (val === 'c' || val === 'C' || val.includes("^c'")) type = DrumType.CRASH;
-                else if (val === 'r' || val === 'R' || val.includes("^A'")) type = DrumType.RIDE;
-                else if (val === 'b' || val === 'B' || val.includes("^B'")) type = DrumType.RIDE_BELL;
-                else if (val === 'm' || val === 'M' || val.includes("^D'")) type = DrumType.COWBELL;
-                else if (val === 's' || val === 'S' || val.includes("^d'")) type = DrumType.STACKER;
-                else if (val === 'n' || val.includes("^e'")) type = DrumType.METRONOME_NORMAL;
-                else if (val === 'N' || val.includes("^f'")) type = DrumType.METRONOME_ACCENT;
-
-                if (EditorDrumTypes.includes(type)) {
-                    tickNotes.push({ time: i * msPerTick, type, tickIndex: i });
-                }
+                else if (val === 'c' || val === 'C') type = DrumType.CRASH;
+                else if (val === 'r' || val === 'R') type = DrumType.RIDE;
+                else if (val === 'b' || val === 'B') type = DrumType.RIDE_BELL;
+                timeline.push({ time: i * msPerTick, type, tickIndex: i });
             }
-            // Snare
-            if (data.snare_array[i] && data.snare_array[i] !== "") {
+            // Snare variants
+            if (data.snare_array[i]) {
                 const val = data.snare_array[i];
                 let type = DrumType.SNARE;
                 if (val === 'g' || val === 'G' || val.includes('!(')) type = DrumType.SNARE_GHOST;
                 else if (val === 'x' || val.includes('^c')) type = DrumType.SNARE_XSTICK;
                 else if (val === 'f' || val === 'F' || val.includes('{/')) type = DrumType.SNARE_FLAM;
-                else if (val === 'b' || val === 'B' || val.includes('!///!')) type = DrumType.SNARE_BUZZ;
                 else if (val === 'O' || val.includes('!accent!')) type = DrumType.SNARE_ACCENT;
-
-                if (EditorDrumTypes.includes(type)) {
-                    tickNotes.push({ time: i * msPerTick, type, tickIndex: i });
-                }
+                timeline.push({ time: i * msPerTick, type, tickIndex: i });
             }
-            // Kick / HH Foot
-            if (data.kick_array[i] && data.kick_array[i] !== "") {
+            // Kick and Foot HH
+            if (data.kick_array[i]) {
                 const val = data.kick_array[i];
-                const isKick = val === 'o' || val === 'O' || val === 'k' || val === 'F' || val === true || val === 'b' || val === 'X' || (typeof val === 'string' && (val.includes('F') || val.includes('[F')));
-                const isHHFoot = val === 'x' || val === 'h' || val === 'H' || (typeof val === 'string' && val.includes('^d,'));
-
-                if (isKick) tickNotes.push({ time: i * msPerTick, type: DrumType.KICK, tickIndex: i });
-                if (isHHFoot) tickNotes.push({ time: i * msPerTick, type: DrumType.HH_FOOT, tickIndex: i });
+                const isKick = val === 'o' || val === 'O' || val === 'k' || val === 'F' || val === true;
+                timeline.push({ time: i * msPerTick, type: isKick ? DrumType.KICK : DrumType.HH_FOOT, tickIndex: i });
             }
-            // Toms
+            // Toms (Unified 4-tom array)
             if (data.toms_array) {
                 data.toms_array.forEach((row, idx) => {
-                    let drumKey = `tom${idx + 1}`;
-                    // Remap Toms 1 & 2 -> TOM_HIGH, Toms 3 & 4 -> TOM_LOW
-                    if (drumKey === 'tom1' || drumKey === 'tom2') drumKey = DrumType.TOM_HIGH;
-                    if (drumKey === 'tom3' || drumKey === 'tom4') drumKey = DrumType.TOM_LOW;
-
-                    if (EditorDrumTypes.includes(drumKey) && row && row[i] && row[i] !== "") {
-                        tickNotes.push({ time: i * msPerTick, type: drumKey, tickIndex: i });
+                    if (row[i]) {
+                        // Map 4 rows to High/Low staff positions
+                        timeline.push({ time: i * msPerTick, type: (idx < 2) ? DrumType.TOM_HIGH : DrumType.TOM_LOW, tickIndex: i });
                     }
                 });
             }
-
-            if (tickNotes.length > 0) {
-                timeline.push(...tickNotes);
-            }
         }
-
-        console.log(`[CoachController] Generated timeline with ${timeline.length} notes`);
         return timeline.sort((a, b) => a.time - b.time);
     }
-
-    // Simplified mapping is now handled by _refreshAbcMapping and getAbcIndexForHit
 }

@@ -16,7 +16,7 @@ const DEFAULTS = {
     tolerance: 'normal',
     reps: 4,
     countIn: true,
-    showDebug: false
+    showDebug: true
 };
 
 export class CoachStateManager {
