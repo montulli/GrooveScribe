@@ -316,6 +316,7 @@ window.CoachTestHelper = {
         controller.sessionStartTime = performance.now();
         controller._refreshAbcMapping();
         controller.engine.start(controller.sessionStartTime);
+        controller._setRendererGrooveContext(); // Set groove context for time-based rendering
         controller.isSynced = true;
 
         console.log('[TestHelper] Headless session started');

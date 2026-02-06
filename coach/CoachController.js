@@ -117,6 +117,9 @@ export class CoachController {
         // Ensure visual feedback is ready
         this.renderer.init();
         this.renderer.clearFeedback();
+
+        // Set groove context for time-based rendering
+        this._setRendererGrooveContext();
     }
 
     _onPlaybackStop() {
@@ -237,56 +240,99 @@ export class CoachController {
 
         console.log(`[CoachController] Hit ${drum} evaluation: ${evaluation.tier} (match: ${evaluation.isMatch})`);
 
-        if (evaluation.isMatch || evaluation.tier === 'miss') {
-            // Find the matched note to get its tickIndex
+        // Calculate hit time relative to groove start (subtract audio latency)
+        // Timeline notes are at groove-relative times without latency
+        const audioLatency = this.engine.audioLatency || 0;
+        const hitTimeMs = timestamp - this.sessionStartTime - audioLatency;
+        const effectiveDrum = evaluation.isGraceNote ? DrumType.FLAM_GRACE : normalizedDrum;
+
+        if (evaluation.isMatch) {
+            // For matched notes, find the abcNoteIndex for Y reference
             const matchedNote = this.engine.noteTimeline.find(
                 n => n.originalIndex === evaluation.noteIndex
             );
 
-            if (matchedNote && matchedNote.tickIndex !== undefined) {
-                // Use the new instrument-aware mapping
-                // For flam grace notes, we draw at the flam position but with grace note offset
-                const effectiveDrum = evaluation.isGraceNote ? 'snare_flam' : normalizedDrum;
-                const abcNoteIndex = this.getAbcIndexForHit(matchedNote.tickIndex, effectiveDrum);
-                if (abcNoteIndex >= 0) {
-                    this.renderer.drawHitFeedback(
-                        abcNoteIndex,
-                        evaluation.tier,
-                        evaluation.timingError,
-                        evaluation.isGraceNote ? DrumType.FLAM_GRACE : normalizedDrum
-                    );
-                } else {
-                    console.warn(`[CoachController] No ABC index found for ${drum} at tick ${matchedNote.tickIndex}`);
-                }
-            }
-        } else if (evaluation.tier === 'extra') {
-            // Visualize extra hits by finding the closest time-slice
-            const relTime = timestamp - this.sessionStartTime;
-            let closestNote = null;
-            let minDiff = Infinity;
+            const abcNoteIndex = matchedNote && matchedNote.tickIndex !== undefined
+                ? this.getAbcIndexForHit(matchedNote.tickIndex, evaluation.isGraceNote ? 'snare_flam' : normalizedDrum)
+                : null;
 
-            for (const n of this.engine.noteTimeline) {
-                const diff = Math.abs(relTime - n.time);
-                if (diff < minDiff) {
-                    minDiff = diff;
-                    closestNote = n;
-                }
-            }
-
-            if (closestNote && minDiff < 200) {
-                // Find ANY abc index at this tick to at least show the extra hit vertically near something
-                const abcNoteIndex = this.getAbcIndexForHit(closestNote.tickIndex, closestNote.type);
-                if (abcNoteIndex >= 0) {
-                    this.renderer.drawHitFeedback(abcNoteIndex, 'extra', 0, drum);
-                }
-            }
+            // Use time-based rendering
+            this.renderer.drawHitFeedbackByTime(
+                hitTimeMs,
+                evaluation.tier,
+                evaluation.timingError,
+                effectiveDrum,
+                abcNoteIndex >= 0 ? abcNoteIndex : null
+            );
+        } else {
+            // Extra hits (gray circles) - draw at exact time position
+            // Use time-based rendering without target note
+            this.renderer.drawHitFeedbackByTime(
+                hitTimeMs,
+                'extra',
+                0,
+                normalizedDrum,
+                null // No target note
+            );
         }
+    }
+
+    /**
+     * Set groove context on the renderer for time-based X interpolation
+     */
+    _setRendererGrooveContext() {
+        const writer = this.grooveWriter;
+        if (!writer) return;
+
+        const data = writer.grooveDataFromClickableUI();
+        if (!data) return;
+
+        const bpm = data.tempo || 80;
+        const numBeats = data.numBeats || 4;
+        const measures = data.numberOfMeasures || 1;
+        const notesPerMeasure = data.notesPerMeasure || 16;
+
+        const context = {
+            bpm,
+            numBeats,
+            measures,
+            notesPerMeasure
+        };
+
+        // Build timeline with abcIndex for each note
+        const timeline = [];
+        const msPerTick = ((60000 / bpm) * numBeats) / notesPerMeasure;
+
+        // Iterate through the engine's timeline and augment with abcIndex
+        for (const note of this.engine.noteTimeline) {
+            const tickIndex = note.tickIndex;
+            const type = note.type;
+            const editorType = note.editorType;
+
+            // Check if this is a grace note (flam grace)
+            const isGrace = (editorType === DrumType.SNARE_FLAM && note.graceMatched !== undefined);
+
+            // Get abcIndex for this note
+            const abcIndex = this.getAbcIndexForHit(tickIndex, editorType || type);
+
+            timeline.push({
+                time: note.time,
+                tickIndex: tickIndex,
+                type: type,
+                abcIndex: abcIndex >= 0 ? abcIndex : null,
+                isGrace: isGrace
+            });
+        }
+
+        this.renderer.setGrooveContext(context, timeline);
+        console.log(`[CoachController] Set renderer groove context: ${timeline.length} notes`);
     }
 
     /**
      * Build a mapping of (tickIndex, instrument) -> abcNoteIndex
      * This simulates abc2svg's rendering order to accurately target rectangles.
      */
+
     _refreshAbcMapping() {
         console.log('[CoachController] Refreshing ABC mapping...');
         this.abcNoteMap = new Map();

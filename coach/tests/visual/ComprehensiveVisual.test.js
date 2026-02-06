@@ -79,10 +79,10 @@ describe('Drum Coach Comprehensive Visual Tests - Sequential', () => {
             window.CoachTestHelper.setDebugMode(true);
         }, fixture.groove);
 
-        // Wait for SVG render
+        // Wait for SVG render (handle empty score case where there are no notes)
         await page.waitForFunction(() => {
             const svg = document.querySelector('#svgTarget svg');
-            return svg && svg.querySelectorAll('rect.abcr').length > 0;
+            return svg !== null; // Just need SVG to be present, may have zero notes
         }, { timeout: 15000 });
 
         // Run simulation
