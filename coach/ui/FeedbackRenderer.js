@@ -1,6 +1,8 @@
 import { coachState } from '../state/CoachState.js';
 import { DrumType } from '../engine/DrumConstants.js';
 
+
+
 /**
  * FeedbackRenderer - Draws feedback circles on notation staff 
  * using coordinates extracted by NotationSniffer.
@@ -15,7 +17,6 @@ export class FeedbackRenderer {
         this.timeline = []; // Complete rendering timeline { timeMs, x, y, type, isGrace, abcIndex }
         this.measureBoundaries = []; // { timeMs, x, measureIndex }
         this.sniffedData = null;
-        this.scaleFactor = 1.0;
     }
 
     init() {
@@ -68,17 +69,9 @@ export class FeedbackRenderer {
 
         // 0. Auto-Calibration for X Scaling (True Scale)
         // Calculate factor based on the ratio between ViewBox and the actual sniffer space
-        if (this.sniffedData) {
-            const vbWidth = this.svgElement.viewBox.baseVal.width || 800;
-
-            // Prefer engine-reported width for absolute precision
-            if (this.sniffedData.engineWidth > 0) {
-                this.scaleFactor = vbWidth / this.sniffedData.engineWidth;
-                console.log(`[FeedbackRenderer] Engine-Precise Scaling: engineWidth=${this.sniffedData.engineWidth.toFixed(1)}, viewBox=${vbWidth}. Factor=${this.scaleFactor.toFixed(4)}`);
-            } else {
-                console.error('[FeedbackRenderer] CRITICAL: engineWidth not captured. Cannot calculate accurate scale. Fallbacks disabled.');
-                this.scaleFactor = 1.0;
-            }
+        if (this.sniffedData && this.sniffedData.scale) {
+            this.scaleFactor = this.sniffedData.scale;
+            console.log(`[FeedbackRenderer] Using Sniffed Scale Factor: ${this.scaleFactor}`);
         }
 
         const bpm = context.bpm || 80;
@@ -113,8 +106,8 @@ export class FeedbackRenderer {
                         tickIndex: note.tickIndex,
                         type: note.isGrace ? DrumType.FLAM_GRACE : note.type,
                         abcIndex: note.abcIndex,
-                        x: this._transformX(sniffed.x),
-                        y: this._transformY(sniffed.y, sniffed.x), // Transform Y as well
+                        x: sniffed.x,
+                        y: sniffed.y, // Final Y from sniffer
                         isGrace: !!note.isGrace
                     });
                 }
@@ -144,21 +137,10 @@ export class FeedbackRenderer {
             } else {
                 const bar = sniffedBars[boundary.measureIndex - 1];
                 if (bar) {
-                    boundary.x = this._transformX(bar.x);
+                    boundary.x = bar.x;
                 }
             }
         }
-    }
-
-    /**
-     * Transform abc2svg space to local layer space
-     */
-    _transformX(abcX) {
-        return abcX * this.scaleFactor;
-    }
-
-    _transformY(abcY, abcX) {
-        return abcY;
     }
 
     /**
@@ -263,7 +245,7 @@ export class FeedbackRenderer {
             this.feedbackLayer.appendChild(line);
 
             // Measure Label
-            this._addDebugText(b.x, 15, `M${b.measureIndex}`, 'blue', '10px');
+            this._addDebugText(b.x, 10, `M${b.measureIndex}`, 'blue', '10px');
         });
 
         // Notes from timeline (Red dots/lines)
@@ -276,7 +258,7 @@ export class FeedbackRenderer {
             this.feedbackLayer.appendChild(line);
 
             // Note Index Label (Higher up, removed prefix)
-            this._addDebugText(n.x, 20, `${n.abcIndex}`, n.isGrace ? 'purple' : 'red', '10px');
+            this._addDebugText(n.x, 10, `${n.abcIndex}`, n.isGrace ? 'purple' : 'red', '10px');
         });
 
         // Horizontal lines (Green)
@@ -293,7 +275,7 @@ export class FeedbackRenderer {
 
                 // Staff Line Label (Further Left)
                 if (i >= 4 && i <= 8) {
-                    this._addDebugText(-10, y + 2, `${i - 4}`, (i === 4 || i === 8) ? 'orange' : 'green', '6px');
+                    this._addDebugText(-5, y + 2, `${i - 4}`, (i === 4 || i === 8) ? 'orange' : 'green', '6px');
                 }
             });
         }

@@ -210,7 +210,8 @@ class LegacyCoachState {
                 if (settings.isEnabled !== undefined) this.isEnabled = settings.isEnabled;
                 if (settings.midiDevice !== undefined) this.midiDevice = settings.midiDevice;
                 if (settings.calibrationOffset !== undefined) this.calibrationOffset = settings.calibrationOffset;
-                if (settings.showDebug !== undefined) this.showDebug = settings.showDebug;
+                // Force debug on for development session
+                this.showDebug = true; // settings.showDebug;
             }
         } catch (e) {
             console.warn('[CoachState] Failed to load legacy settings:', e);

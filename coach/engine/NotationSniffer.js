@@ -2,6 +2,15 @@
  * NotationSniffer - Hooks into abc2svg to extract precise coordinates
  * for notes, measure boundaries, and staff positions.
  */
+// 72pt / 96px - matches 'scale: .75' default in abc2svg-1.js cfmt configuration
+// which converts internal points (1/72") to screen pixels (1/96")
+const DEFAULT_SCALE = 0.75;
+// 6pt matches standard abc2svg line spacing
+const BASE_STAFF_STEP = 6;
+
+// 61pt = 12pt (Half-staff) + 46pt (staffsep) + 3pt (margin)
+const BASE_STAFF_Y_OFFSET = 12+46+3;
+
 export class NotationSniffer {
     constructor() {
         console.log('[NotationSniffer] Instance created');
@@ -76,10 +85,12 @@ export class NotationSniffer {
 
             const original_anno_stop = target.anno_stop;
             target.anno_stop = function (type, start, stop, x, y, w, h) {
+                const scale = self.data.scale || DEFAULT_SCALE;
+
                 if (type === "bar") {
-                    if (!self.data.bars.some(b => Math.abs(b.x - x) < 5)) {
-                        console.log(`[NotationSniffer] BAR caught in anno_stop: x=${x.toFixed(2)}`);
-                        self.data.bars.push({ x: x, time: 0 });
+                    const scaledX = x * scale;
+                    if (!self.data.bars.some(b => Math.abs(b.x - scaledX) < (5 * scale))) {
+                        self.data.bars.push({ x: scaledX, time: 0 });
                     }
                 }
 
@@ -87,19 +98,19 @@ export class NotationSniffer {
                     const preciseX = (activeNoteSym && Math.abs(activeNoteSym.x - x) < w * 2) ? activeNoteSym.x : (x + w / 2);
 
                     // Anchor staffY immediately on first valid note
-                    // Logging Y to see why horizontal lines are missing
-                    console.log(`[NotationSniffer] Raw Y for staffY_candidates: ${y.toFixed(2)}`);
                     self.staffY_candidates.push(y);
                     const sorted = [...self.staffY_candidates].sort((a, b) => a - b);
                     const newStaffY = sorted[Math.floor(sorted.length / 2)];
 
                     if (newStaffY !== self.data.staffY) {
-                        // Hack: magic number
-                        self.data.staffY = newStaffY + 47;
+                        // Use constants derived from scale
+                        const offset = BASE_STAFF_Y_OFFSET * scale;
+                        const step = BASE_STAFF_STEP * scale;
+
+                        self.data.staffY = (newStaffY * scale) + offset;
                         self.data.yLevels = [];
                         for (let i = -4; i <= 14; i++) {
-                            // Hack: magic number
-                            self.data.yLevels.push(self.data.staffY + (i * 4.5));
+                            self.data.yLevels.push(self.data.staffY + (i * step));
                         }
                         console.log('[NotationSniffer] staffY anchored/updated at:', self.data.staffY.toFixed(2));
                     }
@@ -118,10 +129,10 @@ export class NotationSniffer {
 
                     self.data.notes.push({
                         type: type,
-                        x: preciseX,
-                        y: y + h / 2,
-                        w: w,
-                        h: h,
+                        x: preciseX * scale,
+                        y: (y + h / 2) * scale,
+                        w: w * scale,
+                        h: h * scale,
                         abcIndex: self.abcIndexCount,
                         isGrace: type === "grace"
                     });
@@ -142,14 +153,19 @@ export class NotationSniffer {
 
                 // 1. Try internal properties (best effort debug)
                 if (abc.cf) {
-                    console.log(`[NotationSniffer] Internal cf: pw=${abc.cf.pagewidth} lm=${abc.cf.leftmargin} rm=${abc.cf.rightmargin}`);
+                    // console.log(`[NotationSniffer] Internal cf: pw=${abc.cf.pagewidth} lm=${abc.cf.leftmargin} rm=${abc.cf.rightmargin}`);
                 }
 
-                self.data.staffY = abc.y || (abc.user && abc.user.y) || 0;
+                const scale = self.data.scale || DEFAULT_SCALE;
+                const rawY = abc.y || (abc.user && abc.user.y) || 0;
+                self.data.staffY = rawY * scale;
+
                 self.data.yLevels = [];
                 const baseY = self.data.staffY;
+                const step = BASE_STAFF_STEP * scale;
+
                 for (let i = -4; i <= 14; i++) {
-                    self.data.yLevels.push(baseY + (i * 4.8));
+                    self.data.yLevels.push(baseY + (i * step));
                 }
 
                 if (original_stop_page) {
@@ -169,7 +185,8 @@ export class NotationSniffer {
             bars: [],
             staffY: 0,
             yLevels: [],
-            engineWidth: 0
+            engineWidth: 0,
+            scale: DEFAULT_SCALE
         };
 
         // 2. SOURCE OF TRUTH: Parse the ABC Source directly
@@ -177,13 +194,20 @@ export class NotationSniffer {
         try {
             const abcElement = document.getElementById("ABCsource");
             if (abcElement && abcElement.value) {
-                const match = abcElement.value.match(/%%pagewidth\s+(\d+)/);
-                if (match && match[1]) {
-                    const parsedWidth = parseFloat(match[1]);
+                // Parse pagewidth
+                const widthMatch = abcElement.value.match(/%%pagewidth\s+(\d+)/);
+                if (widthMatch && widthMatch[1]) {
+                    const parsedWidth = parseFloat(widthMatch[1]);
                     this.data.engineWidth = parsedWidth;
                     console.log(`[NotationSniffer] Parsed %%pagewidth from source (during reset): ${parsedWidth}`);
-                } else {
-                    console.warn('[NotationSniffer] Could not find %%pagewidth in ABC source (during reset). Content:', abcElement.value.substring(0, 500));
+                }
+
+                // Parse scale
+                const scaleMatch = abcElement.value.match(/%%scale\s+([0-9.]+)/);
+                if (scaleMatch && scaleMatch[1]) {
+                    const parsedScale = parseFloat(scaleMatch[1]);
+                    this.data.scale = parsedScale;
+                    console.log(`[NotationSniffer] Parsed %%scale from source (during reset): ${parsedScale}`);
                 }
             } else {
                 console.warn('[NotationSniffer] ABCsource element not found (during reset)');

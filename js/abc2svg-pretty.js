@@ -1,6 +1,4 @@
-Need to install the following packages:
-js-beautify@1.15.4
-Ok to proceed? (y) // abc2svg - ABC to SVG translator
+// abc2svg - ABC to SVG translator
 // Copyright (C) 2014-2015 Jean-Francois Moine
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License version 2 as
