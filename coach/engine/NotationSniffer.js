@@ -9,10 +9,12 @@ export class NotationSniffer {
             notes: [],    // { x, p, time, abcIndex, type }
             bars: [],     // { x, time }
             staffY: 0,
-            yLevels: []
+            yLevels: [],
+            engineWidth: 0
         };
         this.abcIndexCount = 0;
         this.lastNoteX = -100;
+        this.staffY_candidates = [];
         this.__hookedObjects = new WeakSet();
     }
 
@@ -84,17 +86,26 @@ export class NotationSniffer {
                 if (type === "note" || type === "grace") {
                     const preciseX = (activeNoteSym && Math.abs(activeNoteSym.x - x) < w * 2) ? activeNoteSym.x : (x + w / 2);
 
-                    // Anchor staffY from first note if stop_page hasn't happened
-                    if (self.data.yLevels.length === 0) {
-                        self.data.staffY = y + h / 2; // Rough estimate of staff center
-                        console.log('[NotationSniffer] Tentative staffY anchored from note:', self.data.staffY);
+                    // Anchor staffY immediately on first valid note
+                    // Logging Y to see why horizontal lines are missing
+                    console.log(`[NotationSniffer] Raw Y for staffY_candidates: ${y.toFixed(2)}`);
+                    self.staffY_candidates.push(y);
+                    const sorted = [...self.staffY_candidates].sort((a, b) => a - b);
+                    const newStaffY = sorted[Math.floor(sorted.length / 2)];
+
+                    if (newStaffY !== self.data.staffY) {
+                        // Hack: magic number
+                        self.data.staffY = newStaffY + 47;
+                        self.data.yLevels = [];
                         for (let i = -4; i <= 14; i++) {
-                            self.data.yLevels.push(self.data.staffY + (i * 5));
+                            // Hack: magic number
+                            self.data.yLevels.push(self.data.staffY + (i * 4.5));
                         }
+                        console.log('[NotationSniffer] staffY anchored/updated at:', self.data.staffY.toFixed(2));
                     }
 
-                    // Chord Grouping Logic: 
-                    // If this note is at the same X (within 2px) as the previous one, 
+                    // Chord Grouping Logic:
+                    // If this note is at the same X (within 2px) as the previous one,
                     // it belongs to the same abcIndex (same beat/chord).
                     if (type !== "grace") {
                         if (Math.abs(preciseX - self.lastNoteX) > 2) {
@@ -127,12 +138,18 @@ export class NotationSniffer {
 
         if (stop_page_target) {
             stop_page_target.stop_page = function () {
-                console.log('[NotationSniffer] stop_page called! abc.y:', abc.y);
+                console.log('[NotationSniffer] stop_page called. Capturing layout dimensions.');
+
+                // 1. Try internal properties (best effort debug)
+                if (abc.cf) {
+                    console.log(`[NotationSniffer] Internal cf: pw=${abc.cf.pagewidth} lm=${abc.cf.leftmargin} rm=${abc.cf.rightmargin}`);
+                }
+
                 self.data.staffY = abc.y || (abc.user && abc.user.y) || 0;
                 self.data.yLevels = [];
                 const baseY = self.data.staffY;
                 for (let i = -4; i <= 14; i++) {
-                    self.data.yLevels.push(baseY + (i * 5));
+                    self.data.yLevels.push(baseY + (i * 4.8));
                 }
 
                 if (original_stop_page) {
@@ -151,8 +168,30 @@ export class NotationSniffer {
             notes: [],
             bars: [],
             staffY: 0,
-            yLevels: []
+            yLevels: [],
+            engineWidth: 0
         };
+
+        // 2. SOURCE OF TRUTH: Parse the ABC Source directly
+        // We do this at reset() because ABCsource is already populated before render starts.
+        try {
+            const abcElement = document.getElementById("ABCsource");
+            if (abcElement && abcElement.value) {
+                const match = abcElement.value.match(/%%pagewidth\s+(\d+)/);
+                if (match && match[1]) {
+                    const parsedWidth = parseFloat(match[1]);
+                    this.data.engineWidth = parsedWidth;
+                    console.log(`[NotationSniffer] Parsed %%pagewidth from source (during reset): ${parsedWidth}`);
+                } else {
+                    console.warn('[NotationSniffer] Could not find %%pagewidth in ABC source (during reset). Content:', abcElement.value.substring(0, 500));
+                }
+            } else {
+                console.warn('[NotationSniffer] ABCsource element not found (during reset)');
+            }
+        } catch (e) {
+            console.error('[NotationSniffer] Error parsing ABC source:', e);
+        }
+
         this.abcIndexCount = startIndex;
         this.lastNoteX = -100;
     }

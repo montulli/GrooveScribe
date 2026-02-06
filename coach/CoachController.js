@@ -73,6 +73,26 @@ export class CoachController {
 
         // Hook into GrooveWriter's playback system
         this._hookPlaybackEvents();
+
+        // Listen for resize and notation changes to re-render feedback layer
+        // We debounce or just hook into the existing refresh_ABC logic if possible
+        window.addEventListener('resize', () => {
+            if (this.isCoachingActive) {
+                console.log('[CoachController] Resize detected, updating feedback UI');
+                this._refreshAndSyncUI();
+            }
+        });
+
+        // Intercept displayNewSVG to know when the SVG is replaced
+        const originalDisplaySVG = this.grooveWriter.displayNewSVG;
+        this.grooveWriter.displayNewSVG = (...args) => {
+            originalDisplaySVG.apply(this.grooveWriter, args);
+            if (this.isCoachingActive) {
+                console.log('[CoachController] Notation re-rendered, refreshing feedback UI');
+                this._refreshAndSyncUI();
+            }
+        };
+
         this.isInitialized = true;
     }
 
@@ -478,5 +498,23 @@ export class CoachController {
             }
         }
         return timeline.sort((a, b) => a.time - b.time);
+    }
+
+    /**
+     * Refresh sniffer data and re-sync the renderer's context
+     * Called on resize or notation re-rendering
+     */
+    _refreshAndSyncUI() {
+        if (!this.grooveWriter || !this.isCoachingActive) return;
+
+        // Ensure sniffer processes the new SVG (it hooks automatically via abc2svg hooks, 
+        // but we want to make sure we have the latest data before updating renderer)
+        const sniffedData = window.notationSniffer ? window.notationSniffer.getSniffedData() : null;
+
+        // Re-map drum indices as they might have shifted
+        this._refreshAbcMapping();
+
+        // Update renderer with new coordinates and scale
+        this._setRendererGrooveContext();
     }
 }

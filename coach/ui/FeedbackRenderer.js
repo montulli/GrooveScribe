@@ -15,6 +15,7 @@ export class FeedbackRenderer {
         this.timeline = []; // Complete rendering timeline { timeMs, x, y, type, isGrace, abcIndex }
         this.measureBoundaries = []; // { timeMs, x, measureIndex }
         this.sniffedData = null;
+        this.scaleFactor = 1.0;
     }
 
     init() {
@@ -62,6 +63,23 @@ export class FeedbackRenderer {
         this.grooveContext = context;
         this.sniffedData = sniffedData;
         this.timeline = [];
+
+        if (!this.ensureLayer()) return;
+
+        // 0. Auto-Calibration for X Scaling (True Scale)
+        // Calculate factor based on the ratio between ViewBox and the actual sniffer space
+        if (this.sniffedData) {
+            const vbWidth = this.svgElement.viewBox.baseVal.width || 800;
+
+            // Prefer engine-reported width for absolute precision
+            if (this.sniffedData.engineWidth > 0) {
+                this.scaleFactor = vbWidth / this.sniffedData.engineWidth;
+                console.log(`[FeedbackRenderer] Engine-Precise Scaling: engineWidth=${this.sniffedData.engineWidth.toFixed(1)}, viewBox=${vbWidth}. Factor=${this.scaleFactor.toFixed(4)}`);
+            } else {
+                console.error('[FeedbackRenderer] CRITICAL: engineWidth not captured. Cannot calculate accurate scale. Fallbacks disabled.');
+                this.scaleFactor = 1.0;
+            }
+        }
 
         const bpm = context.bpm || 80;
         const numBeats = context.numBeats || 4;
@@ -136,7 +154,7 @@ export class FeedbackRenderer {
      * Transform abc2svg space to local layer space
      */
     _transformX(abcX) {
-        return abcX;
+        return abcX * this.scaleFactor;
     }
 
     _transformY(abcY, abcX) {
@@ -233,26 +251,32 @@ export class FeedbackRenderer {
 
     renderDebugGrid() {
         if (!this.feedbackLayer) return;
+
         this.feedbackLayer.querySelectorAll('.coach-debug-line').forEach(el => el.remove());
 
         // Measure boundaries (Blue)
         this.measureBoundaries.forEach((b) => {
             if (b.x === null) return;
-            const line = this._createDebugLine(b.x, 'blue', '0.5');
+            const line = this._createDebugLine(b.x, 'blue', '1.0');
             line.setAttribute('stroke-dasharray', '4,4');
+            line.setAttribute('stroke-width', '0.25');
             this.feedbackLayer.appendChild(line);
 
             // Measure Label
-            this._addDebugText(b.x + 5, 12, `M${b.measureIndex}`, 'blue');
+            this._addDebugText(b.x, 15, `M${b.measureIndex}`, 'blue', '10px');
         });
 
         // Notes from timeline (Red dots/lines)
-        this.timeline.forEach(n => {
-            const line = this._createDebugLine(n.x, n.isGrace ? 'purple' : 'red', '0.3');
+        this.timeline.forEach((n) => {
+            if (n.x === null) return;
+            // Brighter colors: Magenta for grace, Red (no transparency) for notes
+            const color = n.isGrace ? '#FF00FF' : '#FF0000';
+            const line = this._createDebugLine(n.x, color, '1.0');
+            line.setAttribute('stroke-width', '0.25');
             this.feedbackLayer.appendChild(line);
 
-            // Note Index Label
-            this._addDebugText(n.x + 2, 25, `idx:${n.abcIndex}`, n.isGrace ? 'purple' : 'red');
+            // Note Index Label (Higher up, removed prefix)
+            this._addDebugText(n.x, 20, `${n.abcIndex}`, n.isGrace ? 'purple' : 'red', '10px');
         });
 
         // Horizontal lines (Green)
@@ -262,27 +286,28 @@ export class FeedbackRenderer {
                 line.setAttribute('x1', 0); line.setAttribute('y1', y);
                 line.setAttribute('x2', 2000); line.setAttribute('y2', y);
                 line.setAttribute('stroke', (i === 4 || i === 8) ? 'orange' : 'green');
-                line.setAttribute('stroke-width', '1');
-                line.setAttribute('opacity', '0.2');
+                line.setAttribute('stroke-width', '0.25');
+                line.setAttribute('opacity', '1.0');
                 line.classList.add('coach-debug-line');
                 this.feedbackLayer.appendChild(line);
 
-                // Staff Line Label (only for key lines)
+                // Staff Line Label (Further Left)
                 if (i >= 4 && i <= 8) {
-                    this._addDebugText(10, y - 2, `lane:${i - 4}`, (i === 4 || i === 8) ? 'orange' : 'green');
+                    this._addDebugText(-10, y + 2, `${i - 4}`, (i === 4 || i === 8) ? 'orange' : 'green', '6px');
                 }
             });
         }
     }
 
-    _addDebugText(x, y, str, color) {
+    _addDebugText(x, y, str, color, fontSize = '10px') {
         const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         text.setAttribute('x', x);
         text.setAttribute('y', y);
         text.setAttribute('fill', color);
-        text.setAttribute('font-size', '10px');
+        text.setAttribute('font-size', fontSize);
         text.style.fontFamily = 'monospace';
         text.style.fontWeight = 'bold';
+        text.style.textAnchor = 'middle';
         text.textContent = str;
         text.classList.add('coach-debug-line');
         this.feedbackLayer.appendChild(text);
