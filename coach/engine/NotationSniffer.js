@@ -9,7 +9,7 @@ const DEFAULT_SCALE = 0.75;
 const BASE_STAFF_STEP = 6;
 
 // 61pt = 12pt (Half-staff) + 46pt (staffsep) + 3pt (margin)
-const BASE_STAFF_Y_OFFSET = 12+46+3;
+const BASE_STAFF_Y_OFFSET = 12 + 46 + 3;
 
 export class NotationSniffer {
     constructor() {
@@ -35,8 +35,9 @@ export class NotationSniffer {
             console.warn('[NotationSniffer] hook(abc) called with null abc object');
             return;
         }
-        if (this.__hookedObjects.has(abc)) return;
-        this.__hookedObjects.add(abc);
+        // Use a property on the target object to survive HMR/module reloads
+        if (abc.__notationSnifferHooked) return;
+        abc.__notationSnifferHooked = true;
 
         console.log('[NotationSniffer] Hooking into abc2svg engine instance');
 
@@ -159,14 +160,7 @@ export class NotationSniffer {
                 const scale = self.data.scale || DEFAULT_SCALE;
                 const rawY = abc.y || (abc.user && abc.user.y) || 0;
                 self.data.staffY = rawY * scale;
-
-                self.data.yLevels = [];
-                const baseY = self.data.staffY;
-                const step = BASE_STAFF_STEP * scale;
-
-                for (let i = -4; i <= 14; i++) {
-                    self.data.yLevels.push(baseY + (i * step));
-                }
+                self.data.step = BASE_STAFF_STEP * scale;
 
                 if (original_stop_page) {
                     return original_stop_page.call(this);

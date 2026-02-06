@@ -196,16 +196,21 @@ export class FeedbackRenderer {
     }
 
     _guessYForDrum(drumType) {
-        if (!this.sniffedData || !this.sniffedData.yLevels || this.sniffedData.yLevels.length === 0) return 100;
-        const yLevels = this.sniffedData.yLevels;
-        const offsets = {
+        if (!this.sniffedData || this.sniffedData.staffY === undefined) return 100;
+        const staffY = this.sniffedData.staffY;
+        const step = this.sniffedData.step || 4.5; // Fallback to standard 6pt * 0.75 scale
+
+        // Map legacy loop indices (start -4) to relative steps from Top Line (0)
+        // Old Index 4 = Staff Top = 0. Relative = Index - 4.
+        const legacyOffsets = {
             [DrumType.KICK]: 12, [DrumType.SNARE]: 8, [DrumType.SNARE_FLAM]: 8, [DrumType.FLAM_GRACE]: 8,
             [DrumType.HH_CLOSED]: 4, [DrumType.HH_OPEN]: 4, [DrumType.HH_FOOT]: 14,
             [DrumType.TOM_HIGH]: 6, [DrumType.TOM_LOW]: 10, [DrumType.CRASH]: 2, [DrumType.RIDE]: 3
         };
-        const levelIdx = offsets[drumType] !== undefined ? offsets[drumType] : 8;
-        const safeIdx = Math.max(0, Math.min(yLevels.length - 1, levelIdx));
-        return this._transformY(yLevels[safeIdx], 0);
+        const levelIdx = legacyOffsets[drumType] !== undefined ? legacyOffsets[drumType] : 8;
+        const relativeStep = levelIdx - 4;
+
+        return staffY + (relativeStep * step);
     }
 
     _drawCircle(x, y, tier) {
@@ -262,22 +267,29 @@ export class FeedbackRenderer {
         });
 
         // Horizontal lines (Green)
-        if (this.sniffedData && this.sniffedData.yLevels) {
-            this.sniffedData.yLevels.forEach((y, i) => {
+        if (this.sniffedData) {
+            const staffY = this.sniffedData.staffY || 0;
+            const step = this.sniffedData.step || 4.5; // Fallback default
+            // Draw 4 lines above (-4 to -1) and 4 below (5 to 8) plus staff (0 to 4)
+            for (let i = -4; i <= 8; i++) {
+                const y = staffY + (i * step);
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 line.setAttribute('x1', 0); line.setAttribute('y1', y);
                 line.setAttribute('x2', 2000); line.setAttribute('y2', y);
-                line.setAttribute('stroke', (i === 4 || i === 8) ? 'orange' : 'green');
+
+                // Staff Top (0) and Bottom (4) are Orange
+                const isStaffEdge = (i === 0 || i === 4);
+                line.setAttribute('stroke', isStaffEdge ? 'orange' : 'green');
                 line.setAttribute('stroke-width', '0.25');
                 line.setAttribute('opacity', '1.0');
                 line.classList.add('coach-debug-line');
                 this.feedbackLayer.appendChild(line);
 
-                // Staff Line Label (Further Left)
-                if (i >= 4 && i <= 8) {
-                    this._addDebugText(-5, y + 2, `${i - 4}`, (i === 4 || i === 8) ? 'orange' : 'green', '6px');
+                // Staff Line Label (Only for staff lines)
+                if (i >= 0 && i <= 4) {
+                    this._addDebugText(-5, y + 2, `${i}`, isStaffEdge ? 'orange' : 'green', '6px');
                 }
-            });
+            }
         }
     }
 
