@@ -4456,8 +4456,8 @@ function GrooveWriter() {
 				'		<ellipse id="drag_hd" rx="4.1" ry="2.9" transform="rotate(-20)" class="drag_fill"></ellipse>' +
 				'	</defs>' +
 				'	<g id="note" transform="translate(-44 -35)">' +
-				'       <path class="fill" d="m51.81 38.34 l8.58 0.00v1.60l-8.58 0.00"></path>' +
-				'	    <path class="fill" d="m52.10 41.34 l8.00 0.00v1.60l-8.00 0.00"></path>' +
+				'       <path class="drag_fill" d="m51.81 38.34 l8.58 0.00v1.60l-8.58 0.00"></path>' +
+				'	    <path class="drag_fill" d="m52.10 41.34 l8.00 0.00v1.60l-8.00 0.00"></path>' +
 				'		<path class="drag_stroke" d="m52.1 53.34v-15.00"></path>' +
 				'		<use x="50.50" y="53.34" xlink:href="#drag_ghd"></use>' +
 				'		<path class="drag_stroke" d="m49.50 49.34l8.00 -15.00"></path>' +
