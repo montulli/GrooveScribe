@@ -9,6 +9,9 @@ export const SHOW_DEBUG = true;
 /**
  * FeedbackRenderer - Draws feedback circles on notation staff 
  * using coordinates extracted by NotationSniffer.
+ *
+ * Expects sniffedData in the multi-staff format:
+ * { verticalStep, staffs: [{ topY, notes: [{x, y, abcIndex, isGrace}], boundaries: [{x}] }] }
  */
 export class FeedbackRenderer {
     constructor(svgSelector) {
@@ -17,8 +20,8 @@ export class FeedbackRenderer {
         this.feedbackLayer = null;
 
         this.grooveContext = null;
-        this.timeline = []; // Complete rendering timeline { timeMs, x, y, type, isGrace, abcIndex }
-        this.measureBoundaries = []; // { timeMs, x, measureIndex }
+        this.verticalStep = 4.5; // Default step (6pt * 0.75 scale)
+        this.staffs = [];        // Per-staff rendering data: [{ topY, timeline, measureBoundaries }]
         this.sniffedData = null;
     }
 
@@ -66,15 +69,13 @@ export class FeedbackRenderer {
     setGrooveContext(context, timeline, sniffedData = null) {
         this.grooveContext = context;
         this.sniffedData = sniffedData;
-        this.timeline = [];
+        this.staffs = [];
 
         if (!this.ensureLayer()) return;
 
-        // 0. Auto-Calibration for X Scaling (True Scale)
-        // Calculate factor based on the ratio between ViewBox and the actual sniffer space
-        if (this.sniffedData && this.sniffedData.scale) {
-            this.scaleFactor = this.sniffedData.scale;
-            console.log(`[FeedbackRenderer] Using Sniffed Scale Factor: ${this.scaleFactor}`);
+        // Extract verticalStep from sniffed data
+        if (sniffedData && sniffedData.verticalStep) {
+            this.verticalStep = sniffedData.verticalStep;
         }
 
         const bpm = context.bpm || 80;
@@ -84,39 +85,53 @@ export class FeedbackRenderer {
         const measureDurationMs = (60000 / bpm) * numBeats;
         this.grooveContext.totalDurationMs = measureDurationMs * measures;
 
-        // 1. Build Measure Boundaries from Sniffer Bars
-        this.measureBoundaries = [];
-        for (let m = 0; m <= measures; m++) {
-            this.measureBoundaries.push({
-                timeMs: m * measureDurationMs,
-                measureIndex: m,
-                x: null
-            });
-        }
-        this._calculateMeasureBoundaryPositions(sniffedData);
+        // Build per-staff rendering data
+        if (sniffedData && sniffedData.staffs) {
+            for (const staff of sniffedData.staffs) {
+                const staffData = {
+                    topY: staff.topY,
+                    timeline: [],
+                    measureBoundaries: []
+                };
 
-        // 2. Build High-Precision Timeline from Sniffer Notes
-        if (sniffedData && sniffedData.notes && timeline && timeline.length > 0) {
-            for (const note of timeline) {
-                const sniffed = sniffedData.notes.find(n =>
-                    n.abcIndex === note.abcIndex &&
-                    n.isGrace === !!note.isGrace
-                );
-
-                if (sniffed) {
-                    this.timeline.push({
-                        timeMs: note.time,
-                        tickIndex: note.tickIndex,
-                        type: note.isGrace ? DrumType.FLAM_GRACE : note.type,
-                        abcIndex: note.abcIndex,
-                        x: sniffed.x,
-                        y: sniffed.y, // Final Y from sniffer
-                        isGrace: !!note.isGrace
+                // 1. Build Measure Boundaries
+                for (let m = 0; m <= measures; m++) {
+                    staffData.measureBoundaries.push({
+                        timeMs: m * measureDurationMs,
+                        measureIndex: m,
+                        x: null
                     });
                 }
+                this._assignBoundaryPositions(staffData.measureBoundaries, staff.boundaries);
+
+                // 2. Build timeline by matching sniffed notes to engine timeline
+                if (staff.notes && timeline && timeline.length > 0) {
+                    for (const note of timeline) {
+                        const sniffed = staff.notes.find(n =>
+                            n.abcIndex === note.abcIndex &&
+                            n.isGrace === !!note.isGrace
+                        );
+
+                        if (sniffed) {
+                            staffData.timeline.push({
+                                timeMs: note.time,
+                                tickIndex: note.tickIndex,
+                                type: note.isGrace ? DrumType.FLAM_GRACE : note.type,
+                                abcIndex: note.abcIndex,
+                                x: sniffed.x,
+                                y: sniffed.y,
+                                isGrace: !!note.isGrace
+                            });
+                        }
+                    }
+                    staffData.timeline.sort((a, b) => a.timeMs - b.timeMs);
+                }
+
+                this.staffs.push(staffData);
             }
-            this.timeline.sort((a, b) => a.timeMs - b.timeMs);
-        } else if (timeline && timeline.length > 0) {
+        }
+
+        if (timeline && timeline.length > 0 && this.staffs.length === 0) {
             console.warn('[FeedbackRenderer] Missing sniffedData. Hit feedback disabled.');
         }
 
@@ -126,62 +141,18 @@ export class FeedbackRenderer {
     }
 
     /**
-     * Calculate boundary X positions strictly from sniffed data
+     * Assign X positions to measure boundaries from sniffed boundary data.
+     * The sniffed boundaries arrive sorted by X: [M0 (from header), bar1, bar2, ...].
+     * We assign them to measure boundaries by index.
      */
-    _calculateMeasureBoundaryPositions(sniffedData) {
-        if (!sniffedData || !sniffedData.bars) return;
+    _assignBoundaryPositions(measureBoundaries, sniffedBoundaries) {
+        if (!sniffedBoundaries || sniffedBoundaries.length === 0) return;
 
-        const sniffedBars = [...sniffedData.bars].sort((a, b) => a.x - b.x);
-        const scale = sniffedData.scale || 0.75;
-        const firstNoteX = this.timeline.length > 0 ? this.timeline[0].x : 50;
+        const sorted = [...sniffedBoundaries].sort((a, b) => a.x - b.x);
 
-        // Estimate left margin from SVG: typically the first bar or note has a fixed left offset
-        // The SVG viewBox starts at 0; notation starts after the clef/key/meter area.
-        // Use the first sniffed bar or a small offset before the first note for M0.
-        const pageWidth = (sniffedData.engineWidth || 600) * scale;
-
-        for (const boundary of this.measureBoundaries) {
-            if (boundary.measureIndex === 0) {
-                // M0: Start of first measure
-                // USE METER LEFT EDGE as requested.
-                // This aligns with the visual start of rhythmic content (Time Signature start).
-
-                let m0Pos = null;
-                // 1. Try Meter Left Edge
-                if (typeof sniffedData.meterLeftX === 'number') {
-                    m0Pos = sniffedData.meterLeftX;
-                }
-                // 2. Try Clef/Key Right Edge (if no meter found, approximates the same spot)
-                else if (typeof sniffedData.clefRightX === 'number') {
-                    m0Pos = sniffedData.clefRightX;
-                }
-                else if (typeof sniffedData.keyRightX === 'number') {
-                    m0Pos = sniffedData.keyRightX;
-                }
-
-                if (m0Pos !== null) {
-                    boundary.x = m0Pos;
-                }
-                else {
-                    const leftBars = sniffedBars.filter(b => b.x < firstNoteX);
-                    if (leftBars.length > 0) {
-                        boundary.x = leftBars[leftBars.length - 1].x;
-                    }
-                }
-            } else if (boundary.measureIndex < this.measureBoundaries.length - 1) {
-                // Intermediate boundaries: use sniffed bar positions
-                const bar = sniffedBars[boundary.measureIndex - 1];
-                if (bar) {
-                    boundary.x = bar.x;
-                }
-            } else {
-                // Last boundary (end of last measure): use the rightmost bar or the page width
-                const lastBarIdx = sniffedBars.length - 1;
-                if (lastBarIdx >= 0 && sniffedBars[lastBarIdx].x > firstNoteX) {
-                    boundary.x = sniffedBars[lastBarIdx].x;
-                } else {
-                    boundary.x = pageWidth;
-                }
+        for (let i = 0; i < measureBoundaries.length; i++) {
+            if (i < sorted.length) {
+                measureBoundaries[i].x = sorted[i].x;
             }
         }
     }
@@ -190,14 +161,20 @@ export class FeedbackRenderer {
      * Draw feedback for a hit
      */
     drawHitFeedbackByTime(hitTimeMs, tier, timingError, drumType, abcNoteIndex = null) {
-        if (!this.feedbackLayer || !this.timeline) return;
+        if (!this.feedbackLayer || this.staffs.length === 0) return;
 
         const isGrace = (drumType === DrumType.FLAM_GRACE);
-        const note = this.timeline.find(n =>
-            Math.abs(n.timeMs - hitTimeMs) < 15 &&
-            n.isGrace === isGrace &&
-            (abcNoteIndex === null || n.abcIndex === abcNoteIndex)
-        );
+
+        // Search across all staffs for matching note
+        let note = null;
+        for (const staff of this.staffs) {
+            note = staff.timeline.find(n =>
+                Math.abs(n.timeMs - hitTimeMs) < 15 &&
+                n.isGrace === isGrace &&
+                (abcNoteIndex === null || n.abcIndex === abcNoteIndex)
+            );
+            if (note) break;
+        }
 
         if (!note) {
             if (tier === 'extra') {
@@ -226,22 +203,28 @@ export class FeedbackRenderer {
     }
 
     _interpolateX(hitTimeMs) {
-        if (!this.grooveContext) return null;
-        let left = null, right = null;
-        for (const b of this.measureBoundaries) {
-            if (b.x === null) continue;
-            if (b.timeMs <= hitTimeMs) left = b;
-            else if (b.timeMs > hitTimeMs && !right) { right = b; break; }
+        if (!this.grooveContext || this.staffs.length === 0) return null;
+
+        // Search across all staffs' boundaries
+        for (const staff of this.staffs) {
+            let left = null, right = null;
+            for (const b of staff.measureBoundaries) {
+                if (b.x === null) continue;
+                if (b.timeMs <= hitTimeMs) left = b;
+                else if (b.timeMs > hitTimeMs && !right) { right = b; break; }
+            }
+            if (left && right) {
+                const ratio = (hitTimeMs - left.timeMs) / (right.timeMs - left.timeMs);
+                return left.x + ratio * (right.x - left.x);
+            }
         }
-        if (!left || !right) return null;
-        const ratio = (hitTimeMs - left.timeMs) / (right.timeMs - left.timeMs);
-        return left.x + ratio * (right.x - left.x);
+        return null;
     }
 
     _guessYForDrum(drumType) {
-        if (!this.sniffedData || this.sniffedData.staffY === undefined) return 100;
-        const staffY = this.sniffedData.staffY;
-        const step = this.sniffedData.step || 4.5; // Fallback to standard 6pt * 0.75 scale
+        if (this.staffs.length === 0) return 100;
+        const staffY = this.staffs[0].topY;
+        const step = this.verticalStep;
 
         // Map drum types to relative grid steps from Top Line (0)
         // Standard mapping for drum kit notation
@@ -284,39 +267,41 @@ export class FeedbackRenderer {
 
         this.feedbackLayer.querySelectorAll('.coach-debug-line').forEach(el => el.remove());
 
-        const staffY = this.sniffedData ? (this.sniffedData.staffY || 0) : 0;
-        const step = this.sniffedData ? (this.sniffedData.step || 4.5) : 4.5;
+        const step = this.verticalStep;
 
-        // Clamp range: 3 lines above staff (-3) to 2 lines below staff (6)
-        const clampTop = staffY + (-3 * step);
-        const clampBottom = staffY + (6 * step);
+        // Render debug grid for each staff
+        for (const staff of this.staffs) {
+            const staffY = staff.topY;
 
-        // Measure boundaries (Blue) - clamped
-        this.measureBoundaries.forEach((b) => {
-            if (b.x === null) return;
-            const line = this._createDebugLine(b.x, 'blue', '1.0', clampTop, clampBottom);
-            line.setAttribute('stroke-dasharray', '4,4');
-            line.setAttribute('stroke-width', '0.25');
-            this.feedbackLayer.appendChild(line);
+            // Clamp range: 3 lines above staff (-3) to 2 lines below staff (6)
+            const clampTop = staffY + (-3 * step);
+            const clampBottom = staffY + (6 * step);
 
-            // Measure label at top of clamped area
-            this._addDebugText(b.x, clampTop - 1, `M${b.measureIndex}`, 'blue', '6px');
-        });
+            // Measure boundaries (Blue) - clamped
+            staff.measureBoundaries.forEach((b) => {
+                if (b.x === null) return;
+                const line = this._createDebugLine(b.x, 'blue', '1.0', clampTop, clampBottom);
+                line.setAttribute('stroke-dasharray', '4,4');
+                line.setAttribute('stroke-width', '0.25');
+                this.feedbackLayer.appendChild(line);
 
-        // Notes from timeline (Red dots/lines) - clamped
-        this.timeline.forEach((n) => {
-            if (n.x === null) return;
-            const color = n.isGrace ? '#FF00FF' : '#FF0000';
-            const line = this._createDebugLine(n.x, color, '1.0', clampTop, clampBottom);
-            line.setAttribute('stroke-width', '0.25');
-            this.feedbackLayer.appendChild(line);
+                // Measure label at top of clamped area
+                this._addDebugText(b.x, clampTop - 1, `M${b.measureIndex}`, 'blue', '6px');
+            });
 
-            // Note index label at same level as measure labels
-            this._addDebugText(n.x, clampTop - 1, `${n.abcIndex}`, n.isGrace ? 'purple' : 'red', '6px');
-        });
+            // Notes from timeline (Red dots/lines) - clamped
+            staff.timeline.forEach((n) => {
+                if (n.x === null) return;
+                const color = n.isGrace ? '#FF00FF' : '#FF0000';
+                const line = this._createDebugLine(n.x, color, '1.0', clampTop, clampBottom);
+                line.setAttribute('stroke-width', '0.25');
+                this.feedbackLayer.appendChild(line);
 
-        // Horizontal lines: 3 above (-3 to -1), staff (0 to 4), 2 below (5 to 6)
-        if (this.sniffedData) {
+                // Note index label at same level as measure labels
+                this._addDebugText(n.x, clampTop - 1, `${n.abcIndex}`, n.isGrace ? 'purple' : 'red', '6px');
+            });
+
+            // Horizontal lines: 3 above (-3 to -1), staff (0 to 4), 2 below (5 to 6)
             for (let i = -3; i <= 6; i++) {
                 const y = staffY + (i * step);
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -334,8 +319,6 @@ export class FeedbackRenderer {
                     this._addDebugText(-5, y + 1.5, `${i}`, isStaffEdge ? 'orange' : 'green', '4px');
                 }
             }
-
-
         }
     }
 

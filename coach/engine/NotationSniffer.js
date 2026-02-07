@@ -237,11 +237,66 @@ export class NotationSniffer {
     }
 
     /**
-     * Returns the sniffer data to be consumed by the controller/renderer
+     * The sniffer extracts a structure designed for the FeedbackRenderer.
+     * Coordinates are in screen pixels.
+     *
+     * {
+     *   verticalStep: number, // Distance in pixels for one pitch step (half a staff line spacing)
+     *   staffs: [
+     *     {
+     *       topY: number,     // Y position of the top line of this staff
+     *       notes: [          // Notes belonging to this staff
+     *         {
+     *           x: number,
+     *           y: number,
+     *           abcIndex: number,
+     *           isGrace: boolean
+     *         }
+     *       ],
+     *       boundaries: [     // Measure boundaries (bar lines) on this staff
+     *         {
+     *           x: number,
+     *           measureIndex: number // (Assigned by Renderer)
+     *         }
+     *       ]
+     *     },
+     *     ... // Additional staffs for system breaks
+     *   ]
+     * }
      */
     getSniffedData() {
-        console.log(`[NotationSniffer] Providing sniffed data: ${this.data.notes.length} notes, ${this.data.bars.length} bars`);
-        return this.data;
+        const scale = this.data.scale || DEFAULT_SCALE;
+        const step = BASE_STAFF_STEP * scale;
+
+        // Pre-calculate M0 boundary (first measure start) from header elements
+        let m0X = null;
+        if (typeof this.data.meterLeftX === 'number') m0X = this.data.meterLeftX;
+        else if (typeof this.data.clefRightX === 'number') m0X = this.data.clefRightX;
+        else if (typeof this.data.keyRightX === 'number') m0X = this.data.keyRightX;
+
+        // Build boundaries: M0 + sniffed bars (sorted by X)
+        const sortedBars = [...this.data.bars].sort((a, b) => a.x - b.x);
+        const boundaries = [];
+        if (m0X !== null) boundaries.push({ x: m0X });
+        for (const b of sortedBars) boundaries.push({ x: b.x });
+
+        const result = {
+            verticalStep: step,
+            staffs: [{
+                topY: this.data.staffY,
+                notes: this.data.notes.map(n => ({
+                    x: n.x, y: n.y,
+                    abcIndex: n.abcIndex,
+                    isGrace: n.isGrace
+                })),
+                boundaries: boundaries
+            }]
+        };
+
+        const totalNotes = result.staffs.reduce((sum, s) => sum + s.notes.length, 0);
+        const totalBars = result.staffs.reduce((sum, s) => sum + s.boundaries.length, 0);
+        console.log(`[NotationSniffer] Providing sniffed data: ${totalNotes} notes, ${totalBars} boundaries, ${result.staffs.length} staff(s)`);
+        return result;
     }
 }
 

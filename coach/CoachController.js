@@ -130,7 +130,7 @@ export class CoachController {
             // Re-hook and process if the ABC object might have changed or sniffer needs re-running
             window.notationSniffer.hook(abc);
             const sniffedData = window.notationSniffer.getSniffedData();
-            console.log('[CoachController] NotationSniffer re-hooked. Sniffed data notes:', sniffedData?.notes.length || 0);
+            console.log('[CoachController] NotationSniffer re-hooked. Sniffed data:', sniffedData?.staffs?.[0]?.notes.length || 0, 'notes');
         }
 
         this.engine.start(this.sessionStartTime);
@@ -354,7 +354,7 @@ export class CoachController {
 
         // Capture high-precision sniffer data
         const sniffedData = window.notationSniffer ? window.notationSniffer.getSniffedData() : null;
-        console.log('[CoachController] Captured Sniffed Data:', sniffedData ? (sniffedData.notes.length + ' notes, ' + sniffedData.bars.length + ' bars') : 'None');
+        console.log('[CoachController] Captured Sniffed Data:', sniffedData ? (sniffedData.staffs[0].notes.length + ' notes, ' + sniffedData.staffs[0].boundaries.length + ' boundaries') : 'None');
 
         const timeline = [];
 
