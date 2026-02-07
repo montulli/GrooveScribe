@@ -178,7 +178,7 @@ export class ScoreLayout {
                     current = { notes: [], bars: [], clefRightX: null, keyRightX: null, meterLeftX: null, topY: null };
                     maxNoteX = -Infinity;
                 }
-                // Apply any pending events to the (possibly new) current system
+                // Flush pending into current (possibly the new system)
                 applyPending(current);
 
                 current.notes.push(evt);
@@ -187,45 +187,23 @@ export class ScoreLayout {
                 }
                 if (evtX > maxNoteX) maxNoteX = evtX;
             } else {
-                // Non-note event (bar, clef, key, meter).
-                // If no notes yet, all non-note events go to pending.
-                // If we have notes, events beyond maxNoteX stay with current system
-                // (e.g. final barline), while events far below maxNoteX go to pending
-                // (they're leading events for the next system).
-                const belongsToCurrent = current.notes.length > 0 &&
-                    (evtX >= maxNoteX - 50 || evtX > maxNoteX * 0.8);
-
+                // All non-note events (bar, clef, key, meter) go to pending.
+                // abc2svg emits bars BEFORE notes for each system, so pending
+                // naturally groups with the next note's system.
                 if (evt.kind === 'bar') {
-                    const barEntry = { x: evtX, time: 0 };
-                    if (belongsToCurrent) {
-                        if (!current.bars.some(b => Math.abs(b.x - evtX) < 5)) {
-                            current.bars.push(barEntry);
-                        }
-                    } else {
-                        pending.bars.push(barEntry);
-                    }
+                    pending.bars.push({ x: evtX, time: 0 });
                 } else if (evt.kind === 'clef') {
-                    if (belongsToCurrent) {
-                        current.clefRightX = evt.x + evt.w;
-                    } else {
-                        pending.clefRightX = evt.x + evt.w;
-                    }
+                    pending.clefRightX = evt.x + evt.w;
                 } else if (evt.kind === 'key') {
-                    if (belongsToCurrent) {
-                        current.keyRightX = evt.x + evt.w;
-                    } else {
-                        pending.keyRightX = evt.x + evt.w;
-                    }
+                    pending.keyRightX = evt.x + evt.w;
                 } else if (evt.kind === 'meter') {
-                    if (belongsToCurrent) {
-                        current.meterLeftX = evt.x;
-                    } else {
-                        pending.meterLeftX = evt.x;
-                    }
+                    pending.meterLeftX = evt.x;
                 }
             }
         }
 
+        // Flush any remaining pending events (e.g. final barline of the score)
+        applyPending(current);
         if (current.notes.length > 0 || current.bars.length > 0) {
             systems.push(current);
         }
