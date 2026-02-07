@@ -45,10 +45,6 @@ export class CoachSettingsDialog {
         </select>
       </div>
 
-      <div class="coach-setting-row">
-        <label>Show Debug Grid</label>
-        <input type="checkbox" id="coach-debug-check">
-      </div>
       
       <div class="coach-dialog-buttons">
         <button class="coach-btn coach-btn-secondary" id="coach-cancel-btn">Cancel</button>
@@ -71,10 +67,7 @@ export class CoachSettingsDialog {
       perfOptions.style.display = modeSelect.value === 'performance' ? 'block' : 'none';
     });
 
-    const debugCheck = this.container.querySelector('#coach-debug-check');
-    debugCheck.addEventListener('change', () => {
-      coachState.showDebug = debugCheck.checked;
-    });
+
 
     startBtn.addEventListener('click', () => {
       this.save();
@@ -94,7 +87,6 @@ export class CoachSettingsDialog {
     this.container.querySelector('#coach-reps-input').value = coachState.reps;
     this.container.querySelector('#coach-countin-check').checked = coachState.countInEnabled;
     this.container.querySelector('#coach-tolerance-select').value = coachState.tolerance;
-    this.container.querySelector('#coach-debug-check').checked = coachState.showDebug;
 
     this.container.querySelector('#performance-options').style.display = coachState.mode === 'performance' ? 'block' : 'none';
 
@@ -110,7 +102,6 @@ export class CoachSettingsDialog {
     coachState.reps = parseInt(this.container.querySelector('#coach-reps-input').value);
     coachState.countInEnabled = this.container.querySelector('#coach-countin-check').checked;
     coachState.tolerance = this.container.querySelector('#coach-tolerance-select').value;
-    coachState.showDebug = this.container.querySelector('#coach-debug-check').checked;
     coachState.saveToStorage();
   }
 }

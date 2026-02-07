@@ -89,10 +89,24 @@ export class NotationSniffer {
                 const scale = self.data.scale || DEFAULT_SCALE;
 
                 if (type === "bar") {
-                    const scaledX = x * scale;
-                    if (!self.data.bars.some(b => Math.abs(b.x - scaledX) < (5 * scale))) {
-                        self.data.bars.push({ x: scaledX, time: 0 });
+                    // anno_stop x = s.x - s.wl - 2 (left edge), w = s.wl + s.wr + 4
+                    // Adjust for asymmetric padding (wr > wl) causing rightward shift.
+                    // Compensate by shifting left (User observed 1-2pt bias).
+                    const barCenterX = (x + w / 2 - 1.5) * scale;
+                    if (!self.data.bars.some(b => Math.abs(b.x - barCenterX) < (5 * scale))) {
+                        self.data.bars.push({ x: barCenterX, time: 0 });
                     }
+                }
+
+                // Capture header elements for M0 alignment
+                if (type === "clef") {
+                    self.data.clefRightX = (x + w) * scale;
+                }
+                if (type === "key") {
+                    self.data.keyRightX = (x + w) * scale;
+                }
+                if (type === "meter") {
+                    self.data.meterLeftX = x * scale;
                 }
 
                 if (type === "note" || type === "grace") {

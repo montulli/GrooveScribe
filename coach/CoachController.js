@@ -1,7 +1,7 @@
 import { CoachEngine } from './engine/CoachEngine.js';
 import { MidiInputHandler } from './engine/MidiInputHandler.js';
 import { LatencyManager } from './engine/LatencyManager.js';
-import { FeedbackRenderer } from './ui/FeedbackRenderer.js';
+import { FeedbackRenderer, SHOW_DEBUG } from './ui/FeedbackRenderer.js';
 import { CoachSettingsDialog } from './ui/CoachSettingsDialog.js';
 import { ResultsDialog } from './ui/ResultsDialog.js';
 import { coachState } from './state/CoachState.js';
@@ -57,19 +57,8 @@ export class CoachController {
         // Listen for start requests from dialog
         window.addEventListener('coach-start-requested', () => this.startSession());
 
-        // Update debug grid immediately when toggled
-        coachState.addEventListener('change', ({ property, value }) => {
-            if (property === 'showDebug') {
-                if (!value) {
-                    // Clear debug lines if turned off
-                    const existingDebug = this.renderer.feedbackLayer?.querySelectorAll('.coach-debug-line');
-                    existingDebug?.forEach(el => el.remove());
-                } else if (this.isCoachingActive) {
-                    // Render debug grid if turning on during session
-                    this.renderer.renderDebugGrid();
-                }
-            }
-        });
+        // Debug grid is controlled by SHOW_DEBUG constant in FeedbackRenderer.js
+        // No dynamic toggle needed
 
         // Hook into GrooveWriter's playback system
         this._hookPlaybackEvents();
@@ -163,6 +152,7 @@ export class CoachController {
             this._showResults();
         }
         this.engine.stop();
+        this._restoreEditorGrid();
     }
 
     /**
@@ -183,8 +173,8 @@ export class CoachController {
         this.engine.start(this.sessionStartTime);
         this.renderer.clearFeedback();
 
-        // Re-render grid if enabled (in case SVG re-rendered or layer was cleared)
-        if (coachState.showDebug) {
+        // Re-render grid if debug is enabled
+        if (SHOW_DEBUG) {
             this.renderer.renderDebugGrid();
         }
     }
@@ -197,6 +187,7 @@ export class CoachController {
         console.log('[CoachController] Session Results:', stats);
         this.isCoachingActive = false;
         this._updateButtonState(false);
+        this._restoreEditorGrid();
         this.resultsDialog.show(stats);
     }
 
@@ -239,6 +230,10 @@ export class CoachController {
             this.renderer.init();
             this.renderer.clearFeedback();
 
+            // 4a. Hide the editor grid during coaching
+            const editorGrid = document.getElementById('musicalInput');
+            if (editorGrid) editorGrid.style.display = 'none';
+
             // 5. Initialize visual feedback context immediately (shows debug grid if enabled)
             // Re-render the notation to capture coordinates via NotationSniffer
             // The displayNewSVG call internally hooks the sniffer and triggers renderABCtoSVG
@@ -266,7 +261,21 @@ export class CoachController {
         this.isCoachingActive = false;
         this.engine.stop();
         this._updateButtonState(false);
+        this._restoreEditorGrid();
         console.log('[CoachController] Session Stopped');
+    }
+
+    /**
+     * Restore the editor grid visibility after coaching ends
+     */
+    _restoreEditorGrid() {
+        const editorGrid = document.getElementById('musicalInput');
+        if (editorGrid) {
+            editorGrid.style.display = 'block';
+            console.log('[CoachController] Restored editor grid visibility (display: block)');
+        } else {
+            console.warn('[CoachController] Failed to restore editor grid - element #musicalInput not found');
+        }
     }
 
     /**

@@ -1,6 +1,9 @@
 import { coachState } from '../state/CoachState.js';
 import { DrumType } from '../engine/DrumConstants.js';
 
+// Set to true to render debug grid overlay (measure boundaries, note positions, staff lines)
+export const SHOW_DEBUG = true;
+
 
 
 /**
@@ -117,7 +120,7 @@ export class FeedbackRenderer {
             console.warn('[FeedbackRenderer] Missing sniffedData. Hit feedback disabled.');
         }
 
-        if (coachState.showDebug) {
+        if (SHOW_DEBUG) {
             this.renderDebugGrid();
         }
     }
@@ -129,15 +132,55 @@ export class FeedbackRenderer {
         if (!sniffedData || !sniffedData.bars) return;
 
         const sniffedBars = [...sniffedData.bars].sort((a, b) => a.x - b.x);
+        const scale = sniffedData.scale || 0.75;
         const firstNoteX = this.timeline.length > 0 ? this.timeline[0].x : 50;
+
+        // Estimate left margin from SVG: typically the first bar or note has a fixed left offset
+        // The SVG viewBox starts at 0; notation starts after the clef/key/meter area.
+        // Use the first sniffed bar or a small offset before the first note for M0.
+        const pageWidth = (sniffedData.engineWidth || 600) * scale;
 
         for (const boundary of this.measureBoundaries) {
             if (boundary.measureIndex === 0) {
-                boundary.x = firstNoteX - 25;
-            } else {
+                // M0: Start of first measure
+                // USE METER LEFT EDGE as requested.
+                // This aligns with the visual start of rhythmic content (Time Signature start).
+
+                let m0Pos = null;
+                // 1. Try Meter Left Edge
+                if (typeof sniffedData.meterLeftX === 'number') {
+                    m0Pos = sniffedData.meterLeftX;
+                }
+                // 2. Try Clef/Key Right Edge (if no meter found, approximates the same spot)
+                else if (typeof sniffedData.clefRightX === 'number') {
+                    m0Pos = sniffedData.clefRightX;
+                }
+                else if (typeof sniffedData.keyRightX === 'number') {
+                    m0Pos = sniffedData.keyRightX;
+                }
+
+                if (m0Pos !== null) {
+                    boundary.x = m0Pos;
+                }
+                else {
+                    const leftBars = sniffedBars.filter(b => b.x < firstNoteX);
+                    if (leftBars.length > 0) {
+                        boundary.x = leftBars[leftBars.length - 1].x;
+                    }
+                }
+            } else if (boundary.measureIndex < this.measureBoundaries.length - 1) {
+                // Intermediate boundaries: use sniffed bar positions
                 const bar = sniffedBars[boundary.measureIndex - 1];
                 if (bar) {
                     boundary.x = bar.x;
+                }
+            } else {
+                // Last boundary (end of last measure): use the rightmost bar or the page width
+                const lastBarIdx = sniffedBars.length - 1;
+                if (lastBarIdx >= 0 && sniffedBars[lastBarIdx].x > firstNoteX) {
+                    boundary.x = sniffedBars[lastBarIdx].x;
+                } else {
+                    boundary.x = pageWidth;
                 }
             }
         }
@@ -241,43 +284,45 @@ export class FeedbackRenderer {
 
         this.feedbackLayer.querySelectorAll('.coach-debug-line').forEach(el => el.remove());
 
-        // Measure boundaries (Blue)
+        const staffY = this.sniffedData ? (this.sniffedData.staffY || 0) : 0;
+        const step = this.sniffedData ? (this.sniffedData.step || 4.5) : 4.5;
+
+        // Clamp range: 3 lines above staff (-3) to 2 lines below staff (6)
+        const clampTop = staffY + (-3 * step);
+        const clampBottom = staffY + (6 * step);
+
+        // Measure boundaries (Blue) - clamped
         this.measureBoundaries.forEach((b) => {
             if (b.x === null) return;
-            const line = this._createDebugLine(b.x, 'blue', '1.0');
+            const line = this._createDebugLine(b.x, 'blue', '1.0', clampTop, clampBottom);
             line.setAttribute('stroke-dasharray', '4,4');
             line.setAttribute('stroke-width', '0.25');
             this.feedbackLayer.appendChild(line);
 
-            // Measure Label
-            this._addDebugText(b.x, 10, `M${b.measureIndex}`, 'blue', '10px');
+            // Measure label at top of clamped area
+            this._addDebugText(b.x, clampTop - 1, `M${b.measureIndex}`, 'blue', '6px');
         });
 
-        // Notes from timeline (Red dots/lines)
+        // Notes from timeline (Red dots/lines) - clamped
         this.timeline.forEach((n) => {
             if (n.x === null) return;
-            // Brighter colors: Magenta for grace, Red (no transparency) for notes
             const color = n.isGrace ? '#FF00FF' : '#FF0000';
-            const line = this._createDebugLine(n.x, color, '1.0');
+            const line = this._createDebugLine(n.x, color, '1.0', clampTop, clampBottom);
             line.setAttribute('stroke-width', '0.25');
             this.feedbackLayer.appendChild(line);
 
-            // Note Index Label (Higher up, removed prefix)
-            this._addDebugText(n.x, 10, `${n.abcIndex}`, n.isGrace ? 'purple' : 'red', '10px');
+            // Note index label at same level as measure labels
+            this._addDebugText(n.x, clampTop - 1, `${n.abcIndex}`, n.isGrace ? 'purple' : 'red', '6px');
         });
 
-        // Horizontal lines (Green)
+        // Horizontal lines: 3 above (-3 to -1), staff (0 to 4), 2 below (5 to 6)
         if (this.sniffedData) {
-            const staffY = this.sniffedData.staffY || 0;
-            const step = this.sniffedData.step || 4.5; // Fallback default
-            // Draw 4 lines above (-4 to -1) and 4 below (5 to 8) plus staff (0 to 4)
-            for (let i = -4; i <= 8; i++) {
+            for (let i = -3; i <= 6; i++) {
                 const y = staffY + (i * step);
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 line.setAttribute('x1', 0); line.setAttribute('y1', y);
                 line.setAttribute('x2', 2000); line.setAttribute('y2', y);
 
-                // Staff Top (0) and Bottom (4) are Orange
                 const isStaffEdge = (i === 0 || i === 4);
                 line.setAttribute('stroke', isStaffEdge ? 'orange' : 'green');
                 line.setAttribute('stroke-width', '0.25');
@@ -285,20 +330,29 @@ export class FeedbackRenderer {
                 line.classList.add('coach-debug-line');
                 this.feedbackLayer.appendChild(line);
 
-                // Staff Line Label (Only for staff lines)
                 if (i >= 0 && i <= 4) {
-                    this._addDebugText(-5, y + 2, `${i}`, isStaffEdge ? 'orange' : 'green', '6px');
+                    this._addDebugText(-5, y + 1.5, `${i}`, isStaffEdge ? 'orange' : 'green', '4px');
                 }
             }
+
+
         }
     }
 
-    _addDebugText(x, y, str, color, fontSize = '10px') {
+    _addDebugText(x, y, str, color, fontSize = '5px') {
         const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         text.setAttribute('x', x);
         text.setAttribute('y', y);
         text.setAttribute('fill', color);
         text.setAttribute('font-size', fontSize);
+
+        // Add white outline for contrast using paint-order
+        text.setAttribute('stroke', 'white');
+        text.setAttribute('stroke-width', '1.5px');
+        text.style.paintOrder = 'stroke';
+        text.style.strokeLinecap = 'round';
+        text.style.strokeLinejoin = 'round';
+
         text.style.fontFamily = 'monospace';
         text.style.fontWeight = 'bold';
         text.style.textAnchor = 'middle';
@@ -307,10 +361,10 @@ export class FeedbackRenderer {
         this.feedbackLayer.appendChild(text);
     }
 
-    _createDebugLine(x, color, opacity) {
+    _createDebugLine(x, color, opacity, y1 = -1000, y2 = 1000) {
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', x); line.setAttribute('y1', -1000);
-        line.setAttribute('x2', x); line.setAttribute('y2', 1000);
+        line.setAttribute('x1', x); line.setAttribute('y1', y1);
+        line.setAttribute('x2', x); line.setAttribute('y2', y2);
         line.setAttribute('stroke', color); line.setAttribute('stroke-width', '0.5');
         line.setAttribute('opacity', opacity);
         line.classList.add('coach-debug-line');
