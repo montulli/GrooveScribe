@@ -230,13 +230,16 @@ export class CoachController {
             this.renderer.init();
             this.renderer.clearFeedback();
 
-            // 4a. Hide the editor grid and non-essential UI during coaching
-            const editorGrid = document.getElementById('musicalInput');
-            if (editorGrid) editorGrid.style.display = 'none';
-            const textFields = document.getElementById('sheetMusicTextFields');
-            if (textFields) textFields.style.display = 'none';
-            const bottomBar = document.getElementById('bottomButtonRow');
-            if (bottomBar) bottomBar.style.display = 'none';
+            // 4a. Enter view mode to hide editor UI during coaching
+            this._wasViewMode = this.grooveWriter.myGrooveUtils.viewMode;
+            if (!this._wasViewMode) {
+                this.grooveWriter.swapViewEditMode(true); // switch to view mode, don't update URL
+            }
+            // Hide the view/edit toggle so user can't switch back mid-session
+            const viewEditBtn = document.getElementById('view-edit-switch');
+            if (viewEditBtn && viewEditBtn.closest('.left-button')) {
+                viewEditBtn.closest('.left-button').style.display = 'none';
+            }
 
             // 5. Initialize visual feedback context immediately (shows debug grid if enabled)
             // Re-render the notation to capture coordinates via NotationSniffer
@@ -273,17 +276,16 @@ export class CoachController {
      * Restore the editor grid visibility after coaching ends
      */
     _restoreEditorGrid() {
-        const editorGrid = document.getElementById('musicalInput');
-        if (editorGrid) {
-            editorGrid.style.display = 'block';
-            console.log('[CoachController] Restored editor grid visibility (display: block)');
-        } else {
-            console.warn('[CoachController] Failed to restore editor grid - element #musicalInput not found');
+        // Restore view/edit toggle button visibility
+        const viewEditBtn = document.getElementById('view-edit-switch');
+        if (viewEditBtn && viewEditBtn.closest('.left-button')) {
+            viewEditBtn.closest('.left-button').style.display = '';
         }
-        const textFields = document.getElementById('sheetMusicTextFields');
-        if (textFields) textFields.style.display = '';
-        const bottomBar = document.getElementById('bottomButtonRow');
-        if (bottomBar) bottomBar.style.display = '';
+        // Restore prior view/edit state
+        if (!this._wasViewMode && this.grooveWriter.myGrooveUtils.viewMode) {
+            this.grooveWriter.swapViewEditMode(true); // switch back to edit mode, don't update URL
+        }
+        console.log('[CoachController] Restored editor state (was view mode:', this._wasViewMode, ')');
     }
 
     /**
