@@ -2612,13 +2612,11 @@ function GrooveWriter() {
 				myGrooveData.kick_array.push(get_kick_state(i, "ABC"));
 
 				if (isTomsVisible()) {
-					for (var tomIdx = 0; tomIdx < constant_NUMBER_OF_TOMS; tomIdx++) {
-						myGrooveData.toms_array[tomIdx].push(get_tom_state(i, tomIdx + 1, "ABC"));
-					}
+					myGrooveData.toms_array[0].push(get_tom_state(i, 1, "ABC"));
+					myGrooveData.toms_array[3].push(get_tom_state(i, 4, "ABC"));
 				} else {
-					for (var tomIdx = 0; tomIdx < constant_NUMBER_OF_TOMS; tomIdx++) {
-						myGrooveData.toms_array[tomIdx].push(false);
-					}
+					myGrooveData.toms_array[0].push(false);
+					myGrooveData.toms_array[3].push(false);
 				}
 			}
 		}
@@ -2664,9 +2662,8 @@ function GrooveWriter() {
 		myGrooveData.hh_array = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.hh_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		myGrooveData.snare_array = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.snare_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 		myGrooveData.kick_array = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.kick_array, myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		for (var tomIdx = 0; tomIdx < constant_NUMBER_OF_TOMS; tomIdx++) {
-			myGrooveData.toms_array[tomIdx] = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[tomIdx], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
-		}
+		myGrooveData.toms_array[0] = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[0], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
+		myGrooveData.toms_array[3] = root.myGrooveUtils.scaleNoteArrayToFullSize(myGrooveData.toms_array[3], myGrooveData.numberOfMeasures, myGrooveData.notesPerMeasure, myGrooveData.numBeats, myGrooveData.noteValue);
 
 		var DBString = "{{GrooveTab";
 
@@ -4100,10 +4097,8 @@ function GrooveWriter() {
 
 		setNotesFromABCArray("Stickings", myGrooveData.sticking_array, class_number_of_measures);
 		setNotesFromABCArray("H", myGrooveData.hh_array, class_number_of_measures);
-		for (var tomIdx = 0; tomIdx < constant_NUMBER_OF_TOMS; tomIdx++) {
-
-			setNotesFromABCArray("T" + (tomIdx + 1), myGrooveData.toms_array[tomIdx], class_number_of_measures);
-		}
+		setNotesFromABCArray("T1", myGrooveData.toms_array[0], class_number_of_measures);
+		setNotesFromABCArray("T4", myGrooveData.toms_array[3], class_number_of_measures);
 		setNotesFromABCArray("S", myGrooveData.snare_array, class_number_of_measures);
 		setNotesFromABCArray("K", myGrooveData.kick_array, class_number_of_measures);
 

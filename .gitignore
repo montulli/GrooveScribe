@@ -6,6 +6,8 @@ cordova/platforms/
 mikeLessons.html
 cordova/plugins/
 .idea/
+.DS_Store
+*.log
 
 # Node.js
 node_modules/

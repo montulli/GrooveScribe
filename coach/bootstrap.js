@@ -65,7 +65,7 @@ function addCoachToggleButton() {
 // Inject CSS
 const link = document.createElement('link');
 link.rel = 'stylesheet';
-link.href = 'css/coach.css';
+link.href = 'coach/css/coach.css';
 document.head.appendChild(link);
 
 // Start

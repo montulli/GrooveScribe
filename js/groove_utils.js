@@ -1100,10 +1100,9 @@ function GrooveUtils() {
 
 		// only add if we need them.  // they are long and ugly. :)
 		if (myGrooveData.showToms) {
-			for (var tomIdx = 0; tomIdx < constant_NUMBER_OF_TOMS; tomIdx++) {
-				var TomStr = "&T" + (tomIdx + 1) + "=|" + root.tabLineFromAbcNoteArray('T' + (tomIdx + 1), myGrooveData.toms_array[tomIdx], true, true, total_notes, myGrooveData.notesPerMeasure);
-				fullURL += TomStr;
-			}
+			var Tom1 = "&T1=|" + root.tabLineFromAbcNoteArray('T1', myGrooveData.toms_array[0], true, true, total_notes, myGrooveData.notesPerMeasure);
+			var Tom4 = "&T4=|" + root.tabLineFromAbcNoteArray('T4', myGrooveData.toms_array[3], true, true, total_notes, myGrooveData.notesPerMeasure);
+			fullURL += Tom1 + Tom4;
 		}
 
 		// only add if we need them.  // they are long and ugly. :)
@@ -1174,7 +1173,6 @@ function GrooveUtils() {
 		if (renderWidth > 3000)
 			renderWidth = 3000; // max-width
 		// renderWidth is now passed as-is (pixel-perfect with scale=1.0)
-		console.log('[abc2svg-upgrade] renderWidth:', renderWidth);
 		// renderWidth = Math.floor(renderWidth * 0.75); // HACK REMOVED
 
 		fullABC += "L:1/" + (32) + "\n"; // 4/4 = 32,  6/8 = 64
@@ -2181,13 +2179,6 @@ function GrooveUtils() {
 
 		root.abc_obj.tosvg("SOURCE", abc_source);
 
-		// Verification logging for upgrade
-		console.log('[abc2svg-upgrade] version:', typeof abc2svg !== 'undefined' ? abc2svg.version : 'unknown');
-		console.log('[abc2svg-upgrade] SVG output length:', abcToSVGCallback.abc_svg_output.length);
-		// Check for scale transform in output (should be none/1.0 now)
-		var scaleMatch = abcToSVGCallback.abc_svg_output.match(/transform="scale\(([^)]+)\)"/);
-		console.log('[abc2svg-upgrade] has scale transform:', scaleMatch ? scaleMatch[1] : 'none (1.0)');
-		console.log('[abc2svg-upgrade] errors:', abcToSVGCallback.abc_error_output || 'none');
 
 		return {
 			svg: abcToSVGCallback.abc_svg_output,
