@@ -230,9 +230,13 @@ export class CoachController {
             this.renderer.init();
             this.renderer.clearFeedback();
 
-            // 4a. Hide the editor grid during coaching
+            // 4a. Hide the editor grid and non-essential UI during coaching
             const editorGrid = document.getElementById('musicalInput');
             if (editorGrid) editorGrid.style.display = 'none';
+            const textFields = document.getElementById('sheetMusicTextFields');
+            if (textFields) textFields.style.display = 'none';
+            const bottomBar = document.getElementById('bottomButtonRow');
+            if (bottomBar) bottomBar.style.display = 'none';
 
             // 5. Initialize visual feedback context immediately (shows debug grid if enabled)
             // Re-render the notation to capture coordinates via NotationSniffer
@@ -276,6 +280,10 @@ export class CoachController {
         } else {
             console.warn('[CoachController] Failed to restore editor grid - element #musicalInput not found');
         }
+        const textFields = document.getElementById('sheetMusicTextFields');
+        if (textFields) textFields.style.display = '';
+        const bottomBar = document.getElementById('bottomButtonRow');
+        if (bottomBar) bottomBar.style.display = '';
     }
 
     /**

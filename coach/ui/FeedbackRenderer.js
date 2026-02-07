@@ -94,8 +94,11 @@ export class FeedbackRenderer {
             for (let staffIdx = 0; staffIdx < sniffedData.staffs.length; staffIdx++) {
                 const staff = sniffedData.staffs[staffIdx];
 
-                // Map staff to SVG layer by index (each visual system = one SVG)
-                const layerIndex = Math.min(staffIdx, this.svgLayers.length - 1);
+                // Map staff to SVG layer by its svgIndex (from ScoreLayout)
+                // svgIndex tells us which DOM SVG element this staff lives in
+                const layerIndex = (staff.svgIndex !== undefined)
+                    ? Math.min(staff.svgIndex, this.svgLayers.length - 1)
+                    : Math.min(staffIdx, this.svgLayers.length - 1);
 
                 const staffData = {
                     topY: staff.topY,

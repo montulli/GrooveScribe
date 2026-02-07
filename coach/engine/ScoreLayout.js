@@ -3,12 +3,14 @@
  * for notes, measure boundaries, and staff positions.
  * (Refactored from NotationSniffer for abc2svg v1.22.1)
  *
- * Multi-system aware: dynamically detects visual systems (line breaks)
- * using abc.ay() to convert staff_tb coordinates to SVG space during
- * the anno_stop callback. Each visual system gets its own topY, notes,
- * and boundaries.
+ * Multi-system aware: detects system (line) breaks by monitoring when
+ * annotation X positions reset from right edge back to the left margin.
+ * abc2svg fires all anno_stop callbacks synchronously before emitting
+ * SVG output, so SVG-boundary detection via img_out is not possible.
+ *
+ * All annotations (notes, bars, headers) are collected into a single
+ * ordered stream and split into systems during getSniffedData().
  */
-// 6pt matches standard abc2svg line spacing (with scale=1.0)
 const BASE_STAFF_STEP = 6;
 
 export class ScoreLayout {
@@ -17,45 +19,18 @@ export class ScoreLayout {
         this._initData();
         this.abcIndexCount = 0;
         this.lastNoteX = -100;
-        this.abc = null; // Reference to abc2svg engine
+        this.abc = null;
+        this._originals = null;
     }
 
     _initData() {
         this.data = {
-            systems: [],   // Per-system: { topY, notes: [], bars: [], meterLeftX, clefRightX, keyRightX }
+            // Ordered stream of all annotation events
+            events: [],    // { kind, ... } — kind: 'note'|'bar'|'clef'|'key'|'meter'
             engineWidth: 0
         };
     }
 
-    /**
-     * Returns or creates the current system entry based on the current staff's
-     * absolute SVG Y position (detected via abc.ay())
-     */
-    _getOrCreateSystem(ayTopY) {
-        // Round to integer to avoid float drift between notes in the same system
-        const key = Math.round(ayTopY);
-
-        // Check if we already have a system at this Y position
-        let system = this.data.systems.find(sys => Math.abs(Math.round(sys.topY) - key) < 2);
-        if (!system) {
-            system = {
-                topY: ayTopY,
-                notes: [],
-                bars: [],
-                meterLeftX: null,
-                clefRightX: null,
-                keyRightX: null
-            };
-            this.data.systems.push(system);
-            console.log(`[ScoreLayout] New system #${this.data.systems.length} detected at topY=${ayTopY.toFixed(1)}`);
-        }
-        return system;
-    }
-
-    /**
-     * Computes the absolute SVG Y for the top staff line of the given staff index.
-     * Uses abc.ay() which accounts for the current posy offset during rendering.
-     */
     _computeTopY(s) {
         if (!this.abc) return null;
         try {
@@ -68,102 +43,78 @@ export class ScoreLayout {
         }
     }
 
-    /**
-     * Hooks an abc2svg instance to capture coordinates during render
-     */
     hook(abc) {
         if (!abc) {
             console.warn('[ScoreLayout] hook(abc) called with null abc object');
             return;
         }
-        // Use a property on the target object to survive HMR/module reloads
-        if (abc.__scoreLayoutHooked) return;
-        abc.__scoreLayoutHooked = true;
+
         this.abc = abc;
-
-        console.log('[ScoreLayout] Hooking into abc2svg engine instance');
-
+        const target = abc.user || abc;
         const self = this;
 
-        const targets = [abc];
-        if (abc.user) targets.push(abc.user);
-
-        targets.forEach(target => {
-            const original_anno_start = target.anno_start;
-            target.anno_start = function (type, start, stop, x, y, w, h, s) {
-                if (original_anno_start) {
-                    return original_anno_start.call(this, type, start, stop, x, y, w, h, s);
-                }
+        if (!this._originals) {
+            this._originals = {
+                anno_start: typeof target.anno_start === 'function' ? target.anno_start : null,
+                anno_stop: typeof target.anno_stop === 'function' ? target.anno_stop : null
             };
+            console.log('[ScoreLayout] Captured original callback functions');
+        }
 
-            const original_anno_stop = target.anno_stop;
-            target.anno_stop = function (type, start, stop, x, y, w, h, s) {
-                // Detect the current system using abc.ay()
-                const ayTopY = self._computeTopY(s);
-                const system = (ayTopY !== null) ? self._getOrCreateSystem(ayTopY) : null;
+        const orig_anno_start = this._originals.anno_start;
+        target.anno_start = function (type, start, stop, x, y, w, h, s) {
+            if (orig_anno_start) {
+                return orig_anno_start.call(this, type, start, stop, x, y, w, h, s);
+            }
+        };
 
-                if (type === "bar") {
-                    const barX = s ? s.x : (x + w / 2);
-                    if (system) {
-                        if (!system.bars.some(b => Math.abs(b.x - barX) < 5)) {
-                            system.bars.push({ x: barX, time: 0 });
-                        }
+        const orig_anno_stop = this._originals.anno_stop;
+        target.anno_stop = function (type, start, stop, x, y, w, h, s) {
+            const ayTopY = self._computeTopY(s);
+
+            if (type === "bar") {
+                const barX = s ? s.x : (x + w / 2);
+                self.data.events.push({ kind: 'bar', x: barX, topY: ayTopY });
+            }
+
+            if (type === "clef" || type === "key" || type === "meter") {
+                self.data.events.push({ kind: type, x, w, topY: ayTopY });
+            }
+
+            if (type === "note" || type === "grace") {
+                const preciseX = s ? s.x : (x + w / 2);
+                const noteYCenter = y + h / 2;
+
+                if (type !== "grace") {
+                    if (Math.abs(preciseX - self.lastNoteX) > 2) {
+                        if (self.lastNoteX !== -100) self.abcIndexCount++;
+                        self.lastNoteX = preciseX;
                     }
                 }
 
-                // Capture header elements for M0 alignment (assigned to current system)
-                if (type === "clef" && system) {
-                    system.clefRightX = x + w;
-                }
-                if (type === "key" && system) {
-                    system.keyRightX = x + w;
-                }
-                if (type === "meter" && system) {
-                    system.meterLeftX = x;
-                }
+                self.data.events.push({
+                    kind: 'note',
+                    type: type,
+                    x: preciseX,
+                    y: noteYCenter,
+                    w: w,
+                    h: h,
+                    abcIndex: self.abcIndexCount,
+                    isGrace: type === "grace",
+                    topY: ayTopY
+                });
+            }
 
-                if (type === "note" || type === "grace") {
-                    const preciseX = s ? s.x : (x + w / 2);
-                    const noteYCenter = y + h / 2;
-
-                    // Chord Grouping Logic
-                    if (type !== "grace") {
-                        if (Math.abs(preciseX - self.lastNoteX) > 2) {
-                            if (self.lastNoteX !== -100) self.abcIndexCount++;
-                            self.lastNoteX = preciseX;
-                        }
-                    }
-
-                    const noteData = {
-                        type: type,
-                        x: preciseX,
-                        y: noteYCenter,
-                        w: w,
-                        h: h,
-                        abcIndex: self.abcIndexCount,
-                        isGrace: type === "grace"
-                    };
-
-                    if (system) {
-                        system.notes.push(noteData);
-                    }
-                }
-
-                if (original_anno_stop) {
-                    return original_anno_stop.call(this, type, start, stop, x, y, w, h, s);
-                }
-            };
-        });
+            if (orig_anno_stop) {
+                return orig_anno_stop.call(this, type, start, stop, x, y, w, h, s);
+            }
+        };
     }
 
-    /**
-     * Resets the data
-     */
     reset(startIndex = 0) {
-        console.log(`[ScoreLayout] Resetting data. Previous systems: ${this.data.systems.length}. New startIndex: ${startIndex}`);
+        console.log(`[ScoreLayout] Resetting data. Previous events: ${this.data.events.length}. New startIndex: ${startIndex}`);
         this._initData();
 
-        // Parse pagewidth from source if available
         try {
             const abcElement = document.getElementById("ABCsource");
             if (abcElement && abcElement.value) {
@@ -184,27 +135,138 @@ export class ScoreLayout {
         this.abcIndexCount++;
     }
 
+    /**
+     * Splits the event stream into systems based on X-position resets.
+     * When any annotation's X drops significantly (right edge → left margin),
+     * a new system begins. Notes, bars, and headers are all split together.
+     */
+    _splitIntoSystems() {
+        const events = this.data.events;
+        if (events.length === 0) return [];
+
+        const systems = [];
+        let current = { notes: [], bars: [], clefRightX: null, keyRightX: null, meterLeftX: null, topY: null };
+        let maxNoteX = -Infinity;
+        // Pending buffer: holds non-note events that arrive after the last note
+        // of the current system but before the first note of the next system.
+        // When a system break is detected, these are moved to the new system.
+        let pending = { bars: [], clefRightX: null, keyRightX: null, meterLeftX: null };
+
+        const threshold = (this.data.engineWidth > 100)
+            ? this.data.engineWidth * 0.3
+            : 200;
+
+        const applyPending = (target) => {
+            for (const b of pending.bars) {
+                if (!target.bars.some(tb => Math.abs(tb.x - b.x) < 5)) {
+                    target.bars.push(b);
+                }
+            }
+            if (pending.clefRightX !== null) target.clefRightX = pending.clefRightX;
+            if (pending.keyRightX !== null) target.keyRightX = pending.keyRightX;
+            if (pending.meterLeftX !== null) target.meterLeftX = pending.meterLeftX;
+            pending = { bars: [], clefRightX: null, keyRightX: null, meterLeftX: null };
+        };
+
+        for (const evt of events) {
+            const evtX = evt.x;
+
+            if (evt.kind === 'note') {
+                // Detect system break: note X dropped significantly
+                if (evtX < maxNoteX - threshold && current.notes.length > 0) {
+                    systems.push(current);
+                    current = { notes: [], bars: [], clefRightX: null, keyRightX: null, meterLeftX: null, topY: null };
+                    maxNoteX = -Infinity;
+                }
+                // Apply any pending events to the (possibly new) current system
+                applyPending(current);
+
+                current.notes.push(evt);
+                if (evt.topY !== null && current.topY === null) {
+                    current.topY = evt.topY;
+                }
+                if (evtX > maxNoteX) maxNoteX = evtX;
+            } else {
+                // Non-note event (bar, clef, key, meter).
+                // If no notes yet, all non-note events go to pending.
+                // If we have notes, events beyond maxNoteX stay with current system
+                // (e.g. final barline), while events far below maxNoteX go to pending
+                // (they're leading events for the next system).
+                const belongsToCurrent = current.notes.length > 0 &&
+                    (evtX >= maxNoteX - 50 || evtX > maxNoteX * 0.8);
+
+                if (evt.kind === 'bar') {
+                    const barEntry = { x: evtX, time: 0 };
+                    if (belongsToCurrent) {
+                        if (!current.bars.some(b => Math.abs(b.x - evtX) < 5)) {
+                            current.bars.push(barEntry);
+                        }
+                    } else {
+                        pending.bars.push(barEntry);
+                    }
+                } else if (evt.kind === 'clef') {
+                    if (belongsToCurrent) {
+                        current.clefRightX = evt.x + evt.w;
+                    } else {
+                        pending.clefRightX = evt.x + evt.w;
+                    }
+                } else if (evt.kind === 'key') {
+                    if (belongsToCurrent) {
+                        current.keyRightX = evt.x + evt.w;
+                    } else {
+                        pending.keyRightX = evt.x + evt.w;
+                    }
+                } else if (evt.kind === 'meter') {
+                    if (belongsToCurrent) {
+                        current.meterLeftX = evt.x;
+                    } else {
+                        pending.meterLeftX = evt.x;
+                    }
+                }
+            }
+        }
+
+        if (current.notes.length > 0 || current.bars.length > 0) {
+            systems.push(current);
+        }
+
+        return systems;
+    }
+
     getSniffedData() {
         const step = BASE_STAFF_STEP;
+        const systems = this._splitIntoSystems();
 
-        // Preserve insertion order — it matches SVG DOM order (one SVG per system).
-        // Do NOT sort by topY: each topY is relative to its own SVG's coordinate space.
+        console.log(`[ScoreLayout] Split into ${systems.length} systems from ${this.data.events.length} events`);
+
         let globalMeasureOffset = 0;
+        let legendCount = 0;
 
-        const staffs = this.data.systems.map(system => {
-            // Pre-calculate M0 boundary for this system
+        const staffs = systems.map((system, idx) => {
+            // Filter out legend systems: all notes have negative abcIndex
+            if (system.notes.length > 0 && system.notes.every(n => n.abcIndex < 0)) {
+                console.log(`[ScoreLayout] Filtering legend system #${idx} (${system.notes.length} notes with negative abcIndex)`);
+                legendCount++;
+                return null;
+            }
+            if (system.notes.length === 0 && system.bars.length === 0) {
+                console.log(`[ScoreLayout] Filtering empty system #${idx}`);
+                legendCount++;
+                return null;
+            }
+
             let m0X = null;
             if (typeof system.meterLeftX === 'number') m0X = system.meterLeftX;
             else if (typeof system.clefRightX === 'number') m0X = system.clefRightX;
             else if (typeof system.keyRightX === 'number') m0X = system.keyRightX;
 
-            // Build boundaries
             const sortedBars = [...system.bars].sort((a, b) => a.x - b.x);
             const boundaries = [];
             if (m0X !== null) boundaries.push({ x: m0X });
             for (const b of sortedBars) boundaries.push({ x: b.x });
 
             const result = {
+                svgIndex: legendCount + (idx - legendCount),
                 topY: system.topY,
                 measureOffset: globalMeasureOffset,
                 notes: system.notes.map(n => ({
@@ -215,24 +277,26 @@ export class ScoreLayout {
                 boundaries: boundaries
             };
 
-            // Each system's boundaries represent measures; advance global offset
             globalMeasureOffset += boundaries.length;
-
             return result;
-        });
+        }).filter(s => s !== null);
+
+        // Assign svgIndex by position after filtering
+        for (let i = 0; i < staffs.length; i++) {
+            staffs[i].svgIndex = legendCount + i;
+        }
 
         const result = { verticalStep: step, staffs };
 
         const totalNotes = staffs.reduce((sum, s) => sum + s.notes.length, 0);
         const totalBoundaries = staffs.reduce((sum, s) => sum + s.boundaries.length, 0);
 
-        // Verification logging
         for (let i = 0; i < staffs.length; i++) {
             const s = staffs[i];
             const ys = s.notes.map(n => n.y);
             const minY = ys.length ? Math.min(...ys).toFixed(1) : 'n/a';
             const maxY = ys.length ? Math.max(...ys).toFixed(1) : 'n/a';
-            console.log(`[ScoreLayout] System #${i + 1}: topY=${s.topY.toFixed(1)}, ${s.notes.length} notes (Y: ${minY}-${maxY}), ${s.boundaries.length} boundaries`);
+            console.log(`[ScoreLayout] System #${i + 1}: svgIndex=${s.svgIndex}, topY=${s.topY !== null ? s.topY.toFixed(1) : 'null'}, ${s.notes.length} notes (Y: ${minY}-${maxY}), ${s.boundaries.length} boundaries`);
         }
         console.log(`[ScoreLayout] Total: ${staffs.length} systems, ${totalNotes} notes, ${totalBoundaries} boundaries`);
 
