@@ -318,8 +318,8 @@ window.CoachTestHelper = {
 
         // Ensure sniffer is hooked and has fresh data
         const abc = controller.grooveWriter.myGrooveUtils.abc_obj;
-        if (abc && window.notationSniffer) {
-            window.notationSniffer.hook(abc);
+        if (abc && window.scoreLayout) {
+            window.scoreLayout.hook(abc);
             // Call displayNewSVG which reads ABC source from the DOM
             // and re-renders via renderABCtoSVG(abc_source)
             controller.grooveWriter.displayNewSVG();

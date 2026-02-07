@@ -1168,8 +1168,9 @@ function GrooveUtils() {
 			renderWidth = 400; // min-width
 		if (renderWidth > 3000)
 			renderWidth = 3000; // max-width
-		// the width of the music is always 25% bigger than what we pass in.   Go figure.
-		renderWidth = Math.floor(renderWidth * 0.75);
+		// renderWidth is now passed as-is (pixel-perfect with scale=1.0)
+		console.log('[abc2svg-upgrade] renderWidth:', renderWidth);
+		// renderWidth = Math.floor(renderWidth * 0.75); // HACK REMOVED
 
 		fullABC += "L:1/" + (32) + "\n"; // 4/4 = 32,  6/8 = 64
 
@@ -2086,6 +2087,7 @@ function GrooveUtils() {
 
 	// callback class for abc generator library
 	function SVGLibCallback() {
+		var self = this;
 		// -- required methods
 		this.abc_svg_output = "";
 		this.abc_error_output = "";
@@ -2100,7 +2102,8 @@ function GrooveUtils() {
 		};
 
 		// for possible playback or linkage
-		this.get_abcmodel = function (tsfirst, voice_tb, music_types) {
+		this.get_abcmodel = function (tsfirst, voice_tb, music_types, info) {
+			//console.log("get_abc_model", tsfirst, voice_tb, music_types, info);
 
 			/*
 			console.log(tsfirst);
@@ -2114,20 +2117,22 @@ function GrooveUtils() {
 		};
 
 		// annotations
-		this.anno_start = function (type, start, stop, x, y, w, h) { };
+		this.anno_start = function (type, start, stop, x, y, w, h, s) {
+			// Hooked automatically by ScoreLayout
+		};
 		this.svg_highlight_y = 0;
 		this.svg_highlight_h = 44;
-		this.anno_stop = function (type, start, stop, x, y, w, h) {
+		this.anno_stop = function (type, start, stop, x, y, w, h, s) {
 
 			// create a rectangle
 			if (type == "bar") {
 				// use the bar as the default y & hack
-				this.svg_highlight_y = y + 5;
-				this.svg_highlight_h = h + 10;
+				self.svg_highlight_y = y + 5;
+				self.svg_highlight_h = h + 10;
 			}
 			if (type == "note" || type == "grace") {
-				y = this.svg_highlight_y;
-				h = this.svg_highlight_h;
+				y = self.svg_highlight_y;
+				h = self.svg_highlight_h;
 				root.abc_obj.out_svg('<rect style="fill: transparent;" class="abcr" id="abcNoteNum_' + root.grooveUtilsUniqueIndex + "_" + root.abcNoteNumIndex + '" x="');
 				root.abc_obj.out_sxsy(x, '" y="', y);
 				root.abc_obj.out_svg('" width="' + w.toFixed(2) + '" height="' + h.toFixed(2) + '"/>\n');
@@ -2154,21 +2159,31 @@ function GrooveUtils() {
 	// converts incoming ABC notation source into an svg image.
 	// returns an object with two items.   "svg" and "error_html"
 	root.renderABCtoSVG = function (abc_source) {
-		root.abc_obj = new Abc(abcToSVGCallback);
+		root.abc_obj = new abc2svg.Abc(abcToSVGCallback);
+		root.abc_obj.user = abcToSVGCallback; // Expose callback for ScoreLayout hooking
 
 		// Hook for Drum Coach coordinate extraction
-		if (window.notationSniffer) window.notationSniffer.hook(root.abc_obj);
+		if (window.scoreLayout) window.scoreLayout.hook(root.abc_obj);
 
 		if ((root.myGrooveData && root.myGrooveData.showLegend) || root.isLegendVisable)
 			root.abcNoteNumIndex = -15; // subtract out the legend notes for a proper index.
 		else
 			root.abcNoteNumIndex = 0;
 
-		if (window.notationSniffer) window.notationSniffer.reset(root.abcNoteNumIndex);
+		if (window.scoreLayout) window.scoreLayout.reset(root.abcNoteNumIndex);
 		abcToSVGCallback.abc_svg_output = ''; // clear
 		abcToSVGCallback.abc_error_output = ''; // clear
 
 		root.abc_obj.tosvg("SOURCE", abc_source);
+
+		// Verification logging for upgrade
+		console.log('[abc2svg-upgrade] version:', typeof abc2svg !== 'undefined' ? abc2svg.version : 'unknown');
+		console.log('[abc2svg-upgrade] SVG output length:', abcToSVGCallback.abc_svg_output.length);
+		// Check for scale transform in output (should be none/1.0 now)
+		var scaleMatch = abcToSVGCallback.abc_svg_output.match(/transform="scale\(([^)]+)\)"/);
+		console.log('[abc2svg-upgrade] has scale transform:', scaleMatch ? scaleMatch[1] : 'none (1.0)');
+		console.log('[abc2svg-upgrade] errors:', abcToSVGCallback.abc_error_output || 'none');
+
 		return {
 			svg: abcToSVGCallback.abc_svg_output,
 			error_html: abcToSVGCallback.abc_error_output

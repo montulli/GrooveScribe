@@ -6,10 +6,10 @@ import { CoachSettingsDialog } from './ui/CoachSettingsDialog.js';
 import { ResultsDialog } from './ui/ResultsDialog.js';
 import { coachState } from './state/CoachState.js';
 import { DrumType, EditorDrumTypes } from './engine/DrumConstants.js';
-import { notationSniffer } from './engine/NotationSniffer.js';
+import { scoreLayout } from './engine/ScoreLayout.js';
 
 // Ensure global availability for legacy scripts (groove_utils.js)
-window.notationSniffer = notationSniffer;
+window.scoreLayout = scoreLayout;
 
 /**
  * CoachController - Orchestrates the entire Drum Coach feature
@@ -126,11 +126,11 @@ export class CoachController {
 
         // Ensure sniffer is hooked to the engine and has processed the current ABC
         const abc = this.grooveWriter.myGrooveUtils.abc_obj;
-        if (abc && window.notationSniffer) {
-            // Re-hook and process if the ABC object might have changed or sniffer needs re-running
-            window.notationSniffer.hook(abc);
-            const sniffedData = window.notationSniffer.getSniffedData();
-            console.log('[CoachController] NotationSniffer re-hooked. Sniffed data:', sniffedData?.staffs?.[0]?.notes.length || 0, 'notes');
+        if (abc && window.scoreLayout) {
+            // New signature for hook (just passing the engine instance)
+            window.scoreLayout.hook(abc);
+            const sniffedData = window.scoreLayout.getSniffedData();
+            console.log('[CoachController] ScoreLayout re-hooked. Sniffed data:', sniffedData?.staffs?.[0]?.notes.length || 0, 'notes');
         }
 
         this.engine.start(this.sessionStartTime);
@@ -140,7 +140,7 @@ export class CoachController {
         this.renderer.clearFeedback();
 
         // Set groove context for time-based rendering
-        this._setRendererGrooveContext();
+        this.setRendererGrooveContext();
     }
 
     /**
@@ -240,7 +240,7 @@ export class CoachController {
             this.grooveWriter.displayNewSVG();
 
             this._refreshAbcMapping();
-            this._setRendererGrooveContext();
+            this.setRendererGrooveContext();
 
             // 6. Trigger playback if not already playing
             if (!this.grooveWriter.myGrooveUtils.isPlaying()) {
@@ -336,9 +336,10 @@ export class CoachController {
     }
 
     /**
-     * Prepare context for coordinate-based rendering using the NotationSniffer payload
+     * Prepare context for coordinate-based rendering using the ScoreLayout payload
+     * @param {Object} scoreData - Optional explicit data (for testing), otherwise sniffs window
      */
-    _setRendererGrooveContext() {
+    setRendererGrooveContext(scoreData = null) {
         const writer = this.grooveWriter;
         if (!writer) return;
 
@@ -353,8 +354,11 @@ export class CoachController {
         };
 
         // Capture high-precision sniffer data
-        const sniffedData = window.notationSniffer ? window.notationSniffer.getSniffedData() : null;
-        console.log('[CoachController] Captured Sniffed Data:', sniffedData ? (sniffedData.staffs?.[0]?.notes?.length + ' notes, ' + sniffedData.staffs?.[0]?.boundaries?.length + ' boundaries') : 'None');
+        // Capture high-precision sniffer data
+        // Use imported instance directly to avoid window property issues
+        const layoutInstance = scoreLayout || window.scoreLayout;
+        const sniffedData = layoutInstance ? layoutInstance.getSniffedData() : null;
+        console.log('[CoachController v2] Captured Sniffed Data:', sniffedData ? (sniffedData.staffs?.[0]?.notes?.length + ' notes') : 'None', 'Instance:', !!layoutInstance);
 
         const timeline = [];
 
@@ -514,12 +518,12 @@ export class CoachController {
 
         // Ensure sniffer processes the new SVG (it hooks automatically via abc2svg hooks, 
         // but we want to make sure we have the latest data before updating renderer)
-        const sniffedData = window.notationSniffer ? window.notationSniffer.getSniffedData() : null;
+        const sniffedData = window.scoreLayout ? window.scoreLayout.getSniffedData() : null;
 
         // Re-map drum indices as they might have shifted
         this._refreshAbcMapping();
 
         // Update renderer with new coordinates and scale
-        this._setRendererGrooveContext();
+        this.setRendererGrooveContext();
     }
 }
