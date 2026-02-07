@@ -329,7 +329,7 @@ export class CoachController {
                 hitTimeMs,
                 'extra',
                 0,
-                normalizedDrum,
+                drum,
                 null
             );
         }
@@ -354,7 +354,7 @@ export class CoachController {
 
         // Capture high-precision sniffer data
         const sniffedData = window.notationSniffer ? window.notationSniffer.getSniffedData() : null;
-        console.log('[CoachController] Captured Sniffed Data:', sniffedData ? (sniffedData.staffs[0].notes.length + ' notes, ' + sniffedData.staffs[0].boundaries.length + ' boundaries') : 'None');
+        console.log('[CoachController] Captured Sniffed Data:', sniffedData ? (sniffedData.staffs?.[0]?.notes?.length + ' notes, ' + sniffedData.staffs?.[0]?.boundaries?.length + ' boundaries') : 'None');
 
         const timeline = [];
 

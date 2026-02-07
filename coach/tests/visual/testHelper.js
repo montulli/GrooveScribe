@@ -320,7 +320,9 @@ window.CoachTestHelper = {
         const abc = controller.grooveWriter.myGrooveUtils.abc_obj;
         if (abc && window.notationSniffer) {
             window.notationSniffer.hook(abc);
-            controller.grooveWriter.myGrooveUtils.renderABCtoSVG();
+            // Call displayNewSVG which reads ABC source from the DOM
+            // and re-renders via renderABCtoSVG(abc_source)
+            controller.grooveWriter.displayNewSVG();
         }
 
         controller.engine.start(controller.sessionStartTime);

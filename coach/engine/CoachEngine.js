@@ -1,4 +1,5 @@
 import { DrumType } from './DrumConstants.js';
+import { evaluateHit } from './TimingEvaluator.js';
 
 /**
  * CoachEngine - Manages the coaching session
