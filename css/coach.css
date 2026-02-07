@@ -99,42 +99,97 @@
     color: #CCC;
 }
 
-/* Option Menu Icon */
-#coach-toggle-icon.active {
-    color: #3498db;
+/* Play button stop icon during coaching (only when playing) */
+.midiPlayImage.coaching.Playing::before {
+    color: #e74c3c !important;
+    content: "\f04d" !important;
 }
 
+.midiPlayImage.coaching:hover {
+    color: #ffffff;
+    background: #e74c3c;
+}
+
+.midiPlayImage.coaching:hover::before {
+    color: #ffffff !important;
+}
+
+/* Coach button active state - hidden during coaching, non-clickable */
 #coachToggleBtn.coaching-active {
-    background: linear-gradient(135deg, #e74c3c, #c0392b);
-    animation: coaching-pulse 1.5s ease-in-out infinite;
+    pointer-events: none;
 }
 
-#coachToggleBtn.coaching-active i {
-    animation: coaching-icon-pulse 1s ease-in-out infinite;
+/* Static BPM/Swing labels during coaching */
+.coach-static-labels {
+    display: inline-block;
+    color: #999999;
+    font-size: 16px;
+    line-height: 48px;
+    vertical-align: top;
+    padding: 0 15px 0 8px;
+    flex: none;
+    -webkit-flex: none;
 }
 
-@keyframes coaching-pulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.8;
-    }
+.coach-static-labels strong {
+    color: #cccccc;
+    font-weight: 700;
 }
 
-@keyframes coaching-icon-pulse {
+/* Coach badge in player bar during coaching */
+.coach-player-badge {
+    display: inline-flex;
+    align-items: center;
+    color: #ffffff;
+    font-size: 20px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    padding: 0 16px;
+    height: 48px;
+    vertical-align: top;
+    white-space: nowrap;
+    flex: none;
+    -webkit-flex: none;
+    letter-spacing: 0.5px;
+}
 
-    0%,
-    100% {
-        transform: scale(1);
-    }
+.coach-player-badge i {
+    margin-right: 8px;
+    font-size: 26px;
+}
 
-    50% {
-        transform: scale(1.1);
-    }
+/* Solo toggle button during coaching */
+.coach-solo-btn {
+    display: inline-flex;
+    align-items: center;
+    height: 30px;
+    padding: 0 14px;
+    margin: 9px 6px 9px 14px;
+    border-radius: 15px;
+    border: 1px solid #666;
+    color: #999;
+    font-size: 13px;
+    font-family: 'Lato', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.coach-solo-btn:hover {
+    border-color: #999;
+    color: #fff;
+}
+
+.coach-solo-btn.active {
+    background: #e67e22;
+    border-color: #e67e22;
+    color: #fff;
+}
+
+.coach-solo-btn i {
+    margin-right: 6px;
+    font-size: 14px;
 }
 
 /* Debug Panel */

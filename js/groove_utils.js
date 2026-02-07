@@ -123,6 +123,9 @@ function GrooveUtils() {
 	// debug & special view
 	root.debugMode = false;
 	root.viewMode = true;  // by default to prevent screen flicker
+
+	// Count-in state (managed by groove_writer closure, this is a no-op stub)
+	root.setMetronomeCountIn = function (enabled) { };
 	root.grooveDBAuthoring = false;
 
 	// midi state variables
@@ -1052,7 +1055,9 @@ function GrooveUtils() {
 		if (myGrooveData.debugMode)
 			fullURL += "Debug=1&";
 
-		if (myGrooveData.viewMode)
+		if (root.coachMode)
+			fullURL += "Mode=coach&";
+		else if (myGrooveData.viewMode)
 			fullURL += "Mode=view&";
 
 		if (myGrooveData.grooveDBAuthoring)

@@ -194,7 +194,7 @@ export class CoachController {
     /**
      * Start a coaching session - prepares metadata and triggers playback
      */
-    async startSession() {
+    async startSession({ autoPlay = true } = {}) {
         try {
             // 0. Connect MIDI on first session (lazy initialization)
             if (!this.midiConnected) {
@@ -226,35 +226,60 @@ export class CoachController {
             this.currentRepetition = 0;
             this._updateButtonState(true);
 
-            // 4. Clear UI
+            // 4. Save pre-coaching state for later restoration
+            this._savedState = {
+                viewMode: this.grooveWriter.myGrooveUtils.viewMode,
+                countInEnabled: !!document.getElementById('metronomeOptionsContextMenuCountIn')?.classList.contains('menuChecked'),
+                metronomeFrequency: this.grooveWriter.getMetronomeFrequency(),
+                url: window.location.href,
+            };
+
+            // 5. Set up coaching UI
             this.renderer.init();
             this.renderer.clearFeedback();
 
-            // 4a. Enter view mode to hide editor UI during coaching
-            this._wasViewMode = this.grooveWriter.myGrooveUtils.viewMode;
-            if (!this._wasViewMode) {
-                this.grooveWriter.swapViewEditMode(true); // switch to view mode, don't update URL
+            // 5a. Enter view mode to hide editor UI during coaching
+            if (!this._savedState.viewMode) {
+                this.grooveWriter.swapViewEditMode(true);
             }
-            // Hide the view/edit toggle so user can't switch back mid-session
             const viewEditBtn = document.getElementById('view-edit-switch');
             if (viewEditBtn && viewEditBtn.closest('.left-button')) {
                 viewEditBtn.closest('.left-button').style.display = 'none';
             }
 
-            // 5. Initialize visual feedback context immediately (shows debug grid if enabled)
-            // Re-render the notation to capture coordinates via NotationSniffer
-            // The displayNewSVG call internally hooks the sniffer and triggers renderABCtoSVG
-            this.grooveWriter.displayNewSVG();
+            // 5b. Transform player bar into coaching bar
+            this._setupCoachPlayerBar();
 
+            // 5c. Force-enable metronome if off
+            if (this._savedState.metronomeFrequency === 0) {
+                this.grooveWriter.setMetronomeFrequency(4); // quarter notes
+            }
+
+            // 5d. Force-enable count-in (hide menu item since it's implicit)
+            if (!this._savedState.countInEnabled) {
+                try { this.grooveWriter.metronomeOptionsMenuPopupClick('CountIn'); } catch (e) { console.warn('[CoachController] count-in toggle:', e); }
+            }
+            const countInMenuItem = document.getElementById('metronomeOptionsContextMenuCountIn');
+            if (countInMenuItem) countInMenuItem.style.display = 'none';
+
+            // 6. Initialize visual feedback context
+            this.grooveWriter.displayNewSVG();
             this._refreshAbcMapping();
             this.setRendererGrooveContext();
 
-            // 6. Trigger playback if not already playing
-            if (!this.grooveWriter.myGrooveUtils.isPlaying()) {
+            // 7. Set coach mode URL flag and update URL immediately
+            this.grooveWriter.myGrooveUtils.coachMode = true;
+            this.grooveWriter.updateCurrentURL();
+
+            // 8. Start playback if requested
+            if (autoPlay) {
+                if (this.grooveWriter.myGrooveUtils.isPlaying()) {
+                    this.grooveWriter.myGrooveUtils.stopMIDI_playback();
+                }
                 this.grooveWriter.myGrooveUtils.startOrPauseMIDI_playback();
             }
 
-            console.log('[CoachController] Session Started');
+            console.log('[CoachController] Session Started (autoPlay=' + autoPlay + ')');
         } catch (error) {
             console.error('[CoachController] CRITICAL ERROR IN startSession:', error);
             throw error;
@@ -267,40 +292,269 @@ export class CoachController {
     stopSession() {
         this.isCoachingActive = false;
         this.engine.stop();
+
+        // Stop playback
+        const utils = this.grooveWriter.myGrooveUtils;
+
+        // Temporarily disable updateMidiPlayTime so late MIDI callbacks can't overwrite the reset
+        const origUpdateMidiPlayTime = utils.updateMidiPlayTime;
+        utils.updateMidiPlayTime = function () { };
+
+        try { utils.stopMIDI_playback(); } catch (e) { }
+        // Fire stop event to reset button state even if player was already stopped
+        try { utils.midiEventCallbacks.stopEvent(utils.midiEventCallbacks.classRoot); } catch (e) { }
+
         this._updateButtonState(false);
         this._restoreEditorGrid();
+
+        // Reset timestamp display
+        const playTimeEl = document.getElementById('MIDIPlayTime' + utils.grooveUtilsUniqueIndex);
+        if (playTimeEl) playTimeEl.innerHTML = '0:00';
+
+        // Restore updateMidiPlayTime after all pending callbacks have flushed
+        setTimeout(() => { utils.updateMidiPlayTime = origUpdateMidiPlayTime; }, 500);
+
         console.log('[CoachController] Session Stopped');
     }
 
     /**
-     * Restore the editor grid visibility after coaching ends
+     * Restore all pre-coaching state
      */
     _restoreEditorGrid() {
-        // Restore view/edit toggle button visibility
+        const saved = this._savedState || {};
+
+        // 1. Restore player bar (stop icon, labels, badge, callbacks)
+        try { this._restorePlayerBar(); } catch (e) { console.warn('[CoachController] restore player bar:', e); }
+
+        // 2. Restore view/edit mode FIRST (before metronome/count-in which may trigger updateCurrentURL)
         const viewEditBtn = document.getElementById('view-edit-switch');
         if (viewEditBtn && viewEditBtn.closest('.left-button')) {
             viewEditBtn.closest('.left-button').style.display = '';
         }
-        // Restore prior view/edit state
-        if (!this._wasViewMode && this.grooveWriter.myGrooveUtils.viewMode) {
-            this.grooveWriter.swapViewEditMode(true); // switch back to edit mode, don't update URL
+        if (!saved.viewMode && this.grooveWriter.myGrooveUtils.viewMode) {
+            this.grooveWriter.swapViewEditMode(true);
         }
-        console.log('[CoachController] Restored editor state (was view mode:', this._wasViewMode, ')');
+
+        // 3. Restore metronome frequency
+        try {
+            if (saved.metronomeFrequency !== undefined) {
+                this.grooveWriter.setMetronomeFrequency(saved.metronomeFrequency);
+            }
+        } catch (e) { console.warn('[CoachController] restore metronome:', e); }
+
+        // 4. Restore count-in setting and menu visibility
+        try {
+            if (!saved.countInEnabled) {
+                this.grooveWriter.metronomeOptionsMenuPopupClick('CountIn');
+            }
+        } catch (e) { console.warn('[CoachController] restore count-in:', e); }
+        const countInMenuItem = document.getElementById('metronomeOptionsContextMenuCountIn');
+        if (countInMenuItem) countInMenuItem.style.display = '';
+
+        console.log('[CoachController] Restored editor state', saved);
+
+        // 5. Clear coach mode flag and force clean URL update
+        this.grooveWriter.myGrooveUtils.coachMode = false;
+        try {
+            this.grooveWriter.updateCurrentURL();
+        } catch (e) { console.warn('[CoachController] URL update:', e); }
     }
 
     /**
-     * Update the UI toggle button state
+     * Transform the player bar into a coaching bar:
+     * - Play/pause icon → stop icon
+     * - BPM/Swing sliders → static labels
+     * - Coach badge on the right
+     * - Top nav Coach button hidden
+     */
+    _setupCoachPlayerBar() {
+        const utils = this.grooveWriter.myGrooveUtils;
+        const idx = utils.grooveUtilsUniqueIndex;
+
+        // 1. Play button → stop icon + patch MIDI callbacks to preserve coaching class
+        const playBtn = document.getElementById('midiPlayImage' + idx);
+        if (playBtn) {
+            this._originalPlayBtnOnclick = playBtn.onclick;
+            playBtn.classList.add('coaching');
+            playBtn.onclick = () => {
+                if (utils.isPlaying()) {
+                    // Currently playing → stop session
+                    this.stopSession();
+                } else {
+                    // Not playing → start playback (stay in coaching)
+                    utils.startOrPauseMIDI_playback();
+                }
+            };
+        }
+
+        // Patch MIDI event callbacks so they don't remove the 'coaching' class
+        const callbacks = utils.midiEventCallbacks;
+        this._origPlayEvent = callbacks.playEvent;
+        this._origPauseEvent = callbacks.pauseEvent;
+        this._origStopEvent = callbacks.stopEvent;
+        this._origMidiInitialized = callbacks.midiInitialized;
+        callbacks.playEvent = (root) => {
+            this._origPlayEvent(root);
+            if (this.isCoachingActive) {
+                const btn = document.getElementById('midiPlayImage' + idx);
+                if (btn) btn.classList.add('coaching');
+            }
+        };
+        callbacks.pauseEvent = (root) => {
+            this._origPauseEvent(root);
+            if (this.isCoachingActive) {
+                const btn = document.getElementById('midiPlayImage' + idx);
+                if (btn) btn.classList.add('coaching');
+            }
+        };
+        callbacks.stopEvent = (root) => {
+            this._origStopEvent(root);
+            if (this.isCoachingActive) {
+                const btn = document.getElementById('midiPlayImage' + idx);
+                if (btn) btn.classList.add('coaching');
+            }
+        };
+        // Prevent midiInitialized from overwriting our onclick during coaching
+        callbacks.midiInitialized = (root) => {
+            this._origMidiInitialized(root);
+            if (this.isCoachingActive) {
+                const btn = document.getElementById('midiPlayImage' + idx);
+                if (btn) {
+                    btn.classList.add('coaching');
+                    btn.onclick = () => {
+                        if (utils.isPlaying()) {
+                            this.stopSession();
+                        } else {
+                            utils.startOrPauseMIDI_playback();
+                        }
+                    };
+                }
+            }
+        };
+
+        // 2. Hide BPM/Swing sliders, replace with static labels
+        const tempoAndProgress = document.getElementById('tempoAndProgress' + idx);
+        if (tempoAndProgress) {
+            tempoAndProgress.style.display = 'none';
+        }
+
+        const labels = document.createElement('span');
+        labels.id = 'coachStaticLabels';
+        labels.className = 'coach-static-labels';
+        const bpm = utils.getTempo();
+        const swing = utils.getSwing();
+        labels.innerHTML = `BPM <strong>${bpm}</strong> &nbsp;|&nbsp; Swing <strong>${swing}%</strong>`;
+
+        const playTime = document.getElementById('MIDIPlayTime' + idx);
+        if (playTime && playTime.parentNode) {
+            playTime.style.width = 'auto';
+            playTime.parentNode.insertBefore(labels, playTime.nextSibling);
+        }
+
+        // 2b. Add Solo toggle button after timestamp
+        const soloBtn = document.createElement('span');
+        soloBtn.id = 'coachSoloBtn';
+        soloBtn.className = 'coach-solo-btn' + (utils.getMetronomeSolo() ? ' active' : '');
+        soloBtn.innerHTML = '<i class="fa fa-headphones"></i> Solo';
+        soloBtn.onclick = () => {
+            this.grooveWriter.metronomeOptionsMenuPopupClick('Solo');
+            soloBtn.classList.toggle('active', utils.getMetronomeSolo());
+        };
+        if (playTime && playTime.parentNode) {
+            playTime.parentNode.insertBefore(soloBtn, playTime.nextSibling);
+        }
+
+        // 3. Hide metronome menu, GS logo, expand button
+        const metronome = document.getElementById('midiMetronomeMenu' + idx);
+        if (metronome) metronome.style.display = 'none';
+        const gsLogo = document.getElementById('midiGSLogo' + idx);
+        if (gsLogo) gsLogo.style.display = 'none';
+        const expandBtn = document.getElementById('midiExpandImage' + idx);
+        if (expandBtn) expandBtn.style.display = 'none';
+
+        // 4. Add coach badge on the right
+        const badge = document.createElement('span');
+        badge.id = 'coachPlayerBadge';
+        badge.className = 'coach-player-badge';
+        badge.innerHTML = '<i class="fa fa-graduation-cap"></i> Coach Mode On &mdash; Play along!';
+        const playerRow = document.getElementById('playerControlsRow' + idx);
+        if (playerRow) {
+            playerRow.appendChild(badge);
+        }
+
+        // 5. Hide top nav coach button, permutations, and grooves menus
+        const topNavBtn = document.getElementById('coachToggleBtn');
+        if (topNavBtn) topNavBtn.style.display = 'none';
+        const permBtn = document.getElementById('permutationAnchor');
+        if (permBtn) permBtn.style.display = 'none';
+        const groovesBtn = document.getElementById('groovesAnchor');
+        if (groovesBtn) groovesBtn.style.display = 'none';
+    }
+
+    /**
+     * Restore the player bar to its original state
+     */
+    _restorePlayerBar() {
+        const utils = this.grooveWriter.myGrooveUtils;
+        const idx = utils.grooveUtilsUniqueIndex;
+
+        // 1. Restore play button and MIDI callbacks
+        const playBtn = document.getElementById('midiPlayImage' + idx);
+        if (playBtn) {
+            playBtn.classList.remove('coaching');
+            if (this._originalPlayBtnOnclick) {
+                playBtn.onclick = this._originalPlayBtnOnclick;
+            }
+        }
+        // Restore original MIDI event callbacks
+        const callbacks = utils.midiEventCallbacks;
+        if (this._origPlayEvent) callbacks.playEvent = this._origPlayEvent;
+        if (this._origPauseEvent) callbacks.pauseEvent = this._origPauseEvent;
+        if (this._origStopEvent) callbacks.stopEvent = this._origStopEvent;
+        if (this._origMidiInitialized) callbacks.midiInitialized = this._origMidiInitialized;
+
+        // 2. Remove static labels, restore sliders
+        const labels = document.getElementById('coachStaticLabels');
+        if (labels) labels.remove();
+        const tempoAndProgress = document.getElementById('tempoAndProgress' + idx);
+        if (tempoAndProgress) tempoAndProgress.style.display = '';
+        const playTime = document.getElementById('MIDIPlayTime' + idx);
+        if (playTime) {
+            playTime.style.width = '';
+        }
+
+        // 3. Restore metronome menu, GS logo, expand button
+        const metronome = document.getElementById('midiMetronomeMenu' + idx);
+        if (metronome) metronome.style.display = '';
+        const gsLogo = document.getElementById('midiGSLogo' + idx);
+        if (gsLogo) gsLogo.style.display = '';
+        const expandBtn = document.getElementById('midiExpandImage' + idx);
+        if (expandBtn) expandBtn.style.display = '';
+
+        // 4. Remove coach badge, solo button, and restore player row display
+        const badge = document.getElementById('coachPlayerBadge');
+        if (badge) badge.remove();
+        const soloBtn = document.getElementById('coachSoloBtn');
+        if (soloBtn) soloBtn.remove();
+        const playerRow = document.getElementById('playerControlsRow' + idx);
+        if (playerRow) {
+            playerRow.style.display = '';
+        }
+
+        // 5. Show top nav coach button, permutations, and grooves menus
+        const topNavBtn = document.getElementById('coachToggleBtn');
+        if (topNavBtn) topNavBtn.style.display = '';
+        const permBtn = document.getElementById('permutationAnchor');
+        if (permBtn) permBtn.style.display = '';
+        const groovesBtn = document.getElementById('groovesAnchor');
+        if (groovesBtn) groovesBtn.style.display = '';
+    }
+
+    /**
+     * Update the UI toggle button state (currently a no-op since button is hidden during coaching)
      */
     _updateButtonState(isActive) {
-        const btn = document.getElementById('coachToggleBtn');
-        if (!btn) return;
-
-        btn.classList.toggle('coaching-active', isActive);
-        if (isActive) {
-            btn.innerHTML = '<i class="fa fa-stop"></i> Stop';
-        } else {
-            btn.innerHTML = '<i class="fa fa-graduation-cap"></i> Coach';
-        }
+        // Button visibility is handled by _setupCoachPlayerBar / _restorePlayerBar
     }
 
     /**

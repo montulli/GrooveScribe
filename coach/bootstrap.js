@@ -21,6 +21,17 @@ async function bootstrap() {
     // Add a toggle button to the UI
     addCoachToggleButton();
 
+    // Auto-start coach mode if Mode=coach in URL
+    const mode = window.myGrooveWriter.myGrooveUtils.getQueryVariableFromURL('Mode', '');
+    if (mode === 'coach') {
+        console.log('[Drum Coach] Mode=coach detected, auto-starting session');
+        try {
+            controller.startSession({ autoPlay: false });
+        } catch (e) {
+            console.error('[Drum Coach] Auto-start failed:', e);
+        }
+    }
+
     console.log('[Drum Coach] Ready');
 }
 
@@ -39,22 +50,12 @@ function addCoachToggleButton() {
     btn.className = 'rightButtons';
     btn.id = 'coachToggleBtn';
     btn.style.cursor = 'pointer';
-    btn.style.marginLeft = '10px';
-    btn.style.color = '#00BFFF'; // Bright blue to make it visible
     btn.innerHTML = '<i class="fa fa-graduation-cap"></i> Coach';
 
     btn.onclick = () => {
         const controller = window.coachController;
-        if (!controller) return;
-
-        if (controller.isCoachingActive) {
-            controller.stopSession();
-            if (controller.grooveWriter.myGrooveUtils.isPlaying()) {
-                controller.grooveWriter.myGrooveUtils.startOrPauseMIDI_playback();
-            }
-        } else {
-            controller.dialog.show();
-        }
+        if (!controller || controller.isCoachingActive) return; // disabled during coaching
+        controller.dialog.show();
     };
 
     topNav.insertBefore(btn, topNav.firstChild);
