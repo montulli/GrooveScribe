@@ -3,6 +3,16 @@ import { DrumType } from '../engine/DrumConstants.js';
 // Set to true to render debug grid overlay (measure boundaries, note positions, staff lines)
 export const SHOW_DEBUG = true;
 
+// Timing threshold (ms) for matching a MIDI hit to a timeline note position
+const HIT_TIME_MATCH_TOLERANCE_MS = 15;
+
+// Per-tier visual offset clamp limits (px) — constrains how far a feedback
+// circle shifts horizontally from the target note to reflect timing error
+const TIER_CLAMP_LIMITS = { perfect: 3, good: 8, close: 12, extra: 50 };
+
+// Tier colors for hit feedback circles
+const TIER_COLORS = { perfect: '#00BFFF', good: '#32CD32', close: '#FFD700', extra: '#888888' };
+
 
 /**
  * FeedbackRenderer - Draws feedback circles on notation staff 
@@ -82,9 +92,14 @@ export class FeedbackRenderer {
             this.verticalStep = sniffedData.verticalStep;
         }
 
-        const bpm = context.bpm || 80;
-        const numBeats = context.numBeats || 4;
-        const measures = context.measures || 1;
+        if (!context.bpm || !context.numBeats || !context.measures) {
+            console.error('[FeedbackRenderer] Invalid groove context:', context);
+            return;
+        }
+
+        const bpm = context.bpm;
+        const numBeats = context.numBeats;
+        const measures = context.measures;
 
         const measureDurationMs = (60000 / bpm) * numBeats;
         this.grooveContext.totalDurationMs = measureDurationMs * measures;
@@ -104,8 +119,8 @@ export class FeedbackRenderer {
                 const systemData = {
                     topY: system.topY,
                     layerIndex: layerIndex,
-                    measureOffset: system.measureOffset || 0,
-                    noteYs: system.noteYs || {},  // DrumType → SVG Y (from ScoreLayout)
+                    measureOffset: system.measureOffset,
+                    noteYs: system.noteYs,  // DrumType → SVG Y (from ScoreLayout)
                     timeline: [],
                     measureBoundaries: []
                 };
@@ -199,7 +214,7 @@ export class FeedbackRenderer {
         let targetLayerIndex = 0;
         for (const sys of this.systems) {
             note = sys.timeline.find(n =>
-                Math.abs(n.timeMs - hitTimeMs) < 15 &&
+                Math.abs(n.timeMs - hitTimeMs) < HIT_TIME_MATCH_TOLERANCE_MS &&
                 n.isGrace === isGrace &&
                 (abcNoteIndex === null || n.abcIndex === abcNoteIndex)
             );
@@ -218,7 +233,7 @@ export class FeedbackRenderer {
 
         // Timing-based visual offset
         const pixelsPerMs = 0.15;
-        const clampLimit = { perfect: 3, good: 8, close: 12, extra: 50 }[tier] || 0;
+        const clampLimit = TIER_CLAMP_LIMITS[tier];
         let xOffset = timingError * pixelsPerMs;
         if (tier !== 'extra') {
             xOffset = Math.max(-clampLimit, Math.min(clampLimit, xOffset));
@@ -270,12 +285,11 @@ export class FeedbackRenderer {
         const layer = this.svgLayers[layerIndex]?.layer;
         if (!layer) return;
 
-        const colors = { perfect: '#00BFFF', good: '#32CD32', close: '#FFD700', extra: '#888888' };
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         circle.setAttribute('cx', x);
         circle.setAttribute('cy', y);
         circle.setAttribute('r', tier === 'extra' ? '4' : '6');
-        circle.setAttribute('fill', colors[tier] || colors.extra);
+        circle.setAttribute('fill', TIER_COLORS[tier]);
         circle.setAttribute('fill-opacity', '0.7');
         circle.setAttribute('stroke', 'white');
         circle.setAttribute('stroke-width', '1.5');

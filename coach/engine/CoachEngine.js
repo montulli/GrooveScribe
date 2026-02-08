@@ -1,6 +1,14 @@
 import { DrumType } from './DrumConstants.js';
 import { evaluateHit } from './TimingEvaluator.js';
 
+// Timing thresholds (ms) for matching incoming MIDI hits to expected notes
+const GRACE_NOTE_EARLY_LIMIT_MS = 20;   // A grace hit can be up to this many ms late
+const GRACE_NOTE_MATCH_WINDOW_MS = 100;  // Total window around expected time for grace matching
+const NORMAL_HIT_MATCH_WINDOW_MS = 150;  // Max distance from expected note before counting as extra
+
+// Scoring weights (out of 100 per note)
+const SCORE_WEIGHTS = { perfect: 100, good: 75, close: 50 };
+
 /**
  * CoachEngine - Manages the coaching session
  */
@@ -27,7 +35,7 @@ export class CoachEngine {
         this.groove = groove;
         // For now, assume groove.target is already in ms relative to start
         // If it's in beats, we would convert here using bpm
-        this.noteTimeline = (groove.target || []).map((note, index) => {
+        this.noteTimeline = groove.target.map((note, index) => {
             return {
                 ...note,
                 type: note.type, // Expect normalized types from editor
@@ -101,19 +109,19 @@ export class CoachEngine {
             if (!isMatch && !isFlameGraceMatch) continue;
             if (note.matched) continue;
 
-            const targetTime = note.time + (this.audioLatency || 0);
+            const targetTime = note.time + this.audioLatency;
             const diff = relativeHitTime - targetTime; // Signed diff (negative = early)
             const absDiff = Math.abs(diff);
 
             // For flam grace notes: allow early or slightly late hits within a generous window
-            if (isFlameGraceMatch && diff < 20 && absDiff <= 100 && !note.graceMatched) {
+            if (isFlameGraceMatch && diff < GRACE_NOTE_EARLY_LIMIT_MS && absDiff <= GRACE_NOTE_MATCH_WINDOW_MS && !note.graceMatched) {
                 if (absDiff < minDiff) {
                     minDiff = absDiff;
                     bestMatch = { ...note, isGraceNote: true };
                 }
             } else if (isMatch) {
                 // For normal hits or primary flam hits
-                if (absDiff < minDiff && absDiff <= 150) {
+                if (absDiff < minDiff && absDiff <= NORMAL_HIT_MATCH_WINDOW_MS) {
                     minDiff = absDiff;
                     bestMatch = note;
                 }
@@ -137,36 +145,27 @@ export class CoachEngine {
         console.log(`[CoachEngine] Matched ${drum} with note at ${bestMatch.time}ms (diff: ${minDiff.toFixed(2)}ms)${bestMatch.isGraceNote ? ' [GRACE NOTE]' : ''}`);
 
         let evaluation;
-        if (bestMatch) {
-            if (bestMatch.isGraceNote) {
-                // Grace note for flam: grade as 'perfect' since being early is expected behavior
-                // Flams have inherently flexible timing - the grace note SHOULD be early
-                // Don't mark the main note as matched - the primary hit still needs to come
-                evaluation = {
-                    timingError: -minDiff, // Negative = early
-                    tier: 'perfect', // Grace notes are graded as perfect when in the expected window
-                    isMatch: true,
-                    isGraceNote: true,
-                    noteIndex: bestMatch.originalIndex
-                };
-                // Mark grace slot as matched so subsequent hits (even if very early) match the primary slot
-                const originalNote = this.noteTimeline.find(n => n.originalIndex === bestMatch.originalIndex);
-                if (originalNote) originalNote.graceMatched = true;
-            } else {
-                // Normal hit evaluation
-                evaluation = evaluateHit(timestamp, this.startTime + bestMatch.time, this.audioLatency, this.windows);
-                evaluation.noteIndex = bestMatch.originalIndex;
-                // Find the original note and mark it matched
-                const originalNote = this.noteTimeline.find(n => n.originalIndex === bestMatch.originalIndex);
-                if (originalNote) originalNote.matched = true;
-            }
-        } else {
-            // It's an extra hit or a miss
+        if (bestMatch.isGraceNote) {
+            // Grace note for flam: grade as 'perfect' since being early is expected behavior
+            // Flams have inherently flexible timing - the grace note SHOULD be early
+            // Don't mark the main note as matched - the primary hit still needs to come
             evaluation = {
-                timingError: 0,
-                tier: 'extra',
-                isMatch: false
+                timingError: -minDiff, // Negative = early
+                tier: 'perfect', // Grace notes are graded as perfect when in the expected window
+                isMatch: true,
+                isGraceNote: true,
+                noteIndex: bestMatch.originalIndex
             };
+            // Mark grace slot as matched so subsequent hits (even if very early) match the primary slot
+            const originalNote = this.noteTimeline.find(n => n.originalIndex === bestMatch.originalIndex);
+            if (originalNote) originalNote.graceMatched = true;
+        } else {
+            // Normal hit evaluation
+            evaluation = evaluateHit(timestamp, this.startTime + bestMatch.time, this.audioLatency, this.windows);
+            evaluation.noteIndex = bestMatch.originalIndex;
+            // Find the original note and mark it matched
+            const originalNote = this.noteTimeline.find(n => n.originalIndex === bestMatch.originalIndex);
+            if (originalNote) originalNote.matched = true;
         }
 
         this.results.push(evaluation);
@@ -202,7 +201,7 @@ export class CoachEngine {
         // Calculate score (weighted percentage)
         // Perfect: 100%, Good: 75%, Close: 50%, Miss: 0%
         if (stats.totalNotes > 0) {
-            const weighted = (stats.perfect * 100) + (stats.good * 75) + (stats.close * 50);
+            const weighted = (stats.perfect * SCORE_WEIGHTS.perfect) + (stats.good * SCORE_WEIGHTS.good) + (stats.close * SCORE_WEIGHTS.close);
             stats.score = Math.round(weighted / stats.totalNotes);
         } else {
             stats.score = 0;

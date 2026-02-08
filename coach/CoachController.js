@@ -212,12 +212,7 @@ export class CoachController {
             const grooveData = this.getGrooveAsTimeline();
 
             // 2. Setup engine with tolerance windows based on settings
-            const toleranceWindows = {
-                strict: { perfect: 15, good: 25, close: 40 },
-                normal: { perfect: 20, good: 35, close: 50 },
-                relaxed: { perfect: 30, good: 45, close: 65 }
-            };
-            this.engine.windows = toleranceWindows[coachState.tolerance] || toleranceWindows.normal;
+            this.engine.windows = coachState.getToleranceWindows();
             this.engine.audioLatency = this.latencyManager.getTotalOffset();
             this.engine.loadGroove({ target: grooveData });
 
@@ -570,7 +565,7 @@ export class CoachController {
         console.log(`[CoachController] Hit ${drum} evaluation: ${evaluation.tier} (match: ${evaluation.isMatch})`);
 
         // Calculate hit time relative to groove start (subtract audio latency)
-        const audioLatency = this.engine.audioLatency || 0;
+        const audioLatency = this.engine.audioLatency;
         const hitTimeMs = timestamp - this.sessionStartTime - audioLatency;
         const effectiveDrum = evaluation.isGraceNote ? DrumType.FLAM_GRACE : drum;
 
@@ -610,11 +605,14 @@ export class CoachController {
         const data = writer.grooveDataFromClickableUI();
         if (!data) return;
 
+        const metrics = this._getGrooveMetrics(data);
+        if (!metrics) return;
+
         const context = {
-            bpm: data.tempo || 80,
-            numBeats: data.numBeats || 4,
-            measures: data.numberOfMeasures || 1,
-            notesPerMeasure: data.notesPerMeasure || 16
+            bpm: metrics.bpm,
+            numBeats: metrics.numBeats,
+            measures: metrics.measures,
+            notesPerMeasure: metrics.notesPerMeasure
         };
 
         // Capture high-precision sniffer data
@@ -667,8 +665,11 @@ export class CoachController {
         const data = this.grooveWriter.grooveDataFromClickableUI();
         if (!data) return;
 
+        const metrics = this._getGrooveMetrics(data);
+        if (!metrics) return;
+
         let currentIndex = 0;
-        const totalTicks = (data.notesPerMeasure || 16) * (data.numberOfMeasures || 1);
+        const { totalTicks } = metrics;
 
         // 1. Stickings Voice (Rendered first in abc2svg)
         for (let i = 0; i < totalTicks; i++) {
@@ -738,11 +739,11 @@ export class CoachController {
         const data = this.grooveWriter.grooveDataFromClickableUI();
         if (!data) return [];
 
+        const metrics = this._getGrooveMetrics(data);
+        if (!metrics) return [];
+
+        const { bpm, msPerTick, totalTicks } = metrics;
         const timeline = [];
-        const bpm = data.tempo || 80;
-        const numBeats = data.numBeats || 4;
-        const msPerTick = ((60000 / bpm) * numBeats) / (data.notesPerMeasure || 16);
-        const totalTicks = (data.notesPerMeasure || 16) * (data.numberOfMeasures || 1);
 
         console.log(`[CoachController] Generating timeline: ${totalTicks} ticks, ${bpm} BPM, ${msPerTick.toFixed(2)} ms / tick`);
 
@@ -810,6 +811,29 @@ export class CoachController {
         if (val.includes('!///!')) return DrumType.SNARE_BUZZ;
 
         return baseType;
+    }
+
+    /**
+     * Extract and validate groove timing metrics from editor data.
+     * @param {Object} data - Result from grooveDataFromClickableUI()
+     * @returns {Object|null} Metrics object or null if data is invalid
+     */
+    _getGrooveMetrics(data) {
+        const bpm = data.tempo;
+        const numBeats = data.numBeats;
+        const measures = data.numberOfMeasures;
+        const notesPerMeasure = data.notesPerMeasure;
+
+        if (!bpm || !numBeats || !measures || !notesPerMeasure) {
+            console.error('[CoachController] Groove data has missing/zero fields:',
+                { tempo: bpm, numBeats, numberOfMeasures: measures, notesPerMeasure });
+            return null;
+        }
+
+        const totalTicks = notesPerMeasure * measures;
+        const msPerTick = ((60000 / bpm) * numBeats) / notesPerMeasure;
+
+        return { bpm, numBeats, measures, notesPerMeasure, totalTicks, msPerTick };
     }
 
     /**

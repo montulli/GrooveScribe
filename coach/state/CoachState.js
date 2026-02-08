@@ -126,7 +126,12 @@ export class CoachStateManager {
 
     // Get tolerance windows for current setting
     getToleranceWindows() {
-        return TOLERANCE_WINDOWS[this.tolerance] || TOLERANCE_WINDOWS.normal;
+        const windows = TOLERANCE_WINDOWS[this.tolerance];
+        if (!windows) {
+            console.error(`[CoachState] Unknown tolerance '${this.tolerance}', falling back to 'normal'`);
+            return TOLERANCE_WINDOWS.normal;
+        }
+        return windows;
     }
 
     // Convert to plain object
