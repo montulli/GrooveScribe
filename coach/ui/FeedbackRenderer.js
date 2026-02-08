@@ -321,8 +321,8 @@ export class FeedbackRenderer {
 
             const staffY = sys.topY;
 
-            // Clamp range: 4 lines above staff (-4) to 1 line below staff (5)
-            const clampTop = staffY + (-4 * step);
+            // Clamp range: 5 lines above staff (-5) to 1 line below staff (5)
+            const clampTop = staffY + (-5 * step);
             const clampBottom = staffY + (5 * step);
 
             // Measure boundaries (Blue) - clamped
