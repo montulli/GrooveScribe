@@ -65,8 +65,12 @@ export class Controller {
         // Listen for start requests from dialog
         window.addEventListener('coach-start-requested', () => this.startSession());
 
+        // Inject debug grooves into the Grooves menu when debug is enabled
+        if (SHOW_DEBUG) {
+            this._injectDebugGrooves();
+        }
+
         // Debug grid is controlled by SHOW_DEBUG constant in FeedbackRenderer.js
-        // No dynamic toggle needed
 
         // Hook into GrooveWriter's playback system
         this._hookPlaybackEvents();
@@ -502,4 +506,30 @@ export class Controller {
         // Update renderer with new coordinates and scale
         this.setRendererGrooveContext();
     }
+
+    /**
+     * Inject debug test grooves into the Grooves menu.
+     * Prepends a "Coach Debug" section at the top of the groove list.
+     */
+    _injectDebugGrooves() {
+        const wrapper = document.getElementById('grooveListWrapper');
+        if (!wrapper) return;
+
+        const debugGrooves = {
+            'All Notes': '?TimeSig=4/4&Div=8&Tempo=80&Measures=3&MetronomeFreq=4&H=|xoXrbcsm|nN------|--------&S=|--------|----oOgx|fb------&K=|--------|--------|--ox----&T1=|--------|--o-----|--------&T4=|--------|---o----|--------',
+            'All Notes (Unisons)': '?TimeSig=4/4&Div=8&Tempo=80&Measures=3&MetronomeFreq=4&H=|xoXrbcsm|nN------|----x---&S=|--------|----oOgx|fb--O---&K=|oooooooo|oooooooo|oooxo---&T1=|--------|--o-----|----o---&T4=|--------|---o----|--ooo---'
+        };
+
+        let html = '<ul class="grooveListUL">\n';
+        html += '<li class="grooveListHeaderLI">Coach Debug</li>\n';
+        html += '<ul class="grooveListUL">\n';
+        for (const [name, url] of Object.entries(debugGrooves)) {
+            const escaped = url.replace(/'/g, "\\'");
+            html += `<li class="grooveListLI" onClick="myGrooveWriter.loadNewGroove('${escaped}'); window.coachController.startSession({autoPlay: false})">${name}</li>\n`;
+        }
+        html += '</ul>\n</ul>\n';
+
+        wrapper.insertAdjacentHTML('afterbegin', html);
+    }
+
 }
