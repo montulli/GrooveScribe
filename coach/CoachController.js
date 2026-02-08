@@ -684,9 +684,9 @@ export class CoachController {
             const hasToms = data.toms_array && data.toms_array.some(arr => arr[i] && arr[i] !== "");
             const kickVal = data.kick_array[i];
             const isKick = kickStemsUp && kickVal && (kickVal === 'o' || kickVal === 'O' || kickVal === 'k' || kickVal === 'F' || kickVal === true);
-            const isSplash = kickStemsUp && kickVal && (kickVal === 'x' || kickVal === 'X' || kickVal === 's' || kickVal === 'd,');
+            const isFoot = kickStemsUp && !!kickVal && !isKick;
 
-            if (hasSnare || hasHH || hasToms || isKick || isSplash) {
+            if (hasSnare || hasHH || hasToms || isKick || isFoot) {
                 if (hasSnare) {
                     [DrumType.SNARE, DrumType.SNARE_ACCENT, DrumType.SNARE_GHOST, DrumType.SNARE_XSTICK, DrumType.SNARE_FLAM, DrumType.SNARE_BUZZ].forEach(t => this.abcNoteMap.set(`${i}:${t} `, currentIndex));
                 }
@@ -702,7 +702,7 @@ export class CoachController {
                     });
                 }
                 if (isKick) this.abcNoteMap.set(`${i}:${DrumType.KICK} `, currentIndex);
-                if (isSplash) this.abcNoteMap.set(`${i}:${DrumType.HH_FOOT} `, currentIndex);
+                if (isFoot) this.abcNoteMap.set(`${i}:${DrumType.HH_FOOT} `, currentIndex);
                 currentIndex++;
             }
         }
@@ -713,8 +713,8 @@ export class CoachController {
                 const val = data.kick_array[i];
                 if (val) {
                     const isKick = val === 'o' || val === 'O' || val === 'k' || val === 'F' || val === true;
-                    if (isKick) this.abcNoteMap.set(`${i}: kick`, currentIndex);
-                    else this.abcNoteMap.set(`${i}: hh_foot`, currentIndex);
+                    if (isKick) this.abcNoteMap.set(`${i}:${DrumType.KICK} `, currentIndex);
+                    else this.abcNoteMap.set(`${i}:${DrumType.HH_FOOT} `, currentIndex);
                     currentIndex++;
                 }
             }

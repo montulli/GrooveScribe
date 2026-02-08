@@ -1,0 +1,13 @@
+{
+  "description": "All possible drum note types, one per 8th-note beat across 3 measures",
+  "TimeSig": "4/4",
+  "Div": 8,
+  "Tempo": 80,
+  "Measures": 3,
+  "MetronomeFreq": 4,
+  "H":  ["|xoXrbcsm", "|nN------", "|--------"],
+  "S":  ["|--------", "|----oOgx", "|fb------"],
+  "K":  ["|--------", "|--------", "|--ox----"],
+  "T1": ["|--------", "|--o-----", "|--------"],
+  "T4": ["|--------", "|---o----", "|--------"]
+}
