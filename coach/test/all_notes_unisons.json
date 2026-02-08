@@ -1,0 +1,33 @@
+{
+    "description": "All possible drum note types with unisons (simultaneous notes on different instruments)",
+    "TimeSig": "4/4",
+    "Div": 8,
+    "Tempo": 80,
+    "Measures": 3,
+    "MetronomeFreq": 4,
+    "H": [
+        "|xoXrbcsm",
+        "|nN------",
+        "|----x---"
+    ],
+    "S": [
+        "|--------",
+        "|----oOgx",
+        "|fb--O---"
+    ],
+    "K": [
+        "|oooooooo",
+        "|oooooooo",
+        "|oooxo---"
+    ],
+    "T1": [
+        "|--------",
+        "|--o-----",
+        "|----o---"
+    ],
+    "T4": [
+        "|--------",
+        "|---o----",
+        "|--ooo---"
+    ]
+}
