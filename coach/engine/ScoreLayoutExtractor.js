@@ -123,8 +123,8 @@ export class ScoreLayoutExtractor {
                 self.data.events.push({ kind: 'bar', x: barX, topY: ayTopY });
             }
 
-            if (type === "clef" || type === "key" || type === "meter") {
-                self.data.events.push({ kind: type, x, w, topY: ayTopY });
+            if (type === "clef") {
+                self.data.events.push({ kind: 'clef', x, topY: ayTopY });
             }
 
             if (type === "note" || type === "grace") {
@@ -204,12 +204,12 @@ export class ScoreLayoutExtractor {
         if (events.length === 0) return [];
 
         const systems = [];
-        let current = { chords: [], bars: [], clefRightX: null, keyRightX: null, meterLeftX: null, topY: null };
+        let current = { chords: [], bars: [], clefLeftX: null, topY: null };
         let maxNoteX = -Infinity;
         // Pending buffer: holds non-note events that arrive after the last note
         // of the current system but before the first note of the next system.
         // When a system break is detected, these are moved to the new system.
-        let pending = { bars: [], clefRightX: null, keyRightX: null, meterLeftX: null };
+        let pending = { bars: [], clefLeftX: null };
 
         const threshold = (this.data.engineWidth > 100)
             ? this.data.engineWidth * 0.3
@@ -221,10 +221,8 @@ export class ScoreLayoutExtractor {
                     target.bars.push(b);
                 }
             }
-            if (pending.clefRightX !== null) target.clefRightX = pending.clefRightX;
-            if (pending.keyRightX !== null) target.keyRightX = pending.keyRightX;
-            if (pending.meterLeftX !== null) target.meterLeftX = pending.meterLeftX;
-            pending = { bars: [], clefRightX: null, keyRightX: null, meterLeftX: null };
+            if (pending.clefLeftX !== null) target.clefLeftX = pending.clefLeftX;
+            pending = { bars: [], clefLeftX: null };
         };
 
         for (const evt of events) {
@@ -234,7 +232,7 @@ export class ScoreLayoutExtractor {
                 // Detect system break: note X dropped significantly
                 if (evtX < maxNoteX - threshold && current.chords.length > 0) {
                     systems.push(current);
-                    current = { chords: [], bars: [], clefRightX: null, keyRightX: null, meterLeftX: null, topY: null };
+                    current = { chords: [], bars: [], clefLeftX: null, topY: null };
                     maxNoteX = -Infinity;
                 }
                 // Flush pending into current (possibly the new system)
@@ -246,17 +244,13 @@ export class ScoreLayoutExtractor {
                 }
                 if (evtX > maxNoteX) maxNoteX = evtX;
             } else {
-                // All non-note events (bar, clef, key, meter) go to pending.
+                // Non-note events (bar, clef) go to pending.
                 // abc2svg emits bars BEFORE notes for each system, so pending
                 // naturally groups with the next note's system.
                 if (evt.kind === 'bar') {
                     pending.bars.push({ x: evtX, time: 0 });
                 } else if (evt.kind === 'clef') {
-                    pending.clefRightX = evt.x + evt.w;
-                } else if (evt.kind === 'key') {
-                    pending.keyRightX = evt.x + evt.w;
-                } else if (evt.kind === 'meter') {
-                    pending.meterLeftX = evt.x;
+                    pending.clefLeftX = evt.x;
                 }
             }
         }
@@ -324,14 +318,16 @@ export class ScoreLayoutExtractor {
             }
 
             let m0X = null;
-            if (typeof system.meterLeftX === 'number') m0X = system.meterLeftX;
-            else if (typeof system.clefRightX === 'number') m0X = system.clefRightX;
-            else if (typeof system.keyRightX === 'number') m0X = system.keyRightX;
+            if (typeof system.clefLeftX === 'number') m0X = system.clefLeftX;
 
             const sortedBars = [...system.bars].sort((a, b) => a.x - b.x);
             const boundaries = [];
             if (m0X !== null) boundaries.push({ x: m0X });
-            for (const b of sortedBars) boundaries.push({ x: b.x });
+            for (const b of sortedBars) {
+                // Skip opening barline — already represented by m0X
+                if (m0X !== null && b.x <= m0X) continue;
+                boundaries.push({ x: b.x });
+            }
 
             const result = {
                 svgIndex: legendCount + (idx - legendCount),
