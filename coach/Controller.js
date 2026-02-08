@@ -1,23 +1,23 @@
-import { CoachEngine } from './engine/CoachEngine.js';
+import { Engine } from './engine/Engine.js';
 import { MidiInputHandler } from './engine/MidiInputHandler.js';
 import { LatencyManager } from './engine/LatencyManager.js';
 import { FeedbackRenderer, SHOW_DEBUG } from './ui/FeedbackRenderer.js';
-import { CoachSettingsDialog } from './ui/CoachSettingsDialog.js';
+import { SettingsDialog } from './ui/SettingsDialog.js';
 import { ResultsDialog } from './ui/ResultsDialog.js';
-import { coachState } from './state/CoachState.js';
+import { coachState } from './state/State.js';
 import { DrumType, EditorDrumTypes, ABC_PITCH_TO_DRUM_TYPE } from './engine/DrumConstants.js';
-import { scoreLayout } from './engine/ScoreLayout.js';
+import { scoreLayoutExtractor } from './engine/ScoreLayoutExtractor.js';
 
 // Ensure global availability for legacy scripts (groove_utils.js)
-window.scoreLayout = scoreLayout;
+window.scoreLayout = scoreLayoutExtractor;
 
 /**
- * CoachController - Orchestrates the entire Drum Coach feature
+ * Controller - Orchestrates the entire Drum Coach feature
  */
-export class CoachController {
+export class Controller {
     constructor(grooveWriter) {
         this.grooveWriter = grooveWriter;
-        this.engine = new CoachEngine();
+        this.engine = new Engine();
         this.midiHandler = new MidiInputHandler({
             onHit: (drum, timestamp, velocity) => this.handleMidiHit(drum, timestamp, velocity),
             drumMap: {
@@ -33,7 +33,7 @@ export class CoachController {
         });
         this.latencyManager = new LatencyManager();
         this.renderer = new FeedbackRenderer('#svgTarget');
-        this.dialog = new CoachSettingsDialog();
+        this.dialog = new SettingsDialog();
         this.resultsDialog = new ResultsDialog();
         this.state = coachState;
 
@@ -67,7 +67,7 @@ export class CoachController {
         // We debounce or just hook into the existing refresh_ABC logic if possible
         window.addEventListener('resize', () => {
             if (this.isCoachingActive) {
-                console.log('[CoachController] Resize detected, updating feedback UI');
+                console.log('[Controller] Resize detected, updating feedback UI');
                 this._refreshAndSyncUI();
             }
         });
@@ -77,7 +77,7 @@ export class CoachController {
         this.grooveWriter.displayNewSVG = (...args) => {
             originalDisplaySVG.apply(this.grooveWriter, args);
             if (this.isCoachingActive) {
-                console.log('[CoachController] Notation re-rendered, refreshing feedback UI');
+                console.log('[Controller] Notation re-rendered, refreshing feedback UI');
                 this._refreshAndSyncUI();
             }
         };
@@ -119,7 +119,7 @@ export class CoachController {
      * Called when MIDI playback starts - synchronizes timing and prepares renderer
      */
     _onPlaybackStart() {
-        console.log('[CoachController] Playback started, syncing engine');
+        console.log('[Controller] Playback started, syncing engine');
         // Record the playback start time for timing calculations
         this.sessionStartTime = performance.now();
         this._refreshAbcMapping(); // Map instruments to staff indices
@@ -130,7 +130,7 @@ export class CoachController {
             // New signature for hook (just passing the engine instance)
             window.scoreLayout.hook(abc);
             const sniffedData = window.scoreLayout.getSniffedData();
-            console.log('[CoachController] ScoreLayout re-hooked. Sniffed data:', sniffedData?.systems?.[0]?.chords.length || 0, 'chords');
+            console.log('[Controller] ScoreLayoutExtractor re-hooked. Sniffed data:', sniffedData?.systems?.[0]?.chords.length || 0, 'chords');
         }
 
         this.engine.start(this.sessionStartTime);
@@ -147,7 +147,7 @@ export class CoachController {
      * Called when MIDI playback stops - handles performance results
      */
     _onPlaybackStop() {
-        console.log('[CoachController] Playback stopped');
+        console.log('[Controller] Playback stopped');
         if (coachState.mode === 'performance' && this.isCoachingActive) {
             this._showResults();
         }
@@ -160,7 +160,7 @@ export class CoachController {
      */
     _onRepeat() {
         this.currentRepetition++;
-        console.log(`[CoachController] Repeat ${this.currentRepetition}`);
+        console.log(`[Controller] Repeat ${this.currentRepetition}`);
 
         if (coachState.mode === 'performance' && this.currentRepetition >= coachState.reps) {
             // Stop playback after reaching target repetitions in performance mode
@@ -184,7 +184,7 @@ export class CoachController {
      */
     _showResults() {
         const stats = this.engine.getResults();
-        console.log('[CoachController] Session Results:', stats);
+        console.log('[Controller] Session Results:', stats);
         this.isCoachingActive = false;
         this._restoreEditorGrid();
         this.resultsDialog.show(stats);
@@ -200,9 +200,9 @@ export class CoachController {
                 try {
                     await this.midiHandler.connect();
                     this.midiConnected = true;
-                    console.log('[CoachController] MIDI Connected');
+                    console.log('[Controller] MIDI Connected');
                 } catch (e) {
-                    console.warn('[CoachController] MIDI failed to connect', e);
+                    console.warn('[Controller] MIDI failed to connect', e);
                     // Continue anyway - user can still practice without MIDI input
                 }
             }
@@ -250,7 +250,7 @@ export class CoachController {
 
             // 5d. Force-enable count-in (hide menu item since it's implicit)
             if (!this._savedState.countInEnabled) {
-                try { this.grooveWriter.metronomeOptionsMenuPopupClick('CountIn'); } catch (e) { console.warn('[CoachController] count-in toggle:', e); }
+                try { this.grooveWriter.metronomeOptionsMenuPopupClick('CountIn'); } catch (e) { console.warn('[Controller] count-in toggle:', e); }
             }
             const countInMenuItem = document.getElementById('metronomeOptionsContextMenuCountIn');
             if (countInMenuItem) countInMenuItem.style.display = 'none';
@@ -272,9 +272,9 @@ export class CoachController {
                 this.grooveWriter.myGrooveUtils.startOrPauseMIDI_playback();
             }
 
-            console.log('[CoachController] Session Started (autoPlay=' + autoPlay + ')');
+            console.log('[Controller] Session Started (autoPlay=' + autoPlay + ')');
         } catch (error) {
-            console.error('[CoachController] CRITICAL ERROR IN startSession:', error);
+            console.error('[Controller] CRITICAL ERROR IN startSession:', error);
             throw error;
         }
     }
@@ -306,7 +306,7 @@ export class CoachController {
         // Restore updateMidiPlayTime after all pending callbacks have flushed
         setTimeout(() => { utils.updateMidiPlayTime = origUpdateMidiPlayTime; }, 500);
 
-        console.log('[CoachController] Session Stopped');
+        console.log('[Controller] Session Stopped');
     }
 
     /**
@@ -316,7 +316,7 @@ export class CoachController {
         const saved = this._savedState || {};
 
         // 1. Restore player bar (stop icon, labels, badge, callbacks)
-        try { this._restorePlayerBar(); } catch (e) { console.warn('[CoachController] restore player bar:', e); }
+        try { this._restorePlayerBar(); } catch (e) { console.warn('[Controller] restore player bar:', e); }
 
         // 2. Restore view/edit mode FIRST (before metronome/count-in which may trigger updateCurrentURL)
         const viewEditBtn = document.getElementById('view-edit-switch');
@@ -332,24 +332,24 @@ export class CoachController {
             if (saved.metronomeFrequency !== undefined) {
                 this.grooveWriter.setMetronomeFrequency(saved.metronomeFrequency);
             }
-        } catch (e) { console.warn('[CoachController] restore metronome:', e); }
+        } catch (e) { console.warn('[Controller] restore metronome:', e); }
 
         // 4. Restore count-in setting and menu visibility
         try {
             if (!saved.countInEnabled) {
                 this.grooveWriter.metronomeOptionsMenuPopupClick('CountIn');
             }
-        } catch (e) { console.warn('[CoachController] restore count-in:', e); }
+        } catch (e) { console.warn('[Controller] restore count-in:', e); }
         const countInMenuItem = document.getElementById('metronomeOptionsContextMenuCountIn');
         if (countInMenuItem) countInMenuItem.style.display = '';
 
-        console.log('[CoachController] Restored editor state', saved);
+        console.log('[Controller] Restored editor state', saved);
 
         // 5. Clear coach mode flag and force clean URL update
         this.grooveWriter.myGrooveUtils.coachMode = false;
         try {
             this.grooveWriter.updateCurrentURL();
-        } catch (e) { console.warn('[CoachController] URL update:', e); }
+        } catch (e) { console.warn('[Controller] URL update:', e); }
     }
 
     /**
@@ -552,7 +552,7 @@ export class CoachController {
         const evaluation = this.engine.handleMidiHit(drum, timestamp);
         if (!evaluation) return;
 
-        console.log(`[CoachController] Hit ${drum} evaluation: ${evaluation.tier} (match: ${evaluation.isMatch})`);
+        console.log(`[Controller] Hit ${drum} evaluation: ${evaluation.tier} (match: ${evaluation.isMatch})`);
 
         // Calculate hit time relative to groove start (subtract audio latency)
         const audioLatency = this.engine.audioLatency;
@@ -585,7 +585,7 @@ export class CoachController {
     }
 
     /**
-     * Prepare context for coordinate-based rendering using the ScoreLayout payload
+     * Prepare context for coordinate-based rendering using the ScoreLayoutExtractor payload
      * @param {Object} scoreData - Optional explicit data (for testing), otherwise sniffs window
      */
     setRendererGrooveContext(scoreData = null) {
@@ -607,9 +607,9 @@ export class CoachController {
 
         // Capture high-precision sniffer data
         // Use imported instance directly to avoid window property issues
-        const layoutInstance = scoreLayout || window.scoreLayout;
+        const layoutInstance = scoreLayoutExtractor || window.scoreLayout;
         const sniffedData = layoutInstance ? layoutInstance.getSniffedData() : null;
-        console.log('[CoachController v2] Captured Sniffed Data:', sniffedData ? (sniffedData.systems?.[0]?.chords?.length + ' chords') : 'None', 'Instance:', !!layoutInstance);
+        console.log('[Controller] Captured Sniffed Data:', sniffedData ? (sniffedData.systems?.[0]?.chords?.length + ' chords') : 'None', 'Instance:', !!layoutInstance);
 
         const timeline = [];
 
@@ -642,7 +642,7 @@ export class CoachController {
 
         this.renderer.setGrooveContext(context, timeline, sniffedData);
         const graceCount = timeline.filter(n => n.isGrace).length;
-        console.log(`[CoachController] Set renderer groove context: ${timeline.length} notes (${graceCount} grace notes)`);
+        console.log(`[Controller] Set renderer groove context: ${timeline.length} notes (${graceCount} grace notes)`);
     }
 
     /**
@@ -709,7 +709,7 @@ export class CoachController {
                 }
             }
         }
-        console.log(`[CoachController] Mapped ${this.abcNoteMap.size} keys to ${currentIndex} indices`);
+        console.log(`[Controller] Mapped ${this.abcNoteMap.size} keys to ${currentIndex} indices`);
     }
 
     /**
@@ -734,7 +734,7 @@ export class CoachController {
         const { bpm, msPerTick, totalTicks } = metrics;
         const timeline = [];
 
-        console.log(`[CoachController] Generating timeline: ${totalTicks} ticks, ${bpm} BPM, ${msPerTick.toFixed(2)} ms / tick`);
+        console.log(`[Controller] Generating timeline: ${totalTicks} ticks, ${bpm} BPM, ${msPerTick.toFixed(2)} ms / tick`);
 
         for (let i = 0; i < totalTicks; i++) {
             // Hi-Hats & Cymbals
@@ -783,7 +783,7 @@ export class CoachController {
         const baseType = ABC_PITCH_TO_DRUM_TYPE[pitch];
 
         if (!baseType) {
-            console.warn(`[CoachController] Unknown ABC value in ${arrayName}[${tickIndex}]: ${JSON.stringify(val)} (pitch: ${JSON.stringify(pitch)})`);
+            console.warn(`[Controller] Unknown ABC value in ${arrayName}[${tickIndex}]: ${JSON.stringify(val)} (pitch: ${JSON.stringify(pitch)})`);
             return null;
         }
 
@@ -814,7 +814,7 @@ export class CoachController {
         const notesPerMeasure = data.notesPerMeasure;
 
         if (!bpm || !numBeats || !measures || !notesPerMeasure) {
-            console.error('[CoachController] Groove data has missing/zero fields:',
+            console.error('[Controller] Groove data has missing/zero fields:',
                 { tempo: bpm, numBeats, numberOfMeasures: measures, notesPerMeasure });
             return null;
         }

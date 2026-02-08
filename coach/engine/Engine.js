@@ -10,9 +10,9 @@ const NORMAL_HIT_MATCH_WINDOW_MS = 150;  // Max distance from expected note befo
 const SCORE_WEIGHTS = { perfect: 100, good: 75, close: 50 };
 
 /**
- * CoachEngine - Manages the coaching session
+ * Engine - Manages the coaching session
  */
-export class CoachEngine {
+export class Engine {
     constructor(options = {}) {
         this.groove = null;           // Current groove/pattern
         this.noteTimeline = [];       // Flattened note schedule [{time, type, ...}]
@@ -98,7 +98,7 @@ export class CoachEngine {
         let bestMatch = null;
         let minDiff = Infinity;
 
-        console.log(`[CoachEngine] searching for ${drum} hit at relTime ${relativeHitTime.toFixed(2)}ms (lat: ${this.audioLatency})`);
+        console.log(`[Engine] searching for ${drum} hit at relTime ${relativeHitTime.toFixed(2)}ms (lat: ${this.audioLatency})`);
 
         for (const note of this.noteTimeline) {
             const isMatch = this._isTypeMatch(drum, note.type);
@@ -129,7 +129,7 @@ export class CoachEngine {
         }
 
         if (!bestMatch) {
-            console.log(`[CoachEngine] No match found for ${drum} (Timeline size: ${this.noteTimeline.length})`);
+            console.log(`[Engine] No match found for ${drum} (Timeline size: ${this.noteTimeline.length})`);
             // Return an extra hit result
             const evaluation = {
                 timingError: 0,
@@ -142,7 +142,7 @@ export class CoachEngine {
             return evaluation;
         }
 
-        console.log(`[CoachEngine] Matched ${drum} with note at ${bestMatch.time}ms (diff: ${minDiff.toFixed(2)}ms)${bestMatch.isGraceNote ? ' [GRACE NOTE]' : ''}`);
+        console.log(`[Engine] Matched ${drum} with note at ${bestMatch.time}ms (diff: ${minDiff.toFixed(2)}ms)${bestMatch.isGraceNote ? ' [GRACE NOTE]' : ''}`);
 
         let evaluation;
         if (bestMatch.isGraceNote) {

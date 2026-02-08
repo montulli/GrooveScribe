@@ -1,4 +1,4 @@
-import { CoachController } from './CoachController.js';
+import { Controller } from './Controller.js';
 
 /**
  * Bootstraps the Drum Coach and attaches it to the global window object
@@ -13,7 +13,7 @@ async function bootstrap() {
         return;
     }
 
-    const controller = new CoachController(window.myGrooveWriter);
+    const controller = new Controller(window.myGrooveWriter);
     window.coachController = controller;
 
     await controller.init();

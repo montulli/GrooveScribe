@@ -1,5 +1,5 @@
 /**
- * CoachState - Manages the global state of the Drum Coach
+ * State - Manages the global state of the Drum Coach
  */
 
 const VALID_MODES = ['practice', 'performance'];
@@ -22,7 +22,7 @@ const DEFAULTS = {
     calibrationOffset: 0
 };
 
-export class CoachStateManager {
+export class StateManager {
     constructor() {
         this._data = { ...DEFAULTS };
         this._listeners = [];
@@ -128,7 +128,7 @@ export class CoachStateManager {
     getToleranceWindows() {
         const windows = TOLERANCE_WINDOWS[this.tolerance];
         if (!windows) {
-            console.error(`[CoachState] Unknown tolerance '${this.tolerance}', falling back to 'normal'`);
+            console.error(`[State] Unknown tolerance '${this.tolerance}', falling back to 'normal'`);
             return TOLERANCE_WINDOWS.normal;
         }
         return windows;
@@ -171,7 +171,7 @@ export class CoachStateManager {
         try {
             localStorage.setItem('coachState', JSON.stringify(this.toObject()));
         } catch (e) {
-            console.warn('[CoachState] Failed to save:', e);
+            console.warn('[State] Failed to save:', e);
         }
     }
 
@@ -183,7 +183,7 @@ export class CoachStateManager {
                 this.fromObject(JSON.parse(data));
             }
         } catch (e) {
-            console.warn('[CoachState] Failed to load:', e);
+            console.warn('[State] Failed to load:', e);
         }
     }
 
@@ -214,14 +214,14 @@ export class CoachStateManager {
             try {
                 listener({ property, value });
             } catch (e) {
-                console.error('[CoachState] Event listener error:', e);
+                console.error('[State] Event listener error:', e);
             }
         }
     }
 }
 
 // Global instance
-export const coachState = new CoachStateManager();
+export const coachState = new StateManager();
 
 // Only load if localStorage is available (not in Node.js tests)
 if (typeof localStorage !== 'undefined') {

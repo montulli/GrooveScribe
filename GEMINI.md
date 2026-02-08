@@ -40,6 +40,13 @@ The core GrooveScribe codebase (everything outside `coach/`) should be treated w
 - **No hacks or workarounds.** If a proper solution is too complex right now, discuss it with the user instead of shipping a hack. Temporary workarounds accumulate and become permanent.
 - **No magic constants.** Every number, string, or threshold in the code should be a named constant with a clear reason for its value. If you can't name it or explain it, it probably shouldn't be hardcoded.
 
+## Comments
+
+**Respect existing comments. Keep them accurate.**
+
+- **Update comments during refactors.** When renaming files, classes, functions, or variables, update all comments and console.log tags that reference the old names. A comment pointing at code that no longer exists is worse than no comment.
+- **Don't document old behavior.** After a refactoring, comments should describe the *current* code. Don't add notes like "formerly called X" or "refactored from Y" — the git history already captures that. Comments should help someone reading the code *today*, not trace its archaeology.
+
 ## Verify, Don't Guess
 
 **Run small verification tests when studying code behavior instead of guessing or assuming.**

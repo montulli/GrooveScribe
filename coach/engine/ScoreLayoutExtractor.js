@@ -1,7 +1,6 @@
 /**
- * ScoreLayout - Hooks into abc2svg to extract precise coordinates
+ * ScoreLayoutExtractor - Hooks into abc2svg to extract precise coordinates
  * for chord positions, measure boundaries, and system layout.
- * (Refactored from NotationSniffer for abc2svg v1.22.1)
  *
  * Multi-system aware: detects system (line) breaks by monitoring when
  * annotation X positions reset from right edge back to the left margin.
@@ -58,9 +57,9 @@ const NOTE_Y_OFFSETS = {
     [DrumType.HH_FOOT]: 9,        // ^d, → print=d,
 };
 
-export class ScoreLayout {
+export class ScoreLayoutExtractor {
     constructor() {
-        console.log('[ScoreLayout] Instance created');
+        console.log('[ScoreLayoutExtractor] Instance created');
         this._initData();
         this.abcIndexCount = 0;
         this.lastNoteX = -100;
@@ -92,7 +91,7 @@ export class ScoreLayout {
 
     hook(abc) {
         if (!abc) {
-            console.warn('[ScoreLayout] hook(abc) called with null abc object');
+            console.warn('[ScoreLayoutExtractor] hook(abc) called with null abc object');
             return;
         }
 
@@ -105,7 +104,7 @@ export class ScoreLayout {
                 anno_start: typeof target.anno_start === 'function' ? target.anno_start : null,
                 anno_stop: typeof target.anno_stop === 'function' ? target.anno_stop : null
             };
-            console.log('[ScoreLayout] Captured original callback functions');
+            console.log('[ScoreLayoutExtractor] Captured original callback functions');
         }
 
         const orig_anno_start = this._originals.anno_start;
@@ -172,7 +171,7 @@ export class ScoreLayout {
     }
 
     reset(startIndex = 0) {
-        console.log(`[ScoreLayout] Resetting data. Previous events: ${this.data.events.length}. New startIndex: ${startIndex}`);
+        console.log(`[ScoreLayoutExtractor] Resetting data. Previous events: ${this.data.events.length}. New startIndex: ${startIndex}`);
         this._initData();
 
         try {
@@ -184,7 +183,7 @@ export class ScoreLayout {
                 }
             }
         } catch (e) {
-            console.error('[ScoreLayout] Error parsing ABC source:', e);
+            console.error('[ScoreLayoutExtractor] Error parsing ABC source:', e);
         }
 
         this.abcIndexCount = startIndex;
@@ -306,7 +305,7 @@ export class ScoreLayout {
         const step = this.data.scaledStep || BASE_STAFF_STEP;
         const systems = this._splitIntoSystems();
 
-        console.log(`[ScoreLayout] Split into ${systems.length} systems from ${this.data.events.length} events`);
+        console.log(`[ScoreLayoutExtractor] Split into ${systems.length} systems from ${this.data.events.length} events`);
 
         let globalMeasureOffset = 0;
         let legendCount = 0;
@@ -314,12 +313,12 @@ export class ScoreLayout {
         const systems2 = systems.map((system, idx) => {
             // Filter out legend systems: all chords have negative abcIndex
             if (system.chords.length > 0 && system.chords.every(n => n.abcIndex < 0)) {
-                console.log(`[ScoreLayout] Filtering legend system #${idx} (${system.chords.length} chords with negative abcIndex)`);
+                console.log(`[ScoreLayoutExtractor] Filtering legend system #${idx} (${system.chords.length} chords with negative abcIndex)`);
                 legendCount++;
                 return null;
             }
             if (system.chords.length === 0 && system.bars.length === 0) {
-                console.log(`[ScoreLayout] Filtering empty system #${idx}`);
+                console.log(`[ScoreLayoutExtractor] Filtering empty system #${idx}`);
                 legendCount++;
                 return null;
             }
@@ -364,9 +363,9 @@ export class ScoreLayout {
 
         for (let i = 0; i < systems2.length; i++) {
             const s = systems2[i];
-            console.log(`[ScoreLayout] System #${i + 1}: svgIndex=${s.svgIndex}, topY=${s.topY !== null ? s.topY.toFixed(1) : 'null'}, ${s.chords.length} chords, ${s.measureBoundaries.length} boundaries`);
+            console.log(`[ScoreLayoutExtractor] System #${i + 1}: svgIndex=${s.svgIndex}, topY=${s.topY !== null ? s.topY.toFixed(1) : 'null'}, ${s.chords.length} chords, ${s.measureBoundaries.length} boundaries`);
         }
-        console.log(`[ScoreLayout] Total: ${systems2.length} systems, ${totalChords} chords, ${totalBoundaries} boundaries`);
+        console.log(`[ScoreLayoutExtractor] Total: ${systems2.length} systems, ${totalChords} chords, ${totalBoundaries} boundaries`);
 
         return result;
     }
@@ -387,6 +386,6 @@ export class ScoreLayout {
     }
 }
 
-export const scoreLayout = new ScoreLayout();
-window.scoreLayout = scoreLayout;
-console.log('[ScoreLayout] Module loaded and instance exposed to window');
+export const scoreLayoutExtractor = new ScoreLayoutExtractor();
+window.scoreLayout = scoreLayoutExtractor;
+console.log('[ScoreLayoutExtractor] Module loaded and instance exposed to window');

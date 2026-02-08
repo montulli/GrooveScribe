@@ -1,9 +1,9 @@
-import { coachState } from '../state/CoachState.js';
+import { coachState } from '../state/State.js';
 
 /**
- * CoachSettingsDialog - Manages the settings UI
+ * SettingsDialog - Manages the settings UI
  */
-export class CoachSettingsDialog {
+export class SettingsDialog {
   constructor() {
     this.container = null;
   }

@@ -16,7 +16,7 @@ const TIER_COLORS = { perfect: '#00BFFF', good: '#32CD32', close: '#FFD700', ext
 
 /**
  * FeedbackRenderer - Draws feedback circles on notation staff 
- * using coordinates extracted by ScoreLayout.
+ * using coordinates extracted by ScoreLayoutExtractor.
  *
  * Multi-system aware: each visual system (line of music) may live in its
  * own SVG element. The renderer creates a feedback layer in each SVG and
@@ -110,7 +110,7 @@ export class FeedbackRenderer {
             for (let sysIdx = 0; sysIdx < sniffedData.systems.length; sysIdx++) {
                 const system = sniffedData.systems[sysIdx];
 
-                // Map system to SVG layer by its svgIndex (from ScoreLayout)
+                // Map system to SVG layer by its svgIndex (from ScoreLayoutExtractor)
                 // svgIndex tells us which DOM SVG element this system lives in
                 const layerIndex = (system.svgIndex !== undefined)
                     ? Math.min(system.svgIndex, this.svgLayers.length - 1)
@@ -120,7 +120,7 @@ export class FeedbackRenderer {
                     topY: system.topY,
                     layerIndex: layerIndex,
                     measureOffset: system.measureOffset,
-                    noteYs: system.noteYs,  // DrumType → SVG Y (from ScoreLayout)
+                    noteYs: system.noteYs,  // DrumType → SVG Y (from ScoreLayoutExtractor)
                     timeline: [],
                     measureBoundaries: []
                 };
