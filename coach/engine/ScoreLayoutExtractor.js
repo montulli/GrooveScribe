@@ -2,13 +2,11 @@
  * ScoreLayoutExtractor - Hooks into abc2svg to extract precise coordinates
  * for chord positions, measure boundaries, and system layout.
  *
- * Multi-system aware: detects system (line) breaks by monitoring when
- * annotation X positions reset from right edge back to the left margin.
- * abc2svg fires all anno_stop callbacks synchronously before emitting
- * SVG output, so SVG-boundary detection via img_out is not possible.
- *
- * All annotations (notes, bars, headers) are collected into a single
- * ordered stream and split into systems during getSniffedData().
+ * Multi-system aware: detects system (line) breaks by hooking abc2svg's
+ * img_out callback, which fires between systems as each SVG is emitted.
+ * A counter increments on each img_out call, and every annotation event
+ * is tagged with the current counter value (svgIndex). During
+ * getSniffedData(), events are grouped by svgIndex to form systems.
  */
 import { DrumType } from './DrumConstants.js';
 
@@ -63,6 +61,7 @@ export class ScoreLayoutExtractor {
         this._initData();
         this.abcIndexCount = 0;
         this.lastNoteX = -100;
+        this._svgCount = 0;
         this.abc = null;
         this._originals = null;
     }
@@ -71,7 +70,6 @@ export class ScoreLayoutExtractor {
         this.data = {
             // Ordered stream of all annotation events
             events: [],    // { kind, ... } — kind: 'note'|'bar'|'clef'|'key'|'meter'
-            engineWidth: 0,
             scaledStep: 0  // Scaled vertical step (one staff-line gap in SVG pixels), captured during annotation
         };
     }
@@ -102,10 +100,20 @@ export class ScoreLayoutExtractor {
         if (!this._originals) {
             this._originals = {
                 anno_start: typeof target.anno_start === 'function' ? target.anno_start : null,
-                anno_stop: typeof target.anno_stop === 'function' ? target.anno_stop : null
+                anno_stop: typeof target.anno_stop === 'function' ? target.anno_stop : null,
+                img_out: typeof target.img_out === 'function' ? target.img_out : null
             };
             console.log('[ScoreLayoutExtractor] Captured original callback functions');
         }
+
+        // Hook img_out to count SVG emissions — each call marks a system boundary.
+        // abc2svg calls img_out (via svg_flush) between annotation batches for each
+        // system, so the counter uniquely identifies which SVG each annotation belongs to.
+        const orig_img_out = this._originals.img_out;
+        target.img_out = function (str) {
+            if (orig_img_out) orig_img_out.call(this, str);
+            self._svgCount++;
+        };
 
         const orig_anno_start = this._originals.anno_start;
         target.anno_start = function (type, start, stop, x, y, w, h, s) {
@@ -120,11 +128,11 @@ export class ScoreLayoutExtractor {
 
             if (type === "bar") {
                 const barX = s ? s.x : (x + w / 2);
-                self.data.events.push({ kind: 'bar', x: barX, topY: ayTopY });
+                self.data.events.push({ kind: 'bar', x: barX, topY: ayTopY, svgIndex: self._svgCount });
             }
 
             if (type === "clef") {
-                self.data.events.push({ kind: 'clef', x, topY: ayTopY });
+                self.data.events.push({ kind: 'clef', x, topY: ayTopY, svgIndex: self._svgCount });
             }
 
             if (type === "note" || type === "grace") {
@@ -160,7 +168,8 @@ export class ScoreLayoutExtractor {
                     h: h,
                     abcIndex: self.abcIndexCount,
                     isGrace: type === "grace",
-                    topY: ayTopY
+                    topY: ayTopY,
+                    svgIndex: self._svgCount
                 });
             }
 
@@ -174,20 +183,9 @@ export class ScoreLayoutExtractor {
         console.log(`[ScoreLayoutExtractor] Resetting data. Previous events: ${this.data.events.length}. New startIndex: ${startIndex}`);
         this._initData();
 
-        try {
-            const abcElement = document.getElementById("ABCsource");
-            if (abcElement && abcElement.value) {
-                const widthMatch = abcElement.value.match(/%%pagewidth\s+(\d+)/);
-                if (widthMatch && widthMatch[1]) {
-                    this.data.engineWidth = parseFloat(widthMatch[1]);
-                }
-            }
-        } catch (e) {
-            console.error('[ScoreLayoutExtractor] Error parsing ABC source:', e);
-        }
-
         this.abcIndexCount = startIndex;
         this.lastNoteX = -100;
+        this._svgCount = 0;
     }
 
     incrementAbcIndex() {
@@ -195,73 +193,38 @@ export class ScoreLayoutExtractor {
     }
 
     /**
-     * Splits the event stream into systems based on X-position resets.
-     * When any annotation's X drops significantly (right edge → left margin),
-     * a new system begins. Notes, bars, and headers are all split together.
+     * Groups annotation events into systems by their svgIndex.
+     * Each svgIndex corresponds to one SVG element emitted by abc2svg.
      */
     _splitIntoSystems() {
         const events = this.data.events;
         if (events.length === 0) return [];
 
-        const systems = [];
-        let current = { chords: [], bars: [], clefLeftX: null, topY: null };
-        let maxNoteX = -Infinity;
-        // Pending buffer: holds non-note events that arrive after the last note
-        // of the current system but before the first note of the next system.
-        // When a system break is detected, these are moved to the new system.
-        let pending = { bars: [], clefLeftX: null };
-
-        const threshold = (this.data.engineWidth > 100)
-            ? this.data.engineWidth * 0.3
-            : 200;
-
-        const applyPending = (target) => {
-            for (const b of pending.bars) {
-                if (!target.bars.some(tb => Math.abs(tb.x - b.x) < 5)) {
-                    target.bars.push(b);
-                }
-            }
-            if (pending.clefLeftX !== null) target.clefLeftX = pending.clefLeftX;
-            pending = { bars: [], clefLeftX: null };
-        };
-
+        // Group events by svgIndex — each SVG corresponds to one system
+        const systemMap = new Map();
         for (const evt of events) {
-            const evtX = evt.x;
+            const idx = evt.svgIndex;
+            if (!systemMap.has(idx)) {
+                systemMap.set(idx, { chords: [], bars: [], clefLeftX: null, topY: null });
+            }
+            const system = systemMap.get(idx);
+
+            if (evt.topY !== null && system.topY === null) {
+                system.topY = evt.topY;
+            }
 
             if (evt.kind === 'note') {
-                // Detect system break: note X dropped significantly
-                if (evtX < maxNoteX - threshold && current.chords.length > 0) {
-                    systems.push(current);
-                    current = { chords: [], bars: [], clefLeftX: null, topY: null };
-                    maxNoteX = -Infinity;
+                system.chords.push(evt);
+            } else if (evt.kind === 'bar') {
+                if (!system.bars.some(tb => Math.abs(tb.x - evt.x) < 5)) {
+                    system.bars.push({ x: evt.x, time: 0 });
                 }
-                // Flush pending into current (possibly the new system)
-                applyPending(current);
-
-                current.chords.push(evt);
-                if (evt.topY !== null && current.topY === null) {
-                    current.topY = evt.topY;
-                }
-                if (evtX > maxNoteX) maxNoteX = evtX;
-            } else {
-                // Non-note events (bar, clef) go to pending.
-                // abc2svg emits bars BEFORE notes for each system, so pending
-                // naturally groups with the next note's system.
-                if (evt.kind === 'bar') {
-                    pending.bars.push({ x: evtX, time: 0 });
-                } else if (evt.kind === 'clef') {
-                    pending.clefLeftX = evt.x;
-                }
+            } else if (evt.kind === 'clef') {
+                system.clefLeftX = evt.x;
             }
         }
 
-        // Flush any remaining pending events (e.g. final barline of the score)
-        applyPending(current);
-        if (current.chords.length > 0 || current.bars.length > 0) {
-            systems.push(current);
-        }
-
-        return systems;
+        return [...systemMap.values()];
     }
 
     /**
