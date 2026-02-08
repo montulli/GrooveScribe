@@ -79,33 +79,6 @@ export const EditorDrumToModuleDrum = {
     [DrumType.COWBELL]: DrumType.COWBELL,
     [DrumType.STACKER]: DrumType.STACKER
 };
-
-/**
- * List of drum types supported by the editor notation grid.
- */
-export const EditorDrumTypes = [
-    DrumType.KICK,
-    DrumType.SNARE,
-    DrumType.SNARE_GHOST,
-    DrumType.SNARE_XSTICK,
-    DrumType.SNARE_FLAM,
-    DrumType.SNARE_BUZZ,
-    DrumType.SNARE_ACCENT,
-    DrumType.HH_CLOSED,
-    DrumType.HH_FOOT,
-    DrumType.HH_OPEN,
-    DrumType.HH_ACCENT,
-    DrumType.TOM_HIGH,
-    DrumType.TOM_LOW,
-    DrumType.CRASH,
-    DrumType.RIDE,
-    DrumType.RIDE_BELL,
-    DrumType.COWBELL,
-    DrumType.STACKER,
-    DrumType.METRONOME_NORMAL,
-    DrumType.METRONOME_ACCENT
-];
-
 /**
  * Mapping from ABC notation pitch strings to DrumType.
  *

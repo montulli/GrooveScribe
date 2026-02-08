@@ -10,9 +10,6 @@ import { coachState } from './state/State.js';
 import { DrumType } from './engine/DrumConstants.js';
 import { scoreLayoutExtractor } from './engine/ScoreLayoutExtractor.js';
 
-// Ensure global availability for legacy scripts (groove_utils.js)
-window.scoreLayout = scoreLayoutExtractor;
-
 /**
  * Controller - Orchestrates the entire Drum Coach feature
  */

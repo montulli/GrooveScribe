@@ -188,10 +188,6 @@ export class ScoreLayoutExtractor {
         this._svgCount = 0;
     }
 
-    incrementAbcIndex() {
-        this.abcIndexCount++;
-    }
-
     /**
      * Groups annotation events into systems by their svgIndex.
      * Each svgIndex corresponds to one SVG element emitted by abc2svg.
