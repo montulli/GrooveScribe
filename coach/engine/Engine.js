@@ -6,6 +6,11 @@ const GRACE_NOTE_EARLY_LIMIT_MS = 20;   // A grace hit can be up to this many ms
 const GRACE_NOTE_MATCH_WINDOW_MS = 100;  // Total window around expected time for grace matching
 const NORMAL_HIT_MATCH_WINDOW_MS = 150;  // Max distance from expected note before counting as extra
 
+// The furthest (in ms) a note can be from the hit time and still be matchable.
+// Used for cursor advancement (skipping old notes) and scan termination.
+// Must be >= all individual match windows to avoid skipping matchable notes.
+const SCAN_RADIUS_MS = Math.max(NORMAL_HIT_MATCH_WINDOW_MS, GRACE_NOTE_MATCH_WINDOW_MS);
+
 // Scoring weights (out of 100 per note)
 const SCORE_WEIGHTS = { perfect: 100, good: 75, close: 50 };
 
@@ -55,8 +60,14 @@ export class Engine {
         this.startTime = startTime;
         this.isPlaying = true;
         this.results = [];
-        // Reset matched flag for all notes
-        this.noteTimeline.forEach(note => note.matched = false);
+        // Reset matched/graceMatched flags for all notes
+        this.noteTimeline.forEach(note => {
+            note.matched = false;
+            note.graceMatched = false;
+        });
+        // Search cursor: index of the earliest note that could still be matched.
+        // Advances monotonically during playback; each note is skipped at most once.
+        this._searchCursor = 0;
     }
 
     /**
@@ -84,53 +95,104 @@ export class Engine {
     }
 
     /**
-     * Handle an incoming MIDI hit
+     * Evaluate a single timeline note as a candidate match for the incoming hit.
+     *
+     * Checks type compatibility (including flam grace notes), matched status,
+     * and whether the hit falls within the appropriate timing window.
+     *
+     * @param {Object} note - Timeline note to evaluate
+     * @param {string} drum - Incoming MIDI drum type
+     * @param {number} relativeHitTime - Hit timestamp relative to session start (ms)
+     * @returns {{ absDiff: number, isGraceNote: boolean } | null} Match info, or null if not a candidate
+     */
+    _evaluateCandidate(note, drum, relativeHitTime) {
+        const isMatch = this._isTypeMatch(drum, note.type);
+        // Special case: snare can match snare_flam as the grace note.
+        // note.type is normalized to 'snare', so we check editorType for flam.
+        const isFlamGraceMatch = (drum === DrumType.SNARE && note.editorType === DrumType.SNARE_FLAM);
+
+        if (!isMatch && !isFlamGraceMatch) return null;
+        if (note.matched) return null;
+
+        const targetTime = note.time + this.audioLatency;
+        const diff = relativeHitTime - targetTime; // Signed: negative = early
+        const absDiff = Math.abs(diff);
+
+        // Flam grace notes: allow early or slightly late hits within a generous window
+        if (isFlamGraceMatch && diff < GRACE_NOTE_EARLY_LIMIT_MS && absDiff <= GRACE_NOTE_MATCH_WINDOW_MS && !note.graceMatched) {
+            return { absDiff, isGraceNote: true };
+        }
+        if (isMatch && absDiff <= NORMAL_HIT_MATCH_WINDOW_MS) {
+            return { absDiff, isGraceNote: false };
+        }
+        return null;
+    }
+
+    /**
+     * Handle an incoming MIDI hit.
+     *
+     * Uses a cursor-based forward scan for efficient note matching:
+     *
+     *   1. Advance _searchCursor past notes that are definitively unmatchable
+     *      (their expected-heard-time is > SCAN_RADIUS_MS before playbackTime).
+     *      The cursor uses playbackTime (performance.now() - startTime) because
+     *      it represents "where playback is right now" and is always >= any
+     *      relativeHitTime we could receive.
+     *
+     *   2. Scan forward from _searchCursor, evaluating each note against
+     *      relativeHitTime (the actual hit timestamp). Stop when remaining
+     *      notes are too far in the future (> SCAN_RADIUS_MS ahead of the hit).
+     *
+     *   No backward scan is needed: the cursor guarantees everything before it
+     *   is beyond SCAN_RADIUS_MS in the past. Since relativeHitTime <= playbackTime
+     *   (the hit happened before or at now), a note skipped by the cursor is also
+     *   beyond the match window relative to the hit.
+     *
      * @param {string} drum - Normalized drum name (e.g., 'kick', 'snare')
      * @param {number} timestamp - The hardware timestamp from the MIDI event
      */
     handleMidiHit(drum, timestamp) {
         if (!this.isPlaying) return null;
+        const tl = this.noteTimeline;
+        if (tl.length === 0) return null;
 
-        // Relative hit time from session start
+        // relativeHitTime: from the hit's actual timestamp. Used for all matching.
         const relativeHitTime = timestamp - this.startTime;
 
-        // Find the best match in the timeline
-        let bestMatch = null;
-        let minDiff = Infinity;
+        // playbackTime: current wall-clock elapsed time. Used only for cursor advancement.
+        // Always >= relativeHitTime (the hit happened before or at performance.now()).
+        const playbackTime = performance.now() - this.startTime;
 
         console.log(`[Engine] searching for ${drum} hit at relTime ${relativeHitTime.toFixed(2)}ms (lat: ${this.audioLatency})`);
 
-        for (const note of this.noteTimeline) {
-            const isMatch = this._isTypeMatch(drum, note.type);
-            // Special case: snare can match snare_flam as the grace note
-            // Note: note.type is normalized, so we check the original editorType for flam
-            const isFlameGraceMatch = (drum === DrumType.SNARE && note.editorType === DrumType.SNARE_FLAM);
+        // Step 1: Advance cursor past notes that are definitively unmatchable.
+        // A note is unmatchable when its expected-heard-time (note.time + audioLatency)
+        // is more than SCAN_RADIUS_MS behind playbackTime.
+        while (this._searchCursor < tl.length &&
+            playbackTime - (tl[this._searchCursor].time + this.audioLatency) > SCAN_RADIUS_MS) {
+            this._searchCursor++;
+        }
 
-            if (!isMatch && !isFlameGraceMatch) continue;
-            if (note.matched) continue;
+        // Step 2: Forward scan from cursor, matching against relativeHitTime.
+        let bestMatch = null;   // direct reference to the timeline note
+        let bestIsGrace = false;
+        let minDiff = Infinity;
 
-            const targetTime = note.time + this.audioLatency;
-            const diff = relativeHitTime - targetTime; // Signed diff (negative = early)
-            const absDiff = Math.abs(diff);
+        for (let i = this._searchCursor; i < tl.length; i++) {
+            const note = tl[i];
+            // Stop when remaining notes are too far in the future to match this hit
+            if (note.time + this.audioLatency - relativeHitTime > SCAN_RADIUS_MS) break;
 
-            // For flam grace notes: allow early or slightly late hits within a generous window
-            if (isFlameGraceMatch && diff < GRACE_NOTE_EARLY_LIMIT_MS && absDiff <= GRACE_NOTE_MATCH_WINDOW_MS && !note.graceMatched) {
-                if (absDiff < minDiff) {
-                    minDiff = absDiff;
-                    bestMatch = { ...note, isGraceNote: true };
-                }
-            } else if (isMatch) {
-                // For normal hits or primary flam hits
-                if (absDiff < minDiff && absDiff <= NORMAL_HIT_MATCH_WINDOW_MS) {
-                    minDiff = absDiff;
-                    bestMatch = note;
-                }
+            const result = this._evaluateCandidate(note, drum, relativeHitTime);
+            if (result && result.absDiff < minDiff) {
+                minDiff = result.absDiff;
+                bestMatch = note;
+                bestIsGrace = result.isGraceNote;
             }
         }
 
         if (!bestMatch) {
-            console.log(`[Engine] No match found for ${drum} (Timeline size: ${this.noteTimeline.length})`);
-            // Return an extra hit result
+            console.log(`[Engine] No match found for ${drum} (Timeline size: ${tl.length})`);
             const evaluation = {
                 timingError: 0,
                 tier: 'extra',
@@ -142,30 +204,27 @@ export class Engine {
             return evaluation;
         }
 
-        console.log(`[Engine] Matched ${drum} with note at ${bestMatch.time}ms (diff: ${minDiff.toFixed(2)}ms)${bestMatch.isGraceNote ? ' [GRACE NOTE]' : ''}`);
+        console.log(`[Engine] Matched ${drum} with note at ${bestMatch.time}ms (diff: ${minDiff.toFixed(2)}ms)${bestIsGrace ? ' [GRACE NOTE]' : ''}`);
 
         let evaluation;
-        if (bestMatch.isGraceNote) {
+        if (bestIsGrace) {
             // Grace note for flam: grade as 'perfect' since being early is expected behavior
-            // Flams have inherently flexible timing - the grace note SHOULD be early
-            // Don't mark the main note as matched - the primary hit still needs to come
+            // Flams have inherently flexible timing — the grace note SHOULD be early
+            // Don't mark the main note as matched — the primary hit still needs to come
             evaluation = {
                 timingError: -minDiff, // Negative = early
-                tier: 'perfect', // Grace notes are graded as perfect when in the expected window
+                tier: 'perfect',
                 isMatch: true,
                 isGraceNote: true,
                 noteIndex: bestMatch.originalIndex
             };
-            // Mark grace slot as matched so subsequent hits (even if very early) match the primary slot
-            const originalNote = this.noteTimeline.find(n => n.originalIndex === bestMatch.originalIndex);
-            if (originalNote) originalNote.graceMatched = true;
+            // Mark grace slot as matched so subsequent hits match the primary slot
+            bestMatch.graceMatched = true;
         } else {
             // Normal hit evaluation
             evaluation = evaluateHit(timestamp, this.startTime + bestMatch.time, this.audioLatency, this.windows);
             evaluation.noteIndex = bestMatch.originalIndex;
-            // Find the original note and mark it matched
-            const originalNote = this.noteTimeline.find(n => n.originalIndex === bestMatch.originalIndex);
-            if (originalNote) originalNote.matched = true;
+            bestMatch.matched = true;
         }
 
         this.results.push(evaluation);

@@ -65,6 +65,7 @@ export class Controller {
         // Inject debug grooves into the Grooves menu when debug is enabled
         if (SHOW_DEBUG) {
             this._injectDebugGrooves();
+            this._initDebugHotkeys();
         }
 
         // Debug grid is controlled by SHOW_DEBUG constant in FeedbackRenderer.js
@@ -502,6 +503,32 @@ export class Controller {
 
         // Update renderer with new coordinates and scale
         this.setRendererGrooveContext();
+    }
+
+    /**
+     * Register keyboard shortcuts for simulating drum hits (debug only).
+     * k = kick, s = snare, h = closed hi-hat.
+     * Calls the same handleMidiHit pipeline as real MIDI input.
+     */
+    _initDebugHotkeys() {
+        const KEY_TO_DRUM = {
+            'k': DrumType.KICK,
+            's': DrumType.SNARE,
+            'h': DrumType.HH_CLOSED,
+        };
+
+        window.addEventListener('keydown', (e) => {
+            // Don't intercept when typing in text fields
+            const tag = e.target.tagName;
+            if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+            const drum = KEY_TO_DRUM[e.key];
+            if (!drum) return;
+            if (!this.isCoachingActive || !this.engine.isPlaying) return;
+
+            console.log(`[Controller] Debug hotkey '${e.key}' → ${drum}`);
+            this.handleMidiHit(drum, performance.now(), 100);
+        });
     }
 
     /**
