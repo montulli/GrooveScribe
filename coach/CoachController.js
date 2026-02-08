@@ -5,7 +5,7 @@ import { FeedbackRenderer, SHOW_DEBUG } from './ui/FeedbackRenderer.js';
 import { CoachSettingsDialog } from './ui/CoachSettingsDialog.js';
 import { ResultsDialog } from './ui/ResultsDialog.js';
 import { coachState } from './state/CoachState.js';
-import { DrumType, EditorDrumTypes } from './engine/DrumConstants.js';
+import { DrumType, EditorDrumTypes, ABC_PITCH_TO_DRUM_TYPE } from './engine/DrumConstants.js';
 import { scoreLayout } from './engine/ScoreLayout.js';
 
 // Ensure global availability for legacy scripts (groove_utils.js)
@@ -749,42 +749,67 @@ export class CoachController {
         for (let i = 0; i < totalTicks; i++) {
             // Hi-Hats & Cymbals
             if (data.hh_array[i]) {
-                const val = data.hh_array[i];
-                let type = DrumType.HH_CLOSED;
-                if (val === 'o' || val === 'O' || val.includes('!open!')) type = DrumType.HH_OPEN;
-                else if (val === 'X' || val.includes('!accent!')) type = DrumType.HH_ACCENT;
-                else if (val === 'c' || val === 'C') type = DrumType.CRASH;
-                else if (val === 'r' || val === 'R') type = DrumType.RIDE;
-                else if (val === 'b' || val === 'B') type = DrumType.RIDE_BELL;
-                timeline.push({ time: i * msPerTick, type, tickIndex: i });
+                const type = this._resolveAbcDrumType(data.hh_array[i], 'hh', i);
+                if (type) timeline.push({ time: i * msPerTick, type, tickIndex: i });
             }
             // Snare variants
             if (data.snare_array[i]) {
-                const val = data.snare_array[i];
-                let type = DrumType.SNARE;
-                if (val === 'g' || val === 'G' || val.includes('!(')) type = DrumType.SNARE_GHOST;
-                else if (val === 'x' || val.includes('^c')) type = DrumType.SNARE_XSTICK;
-                else if (val === 'f' || val === 'F' || val.includes('{/')) type = DrumType.SNARE_FLAM;
-                else if (val === 'O' || val.includes('!accent!')) type = DrumType.SNARE_ACCENT;
-                timeline.push({ time: i * msPerTick, type, tickIndex: i });
+                const type = this._resolveAbcDrumType(data.snare_array[i], 'snare', i);
+                if (type) timeline.push({ time: i * msPerTick, type, tickIndex: i });
             }
             // Kick and Foot HH
             if (data.kick_array[i]) {
-                const val = data.kick_array[i];
-                const isKick = val === 'o' || val === 'O' || val === 'k' || val === 'F' || val === true;
-                timeline.push({ time: i * msPerTick, type: isKick ? DrumType.KICK : DrumType.HH_FOOT, tickIndex: i });
+                const type = this._resolveAbcDrumType(data.kick_array[i], 'kick', i);
+                if (type) timeline.push({ time: i * msPerTick, type, tickIndex: i });
             }
             // Toms (Unified 4-tom array)
             if (data.toms_array) {
                 data.toms_array.forEach((row, idx) => {
                     if (row[i]) {
-                        // Map 4 rows to High/Low staff positions
-                        timeline.push({ time: i * msPerTick, type: (idx < 2) ? DrumType.TOM_HIGH : DrumType.TOM_LOW, tickIndex: i });
+                        const type = this._resolveAbcDrumType(row[i], `tom${idx}`, i);
+                        if (type) timeline.push({ time: i * msPerTick, type, tickIndex: i });
                     }
                 });
             }
         }
         return timeline.sort((a, b) => a.time - b.time);
+    }
+
+    /**
+     * Resolve a raw ABC notation value (from grooveDataFromClickableUI) to a DrumType.
+     *
+     * Values may include decorations (e.g. "!open!^g", "!accent!c", "!(c!)", "{/c").
+     * The pitch is extracted by stripping decorations, then looked up in ABC_PITCH_TO_DRUM_TYPE.
+     * Decorations then override the base type (e.g. !open! on ^g → HH_OPEN instead of HH_CLOSED).
+     *
+     * @returns {string|null} DrumType value, or null if unknown (with console warning)
+     */
+    _resolveAbcDrumType(val, arrayName, tickIndex) {
+        // Strip ABC decorations: !xxx! patterns (e.g. !accent!, !open!, !(.!, !///!)
+        let stripped = val.replace(/![^!]*!/g, '');
+        // Strip grace note prefix: {/X} block (flam notation, e.g. {/c} before the main note)
+        stripped = stripped.replace(/\{\/[^}]*\}/g, '');
+        const pitch = stripped;
+        const baseType = ABC_PITCH_TO_DRUM_TYPE[pitch];
+
+        if (!baseType) {
+            console.warn(`[CoachController] Unknown ABC value in ${arrayName}[${tickIndex}]: ${JSON.stringify(val)} (pitch: ${JSON.stringify(pitch)})`);
+            return null;
+        }
+
+        // Decoration overrides for articulation variants
+        if (val.includes('!open!')) return DrumType.HH_OPEN;
+        if (val.includes('!accent!')) {
+            // Flam with accent: the {/ grace block takes priority over accent
+            if (val.includes('{/')) return DrumType.SNARE_FLAM;
+            if (baseType === DrumType.SNARE) return DrumType.SNARE_ACCENT;
+            if (baseType === DrumType.HH_CLOSED) return DrumType.HH_ACCENT;
+        }
+        if (val.includes('!(')) return DrumType.SNARE_GHOST;
+        if (val.includes('{/')) return DrumType.SNARE_FLAM;
+        if (val.includes('!///!')) return DrumType.SNARE_BUZZ;
+
+        return baseType;
     }
 
     /**

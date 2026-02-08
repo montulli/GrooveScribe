@@ -231,8 +231,9 @@ export class FeedbackRenderer {
     _drawExtraHit(hitTimeMs, drumType) {
         const x = this._interpolateX(hitTimeMs);
         if (x === null) return;
-        const { y, layerIndex } = this._guessYForDrum(drumType);
-        this._drawCircle(x, y, 'extra', layerIndex);
+        const pos = this._guessYForDrum(drumType);
+        if (!pos) return;
+        this._drawCircle(x, pos.y, 'extra', pos.layerIndex);
     }
 
     _interpolateX(hitTimeMs) {
@@ -255,9 +256,13 @@ export class FeedbackRenderer {
     }
 
     _guessYForDrum(drumType) {
-        if (this.systems.length === 0) return { y: 100, layerIndex: 0 };
+        if (this.systems.length === 0) return null;
         const sys = this.systems[0];
-        const y = sys.noteYs[drumType] ?? sys.noteYs[DrumType.SNARE] ?? sys.topY;
+        const y = sys.noteYs[drumType];
+        if (y === undefined) {
+            console.warn(`[FeedbackRenderer] Unknown drumType for Y lookup: ${drumType}`);
+            return null;
+        }
         return { y, layerIndex: 0 };
     }
 

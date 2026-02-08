@@ -105,3 +105,40 @@ export const EditorDrumTypes = [
     DrumType.METRONOME_NORMAL,
     DrumType.METRONOME_ACCENT
 ];
+
+/**
+ * Mapping from ABC notation pitch strings to DrumType.
+ *
+ * grooveDataFromClickableUI() returns raw ABC notation in its arrays
+ * (e.g. "^c'" for crash, "!open!^g" for open hi-hat). Consumers must
+ * strip decorations (!open!, !accent!, etc.) before looking up the pitch.
+ *
+ * Each pitch corresponds to a %%map entry in groove_utils.js:
+ *   %%map drummap ^g  print=g  heads=x_head  ...
+ *   %%map drummap ^c' print=c' heads=x_head  ...
+ */
+export const ABC_PITCH_TO_DRUM_TYPE = {
+    // Hi-hat / cymbals
+    "^g": DrumType.HH_CLOSED,
+    "^A'": DrumType.RIDE,
+    "^B'": DrumType.RIDE_BELL,
+    "^c'": DrumType.CRASH,
+    "^d'": DrumType.STACKER,
+    "^D'": DrumType.COWBELL,
+
+    // Metronome
+    "^e'": DrumType.METRONOME_NORMAL,
+    "^f'": DrumType.METRONOME_ACCENT,
+
+    // Snare
+    "c": DrumType.SNARE,
+    "^c": DrumType.SNARE_XSTICK,
+
+    // Kick / Feet
+    "F": DrumType.KICK,
+    "^d,": DrumType.HH_FOOT,
+
+    // Toms
+    "e": DrumType.TOM_HIGH,
+    "A": DrumType.TOM_LOW,
+};

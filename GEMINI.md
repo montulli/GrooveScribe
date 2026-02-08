@@ -35,6 +35,8 @@ The core GrooveScribe codebase (everything outside `coach/`) should be treated w
 **No fallbacks, no hacks, no magic constants.**
 
 - **No silent fallbacks.** If something fails or is missing, surface the error clearly rather than falling back to a default that masks the problem. This also means **don't implement a second-best approach** as a fallback for the preferred one — doing so hides failures in the preferred approach and clutters the code with undesired logic paths. Implement the correct approach and let it fail visibly if something is wrong.
+  - **Common anti-pattern:** `let type = DEFAULT; if (...) type = A; else if (...) type = B;` — if none of the conditions match, the code silently uses DEFAULT. Instead, use a lookup table or explicit `else { warn/error }`.
+  - **`??` fallback chains** (e.g. `map[key] ?? map[SNARE] ?? defaultY`) silently mask missing entries. If a key isn't in the map, **warn and bail** — don't substitute a different key.
 - **No hacks or workarounds.** If a proper solution is too complex right now, discuss it with the user instead of shipping a hack. Temporary workarounds accumulate and become permanent.
 - **No magic constants.** Every number, string, or threshold in the code should be a named constant with a clear reason for its value. If you can't name it or explain it, it probably shouldn't be hardcoded.
 
