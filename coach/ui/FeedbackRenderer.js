@@ -10,10 +10,10 @@ export const SHOW_DEBUG = true;
  *
  * Multi-system aware: each visual system (line of music) may live in its
  * own SVG element. The renderer creates a feedback layer in each SVG and
- * maps staffs to their SVG by index order.
+ * maps systems to their SVG by index order.
  *
- * Expects sniffedData in the multi-staff format:
- * { verticalStep, staffs: [{ topY, notes: [{x, y, abcIndex, isGrace}], boundaries: [{x}] }] }
+ * Expects sniffedData in the multi-system format:
+ * { verticalStep, systems: [{ topY, chords: [{x, abcIndex, isGrace}], measureBoundaries: [{x}], noteYs: {} }] }
  */
 export class FeedbackRenderer {
     constructor(svgContainerSelector) {
@@ -22,7 +22,7 @@ export class FeedbackRenderer {
 
         this.grooveContext = null;
         this.verticalStep = 4.5; // Default step (6pt * 0.75 scale)
-        this.staffs = [];        // Per-staff rendering data: [{ topY, timeline, measureBoundaries, layerIndex }]
+        this.systems = [];       // Per-system rendering data: [{ topY, timeline, measureBoundaries, layerIndex }]
         this.sniffedData = null;
     }
 
@@ -73,7 +73,7 @@ export class FeedbackRenderer {
     setGrooveContext(context, timeline, sniffedData = null) {
         this.grooveContext = context;
         this.sniffedData = sniffedData;
-        this.staffs = [];
+        this.systems = [];
 
         if (!this.ensureLayers()) return;
 
@@ -88,41 +88,43 @@ export class FeedbackRenderer {
 
         const measureDurationMs = (60000 / bpm) * numBeats;
         this.grooveContext.totalDurationMs = measureDurationMs * measures;
+        const step = this.verticalStep;
 
-        // Build per-staff rendering data
-        if (sniffedData && sniffedData.staffs) {
-            for (let staffIdx = 0; staffIdx < sniffedData.staffs.length; staffIdx++) {
-                const staff = sniffedData.staffs[staffIdx];
+        // Build per-system rendering data
+        if (sniffedData && sniffedData.systems) {
+            for (let sysIdx = 0; sysIdx < sniffedData.systems.length; sysIdx++) {
+                const system = sniffedData.systems[sysIdx];
 
-                // Map staff to SVG layer by its svgIndex (from ScoreLayout)
-                // svgIndex tells us which DOM SVG element this staff lives in
-                const layerIndex = (staff.svgIndex !== undefined)
-                    ? Math.min(staff.svgIndex, this.svgLayers.length - 1)
-                    : Math.min(staffIdx, this.svgLayers.length - 1);
+                // Map system to SVG layer by its svgIndex (from ScoreLayout)
+                // svgIndex tells us which DOM SVG element this system lives in
+                const layerIndex = (system.svgIndex !== undefined)
+                    ? Math.min(system.svgIndex, this.svgLayers.length - 1)
+                    : Math.min(sysIdx, this.svgLayers.length - 1);
 
-                const staffData = {
-                    topY: staff.topY,
+                const systemData = {
+                    topY: system.topY,
                     layerIndex: layerIndex,
-                    measureOffset: staff.measureOffset || 0,
+                    measureOffset: system.measureOffset || 0,
+                    noteYs: system.noteYs || {},  // DrumType → SVG Y (from ScoreLayout)
                     timeline: [],
                     measureBoundaries: []
                 };
 
                 // 1. Build Measure Boundaries
                 for (let m = 0; m <= measures; m++) {
-                    staffData.measureBoundaries.push({
+                    systemData.measureBoundaries.push({
                         timeMs: m * measureDurationMs,
                         measureIndex: m,
                         x: null
                     });
                 }
-                this._assignBoundaryPositions(staffData.measureBoundaries, staff.boundaries);
+                this._assignBoundaryPositions(systemData.measureBoundaries, system.measureBoundaries);
 
-                // 2. Build timeline by matching sniffed notes to engine timeline
-                if (staff.notes && timeline && timeline.length > 0) {
+                // 2. Build timeline by matching sniffed chords to engine timeline
+                if (system.chords && timeline && timeline.length > 0) {
                     // Grace notes match positionally (abc2svg assigns them
                     // a different abcIndex than _refreshAbcMapping does).
-                    const sniffedGraces = staff.notes.filter(n => n.isGrace);
+                    const sniffedGraces = system.chords.filter(n => n.isGrace);
                     let graceIdx = 0;
 
                     for (const note of timeline) {
@@ -131,31 +133,34 @@ export class FeedbackRenderer {
                             // Match Nth timeline grace → Nth sniffed grace
                             sniffed = sniffedGraces[graceIdx++];
                         } else {
-                            sniffed = staff.notes.find(n =>
+                            sniffed = system.chords.find(n =>
                                 n.abcIndex === note.abcIndex && !n.isGrace
                             );
                         }
 
                         if (sniffed) {
-                            staffData.timeline.push({
+                            const noteType = note.isGrace ? DrumType.FLAM_GRACE : note.type;
+                            const noteY = systemData.noteYs[noteType];
+                            if (noteY === undefined) continue; // skip unknown drum types
+                            systemData.timeline.push({
                                 timeMs: note.time,
                                 tickIndex: note.tickIndex,
-                                type: note.isGrace ? DrumType.FLAM_GRACE : note.type,
+                                type: noteType,
                                 abcIndex: sniffed.abcIndex,
                                 x: sniffed.x,
-                                y: sniffed.y,
+                                y: noteY,
                                 isGrace: !!note.isGrace
                             });
                         }
                     }
-                    staffData.timeline.sort((a, b) => a.timeMs - b.timeMs);
+                    systemData.timeline.sort((a, b) => a.timeMs - b.timeMs);
                 }
 
-                this.staffs.push(staffData);
+                this.systems.push(systemData);
             }
         }
 
-        if (timeline && timeline.length > 0 && this.staffs.length === 0) {
+        if (timeline && timeline.length > 0 && this.systems.length === 0) {
             console.warn('[FeedbackRenderer] Missing sniffedData. Hit feedback disabled.');
         }
 
@@ -185,21 +190,21 @@ export class FeedbackRenderer {
      * Draw feedback for a hit
      */
     drawHitFeedbackByTime(hitTimeMs, tier, timingError, drumType, abcNoteIndex = null) {
-        if (this.staffs.length === 0) return;
+        if (this.systems.length === 0) return;
 
         const isGrace = (drumType === DrumType.FLAM_GRACE);
 
-        // Search across all staffs for matching note
+        // Search across all systems for matching note
         let note = null;
         let targetLayerIndex = 0;
-        for (const staff of this.staffs) {
-            note = staff.timeline.find(n =>
+        for (const sys of this.systems) {
+            note = sys.timeline.find(n =>
                 Math.abs(n.timeMs - hitTimeMs) < 15 &&
                 n.isGrace === isGrace &&
                 (abcNoteIndex === null || n.abcIndex === abcNoteIndex)
             );
             if (note) {
-                targetLayerIndex = staff.layerIndex;
+                targetLayerIndex = sys.layerIndex;
                 break;
             }
         }
@@ -231,12 +236,12 @@ export class FeedbackRenderer {
     }
 
     _interpolateX(hitTimeMs) {
-        if (!this.grooveContext || this.staffs.length === 0) return null;
+        if (!this.grooveContext || this.systems.length === 0) return null;
 
-        // Search across all staffs' boundaries
-        for (const staff of this.staffs) {
+        // Search across all systems' boundaries
+        for (const sys of this.systems) {
             let left = null, right = null;
-            for (const b of staff.measureBoundaries) {
+            for (const b of sys.measureBoundaries) {
                 if (b.x === null) continue;
                 if (b.timeMs <= hitTimeMs) left = b;
                 else if (b.timeMs > hitTimeMs && !right) { right = b; break; }
@@ -250,20 +255,10 @@ export class FeedbackRenderer {
     }
 
     _guessYForDrum(drumType) {
-        if (this.staffs.length === 0) return { y: 100, layerIndex: 0 };
-        const staffY = this.staffs[0].topY;
-        const step = this.verticalStep;
-
-        // Map drum types to relative grid steps from Top Line (0)
-        const drumOffsets = {
-            [DrumType.KICK]: 12, [DrumType.SNARE]: 8, [DrumType.SNARE_FLAM]: 8, [DrumType.FLAM_GRACE]: 8,
-            [DrumType.HH_CLOSED]: 4, [DrumType.HH_OPEN]: 4, [DrumType.HH_FOOT]: 14,
-            [DrumType.TOM_HIGH]: 6, [DrumType.TOM_LOW]: 10, [DrumType.CRASH]: 2, [DrumType.RIDE]: 3
-        };
-        const levelIdx = drumOffsets[drumType] !== undefined ? drumOffsets[drumType] : 8;
-        const relativeStep = levelIdx - 4;
-
-        return { y: staffY + (relativeStep * step), layerIndex: 0 };
+        if (this.systems.length === 0) return { y: 100, layerIndex: 0 };
+        const sys = this.systems[0];
+        const y = sys.noteYs[drumType] ?? sys.noteYs[DrumType.SNARE] ?? sys.topY;
+        return { y, layerIndex: 0 };
     }
 
     _drawCircle(x, y, tier, layerIndex = 0) {
@@ -300,19 +295,19 @@ export class FeedbackRenderer {
 
         const step = this.verticalStep;
 
-        // Render debug grid for each staff in its correct SVG layer
-        for (const staff of this.staffs) {
-            const layer = this.svgLayers[staff.layerIndex]?.layer;
+        // Render debug grid for each system in its correct SVG layer
+        for (const sys of this.systems) {
+            const layer = this.svgLayers[sys.layerIndex]?.layer;
             if (!layer) continue;
 
-            const staffY = staff.topY;
+            const staffY = sys.topY;
 
-            // Clamp range: 3 lines above staff (-3) to 2 lines below staff (6)
-            const clampTop = staffY + (-3 * step);
-            const clampBottom = staffY + (6 * step);
+            // Clamp range: 4 lines above staff (-4) to 1 line below staff (5)
+            const clampTop = staffY + (-4 * step);
+            const clampBottom = staffY + (5 * step);
 
             // Measure boundaries (Blue) - clamped
-            staff.measureBoundaries.forEach((b) => {
+            sys.measureBoundaries.forEach((b) => {
                 if (b.x === null) return;
                 const line = this._createDebugLine(b.x, 'blue', '1.0', clampTop, clampBottom);
                 line.setAttribute('stroke-dasharray', '4,4');
@@ -320,16 +315,28 @@ export class FeedbackRenderer {
                 layer.appendChild(line);
 
                 // Measure label at top of clamped area (continuous across systems)
-                this._addDebugText(b.x, clampTop - 1, `M${staff.measureOffset + b.measureIndex}`, 'blue', '6px', layer);
+                this._addDebugText(b.x, clampTop - 1, `M${sys.measureOffset + b.measureIndex}`, 'blue', '6px', layer);
             });
 
             // Notes from timeline (Red dots/lines) - clamped
-            staff.timeline.forEach((n) => {
+            sys.timeline.forEach((n) => {
                 if (n.x === null) return;
                 const color = n.isGrace ? '#FF00FF' : '#FF0000';
                 const line = this._createDebugLine(n.x, color, '1.0', clampTop, clampBottom);
                 line.setAttribute('stroke-width', '0.25');
                 layer.appendChild(line);
+
+                // Small circle at note center
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', n.x);
+                circle.setAttribute('cy', n.y);
+                circle.setAttribute('r', '1.5');
+                circle.setAttribute('fill', color);
+                circle.setAttribute('stroke', 'white');
+                circle.setAttribute('stroke-width', '0.5');
+                circle.setAttribute('style', 'pointer-events: none; paint-order: stroke;');
+                circle.classList.add('coach-debug-line');
+                layer.appendChild(circle);
 
                 // Note index label (skip for grace notes — they use abc2svg's own index)
                 if (!n.isGrace) {
@@ -337,8 +344,8 @@ export class FeedbackRenderer {
                 }
             });
 
-            // Horizontal lines: 3 above (-3 to -1), staff (0 to 4), 2 below (5 to 6)
-            for (let i = -3; i <= 6; i++) {
+            // Horizontal lines: 4 above (-4 to -1), staff (0 to 4), 1 below (5)
+            for (let i = -4; i <= 5; i++) {
                 const y = staffY + (i * step);
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 line.setAttribute('x1', 0); line.setAttribute('y1', y);

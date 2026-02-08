@@ -130,7 +130,7 @@ export class CoachController {
             // New signature for hook (just passing the engine instance)
             window.scoreLayout.hook(abc);
             const sniffedData = window.scoreLayout.getSniffedData();
-            console.log('[CoachController] ScoreLayout re-hooked. Sniffed data:', sniffedData?.staffs?.[0]?.notes.length || 0, 'notes');
+            console.log('[CoachController] ScoreLayout re-hooked. Sniffed data:', sniffedData?.systems?.[0]?.chords.length || 0, 'chords');
         }
 
         this.engine.start(this.sessionStartTime);
@@ -622,7 +622,7 @@ export class CoachController {
         // Use imported instance directly to avoid window property issues
         const layoutInstance = scoreLayout || window.scoreLayout;
         const sniffedData = layoutInstance ? layoutInstance.getSniffedData() : null;
-        console.log('[CoachController v2] Captured Sniffed Data:', sniffedData ? (sniffedData.staffs?.[0]?.notes?.length + ' notes') : 'None', 'Instance:', !!layoutInstance);
+        console.log('[CoachController v2] Captured Sniffed Data:', sniffedData ? (sniffedData.systems?.[0]?.chords?.length + ' chords') : 'None', 'Instance:', !!layoutInstance);
 
         const timeline = [];
 
