@@ -186,7 +186,6 @@ export class CoachController {
         const stats = this.engine.getResults();
         console.log('[CoachController] Session Results:', stats);
         this.isCoachingActive = false;
-        this._updateButtonState(false);
         this._restoreEditorGrid();
         this.resultsDialog.show(stats);
     }
@@ -219,7 +218,6 @@ export class CoachController {
             // 3. Activate coaching mode
             this.isCoachingActive = true;
             this.currentRepetition = 0;
-            this._updateButtonState(true);
 
             // 4. Save pre-coaching state for later restoration
             this._savedState = {
@@ -295,11 +293,10 @@ export class CoachController {
         const origUpdateMidiPlayTime = utils.updateMidiPlayTime;
         utils.updateMidiPlayTime = function () { };
 
-        try { utils.stopMIDI_playback(); } catch (e) { }
+        try { utils.stopMIDI_playback(); } catch (e) { console.warn('[Controller] stopMIDI_playback:', e); }
         // Fire stop event to reset button state even if player was already stopped
-        try { utils.midiEventCallbacks.stopEvent(utils.midiEventCallbacks.classRoot); } catch (e) { }
+        try { utils.midiEventCallbacks.stopEvent(utils.midiEventCallbacks.classRoot); } catch (e) { console.warn('[Controller] stopEvent:', e); }
 
-        this._updateButtonState(false);
         this._restoreEditorGrid();
 
         // Reset timestamp display
@@ -546,13 +543,6 @@ export class CoachController {
     }
 
     /**
-     * Update the UI toggle button state (currently a no-op since button is hidden during coaching)
-     */
-    _updateButtonState(isActive) {
-        // Button visibility is handled by _setupCoachPlayerBar / _restorePlayerBar
-    }
-
-    /**
      * Route incoming MIDI drum hits to the engine and renderer
      */
     handleMidiHit(drum, timestamp, velocity) {
@@ -615,7 +605,6 @@ export class CoachController {
             notesPerMeasure: metrics.notesPerMeasure
         };
 
-        // Capture high-precision sniffer data
         // Capture high-precision sniffer data
         // Use imported instance directly to avoid window property issues
         const layoutInstance = scoreLayout || window.scoreLayout;
@@ -689,21 +678,21 @@ export class CoachController {
 
             if (hasSnare || hasHH || hasToms || isKick || isFoot) {
                 if (hasSnare) {
-                    [DrumType.SNARE, DrumType.SNARE_ACCENT, DrumType.SNARE_GHOST, DrumType.SNARE_XSTICK, DrumType.SNARE_FLAM, DrumType.SNARE_BUZZ].forEach(t => this.abcNoteMap.set(`${i}:${t} `, currentIndex));
+                    [DrumType.SNARE, DrumType.SNARE_ACCENT, DrumType.SNARE_GHOST, DrumType.SNARE_XSTICK, DrumType.SNARE_FLAM, DrumType.SNARE_BUZZ].forEach(t => this.abcNoteMap.set(`${i}:${t}`, currentIndex));
                 }
                 if (hasHH) {
-                    [DrumType.HH_CLOSED, DrumType.HH_OPEN, DrumType.HH_ACCENT, DrumType.CRASH, DrumType.RIDE, DrumType.RIDE_BELL, DrumType.COWBELL, DrumType.STACKER, DrumType.METRONOME_NORMAL, DrumType.METRONOME_ACCENT].forEach(t => this.abcNoteMap.set(`${i}:${t} `, currentIndex));
+                    [DrumType.HH_CLOSED, DrumType.HH_OPEN, DrumType.HH_ACCENT, DrumType.CRASH, DrumType.RIDE, DrumType.RIDE_BELL, DrumType.COWBELL, DrumType.STACKER, DrumType.METRONOME_NORMAL, DrumType.METRONOME_ACCENT].forEach(t => this.abcNoteMap.set(`${i}:${t}`, currentIndex));
                 }
                 if (hasToms) {
                     data.toms_array.forEach((arr, tomIdx) => {
                         if (arr[i]) {
                             const key = (tomIdx < 2) ? DrumType.TOM_HIGH : DrumType.TOM_LOW;
-                            this.abcNoteMap.set(`${i}:${key} `, currentIndex);
+                            this.abcNoteMap.set(`${i}:${key}`, currentIndex);
                         }
                     });
                 }
-                if (isKick) this.abcNoteMap.set(`${i}:${DrumType.KICK} `, currentIndex);
-                if (isFoot) this.abcNoteMap.set(`${i}:${DrumType.HH_FOOT} `, currentIndex);
+                if (isKick) this.abcNoteMap.set(`${i}:${DrumType.KICK}`, currentIndex);
+                if (isFoot) this.abcNoteMap.set(`${i}:${DrumType.HH_FOOT}`, currentIndex);
                 currentIndex++;
             }
         }
@@ -714,8 +703,8 @@ export class CoachController {
                 const val = data.kick_array[i];
                 if (val) {
                     const isKick = val === 'o' || val === 'O' || val === 'k' || val === 'F' || val === true;
-                    if (isKick) this.abcNoteMap.set(`${i}:${DrumType.KICK} `, currentIndex);
-                    else this.abcNoteMap.set(`${i}:${DrumType.HH_FOOT} `, currentIndex);
+                    if (isKick) this.abcNoteMap.set(`${i}:${DrumType.KICK}`, currentIndex);
+                    else this.abcNoteMap.set(`${i}:${DrumType.HH_FOOT}`, currentIndex);
                     currentIndex++;
                 }
             }
@@ -728,7 +717,7 @@ export class CoachController {
      */
     getAbcIndexForHit(tickIndex, instrument) {
         if (!this.abcNoteMap) this._refreshAbcMapping();
-        const index = this.abcNoteMap.get(`${tickIndex}:${instrument} `);
+        const index = this.abcNoteMap.get(`${tickIndex}:${instrument}`);
         return index !== undefined ? index : -1;
     }
 

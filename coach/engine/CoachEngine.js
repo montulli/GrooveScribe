@@ -189,6 +189,7 @@ export class CoachEngine {
         };
 
         this.results.forEach(res => {
+            if (res.isGraceNote) return; // Grace notes don't count toward score
             if (stats[res.tier] !== undefined) {
                 stats[res.tier]++;
             }
