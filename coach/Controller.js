@@ -1,12 +1,13 @@
 import { Engine } from './engine/Engine.js';
 import { MidiInputHandler } from './engine/MidiInputHandler.js';
 import { LatencyManager } from './engine/LatencyManager.js';
+import { ABCIndexMapper } from './engine/ABCIndexMapper.js';
 import { FeedbackRenderer, SHOW_DEBUG } from './ui/FeedbackRenderer.js';
 import { PlayerBar } from './ui/PlayerBar.js';
 import { SettingsDialog } from './ui/SettingsDialog.js';
 import { ResultsDialog } from './ui/ResultsDialog.js';
 import { coachState } from './state/State.js';
-import { DrumType, EditorDrumTypes, ABC_PITCH_TO_DRUM_TYPE } from './engine/DrumConstants.js';
+import { DrumType } from './engine/DrumConstants.js';
 import { scoreLayoutExtractor } from './engine/ScoreLayoutExtractor.js';
 
 // Ensure global availability for legacy scripts (groove_utils.js)
@@ -19,6 +20,7 @@ export class Controller {
     constructor(grooveWriter) {
         this.grooveWriter = grooveWriter;
         this.engine = new Engine();
+        this.abcMapper = new ABCIndexMapper();
         this.midiHandler = new MidiInputHandler({
             onHit: (drum, timestamp, velocity) => this.handleMidiHit(drum, timestamp, velocity),
             drumMap: {
@@ -378,7 +380,7 @@ export class Controller {
         if (evaluation.isMatch) {
             // Find target note for precise ABC indexing metadata
             const matchedNote = this.engine.noteTimeline.find(n => n.originalIndex === evaluation.noteIndex);
-            const abcIndex = matchedNote ? this.getAbcIndexForHit(matchedNote.tickIndex, evaluation.isGraceNote ? 'snare_flam' : drum) : null;
+            const abcIndex = matchedNote ? this.abcMapper.getIndex(matchedNote.tickIndex, evaluation.isGraceNote ? 'snare_flam' : drum) : null;
 
             // Draw feedback at pre-calculated sniffed coordinate
             this.renderer.drawHitFeedbackByTime(
@@ -411,7 +413,7 @@ export class Controller {
         const data = writer.grooveDataFromClickableUI();
         if (!data) return;
 
-        const metrics = this._getGrooveMetrics(data);
+        const metrics = this.abcMapper.getGrooveMetrics(data);
         if (!metrics) return;
 
         const context = {
@@ -431,7 +433,7 @@ export class Controller {
 
         // Augment engine timeline with ABC synchronization metadata
         for (const note of this.engine.noteTimeline) {
-            const abcIndex = this.getAbcIndexForHit(note.tickIndex, note.editorType || note.type);
+            const abcIndex = this.abcMapper.getIndex(note.tickIndex, note.editorType || note.type);
 
             // Primary note entry (always emitted)
             timeline.push({
@@ -462,193 +464,35 @@ export class Controller {
     }
 
     /**
-     * Build a mapping of (tickIndex, instrument) -> abcNoteIndex
-     * This simulates abc2svg's rendering order to accurately target rectangles.
+     * Build the ABC index mapping from the current groove data.
      */
     _refreshAbcMapping() {
-        this.abcNoteMap = new Map();
         const data = this.grooveWriter.grooveDataFromClickableUI();
         if (!data) return;
-
-        const metrics = this._getGrooveMetrics(data);
+        const metrics = this.abcMapper.getGrooveMetrics(data);
         if (!metrics) return;
-
-        let currentIndex = 0;
-        const { totalTicks } = metrics;
-
-        // 1. Stickings Voice (Rendered first in abc2svg)
-        for (let i = 0; i < totalTicks; i++) {
-            if (data.sticking_array && data.sticking_array[i]) currentIndex++;
-        }
-
-        const kickStemsUp = !!data.kickStemsUp;
-
-        // 2. Main Voice (Hands, and Feet if stems are unified)
-        for (let i = 0; i < totalTicks; i++) {
-            const hasSnare = data.snare_array[i] && data.snare_array[i] !== "";
-            const hasHH = data.hh_array[i] && data.hh_array[i] !== "";
-            const hasToms = data.toms_array && data.toms_array.some(arr => arr[i] && arr[i] !== "");
-            const kickVal = data.kick_array[i];
-            const isKick = kickStemsUp && kickVal && (kickVal === 'o' || kickVal === 'O' || kickVal === 'k' || kickVal === 'F' || kickVal === true);
-            const isFoot = kickStemsUp && !!kickVal && !isKick;
-
-            if (hasSnare || hasHH || hasToms || isKick || isFoot) {
-                if (hasSnare) {
-                    [DrumType.SNARE, DrumType.SNARE_ACCENT, DrumType.SNARE_GHOST, DrumType.SNARE_XSTICK, DrumType.SNARE_FLAM, DrumType.SNARE_BUZZ].forEach(t => this.abcNoteMap.set(`${i}:${t}`, currentIndex));
-                }
-                if (hasHH) {
-                    [DrumType.HH_CLOSED, DrumType.HH_OPEN, DrumType.HH_ACCENT, DrumType.CRASH, DrumType.RIDE, DrumType.RIDE_BELL, DrumType.COWBELL, DrumType.STACKER, DrumType.METRONOME_NORMAL, DrumType.METRONOME_ACCENT].forEach(t => this.abcNoteMap.set(`${i}:${t}`, currentIndex));
-                }
-                if (hasToms) {
-                    data.toms_array.forEach((arr, tomIdx) => {
-                        if (arr[i]) {
-                            const key = (tomIdx < 2) ? DrumType.TOM_HIGH : DrumType.TOM_LOW;
-                            this.abcNoteMap.set(`${i}:${key}`, currentIndex);
-                        }
-                    });
-                }
-                if (isKick) this.abcNoteMap.set(`${i}:${DrumType.KICK}`, currentIndex);
-                if (isFoot) this.abcNoteMap.set(`${i}:${DrumType.HH_FOOT}`, currentIndex);
-                currentIndex++;
-            }
-        }
-
-        // 3. Lower Voice (Feet only if rendered on separate stems)
-        if (!kickStemsUp) {
-            for (let i = 0; i < totalTicks; i++) {
-                const val = data.kick_array[i];
-                if (val) {
-                    const isKick = val === 'o' || val === 'O' || val === 'k' || val === 'F' || val === true;
-                    if (isKick) this.abcNoteMap.set(`${i}:${DrumType.KICK}`, currentIndex);
-                    else this.abcNoteMap.set(`${i}:${DrumType.HH_FOOT}`, currentIndex);
-                    currentIndex++;
-                }
-            }
-        }
-        console.log(`[Controller] Mapped ${this.abcNoteMap.size} keys to ${currentIndex} indices`);
+        this.abcMapper.buildMap(data, metrics);
     }
 
     /**
-     * Resolve the target ABC index for a specific tick and instrument
-     */
-    getAbcIndexForHit(tickIndex, instrument) {
-        if (!this.abcNoteMap) this._refreshAbcMapping();
-        const index = this.abcNoteMap.get(`${tickIndex}:${instrument}`);
-        return index !== undefined ? index : -1;
-    }
-
-    /**
-     * Convert GrooveWriter's current pattern into a ms-based timeline for the Engine
+     * Convert GrooveWriter's current pattern into a ms-based timeline for the Engine.
      */
     getGrooveAsTimeline() {
         const data = this.grooveWriter.grooveDataFromClickableUI();
         if (!data) return [];
-
-        const metrics = this._getGrooveMetrics(data);
+        const metrics = this.abcMapper.getGrooveMetrics(data);
         if (!metrics) return [];
-
-        const { bpm, msPerTick, totalTicks } = metrics;
-        const timeline = [];
-
-        console.log(`[Controller] Generating timeline: ${totalTicks} ticks, ${bpm} BPM, ${msPerTick.toFixed(2)} ms / tick`);
-
-        for (let i = 0; i < totalTicks; i++) {
-            // Hi-Hats & Cymbals
-            if (data.hh_array[i]) {
-                const type = this._resolveAbcDrumType(data.hh_array[i], 'hh', i);
-                if (type) timeline.push({ time: i * msPerTick, type, tickIndex: i });
-            }
-            // Snare variants
-            if (data.snare_array[i]) {
-                const type = this._resolveAbcDrumType(data.snare_array[i], 'snare', i);
-                if (type) timeline.push({ time: i * msPerTick, type, tickIndex: i });
-            }
-            // Kick and Foot HH
-            if (data.kick_array[i]) {
-                const type = this._resolveAbcDrumType(data.kick_array[i], 'kick', i);
-                if (type) timeline.push({ time: i * msPerTick, type, tickIndex: i });
-            }
-            // Toms (Unified 4-tom array)
-            if (data.toms_array) {
-                data.toms_array.forEach((row, idx) => {
-                    if (row[i]) {
-                        const type = this._resolveAbcDrumType(row[i], `tom${idx}`, i);
-                        if (type) timeline.push({ time: i * msPerTick, type, tickIndex: i });
-                    }
-                });
-            }
-        }
-        return timeline.sort((a, b) => a.time - b.time);
+        return this.abcMapper.buildTimeline(data, metrics);
     }
 
     /**
-     * Resolve a raw ABC notation value (from grooveDataFromClickableUI) to a DrumType.
-     *
-     * Values may include decorations (e.g. "!open!^g", "!accent!c", "!(c!)", "{/c").
-     * The pitch is extracted by stripping decorations, then looked up in ABC_PITCH_TO_DRUM_TYPE.
-     * Decorations then override the base type (e.g. !open! on ^g → HH_OPEN instead of HH_CLOSED).
-     *
-     * @returns {string|null} DrumType value, or null if unknown (with console warning)
-     */
-    _resolveAbcDrumType(val, arrayName, tickIndex) {
-        // Strip ABC decorations: !xxx! patterns (e.g. !accent!, !open!, !(.!, !///!)
-        let stripped = val.replace(/![^!]*!/g, '');
-        // Strip grace note prefix: {/X} block (flam notation, e.g. {/c} before the main note)
-        stripped = stripped.replace(/\{\/[^}]*\}/g, '');
-        const pitch = stripped;
-        const baseType = ABC_PITCH_TO_DRUM_TYPE[pitch];
-
-        if (!baseType) {
-            console.warn(`[Controller] Unknown ABC value in ${arrayName}[${tickIndex}]: ${JSON.stringify(val)} (pitch: ${JSON.stringify(pitch)})`);
-            return null;
-        }
-
-        // Decoration overrides for articulation variants
-        if (val.includes('!open!')) return DrumType.HH_OPEN;
-        if (val.includes('!accent!')) {
-            // Flam with accent: the {/ grace block takes priority over accent
-            if (val.includes('{/')) return DrumType.SNARE_FLAM;
-            if (baseType === DrumType.SNARE) return DrumType.SNARE_ACCENT;
-            if (baseType === DrumType.HH_CLOSED) return DrumType.HH_ACCENT;
-        }
-        if (val.includes('!(')) return DrumType.SNARE_GHOST;
-        if (val.includes('{/')) return DrumType.SNARE_FLAM;
-        if (val.includes('!///!')) return DrumType.SNARE_BUZZ;
-
-        return baseType;
-    }
-
-    /**
-     * Extract and validate groove timing metrics from editor data.
-     * @param {Object} data - Result from grooveDataFromClickableUI()
-     * @returns {Object|null} Metrics object or null if data is invalid
-     */
-    _getGrooveMetrics(data) {
-        const bpm = data.tempo;
-        const numBeats = data.numBeats;
-        const measures = data.numberOfMeasures;
-        const notesPerMeasure = data.notesPerMeasure;
-
-        if (!bpm || !numBeats || !measures || !notesPerMeasure) {
-            console.error('[Controller] Groove data has missing/zero fields:',
-                { tempo: bpm, numBeats, numberOfMeasures: measures, notesPerMeasure });
-            return null;
-        }
-
-        const totalTicks = notesPerMeasure * measures;
-        const msPerTick = ((60000 / bpm) * numBeats) / notesPerMeasure;
-
-        return { bpm, numBeats, measures, notesPerMeasure, totalTicks, msPerTick };
-    }
-
-    /**
-     * Refresh sniffer data and re-sync the renderer's context
-     * Called on resize or notation re-rendering
+     * Refresh sniffer data and re-sync the renderer's context.
+     * Called on resize or notation re-rendering.
      */
     _refreshAndSyncUI() {
         if (!this.grooveWriter || !this.isCoachingActive) return;
 
-        // Ensure sniffer processes the new SVG (it hooks automatically via abc2svg hooks, 
+        // Ensure sniffer processes the new SVG (it hooks automatically via abc2svg hooks,
         // but we want to make sure we have the latest data before updating renderer)
         const sniffedData = window.scoreLayout ? window.scoreLayout.getSniffedData() : null;
 
