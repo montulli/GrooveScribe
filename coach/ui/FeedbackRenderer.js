@@ -120,18 +120,28 @@ export class FeedbackRenderer {
 
                 // 2. Build timeline by matching sniffed notes to engine timeline
                 if (staff.notes && timeline && timeline.length > 0) {
+                    // Grace notes match positionally (abc2svg assigns them
+                    // a different abcIndex than _refreshAbcMapping does).
+                    const sniffedGraces = staff.notes.filter(n => n.isGrace);
+                    let graceIdx = 0;
+
                     for (const note of timeline) {
-                        const sniffed = staff.notes.find(n =>
-                            n.abcIndex === note.abcIndex &&
-                            n.isGrace === !!note.isGrace
-                        );
+                        let sniffed;
+                        if (note.isGrace) {
+                            // Match Nth timeline grace → Nth sniffed grace
+                            sniffed = sniffedGraces[graceIdx++];
+                        } else {
+                            sniffed = staff.notes.find(n =>
+                                n.abcIndex === note.abcIndex && !n.isGrace
+                            );
+                        }
 
                         if (sniffed) {
                             staffData.timeline.push({
                                 timeMs: note.time,
                                 tickIndex: note.tickIndex,
                                 type: note.isGrace ? DrumType.FLAM_GRACE : note.type,
-                                abcIndex: note.abcIndex,
+                                abcIndex: sniffed.abcIndex,
                                 x: sniffed.x,
                                 y: sniffed.y,
                                 isGrace: !!note.isGrace
@@ -321,8 +331,10 @@ export class FeedbackRenderer {
                 line.setAttribute('stroke-width', '0.25');
                 layer.appendChild(line);
 
-                // Note index label at same level as measure labels
-                this._addDebugText(n.x, clampTop - 1, `${n.abcIndex}`, n.isGrace ? 'purple' : 'red', '6px', layer);
+                // Note index label (skip for grace notes — they use abc2svg's own index)
+                if (!n.isGrace) {
+                    this._addDebugText(n.x, clampTop - 1, `${n.abcIndex}`, 'red', '6px', layer);
+                }
             });
 
             // Horizontal lines: 3 above (-3 to -1), staff (0 to 4), 2 below (5 to 6)

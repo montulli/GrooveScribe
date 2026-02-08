@@ -628,20 +628,34 @@ export class CoachController {
 
         // Augment engine timeline with ABC synchronization metadata
         for (const note of this.engine.noteTimeline) {
-            const isGrace = (note.editorType === DrumType.SNARE_FLAM && note.graceMatched !== undefined);
             const abcIndex = this.getAbcIndexForHit(note.tickIndex, note.editorType || note.type);
 
+            // Primary note entry (always emitted)
             timeline.push({
                 time: note.time,
                 tickIndex: note.tickIndex,
                 type: note.type,
                 abcIndex: abcIndex >= 0 ? abcIndex : null,
-                isGrace: isGrace
+                isGrace: false
             });
+
+            // For flams, emit a grace note timeline entry so the renderer
+            // can pair it with the sniffed grace note (matched positionally,
+            // not by abcIndex, since abc2svg uses a different index for graces).
+            if (note.editorType === DrumType.SNARE_FLAM) {
+                timeline.push({
+                    time: note.time,
+                    tickIndex: note.tickIndex,
+                    type: DrumType.FLAM_GRACE,
+                    abcIndex: abcIndex >= 0 ? abcIndex : null,
+                    isGrace: true
+                });
+            }
         }
 
         this.renderer.setGrooveContext(context, timeline, sniffedData);
-        console.log(`[CoachController] Set renderer groove context: ${timeline.length} notes`);
+        const graceCount = timeline.filter(n => n.isGrace).length;
+        console.log(`[CoachController] Set renderer groove context: ${timeline.length} notes (${graceCount} grace notes)`);
     }
 
     /**

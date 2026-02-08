@@ -82,7 +82,11 @@ export class ScoreLayout {
             }
 
             if (type === "note" || type === "grace") {
-                const preciseX = s ? s.x : (x + w / 2);
+                // For grace notes, s.x gives the parent note's position;
+                // s.extra.x gives the actual grace note head position.
+                const preciseX = (type === "grace" && s && s.extra)
+                    ? s.extra.x
+                    : (s ? s.x : (x + w / 2));
                 const noteYCenter = y + h / 2;
 
                 if (type !== "grace") {
