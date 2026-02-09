@@ -1,4 +1,4 @@
-import { DrumType } from './DrumConstants.js';
+import { DrumType, EditorDrumToModuleDrum } from './DrumConstants.js';
 import { evaluateHit } from './TimingEvaluator.js';
 
 // Timing thresholds (ms) for matching incoming MIDI hits to expected notes
@@ -38,12 +38,14 @@ export class Engine {
      */
     loadGroove(groove, bpm) {
         this.groove = groove;
-        // For now, assume groove.target is already in ms relative to start
-        // If it's in beats, we would convert here using bpm
         this.noteTimeline = groove.target.map((note, index) => {
+            const moduleType = EditorDrumToModuleDrum[note.type];
+            if (moduleType === undefined) {
+                console.warn(`[Engine] No EditorDrumToModuleDrum mapping for '${note.type}'`);
+            }
             return {
                 ...note,
-                type: note.type, // Expect normalized types from editor
+                type: moduleType ?? note.type,
                 editorType: note.type,
                 originalIndex: index,
                 matched: false
