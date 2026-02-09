@@ -151,6 +151,13 @@ export class Controller {
 
         // Set groove context for time-based rendering
         this.setRendererGrooveContext();
+
+        // Start debug play line (shows interpolated playback position)
+        if (SHOW_DEBUG) {
+            this.renderer.startPlayLine(
+                () => performance.now() - this.sessionStartTime - this.engine.audioLatency
+            );
+        }
     }
 
     /**
@@ -158,6 +165,7 @@ export class Controller {
      */
     _onPlaybackStop() {
         console.log('[Controller] Playback stopped');
+        this.renderer.stopPlayLine();
         this.renderer.cancelScheduledClearing();
         if (coachState.mode === 'performance' && this.isCoachingActive) {
             this._showResults();
@@ -197,6 +205,7 @@ export class Controller {
         const stats = this.engine.getResults();
         console.log('[Controller] Session Results:', stats);
         this.isCoachingActive = false;
+        this.renderer.clearAll();
         this._restoreEditorGrid();
         this.resultsDialog.show(stats);
     }
@@ -296,6 +305,7 @@ export class Controller {
     stopSession() {
         this.isCoachingActive = false;
         this.engine.stop();
+        this.renderer.clearAll();
 
         // Stop playback
         const utils = this.grooveWriter.myGrooveUtils;

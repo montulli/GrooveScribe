@@ -37,6 +37,11 @@ export class FeedbackRenderer {
         this.measureDurationMs = 0;  // Duration of one measure in ms
         this.totalMeasures = 0;      // Total number of measures in the groove
         this._scheduledTimers = [];  // Timeout IDs for scheduled measure clearing
+
+        // Debug play line state
+        this._playLine = null;       // SVG line element
+        this._playLineRafId = null;  // requestAnimationFrame ID
+        this._playLineGetTime = null; // Callback returning current playback time in ms
     }
 
     init() {
@@ -78,6 +83,19 @@ export class FeedbackRenderer {
         for (const { layer } of this.svgLayers) {
             layer.querySelectorAll('.coach-hit-marker').forEach(el => el.remove());
         }
+    }
+
+    /**
+     * Clear everything: remove overlay layers, stop play line, cancel timers.
+     * Used when leaving coach mode entirely.
+     */
+    clearAll() {
+        this.stopPlayLine();
+        this.cancelScheduledClearing();
+        for (const { layer } of this.svgLayers) {
+            layer.remove();
+        }
+        this.svgLayers = [];
     }
 
     /**
@@ -457,5 +475,85 @@ export class FeedbackRenderer {
         line.setAttribute('opacity', opacity);
         line.classList.add('coach-debug-line');
         return line;
+    }
+
+    // --- Debug play line ---
+
+    /**
+     * Start the debug play line animation.
+     * @param {Function} getTimeMs - Callback returning current playback time in ms
+     */
+    startPlayLine(getTimeMs) {
+        this.stopPlayLine();
+        this._playLineGetTime = getTimeMs;
+
+        // Create a group with white outline + orange line (reused across ticks)
+        this._playLine = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        this._playLine.setAttribute('style', 'pointer-events: none;');
+        this._playLine.classList.add('coach-debug-line');
+
+        this._playLineOutline = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        this._playLineOutline.setAttribute('stroke', 'white');
+        this._playLineOutline.setAttribute('stroke-width', '4');
+
+        this._playLineInner = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        this._playLineInner.setAttribute('stroke', 'orange');
+        this._playLineInner.setAttribute('stroke-width', '2');
+
+        this._playLine.appendChild(this._playLineOutline);
+        this._playLine.appendChild(this._playLineInner);
+
+        this._playLineRafId = requestAnimationFrame(() => this._tickPlayLine());
+    }
+
+    /**
+     * Stop the debug play line animation and remove the element.
+     */
+    stopPlayLine() {
+        if (this._playLineRafId !== null) {
+            cancelAnimationFrame(this._playLineRafId);
+            this._playLineRafId = null;
+        }
+        if (this._playLine) {
+            this._playLine.remove();
+            this._playLine = null;
+            this._playLineOutline = null;
+            this._playLineInner = null;
+        }
+        this._playLineGetTime = null;
+    }
+
+    /**
+     * rAF tick: move the play line to the current interpolated X position.
+     */
+    _tickPlayLine() {
+        const timeMs = this._playLineGetTime();
+        const interp = this._interpolateXWithSystem(timeMs);
+
+        if (interp) {
+            const layer = this.svgLayers[interp.sys.layerIndex]?.layer;
+            if (layer) {
+                // Move to the correct layer if needed
+                if (this._playLine.parentNode !== layer) {
+                    this._playLine.remove();
+                    layer.appendChild(this._playLine);
+                }
+
+                const step = this.verticalStep;
+                const staffY = interp.sys.topY;
+                const y1 = staffY + (-6 * step);
+                const y2 = staffY + (5 * step);
+
+                // Update both lines in the group
+                for (const ln of [this._playLineOutline, this._playLineInner]) {
+                    ln.setAttribute('x1', interp.x);
+                    ln.setAttribute('y1', y1);
+                    ln.setAttribute('x2', interp.x);
+                    ln.setAttribute('y2', y2);
+                }
+            }
+        }
+
+        this._playLineRafId = requestAnimationFrame(() => this._tickPlayLine());
     }
 }
