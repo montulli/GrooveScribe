@@ -38,6 +38,7 @@ The core GrooveScribe codebase (everything outside `coach/`) should be treated w
   - **Common anti-pattern:** `let type = DEFAULT; if (...) type = A; else if (...) type = B;` — if none of the conditions match, the code silently uses DEFAULT. Instead, use a lookup table or explicit `else { warn/error }`.
   - **`??` fallback chains** (e.g. `map[key] ?? map[SNARE] ?? defaultY`) silently mask missing entries. If a key isn't in the map, **warn and bail** — don't substitute a different key.
   - **No backup detection mechanisms.** If the primary detection signal doesn't work, debug why and fix it — don't add a secondary signal as a fallback. E.g. if Y-based detection fails for some cases, find out why Y is wrong instead of adding X-based detection "just in case".
+  - **No backup algorithms.** If the primary algorithm is correct, don't add a secondary algorithm "just in case" or "as a fallback for rare edge cases". If the primary algorithm can't handle a case, that's a design problem to solve, not a fallback to add. E.g. don't binary-search "as fallback" when a cursor-based approach is the design — fix the cursor.
 - **No hacks or workarounds.** If a proper solution is too complex right now, discuss it with the user instead of shipping a hack. Temporary workarounds accumulate and become permanent.
 - **No magic constants.** Every number, string, or threshold in the code should be a named constant with a clear reason for its value. If you can't name it or explain it, it probably shouldn't be hardcoded.
 
