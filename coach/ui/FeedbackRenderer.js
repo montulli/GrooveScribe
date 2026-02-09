@@ -411,6 +411,7 @@ export class FeedbackRenderer {
 
                 const isStaffEdge = (i === 0 || i === 4);
                 line.setAttribute('stroke', isStaffEdge ? 'orange' : 'green');
+                line.setAttribute('stroke-dasharray', '4,4');
                 line.setAttribute('stroke-width', '0.25');
                 line.setAttribute('opacity', '1.0');
                 line.classList.add('coach-debug-line');
