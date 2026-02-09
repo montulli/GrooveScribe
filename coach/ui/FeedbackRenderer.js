@@ -14,6 +14,8 @@ const TIER_CLAMP_LIMITS = { perfect: 3, good: 8, close: 12, extra: 50 };
 const TIER_COLORS = { perfect: '#00BFFF', good: '#32CD32', close: '#FFD700', extra: '#888888' };
 
 
+
+
 /**
  * FeedbackRenderer - Draws feedback circles on notation staff 
  * using coordinates extracted by ScoreLayoutExtractor.
@@ -129,6 +131,32 @@ export class FeedbackRenderer {
         this.clearedMeasures = new Set();
         const step = this.verticalStep;
 
+        // Calibrate msPerAbcTick empirically from the first matched note pair.
+        // abc2svg assigns each symbol an absolute tick time (s.time, stored as abcTime).
+        // Rather than assuming a fixed tick-to-ms ratio (which varies by time signature
+        // and beat unit), we derive it from a note where both the engine time and abcTime
+        // are known. The engine's time and abcTime are both proportional to musical position,
+        // so the ratio is constant across all notes.
+        let msPerAbcTick = null;
+        if (sniffedData?.systems && timeline?.length > 0) {
+            for (const system of sniffedData.systems) {
+                for (const chord of (system.chords || [])) {
+                    if (chord.isGrace || chord.abcTime <= 0) continue;
+                    const engineNote = timeline.find(n => n.abcIndex === chord.abcIndex && !n.isGrace);
+                    if (engineNote && engineNote.time > 0) {
+                        msPerAbcTick = engineNote.time / chord.abcTime;
+                        console.log(`[FeedbackRenderer] Calibrated msPerAbcTick=${msPerAbcTick.toFixed(6)} ` +
+                            `from abcIndex=${chord.abcIndex} (engineTime=${engineNote.time.toFixed(2)}ms, abcTime=${chord.abcTime})`);
+                        break;
+                    }
+                }
+                if (msPerAbcTick !== null) break;
+            }
+        }
+        if (msPerAbcTick === null) {
+            console.warn('[FeedbackRenderer] Could not calibrate msPerAbcTick — no matched notes with abcTime > 0. Rests will have no time.');
+        }
+
         // Build per-system rendering data
         if (sniffedData && sniffedData.systems) {
             for (let sysIdx = 0; sysIdx < sniffedData.systems.length; sysIdx++) {
@@ -184,8 +212,16 @@ export class FeedbackRenderer {
                             const noteType = note.isGrace ? DrumType.FLAM_GRACE : note.type;
                             const noteY = systemData.noteYs[noteType];
                             if (noteY === undefined) continue; // skip unknown drum types
+                            const abcTimeMs = sniffed.abcTime * msPerAbcTick;
+
+                            // Consistency check: abcTime-derived ms should match engine-derived ms
+                            const drift = Math.abs(abcTimeMs - note.time);
+                            if (drift > 0.1) {
+                                console.warn(`[FeedbackRenderer] Time source mismatch for abcIndex=${sniffed.abcIndex}: ` +
+                                    `engine=${note.time.toFixed(2)}ms, abcTime=${abcTimeMs.toFixed(2)}ms (drift=${drift.toFixed(2)}ms)`);
+                            }
                             systemData.timeline.push({
-                                timeMs: note.time,
+                                timeMs: abcTimeMs,
                                 tickIndex: note.tickIndex,
                                 type: noteType,
                                 abcIndex: sniffed.abcIndex,
@@ -195,8 +231,20 @@ export class FeedbackRenderer {
                             });
                         }
                     }
-                    systemData.timeline.sort((a, b) => a.timeMs - b.timeMs);
                 }
+
+                // 3. Add rests to timeline (same time source as notes)
+                if (msPerAbcTick !== null) {
+                    for (const rest of (system.rests || [])) {
+                        systemData.timeline.push({
+                            timeMs: rest.abcTime * msPerAbcTick,
+                            type: 'rest',
+                            x: rest.x
+                        });
+                    }
+                }
+
+                systemData.timeline.sort((a, b) => a.timeMs - b.timeMs);
 
                 this.systems.push(systemData);
             }
@@ -394,7 +442,7 @@ export class FeedbackRenderer {
 
             // Notes from timeline (Red dots/lines) - clamped
             sys.timeline.forEach((n) => {
-                if (n.x === null) return;
+                if (n.x === null || n.type === 'rest') return;
                 const color = n.isGrace ? '#FF00FF' : '#FF0000';
                 const line = this._createDebugLine(n.x, color, '1.0', clampTop, clampBottom);
                 line.setAttribute('stroke-width', '0.25');
