@@ -6,6 +6,10 @@ export const SHOW_DEBUG = true;
 // Timing threshold (ms) for matching a MIDI hit to a timeline note position
 const HIT_TIME_MATCH_TOLERANCE_MS = 15;
 
+// How far ahead (ms) of a measure boundary to clear the next measure.
+// Must be larger than the maximum rushing window to prevent races.
+const CLEAR_AHEAD_MS = 200;
+
 // Per-tier visual offset clamp limits (px) — constrains how far a feedback
 // circle shifts horizontally from the target note to reflect timing error
 const TIER_CLAMP_LIMITS = { perfect: 3, good: 8, close: 12, extra: 50 };
@@ -38,7 +42,13 @@ export class FeedbackRenderer {
         this.sniffedData = null;
         this.measureDurationMs = 0;  // Duration of one measure in ms
         this.totalMeasures = 0;      // Total number of measures in the groove
-        this._scheduledTimers = [];  // Timeout IDs for scheduled measure clearing
+        this.clearedMeasures = new Set();  // Measures cleared in the current pass
+
+        // Precomputed clearing schedule
+        this._nextClearTimeMs = Infinity;   // Time at which to clear the next measure
+        this._nextBoundaryTimeMs = Infinity; // Time of the next measure boundary
+        this._nextMeasureToClear = 0;        // Which measure to clear next
+        this._renderingEnabled = false;      // Controls playline/circle visibility
 
         // Debug play line state
         this._playLine = null;       // SVG line element
@@ -179,10 +189,14 @@ export class FeedbackRenderer {
                     rests: system.rests || []
                 };
 
-                // 1. Build Measure Boundaries for this system's measures only.
-                // Each sniffed boundary corresponds to a measure edge in this system,
-                // offset by measureOffset to get the correct absolute time.
+                // 1. Build measure bar lines for this system.
+                // N measures have N+1 bar lines (left edge of each measure
+                // + right edge of the last one). Each entry's measureIndex
+                // is the measure that STARTS at that bar line; the last
+                // entry's measureIndex is one past the system's final
+                // measure (it only serves as the right-edge boundary).
                 const sortedBounds = [...(system.measureBoundaries || [])].sort((a, b) => a.x - b.x);
+                systemData.numMeasures = sortedBounds.length - 1;
                 for (let i = 0; i < sortedBounds.length; i++) {
                     systemData.measureBoundaries.push({
                         timeMs: (system.measureOffset + i) * measureDurationMs,
@@ -255,6 +269,10 @@ export class FeedbackRenderer {
             console.warn('[FeedbackRenderer] Missing sniffedData. Hit feedback disabled.');
         }
 
+        // Build waypoint data eagerly so measurePlaylineThresholds are
+        // available before scheduleMeasureClearing is called.
+        this._buildWaypointData();
+
         if (SHOW_DEBUG) {
             this.renderDebugGrid();
         }
@@ -268,7 +286,7 @@ export class FeedbackRenderer {
      * small horizontal offset reflecting the timing error.
      */
     drawHitFeedbackByTime(hitTimeMs, tier, timingError, drumType, abcNoteIndex = null) {
-        if (this.systems.length === 0) return;
+        if (!this._renderingEnabled || this.systems.length === 0) return;
 
         const isGrace = (drumType === DrumType.FLAM_GRACE);
 
@@ -307,7 +325,7 @@ export class FeedbackRenderer {
      * that was actually hit — never snaps to a target note position.
      */
     drawExtraHit(hitTimeMs, drumType) {
-        if (this.systems.length === 0) return;
+        if (!this._renderingEnabled || this.systems.length === 0) return;
 
         // Find the system and interpolated X for this hit time
         const interp = this._interpolateXWithSystem(hitTimeMs);
@@ -444,17 +462,113 @@ export class FeedbackRenderer {
 
         // Sentinel for loop wraparound: a copy of the first waypoint at
         // grooveEndMs so the play line continues past the last note and
-        // wraps smoothly via modulo.
+        // wraps smoothly via modulo. Created before threshold computation
+        // so it's available for the measure 0 wraparound threshold.
+        const grooveEndMs = (waypoints.length > 0)
+            ? Math.max(...this.systems.flatMap(s => s.measureBoundaries.map(b => b.timeMs)))
+            : 0;
+        const firstNoteOffset = waypoints.length > 0 ? waypoints[0].absOffset : 0;
         if (waypoints.length > 0) {
-            const grooveEndMs = Math.max(
-                ...this.systems.flatMap(s =>
-                    s.measureBoundaries.map(b => b.timeMs)
-                )
-            );
-            waypoints.push({ timeMs: grooveEndMs, absOffset: waypoints[0].absOffset });
+            waypoints.push({ timeMs: grooveEndMs, absOffset: firstNoteOffset });
         }
 
+        // --- Compute measurePlaylineThresholds ---
+        // For each interior barline, inverse-interpolate from the existing
+        // note/rest waypoints to find the time at which the playline
+        // geometrically crosses that barline's X position.
+        //
+        // "measurePlaylineThreshold" = the interpolated time at which the
+        // playline crosses the barline, as opposed to k * measureDurationMs
+        // which is when the first BEAT of the measure is played.
+        const thresholds = [];
+        for (const seg of segments) {
+            for (const b of seg.sys.measureBoundaries) {
+                if (b.x === null) continue;
+                const barlineOffset = seg.offset + (b.x - seg.leftEdge);
+
+                // Skip barlines at the very edges — measure 0 is handled
+                // separately via the loop-point wraparound below.
+                if (barlineOffset <= 0) continue;
+                if (barlineOffset >= totalWidth) continue;
+
+                // Find the two note waypoints that bracket this barline offset.
+                // Walk the time-sorted waypoints (excluding sentinel):
+                // left = last waypoint with absOffset <= barlineOffset
+                // right = first waypoint with absOffset > barlineOffset
+                let left = null, right = null;
+                for (let i = 0; i < waypoints.length - 1; i++) {  // -1 to skip sentinel
+                    const w = waypoints[i];
+                    if (w.absOffset <= barlineOffset) left = w;
+                    else if (!right) right = w;
+                }
+                if (!left || !right || left.absOffset === right.absOffset) continue;
+
+                // Inverse interpolation: solve for time at the barline offset
+                const ratio = (barlineOffset - left.absOffset) / (right.absOffset - left.absOffset);
+                const thresholdTimeMs = left.timeMs + ratio * (right.timeMs - left.timeMs);
+
+                thresholds.push({
+                    timeMs: thresholdTimeMs,
+                    measureIndex: b.measureIndex,
+                });
+
+                // Add the barline as a waypoint so the playline passes through
+                // the barline at exactly this interpolated time
+                waypoints.push({ timeMs: thresholdTimeMs, absOffset: barlineOffset });
+            }
+        }
+
+        // --- Measure 0 threshold (loop-point wraparound) ---
+        // The barline at offset=totalWidth (≡ 0) marks the start of
+        // measure 0 when the playline wraps. Inverse-interpolate between
+        // the last real waypoint and the sentinel (with offset unwrapping).
+        if (waypoints.length >= 2) {
+            // Last REAL waypoint (before sentinel and any barline waypoints we just added)
+            // is the one with the highest absOffset among the original note waypoints.
+            // Since waypoints aren't re-sorted yet, find it by scanning.
+            let lastReal = null;
+            for (const w of waypoints) {
+                if (w.timeMs >= grooveEndMs) continue; // skip sentinel
+                if (!lastReal || w.absOffset > lastReal.absOffset) lastReal = w;
+            }
+            const sentinel = waypoints.find(w => w.timeMs === grooveEndMs);
+
+            if (lastReal && sentinel && lastReal.absOffset < totalWidth) {
+                // Unwrap sentinel offset: it wraps to firstNoteOffset,
+                // so the effective forward offset is firstNoteOffset + totalWidth
+                const unwrappedSentinelOffset = firstNoteOffset + totalWidth;
+                const ratio = (totalWidth - lastReal.absOffset) / (unwrappedSentinelOffset - lastReal.absOffset);
+                const thresholdTimeMs = lastReal.timeMs + ratio * (grooveEndMs - lastReal.timeMs);
+
+                thresholds.push({
+                    timeMs: thresholdTimeMs,
+                    measureIndex: 0,
+                });
+
+                // Add barline waypoint at the loop point
+                waypoints.push({ timeMs: thresholdTimeMs, absOffset: totalWidth });
+            }
+        }
+
+        // Re-sort after adding barline waypoints (sentinel stays at end)
+        waypoints.sort((a, b) => a.timeMs - b.timeMs);
+        thresholds.sort((a, b) => a.timeMs - b.timeMs);
+
+        // Deduplicate thresholds by measureIndex: adjacent systems share
+        // barlines, producing two thresholds for the same measure boundary.
+        // Keep only the first (earliest) occurrence of each measureIndex.
+        const seen = new Set();
+        const uniqueThresholds = thresholds.filter(t => {
+            if (seen.has(t.measureIndex)) return false;
+            seen.add(t.measureIndex);
+            return true;
+        });
+
         this._waypointData = { segments, waypoints, totalWidth };
+        this._measurePlaylineThresholds = uniqueThresholds;
+
+        console.log(`[FeedbackRenderer] Built ${uniqueThresholds.length} measure playline thresholds:`,
+            uniqueThresholds.map(t => `M${t.measureIndex}@${t.timeMs.toFixed(1)}ms`).join(', '));
     }
 
     /**
@@ -476,44 +590,140 @@ export class FeedbackRenderer {
     }
 
     // --- Per-measure clearing ---
+    //
+    // Clears the CURRENT measure's old circles when the playline enters
+    // it. Clearing is spatial: all circles whose cx falls between the
+    // measure's boundary X coordinates are removed.
+    //
+    // The measure index rotates modularly (last measure → first),
+    // so loop wrapping is seamless.
 
     /**
-     * Compute the measure index for a given hit time.
+     * Compute the modular measure index for a given time.
+     * Uses the geometric barline thresholds (inverse-interpolated from
+     * the continuous waypoint strip) so the result matches the visual
+     * position of the playline, not an arbitrary equal-time slice.
      */
-    _getMeasureIndex(hitTimeMs) {
-        if (this.measureDurationMs <= 0) return 0;
-        return Math.floor(hitTimeMs / this.measureDurationMs);
+    _getMeasureIndex(timeMs) {
+        if (this.measureDurationMs <= 0 || !this.grooveContext?.totalDurationMs) return 0;
+        const totalDuration = this.grooveContext.totalDurationMs;
+        const modularTime = ((timeMs % totalDuration) + totalDuration) % totalDuration;
+
+        const thresholds = this._measurePlaylineThresholds;
+        if (!thresholds || thresholds.length === 0) {
+            // Fallback: equal-time division (only before thresholds are built)
+            return Math.floor(modularTime / this.measureDurationMs) % this.totalMeasures;
+        }
+
+        // Find which measure contains modularTime by scanning thresholds.
+        // Each threshold marks the geometric moment we enter that measure.
+        // Default to M0 (covers the range before the first threshold).
+        let measureIndex = 0;
+        for (let i = thresholds.length - 1; i >= 0; i--) {
+            if (modularTime >= thresholds[i].timeMs) {
+                measureIndex = thresholds[i].measureIndex;
+                break;
+            }
+        }
+        return measureIndex;
     }
 
     /**
-     * Remove all circles tagged with the given measure index.
+     * Remove all feedback circles whose cx falls within the X boundaries
+     * of the given measure. Finds the measure in the correct system and
+     * layer automatically.
      */
-    _clearMeasure(measureIndex) {
-        for (const { layer } of this.svgLayers) {
-            const els = layer.querySelectorAll(`.coach-hit-marker[data-measure="${measureIndex}"]`);
-            els.forEach(el => el.remove());
+    _clearMeasureRegion(measureIndex) {
+        for (const sys of this.systems) {
+            const bounds = sys.measureBoundaries;
+            const localIdx = measureIndex - (sys.measureOffset || 0);
+            if (localIdx < 0 || localIdx >= sys.numMeasures) continue;
+
+            const leftX = bounds[localIdx].x;
+            const rightX = (localIdx + 1 < bounds.length)
+                ? bounds[localIdx + 1].x
+                : Infinity;  // last measure extends to right edge
+
+            const layer = this.svgLayers[sys.layerIndex]?.layer;
+            if (!layer) continue;
+
+            let removed = 0;
+            layer.querySelectorAll('.coach-hit-marker').forEach(el => {
+                const cx = parseFloat(el.getAttribute('cx'));
+                if (cx >= leftX && cx < rightX) {
+                    el.remove();
+                    removed++;
+                }
+            });
+            if (removed > 0) {
+                console.log(`[FeedbackRenderer] Removed ${removed} circles from M${measureIndex} (X: ${leftX.toFixed(1)}–${rightX === Infinity ? '∞' : rightX.toFixed(1)}, sys ${sys.layerIndex})`);
+            }
         }
     }
 
     /**
-     * Schedule per-measure clearing for a new loop pass.
-     * Sets a timeout for each measure so its old circles are removed
-     * when the playhead reaches that measure — regardless of hits.
+     * Ensure a measure's circles are cleared exactly once per pass.
+     * Called proactively from _tickPlayLine for the NEXT measure
+     * so old circles are always removed before rushing hits arrive.
      */
-    scheduleMeasureClearing() {
-        this.cancelScheduledClearing();
-        for (let m = 0; m < this.totalMeasures; m++) {
-            const id = setTimeout(() => this._clearMeasure(m), m * this.measureDurationMs);
-            this._scheduledTimers.push(id);
+    _ensureMeasureCleared(measureIndex) {
+        if (!this.clearedMeasures.has(measureIndex)) {
+            console.log(`[FeedbackRenderer] Clearing measure ${measureIndex} region`);
+            this._clearMeasureRegion(measureIndex);
+            this.clearedMeasures.add(measureIndex);
         }
     }
 
     /**
-     * Cancel any pending scheduled measure clearing timers.
+     * Reset clearing state and initialize the threshold cursor for a
+     * new pass. The startTimeMs tells us where in the groove the playline
+     * is (e.g. at (N-1)*measureDurationMs during count-in, or 0 at
+     * groove start). The cursor advances to the first threshold after
+     * startTimeMs so clearing fires at the right time.
+     *
+     * Called by Controller at playback start and at each _onRepeat.
+     * @param {number} startTimeMs - current playback time at pass start
+     */
+    scheduleMeasureClearing(startTimeMs = 0) {
+        this.clearedMeasures.clear();
+
+        // Find first threshold whose clear time (threshold - CLEAR_AHEAD_MS)
+        // is still in the future relative to startTimeMs
+        const thresholds = this._measurePlaylineThresholds || [];
+        this._thresholdCursor = 0;
+        for (let i = 0; i < thresholds.length; i++) {
+            if (thresholds[i].timeMs - CLEAR_AHEAD_MS > startTimeMs) {
+                this._thresholdCursor = i;
+                break;
+            }
+            this._thresholdCursor = thresholds.length; // all in the past
+        }
+
+        if (thresholds.length > 0 && this._thresholdCursor < thresholds.length) {
+            const next = thresholds[this._thresholdCursor];
+            console.log(`[FeedbackRenderer] Clear schedule: cursor at threshold ${this._thresholdCursor} — M${next.measureIndex} clears at t≥${(next.timeMs - CLEAR_AHEAD_MS).toFixed(0)}ms (threshold ${next.timeMs.toFixed(0)}ms)`);
+        } else {
+            console.log(`[FeedbackRenderer] Clear schedule: no thresholds ahead of startTime=${startTimeMs.toFixed(0)}ms`);
+        }
+    }
+
+    /**
+     * Enable rendering of the playline and feedback circles.
+     * Called by Controller when the groove starts (after count-in).
+     */
+    enableRendering() {
+        this._renderingEnabled = true;
+        if (this._playLine) {
+            this._playLine.style.display = '';
+        }
+        console.log('[FeedbackRenderer] Rendering enabled');
+    }
+
+    /**
+     * No-op — retained for API compatibility with Controller.
      */
     cancelScheduledClearing() {
-        for (const id of this._scheduledTimers) clearTimeout(id);
-        this._scheduledTimers = [];
+        // On-demand clearing has no timers to cancel.
     }
 
     // --- Circle drawing ---
@@ -521,6 +731,8 @@ export class FeedbackRenderer {
     _drawCircle(x, y, tier, layerIndex = 0, measureIndex = 0) {
         const layer = this.svgLayers[layerIndex]?.layer;
         if (!layer) return;
+
+        console.log(`[FeedbackRenderer] Drawing ${tier} circle at x=${x.toFixed(1)} in M${measureIndex} (layer ${layerIndex})`);
 
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         circle.setAttribute('cx', x);
@@ -557,15 +769,23 @@ export class FeedbackRenderer {
             const clampBottom = staffY + (5 * step);
 
             // Measure boundaries (Blue) - clamped
-            sys.measureBoundaries.forEach((b) => {
+            sys.measureBoundaries.forEach((b, idx) => {
                 if (b.x === null) return;
                 const line = this._createDebugLine(b.x, 'blue', '1.0', clampTop, clampBottom);
                 line.setAttribute('stroke-dasharray', '4,4');
                 line.setAttribute('stroke-width', '0.25');
                 layer.appendChild(line);
 
-                // Measure label at top of clamped area (continuous across systems)
-                this._addDebugText(b.x, clampTop, `M${b.measureIndex}`, 'blue', '6px', layer);
+                // Label: show adjacent measures — |M0, M0|M1, M1|
+                let label;
+                if (idx === 0) {
+                    label = `|M${b.measureIndex}`;
+                } else if (idx < sys.numMeasures) {
+                    label = `M${b.measureIndex - 1}|M${b.measureIndex}`;
+                } else {
+                    label = `M${b.measureIndex - 1}|`;
+                }
+                this._addDebugText(b.x, clampTop, label, 'blue', '6px', layer);
             });
 
             // Notes from timeline (Red dots/lines) - clamped
@@ -675,6 +895,10 @@ export class FeedbackRenderer {
         this._playLine = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         this._playLine.setAttribute('style', 'pointer-events: none;');
         this._playLine.classList.add('coach-debug-line');
+        // Hidden until rendering is enabled (e.g. after count-in)
+        if (!this._renderingEnabled) {
+            this._playLine.style.display = 'none';
+        }
 
         this._playLineOutline = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         this._playLineOutline.setAttribute('stroke', 'white');
@@ -705,35 +929,67 @@ export class FeedbackRenderer {
             this._playLineInner = null;
         }
         this._playLineGetTime = null;
+        this._renderingEnabled = false;
+        this._lastGeoMeasure = -1;
     }
 
     /**
-     * rAF tick: move the play line to the current interpolated X position.
+     * rAF tick: clearing + playline positioning.
+     *
+     * Clearing uses precomputed measurePlaylineThresholds: each threshold
+     * is the interpolated time at which the playline crosses a barline.
+     * We clear the measure CLEAR_AHEAD_MS before that crossing.
      */
     _tickPlayLine() {
         const timeMs = this._playLineGetTime();
-        const interp = this._interpolateXWithSystem(timeMs);
 
-        if (interp) {
-            const layer = this.svgLayers[interp.sys.layerIndex]?.layer;
-            if (layer) {
-                // Move to the correct layer if needed
-                if (this._playLine.parentNode !== layer) {
-                    this._playLine.remove();
-                    layer.appendChild(this._playLine);
-                }
+        // --- Threshold-based clearing ---
+        // Advance cursor through precomputed thresholds. When timeMs
+        // approaches a threshold (within CLEAR_AHEAD_MS), clear that measure.
+        const thresholds = this._measurePlaylineThresholds || [];
+        while (this._thresholdCursor < thresholds.length) {
+            const t = thresholds[this._thresholdCursor];
+            if (timeMs >= t.timeMs - CLEAR_AHEAD_MS) {
+                console.log(`[FeedbackRenderer] Clearing M${t.measureIndex} (t=${timeMs.toFixed(0)}ms, threshold=${t.timeMs.toFixed(0)}ms)`);
+                this._clearMeasureRegion(t.measureIndex);
+                this._thresholdCursor++;
+            } else {
+                break; // remaining thresholds are in the future
+            }
+        }
 
-                const step = this.verticalStep;
-                const staffY = interp.sys.topY;
-                const y1 = staffY + (-6 * step);
-                const y2 = staffY + (5 * step);
+        // Enable rendering (playline + circles) at the actual M0 barline
+        // time — NOT at the CLEAR_AHEAD early trigger which is only for
+        // clearing old circles.
+        if (!this._renderingEnabled) {
+            const m0 = thresholds.find(t => t.measureIndex === 0);
+            if (m0 && timeMs >= m0.timeMs) {
+                this.enableRendering();
+            }
+        }
 
-                // Update both lines in the group
-                for (const ln of [this._playLineOutline, this._playLineInner]) {
-                    ln.setAttribute('x1', interp.x);
-                    ln.setAttribute('y1', y1);
-                    ln.setAttribute('x2', interp.x);
-                    ln.setAttribute('y2', y2);
+        // --- Playline positioning (only when rendering enabled) ---
+        if (this._renderingEnabled) {
+            const interp = this._interpolateXWithSystem(timeMs);
+            if (interp) {
+                const layer = this.svgLayers[interp.sys.layerIndex]?.layer;
+                if (layer) {
+                    if (this._playLine.parentNode !== layer) {
+                        this._playLine.remove();
+                        layer.appendChild(this._playLine);
+                    }
+
+                    const step = this.verticalStep;
+                    const staffY = interp.sys.topY;
+                    const y1 = staffY + (-6 * step);
+                    const y2 = staffY + (5 * step);
+
+                    for (const ln of [this._playLineOutline, this._playLineInner]) {
+                        ln.setAttribute('x1', interp.x);
+                        ln.setAttribute('y1', y1);
+                        ln.setAttribute('x2', interp.x);
+                        ln.setAttribute('y2', y2);
+                    }
                 }
             }
         }

@@ -130,20 +130,15 @@ export class Controller {
      */
     _onPlaybackStart() {
         console.log('[Controller] Playback started, syncing engine');
-        // Record the playback start time for timing calculations
-        this.sessionStartTime = performance.now();
         this._refreshAbcMapping(); // Map instruments to staff indices
 
         // Ensure sniffer is hooked to the engine and has processed the current ABC
         const abc = this.grooveWriter.myGrooveUtils.abc_obj;
         if (abc && window.scoreLayout) {
-            // New signature for hook (just passing the engine instance)
             window.scoreLayout.hook(abc);
             const sniffedData = window.scoreLayout.getSniffedData();
             console.log('[Controller] ScoreLayoutExtractor re-hooked. Sniffed data:', sniffedData?.systems?.[0]?.chords.length || 0, 'chords');
         }
-
-        this.engine.start(this.sessionStartTime);
 
         // Ensure visual feedback is ready
         this.renderer.init();
@@ -152,11 +147,32 @@ export class Controller {
         // Set groove context for time-based rendering
         this.setRendererGrooveContext();
 
-        // Start debug play line (shows interpolated playback position)
+        // Simulate count-in as the last measure of the groove.
+        // Back-date sessionStartTime so the clearing loop sees timeMs
+        // starting at (N-1)*measureDuration — the last measure.
+        // The clearing thresholds will fire for measure 0 during count-in,
+        // ensuring it's cleared before any rushing hits arrive.
+        const totalMeasures = this.renderer.totalMeasures;
+        const measureDurationMs = this.renderer.measureDurationMs;
+        this.sessionStartTime = performance.now() - (totalMeasures - 1) * measureDurationMs;
+
+        // Start engine AFTER back-dating so engine relTime matches
+        // controller hitTimeMs (both use the same sessionStartTime).
+        // Circle drawing is gated by _renderingEnabled (set at M0 barline).
+        this.engine.start(this.sessionStartTime);
+
+        // Start clearing loop with rendering disabled (no playline or
+        // circles visible during count-in).
+        this.renderer._renderingEnabled = false;
+        const countInStartTimeMs = (totalMeasures - 1) * measureDurationMs;
+        this.renderer.scheduleMeasureClearing(countInStartTimeMs);
+
+        this.renderer.startPlayLine(
+            () => performance.now() - this.sessionStartTime - this.engine.audioLatency
+        );
+
         if (SHOW_DEBUG) {
-            this.renderer.startPlayLine(
-                () => performance.now() - this.sessionStartTime - this.engine.audioLatency
-            );
+            this.renderer.renderDebugGrid();
         }
     }
 
@@ -166,7 +182,6 @@ export class Controller {
     _onPlaybackStop() {
         console.log('[Controller] Playback stopped');
         this.renderer.stopPlayLine();
-        this.renderer.cancelScheduledClearing();
         if (coachState.mode === 'performance' && this.isCoachingActive) {
             this._showResults();
         }
@@ -190,7 +205,20 @@ export class Controller {
         // Reset engine timing for new repetition
         this.sessionStartTime = performance.now();
         this.engine.start(this.sessionStartTime);
-        this.renderer.scheduleMeasureClearing();
+        this.renderer.scheduleMeasureClearing(0);
+
+        // Rendering was enabled at M0 barline during count-in.
+        // Re-enable here for subsequent repeats (idempotent).
+        this.renderer.enableRendering();
+
+        // Playline was already started during count-in.
+        // The closure captures `this` so it reads the updated sessionStartTime.
+        // Start if not running yet (safety fallback).
+        if (!this.renderer._playLineGetTime) {
+            this.renderer.startPlayLine(
+                () => performance.now() - this.sessionStartTime - this.engine.audioLatency
+            );
+        }
 
         // Re-render grid if debug is enabled
         if (SHOW_DEBUG) {
@@ -387,8 +415,6 @@ export class Controller {
         const evaluation = this.engine.handleMidiHit(drum, timestamp);
         if (!evaluation) return;
 
-        console.log(`[Controller] Hit ${drum} evaluation: ${evaluation.tier} (match: ${evaluation.isMatch})`);
-
         // Calculate hit time relative to groove start (subtract audio latency)
         const audioLatency = this.engine.audioLatency;
         const hitTimeMs = timestamp - this.sessionStartTime - audioLatency;
@@ -540,8 +566,6 @@ export class Controller {
             const drum = KEY_TO_DRUM[e.key];
             if (!drum) return;
             if (!this.isCoachingActive || !this.engine.isPlaying) return;
-
-            console.log(`[Controller] Debug hotkey '${e.key}' → ${drum}`);
             this.handleMidiHit(drum, performance.now(), 100);
         });
     }
