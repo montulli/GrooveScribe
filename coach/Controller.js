@@ -232,6 +232,10 @@ export class Controller {
 
             // 2. Setup engine with tolerance windows based on settings
             this.engine.windows = coachState.getToleranceWindows();
+            // Initialize latency from browser's AudioContext (auto-detects output + base latency)
+            if (typeof MIDI !== 'undefined' && MIDI.Player?.ctx) {
+                this.latencyManager.init(MIDI.Player.ctx);
+            }
             this.engine.audioLatency = this.latencyManager.getTotalOffset();
             this.engine.loadGroove({ target: grooveData });
 

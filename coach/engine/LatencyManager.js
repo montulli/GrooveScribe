@@ -4,7 +4,7 @@
 export class LatencyManager {
     constructor() {
         this.audioContext = null;
-        this.audioLatency = 50; // Default 50ms
+        this.audioLatency = 0; // No default guess — use init() for browser auto-detection
         this.midiLatency = 1;   // Default 1ms (USB MIDI is very fast)
         this.calibrationOffset = 0;
         this.calibrationSamples = [];
@@ -18,6 +18,9 @@ export class LatencyManager {
             if (browserLatency > 0) {
                 this.audioLatency = browserLatency;
             }
+            console.log(`[LatencyManager] Auto-detected audio latency: ${this.audioLatency.toFixed(1)}ms ` +
+                `(outputLatency=${((audioContext.outputLatency || 0) * 1000).toFixed(1)}ms, ` +
+                `baseLatency=${((audioContext.baseLatency || 0) * 1000).toFixed(1)}ms)`);
         }
     }
 
