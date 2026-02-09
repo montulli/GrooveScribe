@@ -107,6 +107,7 @@ export class FeedbackRenderer {
         this.grooveContext = context;
         this.sniffedData = sniffedData;
         this.systems = [];
+        this._waypointData = null; // Clear interpolation cache
 
         if (!this.ensureLayers()) return;
 
@@ -323,28 +324,155 @@ export class FeedbackRenderer {
     }
 
     /**
-     * Interpolate X position from measure boundaries and return the
-     * matched system. This ensures extra hits are drawn in the correct
-     * SVG layer for multi-system grooves.
+     * Interpolate X position using modular arithmetic over a continuous
+     * strip of all staff systems.
+     *
+     * ## Concept
+     *
+     * The score is rendered across multiple staff systems (lines), each
+     * with its own X coordinate space. Time increases monotonically, but
+     * X wraps back to the left edge at each system boundary. This creates
+     * a discontinuity that makes naive interpolation impossible.
+     *
+     * The solution: treat all systems as one continuous horizontal strip.
+     * Each note/rest gets an "absolute offset" — its distance from the
+     * very start of the strip:
+     *
+     *   absOffset = Σ(widths of systems before it) + (note.x - system.leftEdge)
+     *
+     * In this space, X is monotonically increasing (no wrapping), so linear
+     * interpolation works. After interpolating, we use modular arithmetic
+     * to map back to the correct system and local X.
+     *
+     * ## Handling wraparound
+     *
+     * When two adjacent waypoints are in different systems, the right one
+     * has a higher absOffset (it's further along the strip). If the right
+     * one wraps around (e.g. loop repeat: last system → first system),
+     * its absOffset will be LESS than the left's. We detect this and add
+     * totalWidth to "unwrap" it before interpolating:
+     *
+     *   if (rightOffset < leftOffset) rightOffset += totalWidth;
+     *
+     * After interpolating, we take `result % totalWidth` to fold it back
+     * into the strip. This single modulo operation handles ALL wraparound
+     * cases identically: within-system, cross-system, and loop repeat.
+     *
+     * ## Mapping back to a system
+     *
+     * Given a modular offset, we walk through the system segments to find
+     * which one contains it, then convert back to local X:
+     *
+     *   localX = system.leftEdge + (modularOffset - segmentStart)
+     *
+     * ## Waypoints
+     *
+     * Only notes and rests serve as waypoints — no measure boundaries.
+     * Boundaries are used solely to compute each system's width and edges.
+     *
+     * A sentinel waypoint is added at `grooveEndMs` with the same absolute
+     * offset as the first note. This creates continuity at the loop point:
+     * the play line smoothly moves to the right edge of the last system,
+     * wraps via modulo to the first system, and enters from the left.
+     *
      * @returns {{ x: number, sys: Object } | null}
      */
     _interpolateXWithSystem(hitTimeMs) {
         if (!this.grooveContext || this.systems.length === 0) return null;
+        if (!this._waypointData) this._buildWaypointData();
 
+        const { waypoints, totalWidth } = this._waypointData;
+        if (waypoints.length === 0 || totalWidth === 0) return null;
+
+        // Find neighboring waypoints
+        let left = null, right = null;
+        for (const w of waypoints) {
+            if (w.timeMs <= hitTimeMs) left = w;
+            else { right = w; break; }
+        }
+        if (!left || !right) return null;
+
+        // Unwrap: if right wraps around, add totalWidth so interpolation
+        // proceeds forward instead of backward.
+        let rightOffset = right.absOffset;
+        if (rightOffset < left.absOffset) rightOffset += totalWidth;
+
+        // Interpolate, then fold back into [0, totalWidth) via modulo
+        const ratio = (hitTimeMs - left.timeMs) / (right.timeMs - left.timeMs);
+        const interpOffset = left.absOffset + ratio * (rightOffset - left.absOffset);
+        const modOffset = ((interpOffset % totalWidth) + totalWidth) % totalWidth;
+
+        return this._offsetToSystem(modOffset);
+    }
+
+    /**
+     * Build the cached waypoint data: system segments and a flat,
+     * time-sorted list of waypoints with absolute offsets.
+     * Called lazily by _interpolateXWithSystem; cleared in setGrooveContext.
+     */
+    _buildWaypointData() {
+        // System segments: left/right edges from measure boundaries,
+        // cumulative offset within the continuous strip.
+        const segments = [];
+        let cumulativeOffset = 0;
         for (const sys of this.systems) {
-            let left = null, right = null;
-            for (const b of sys.measureBoundaries) {
-                if (b.x === null) continue;
-                if (b.timeMs <= hitTimeMs) left = b;
-                else if (b.timeMs > hitTimeMs && !right) { right = b; break; }
-            }
-            if (left && right) {
-                const ratio = (hitTimeMs - left.timeMs) / (right.timeMs - left.timeMs);
-                const x = left.x + ratio * (right.x - left.x);
-                return { x, sys };
+            const boundaries = sys.measureBoundaries
+                .filter(b => b.x !== null)
+                .sort((a, b) => a.x - b.x);
+            const leftEdge = boundaries.length > 0 ? boundaries[0].x : 0;
+            const rightEdge = boundaries.length > 0 ? boundaries.at(-1).x : 0;
+            const width = rightEdge - leftEdge;
+            segments.push({ sys, leftEdge, rightEdge, width, offset: cumulativeOffset });
+            cumulativeOffset += width;
+        }
+        const totalWidth = cumulativeOffset;
+
+        // Flat waypoints from notes/rests, each mapped to its absolute
+        // offset in the strip: seg.offset + (note.x - seg.leftEdge).
+        const waypoints = [];
+        for (const seg of segments) {
+            for (const t of seg.sys.timeline) {
+                if (t.x !== undefined) {
+                    waypoints.push({
+                        timeMs: t.timeMs,
+                        absOffset: seg.offset + (t.x - seg.leftEdge),
+                    });
+                }
             }
         }
-        return null;
+        waypoints.sort((a, b) => a.timeMs - b.timeMs);
+
+        // Sentinel for loop wraparound: a copy of the first waypoint at
+        // grooveEndMs so the play line continues past the last note and
+        // wraps smoothly via modulo.
+        if (waypoints.length > 0) {
+            const grooveEndMs = Math.max(
+                ...this.systems.flatMap(s =>
+                    s.measureBoundaries.map(b => b.timeMs)
+                )
+            );
+            waypoints.push({ timeMs: grooveEndMs, absOffset: waypoints[0].absOffset });
+        }
+
+        this._waypointData = { segments, waypoints, totalWidth };
+    }
+
+    /**
+     * Map an absolute offset (modulo totalWidth) back to a system and
+     * local X coordinate.
+     * @param {number} offset - Position in the continuous strip, [0, totalWidth).
+     * @returns {{ x: number, sys: Object }}
+     */
+    _offsetToSystem(offset) {
+        const { segments } = this._waypointData;
+        for (const seg of segments) {
+            if (offset >= seg.offset && offset < seg.offset + seg.width) {
+                return { x: seg.leftEdge + (offset - seg.offset), sys: seg.sys };
+            }
+        }
+        // Rounding edge case: offset exactly at the strip's end
+        const last = segments.at(-1);
+        return { x: last.rightEdge, sys: last.sys };
     }
 
     // --- Per-measure clearing ---
