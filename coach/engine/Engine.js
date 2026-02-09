@@ -154,7 +154,6 @@ export class Engine {
     handleMidiHit(drum, timestamp) {
         if (!this.isPlaying) return null;
         const tl = this.noteTimeline;
-        if (tl.length === 0) return null;
 
         // relativeHitTime: from the hit's actual timestamp. Used for all matching.
         const relativeHitTime = timestamp - this.startTime;

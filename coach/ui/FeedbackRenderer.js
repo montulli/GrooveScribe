@@ -34,6 +34,9 @@ export class FeedbackRenderer {
         this.verticalStep = 4.5; // Default step (6pt * 0.75 scale)
         this.systems = [];       // Per-system rendering data: [{ topY, timeline, measureBoundaries, layerIndex }]
         this.sniffedData = null;
+        this.measureDurationMs = 0;  // Duration of one measure in ms
+        this.totalMeasures = 0;      // Total number of measures in the groove
+        this._scheduledTimers = [];  // Timeout IDs for scheduled measure clearing
     }
 
     init() {
@@ -102,7 +105,10 @@ export class FeedbackRenderer {
         const measures = context.measures;
 
         const measureDurationMs = (60000 / bpm) * numBeats;
+        this.measureDurationMs = measureDurationMs;
+        this.totalMeasures = measures;
         this.grooveContext.totalDurationMs = measureDurationMs * measures;
+        this.clearedMeasures = new Set();
         const step = this.verticalStep;
 
         // Build per-system rendering data
@@ -125,15 +131,17 @@ export class FeedbackRenderer {
                     measureBoundaries: []
                 };
 
-                // 1. Build Measure Boundaries
-                for (let m = 0; m <= measures; m++) {
+                // 1. Build Measure Boundaries for this system's measures only.
+                // Each sniffed boundary corresponds to a measure edge in this system,
+                // offset by measureOffset to get the correct absolute time.
+                const sortedBounds = [...(system.measureBoundaries || [])].sort((a, b) => a.x - b.x);
+                for (let i = 0; i < sortedBounds.length; i++) {
                     systemData.measureBoundaries.push({
-                        timeMs: m * measureDurationMs,
-                        measureIndex: m,
-                        x: null
+                        timeMs: (system.measureOffset + i) * measureDurationMs,
+                        measureIndex: system.measureOffset + i,
+                        x: sortedBounds[i].x
                     });
                 }
-                this._assignBoundaryPositions(systemData.measureBoundaries, system.measureBoundaries);
 
                 // 2. Build timeline by matching sniffed chords to engine timeline
                 if (system.chords && timeline && timeline.length > 0) {
@@ -184,25 +192,12 @@ export class FeedbackRenderer {
         }
     }
 
-    /**
-     * Assign X positions to measure boundaries from sniffed boundary data.
-     * The sniffed boundaries arrive sorted by X: [M0 (from header), bar1, bar2, ...].
-     * We assign them to measure boundaries by index.
-     */
-    _assignBoundaryPositions(measureBoundaries, sniffedBoundaries) {
-        if (!sniffedBoundaries || sniffedBoundaries.length === 0) return;
 
-        const sorted = [...sniffedBoundaries].sort((a, b) => a.x - b.x);
-
-        for (let i = 0; i < measureBoundaries.length; i++) {
-            if (i < sorted.length) {
-                measureBoundaries[i].x = sorted[i].x;
-            }
-        }
-    }
 
     /**
-     * Draw feedback for a hit
+     * Draw feedback for a matched hit (correct drum, timed within tolerance).
+     * Positions the circle at the target note's sniffed coordinate, with a
+     * small horizontal offset reflecting the timing error.
      */
     drawHitFeedbackByTime(hitTimeMs, tier, timingError, drumType, abcNoteIndex = null) {
         if (this.systems.length === 0) return;
@@ -215,6 +210,7 @@ export class FeedbackRenderer {
         for (const sys of this.systems) {
             note = sys.timeline.find(n =>
                 Math.abs(n.timeMs - hitTimeMs) < HIT_TIME_MATCH_TOLERANCE_MS &&
+                n.type === drumType &&
                 n.isGrace === isGrace &&
                 (abcNoteIndex === null || n.abcIndex === abcNoteIndex)
             );
@@ -224,37 +220,50 @@ export class FeedbackRenderer {
             }
         }
 
-        if (!note) {
-            if (tier === 'extra') {
-                this._drawExtraHit(hitTimeMs, drumType);
-            }
-            return;
-        }
+        if (!note) return;
 
         // Timing-based visual offset
         const pixelsPerMs = 0.15;
         const clampLimit = TIER_CLAMP_LIMITS[tier];
         let xOffset = timingError * pixelsPerMs;
-        if (tier !== 'extra') {
-            xOffset = Math.max(-clampLimit, Math.min(clampLimit, xOffset));
-            if (tier === 'perfect' && Math.abs(timingError) < 8) xOffset = 0;
+        xOffset = Math.max(-clampLimit, Math.min(clampLimit, xOffset));
+        if (tier === 'perfect' && Math.abs(timingError) < 8) xOffset = 0;
+
+        const measureIndex = this._getMeasureIndex(hitTimeMs);
+        this._drawCircle(note.x + xOffset, note.y, tier, targetLayerIndex, measureIndex);
+    }
+
+    /**
+     * Draw feedback for an unmatched (extra) hit.
+     * Uses interpolated X from measure boundaries and the Y for the drum
+     * that was actually hit — never snaps to a target note position.
+     */
+    drawExtraHit(hitTimeMs, drumType) {
+        if (this.systems.length === 0) return;
+
+        // Find the system and interpolated X for this hit time
+        const interp = this._interpolateXWithSystem(hitTimeMs);
+        if (!interp) return;
+
+        const y = interp.sys.noteYs[drumType];
+        if (y === undefined) {
+            console.warn(`[FeedbackRenderer] Unknown drumType for Y lookup: ${drumType}`);
+            return;
         }
 
-        this._drawCircle(note.x + xOffset, note.y, tier, targetLayerIndex);
+        const measureIndex = this._getMeasureIndex(hitTimeMs);
+        this._drawCircle(interp.x, y, 'extra', interp.sys.layerIndex, measureIndex);
     }
 
-    _drawExtraHit(hitTimeMs, drumType) {
-        const x = this._interpolateX(hitTimeMs);
-        if (x === null) return;
-        const pos = this._guessYForDrum(drumType);
-        if (!pos) return;
-        this._drawCircle(x, pos.y, 'extra', pos.layerIndex);
-    }
-
-    _interpolateX(hitTimeMs) {
+    /**
+     * Interpolate X position from measure boundaries and return the
+     * matched system. This ensures extra hits are drawn in the correct
+     * SVG layer for multi-system grooves.
+     * @returns {{ x: number, sys: Object } | null}
+     */
+    _interpolateXWithSystem(hitTimeMs) {
         if (!this.grooveContext || this.systems.length === 0) return null;
 
-        // Search across all systems' boundaries
         for (const sys of this.systems) {
             let left = null, right = null;
             for (const b of sys.measureBoundaries) {
@@ -264,46 +273,73 @@ export class FeedbackRenderer {
             }
             if (left && right) {
                 const ratio = (hitTimeMs - left.timeMs) / (right.timeMs - left.timeMs);
-                return left.x + ratio * (right.x - left.x);
+                const x = left.x + ratio * (right.x - left.x);
+                return { x, sys };
             }
         }
         return null;
     }
 
-    _guessYForDrum(drumType) {
-        if (this.systems.length === 0) return null;
-        const sys = this.systems[0];
-        const y = sys.noteYs[drumType];
-        if (y === undefined) {
-            console.warn(`[FeedbackRenderer] Unknown drumType for Y lookup: ${drumType}`);
-            return null;
-        }
-        return { y, layerIndex: 0 };
+    // --- Per-measure clearing ---
+
+    /**
+     * Compute the measure index for a given hit time.
+     */
+    _getMeasureIndex(hitTimeMs) {
+        if (this.measureDurationMs <= 0) return 0;
+        return Math.floor(hitTimeMs / this.measureDurationMs);
     }
 
-    _drawCircle(x, y, tier, layerIndex = 0) {
+    /**
+     * Remove all circles tagged with the given measure index.
+     */
+    _clearMeasure(measureIndex) {
+        for (const { layer } of this.svgLayers) {
+            const els = layer.querySelectorAll(`.coach-hit-marker[data-measure="${measureIndex}"]`);
+            els.forEach(el => el.remove());
+        }
+    }
+
+    /**
+     * Schedule per-measure clearing for a new loop pass.
+     * Sets a timeout for each measure so its old circles are removed
+     * when the playhead reaches that measure — regardless of hits.
+     */
+    scheduleMeasureClearing() {
+        this.cancelScheduledClearing();
+        for (let m = 0; m < this.totalMeasures; m++) {
+            const id = setTimeout(() => this._clearMeasure(m), m * this.measureDurationMs);
+            this._scheduledTimers.push(id);
+        }
+    }
+
+    /**
+     * Cancel any pending scheduled measure clearing timers.
+     */
+    cancelScheduledClearing() {
+        for (const id of this._scheduledTimers) clearTimeout(id);
+        this._scheduledTimers = [];
+    }
+
+    // --- Circle drawing ---
+
+    _drawCircle(x, y, tier, layerIndex = 0, measureIndex = 0) {
         const layer = this.svgLayers[layerIndex]?.layer;
         if (!layer) return;
 
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         circle.setAttribute('cx', x);
         circle.setAttribute('cy', y);
-        circle.setAttribute('r', tier === 'extra' ? '4' : '6');
+        circle.setAttribute('r', '4');
         circle.setAttribute('fill', TIER_COLORS[tier]);
         circle.setAttribute('fill-opacity', '0.7');
         circle.setAttribute('stroke', 'white');
         circle.setAttribute('stroke-width', '1.5');
         circle.setAttribute('style', 'pointer-events: none;');
+        circle.setAttribute('data-measure', measureIndex);
         circle.classList.add('coach-hit-marker');
 
         layer.appendChild(circle);
-
-        circle.animate([{ scale: 0.5, opacity: 0 }, { scale: 1, opacity: 0.7 }], { duration: 150 });
-        setTimeout(() => {
-            circle.style.transition = 'opacity 0.6s ease-out';
-            circle.style.opacity = '0';
-            setTimeout(() => circle.remove(), 600);
-        }, 2000);
     }
 
     renderDebugGrid() {
@@ -334,7 +370,7 @@ export class FeedbackRenderer {
                 layer.appendChild(line);
 
                 // Measure label at top of clamped area (continuous across systems)
-                this._addDebugText(b.x, clampTop - 1, `M${sys.measureOffset + b.measureIndex}`, 'blue', '6px', layer);
+                this._addDebugText(b.x, clampTop - 1, `M${b.measureIndex}`, 'blue', '6px', layer);
             });
 
             // Notes from timeline (Red dots/lines) - clamped

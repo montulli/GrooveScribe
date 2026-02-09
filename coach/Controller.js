@@ -158,6 +158,7 @@ export class Controller {
      */
     _onPlaybackStop() {
         console.log('[Controller] Playback stopped');
+        this.renderer.cancelScheduledClearing();
         if (coachState.mode === 'performance' && this.isCoachingActive) {
             this._showResults();
         }
@@ -181,7 +182,7 @@ export class Controller {
         // Reset engine timing for new repetition
         this.sessionStartTime = performance.now();
         this.engine.start(this.sessionStartTime);
-        this.renderer.clearFeedback();
+        this.renderer.scheduleMeasureClearing();
 
         // Re-render grid if debug is enabled
         if (SHOW_DEBUG) {
@@ -384,22 +385,22 @@ export class Controller {
             const matchedNote = this.engine.noteTimeline.find(n => n.originalIndex === evaluation.noteIndex);
             const abcIndex = matchedNote ? this.abcMapper.getIndex(matchedNote.tickIndex, evaluation.isGraceNote ? 'snare_flam' : drum) : null;
 
-            // Draw feedback at pre-calculated sniffed coordinate
+            // Draw feedback at pre-calculated sniffed coordinate.
+            // Use the note's expected time (not hitTimeMs) for coordinate lookup,
+            // since the renderer's timeline tolerance is tight and good/close
+            // hits can be 20-50ms away from the expected time.
             this.renderer.drawHitFeedbackByTime(
-                hitTimeMs,
+                matchedNote.time,
                 evaluation.tier,
                 evaluation.timingError,
                 effectiveDrum,
                 abcIndex >= 0 ? abcIndex : null
             );
         } else {
-            // Extra hits (gray circles) - direct time position
-            this.renderer.drawHitFeedbackByTime(
+            // Extra hits (gray circles) - interpolated position based on hit drum
+            this.renderer.drawExtraHit(
                 hitTimeMs,
-                'extra',
-                0,
-                drum,
-                null
+                drum
             );
         }
     }

@@ -302,7 +302,8 @@ export class ScoreLayoutExtractor {
                 noteYs: this._buildNoteYs(system.topY, step)
             };
 
-            globalMeasureOffset += boundaries.length;
+            // n boundaries define n-1 measures
+            globalMeasureOffset += Math.max(0, boundaries.length - 1);
             return result;
         }).filter(s => s !== null);
 
