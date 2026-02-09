@@ -146,7 +146,8 @@ export class FeedbackRenderer {
                     measureOffset: system.measureOffset,
                     noteYs: system.noteYs,  // DrumType → SVG Y (from ScoreLayoutExtractor)
                     timeline: [],
-                    measureBoundaries: []
+                    measureBoundaries: [],
+                    rests: system.rests || []
                 };
 
                 // 1. Build Measure Boundaries for this system's measures only.
@@ -415,6 +416,13 @@ export class FeedbackRenderer {
                 if (!n.isGrace) {
                     this._addDebugText(n.x, clampTop, `${n.abcIndex}`, 'red', '6px', layer);
                 }
+            });
+
+            // Rests (Yellow) - clamped
+            sys.rests.forEach((r) => {
+                const line = this._createDebugLine(r.x, '#DAA520', '1.0', clampTop, clampBottom);
+                line.setAttribute('stroke-width', '0.25');
+                layer.appendChild(line);
             });
 
             // Horizontal lines: 4 above (-4 to -1), staff (0 to 4), 1 below (5)

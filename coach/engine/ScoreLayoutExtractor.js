@@ -69,7 +69,7 @@ export class ScoreLayoutExtractor {
     _initData() {
         this.data = {
             // Ordered stream of all annotation events
-            events: [],    // { kind, ... } — kind: 'note'|'bar'|'clef'|'key'|'meter'
+            events: [],    // { kind, ... } — kind: 'note'|'rest'|'bar'|'clef'|'key'|'meter'
             scaledStep: 0  // Scaled vertical step (one staff-line gap in SVG pixels), captured during annotation
         };
     }
@@ -167,7 +167,19 @@ export class ScoreLayoutExtractor {
                     w: w,
                     h: h,
                     abcIndex: self.abcIndexCount,
+                    abcTime: s ? s.time : 0,
                     isGrace: type === "grace",
+                    topY: ayTopY,
+                    svgIndex: self._svgCount
+                });
+            }
+
+            if (type === "rest") {
+                const restX = s ? s.x : (x + w / 2);
+                self.data.events.push({
+                    kind: 'rest',
+                    x: restX,
+                    abcTime: s ? s.time : 0,
                     topY: ayTopY,
                     svgIndex: self._svgCount
                 });
@@ -201,7 +213,7 @@ export class ScoreLayoutExtractor {
         for (const evt of events) {
             const idx = evt.svgIndex;
             if (!systemMap.has(idx)) {
-                systemMap.set(idx, { chords: [], bars: [], clefLeftX: null, topY: null });
+                systemMap.set(idx, { chords: [], rests: [], bars: [], clefLeftX: null, topY: null });
             }
             const system = systemMap.get(idx);
 
@@ -211,6 +223,8 @@ export class ScoreLayoutExtractor {
 
             if (evt.kind === 'note') {
                 system.chords.push(evt);
+            } else if (evt.kind === 'rest') {
+                system.rests.push(evt);
             } else if (evt.kind === 'bar') {
                 if (!system.bars.some(tb => Math.abs(tb.x - evt.x) < 5)) {
                     system.bars.push({ x: evt.x, time: 0 });
@@ -239,7 +253,14 @@ export class ScoreLayoutExtractor {
      *         {
      *           x: number,              // SVG X coordinate of this chord position. Use this for horizontal positioning.
      *           abcIndex: number,       // Sequential index, used to match with engine timeline
+     *           abcTime: number,        // abc2svg time in ticks (1536 per whole note, C.BLEN)
      *           isGrace: boolean        // true for grace notes (flam ornaments)
+     *         }
+     *       ],
+     *       rests: [                     // Rest positions within this system
+     *         {
+     *           x: number,              // SVG X coordinate of the rest symbol
+     *           abcTime: number         // abc2svg time in ticks (1536 per whole note, C.BLEN)
      *         }
      *       ],
      *       measureBoundaries: [        // Measure boundary X positions, sorted left-to-right
@@ -295,8 +316,10 @@ export class ScoreLayoutExtractor {
                 chords: system.chords.map(n => ({
                     x: n.x,
                     abcIndex: n.abcIndex,
+                    abcTime: n.abcTime,
                     isGrace: n.isGrace
                 })),
+                rests: system.rests.map(r => ({ x: r.x, abcTime: r.abcTime })),
                 measureBoundaries: boundaries,
                 // Precomputed SVG Y for each DrumType on this staff
                 noteYs: this._buildNoteYs(system.topY, step)
