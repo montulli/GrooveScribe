@@ -358,7 +358,7 @@ export class FeedbackRenderer {
             const staffY = sys.topY;
 
             // Clamp range: 5 lines above staff (-5) to 1 line below staff (5)
-            const clampTop = staffY + (-5 * step);
+            const clampTop = staffY + (-6 * step);
             const clampBottom = staffY + (5 * step);
 
             // Measure boundaries (Blue) - clamped
@@ -370,7 +370,7 @@ export class FeedbackRenderer {
                 layer.appendChild(line);
 
                 // Measure label at top of clamped area (continuous across systems)
-                this._addDebugText(b.x, clampTop - 1, `M${b.measureIndex}`, 'blue', '6px', layer);
+                this._addDebugText(b.x, clampTop, `M${b.measureIndex}`, 'blue', '6px', layer);
             });
 
             // Notes from timeline (Red dots/lines) - clamped
@@ -395,16 +395,19 @@ export class FeedbackRenderer {
 
                 // Note index label (skip for grace notes — they use abc2svg's own index)
                 if (!n.isGrace) {
-                    this._addDebugText(n.x, clampTop - 1, `${n.abcIndex}`, 'red', '6px', layer);
+                    this._addDebugText(n.x, clampTop, `${n.abcIndex}`, 'red', '6px', layer);
                 }
             });
 
             // Horizontal lines: 4 above (-4 to -1), staff (0 to 4), 1 below (5)
+            const xBounds = sys.measureBoundaries.filter(b => b.x !== null);
+            const xLeft = xBounds.length > 0 ? xBounds[0].x : 0;
+            const xRight = xBounds.length > 0 ? xBounds[xBounds.length - 1].x : 2000;
             for (let i = -4; i <= 5; i++) {
                 const y = staffY + (i * step);
                 const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.setAttribute('x1', 0); line.setAttribute('y1', y);
-                line.setAttribute('x2', 2000); line.setAttribute('y2', y);
+                line.setAttribute('x1', xLeft); line.setAttribute('y1', y);
+                line.setAttribute('x2', xRight); line.setAttribute('y2', y);
 
                 const isStaffEdge = (i === 0 || i === 4);
                 line.setAttribute('stroke', isStaffEdge ? 'orange' : 'green');
@@ -414,7 +417,7 @@ export class FeedbackRenderer {
                 layer.appendChild(line);
 
                 if (i >= 0 && i <= 4) {
-                    this._addDebugText(-5, y + 1.5, `${i}`, isStaffEdge ? 'orange' : 'green', '4px', layer);
+                    this._addDebugText(xLeft - 5, y + 1.5, `${i}`, isStaffEdge ? 'orange' : 'green', '4px', layer);
                 }
             }
         }
