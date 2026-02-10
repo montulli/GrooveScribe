@@ -144,31 +144,10 @@ export class FeedbackRenderer {
         this.clearedMeasures = new Set();
         const step = this.verticalStep;
 
-        // Calibrate msPerAbcTick empirically from the first matched note pair.
-        // abc2svg assigns each symbol an absolute tick time (s.time, stored as abcTime).
-        // Rather than assuming a fixed tick-to-ms ratio (which varies by time signature
-        // and beat unit), we derive it from a note where both the engine time and abcTime
-        // are known. The engine's time and abcTime are both proportional to musical position,
-        // so the ratio is constant across all notes.
-        let msPerAbcTick = null;
-        if (sniffedData?.systems && timeline?.length > 0) {
-            for (const system of sniffedData.systems) {
-                for (const chord of (system.chords || [])) {
-                    if (chord.isGrace || chord.abcTime <= 0) continue;
-                    const engineNote = timeline.find(n => n.abcIndex === chord.abcIndex && !n.isGrace);
-                    if (engineNote && engineNote.time > 0) {
-                        msPerAbcTick = engineNote.time / chord.abcTime;
-                        console.log(`[FeedbackRenderer] Calibrated msPerAbcTick=${msPerAbcTick.toFixed(6)} ` +
-                            `from abcIndex=${chord.abcIndex} (engineTime=${engineNote.time.toFixed(2)}ms, abcTime=${chord.abcTime})`);
-                        break;
-                    }
-                }
-                if (msPerAbcTick !== null) break;
-            }
-        }
-        if (msPerAbcTick === null) {
-            console.warn('[FeedbackRenderer] Could not calibrate msPerAbcTick — no matched notes with abcTime > 0. Rests will have no time.');
-        }
+        // abc2svg uses C.BLEN = 1536 ticks per whole note, so one quarter
+        // note = 384 ticks. BPM is always quarter notes per minute.
+        const BLEN = 1536;
+        const msPerAbcTick = (60000 / bpm) / (BLEN / 4);
 
         // Build per-system rendering data
         if (sniffedData && sniffedData.systems) {
