@@ -29,6 +29,11 @@ const ABC_TIME_DRIFT_WARN_MS = 0.1;
 // Tier colors for hit feedback circles
 const TIER_COLORS = { perfect: '#00BFFF', good: '#32CD32', close: '#FFD700', extra: '#888888' };
 
+// Debug label layout: how far above clampTop to extend barlines for label clearance
+const DEBUG_LABEL_EXTEND_PX = 0;
+// Horizontal gap between barline and label text
+const DEBUG_LABEL_NUDGE_PX = 2;
+
 
 
 
@@ -435,23 +440,28 @@ export class Renderer {
             const clampBottom = staffY + (5 * step);
 
             // Measure boundaries (Blue) - clamped
+            // Barlines extend upward into the label area so labels sit
+            // beside the line instead of using a "|" text separator.
+            const labelY = clampTop - DEBUG_LABEL_EXTEND_PX;
             sys.measureBoundaries.forEach((b, idx) => {
                 if (b.x === null) return;
-                const line = this._createDebugLine(b.x, 'blue', '1.0', clampTop, clampBottom);
+                const line = this._createDebugLine(b.x, 'blue', '1.0', labelY, clampBottom);
                 line.setAttribute('stroke-dasharray', '4,4');
                 line.setAttribute('stroke-width', '0.25');
                 layer.appendChild(line);
 
-                // Label: show adjacent measures — |M0, M0|M1, M1|
-                let label;
+                // Labels: position on left/right side of barline
                 if (idx === 0) {
-                    label = `|M${b.measureIndex}`;
+                    // First barline: label to the right
+                    this._addDebugText(b.x + DEBUG_LABEL_NUDGE_PX, labelY, `M${b.measureIndex}`, 'blue', '6px', layer, 'start');
                 } else if (idx < sys.numMeasures) {
-                    label = `M${b.measureIndex - 1}|M${b.measureIndex}`;
+                    // Interior barline: ending measure on the left, starting on the right
+                    this._addDebugText(b.x - DEBUG_LABEL_NUDGE_PX, labelY, `M${b.measureIndex - 1}`, 'blue', '6px', layer, 'end');
+                    this._addDebugText(b.x + DEBUG_LABEL_NUDGE_PX, labelY, `M${b.measureIndex}`, 'blue', '6px', layer, 'start');
                 } else {
-                    label = `M${b.measureIndex - 1}|`;
+                    // Last barline: label to the left
+                    this._addDebugText(b.x - DEBUG_LABEL_NUDGE_PX, labelY, `M${b.measureIndex - 1}`, 'blue', '6px', layer, 'end');
                 }
-                this._addDebugText(b.x, clampTop, label, 'blue', '6px', layer);
             });
 
             // Notes from timeline (Red dots/lines) - clamped
@@ -512,7 +522,7 @@ export class Renderer {
         }
     }
 
-    _addDebugText(x, y, str, color, fontSize = '5px', layer = null) {
+    _addDebugText(x, y, str, color, fontSize = '5px', layer = null, anchor = 'middle') {
         if (!layer && this.svgLayers.length > 0) layer = this.svgLayers[0].layer;
         if (!layer) return;
 
@@ -531,7 +541,7 @@ export class Renderer {
 
         text.style.fontFamily = 'monospace';
         text.style.fontWeight = 'bold';
-        text.style.textAnchor = 'middle';
+        text.style.textAnchor = anchor;
         text.textContent = str;
         text.classList.add('coach-debug-line');
         layer.appendChild(text);
