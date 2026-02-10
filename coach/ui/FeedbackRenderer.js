@@ -7,8 +7,10 @@ export const SHOW_DEBUG = true;
 const HIT_TIME_MATCH_TOLERANCE_MS = 15;
 
 // How far ahead (ms) of a measure boundary to clear the next measure.
-// Must be larger than the maximum rushing window to prevent races.
-const CLEAR_AHEAD_MS = 200;
+// Derived dynamically as a fraction of measure duration, clamped to a sane range.
+const CLEAR_AHEAD_FRACTION = 0.1;  // 10% of measure duration
+const MIN_CLEAR_AHEAD_MS = 100;    // floor: never closer than 100ms
+const MAX_CLEAR_AHEAD_MS = 400;    // ceiling: never earlier than 400ms
 
 // Per-tier visual offset clamp limits (px) — constrains how far a feedback
 // circle shifts horizontally from the target note to reflect timing error
@@ -685,12 +687,19 @@ export class FeedbackRenderer {
     scheduleMeasureClearing(startTimeMs = 0) {
         this.clearedMeasures.clear();
 
-        // Find first threshold whose clear time (threshold - CLEAR_AHEAD_MS)
+        // Compute clear-ahead from measure duration: 10% clamped to [100, 400]ms
+        this._clearAheadMs = Math.max(
+            MIN_CLEAR_AHEAD_MS,
+            Math.min(MAX_CLEAR_AHEAD_MS, this.measureDurationMs * CLEAR_AHEAD_FRACTION)
+        );
+        console.log(`[FeedbackRenderer] clearAheadMs=${this._clearAheadMs.toFixed(0)}ms (measureDuration=${this.measureDurationMs.toFixed(0)}ms)`);
+
+        // Find first threshold whose clear time (threshold - clearAheadMs)
         // is still in the future relative to startTimeMs
         const thresholds = this._measurePlaylineThresholds || [];
         this._thresholdCursor = 0;
         for (let i = 0; i < thresholds.length; i++) {
-            if (thresholds[i].timeMs - CLEAR_AHEAD_MS > startTimeMs) {
+            if (thresholds[i].timeMs - this._clearAheadMs > startTimeMs) {
                 this._thresholdCursor = i;
                 break;
             }
@@ -699,7 +708,7 @@ export class FeedbackRenderer {
 
         if (thresholds.length > 0 && this._thresholdCursor < thresholds.length) {
             const next = thresholds[this._thresholdCursor];
-            console.log(`[FeedbackRenderer] Clear schedule: cursor at threshold ${this._thresholdCursor} — M${next.measureIndex} clears at t≥${(next.timeMs - CLEAR_AHEAD_MS).toFixed(0)}ms (threshold ${next.timeMs.toFixed(0)}ms)`);
+            console.log(`[FeedbackRenderer] Clear schedule: cursor at threshold ${this._thresholdCursor} — M${next.measureIndex} clears at t≥${(next.timeMs - this._clearAheadMs).toFixed(0)}ms (threshold ${next.timeMs.toFixed(0)}ms)`);
         } else {
             console.log(`[FeedbackRenderer] Clear schedule: no thresholds ahead of startTime=${startTimeMs.toFixed(0)}ms`);
         }
@@ -947,7 +956,7 @@ export class FeedbackRenderer {
         const thresholds = this._measurePlaylineThresholds || [];
         while (this._thresholdCursor < thresholds.length) {
             const t = thresholds[this._thresholdCursor];
-            if (timeMs >= t.timeMs - CLEAR_AHEAD_MS) {
+            if (timeMs >= t.timeMs - this._clearAheadMs) {
                 console.log(`[FeedbackRenderer] Clearing M${t.measureIndex} (t=${timeMs.toFixed(0)}ms, threshold=${t.timeMs.toFixed(0)}ms)`);
                 this._clearMeasureRegion(t.measureIndex);
                 this._thresholdCursor++;
