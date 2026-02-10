@@ -342,8 +342,7 @@ export class FeedbackRenderer {
     }
 
     /**
-     * Interpolate X position using modular arithmetic over a continuous
-     * strip of all staff systems.
+     * Interpolate X position over a continuous strip of all staff systems.
      *
      * ## Concept
      *
@@ -358,40 +357,29 @@ export class FeedbackRenderer {
      *
      *   absOffset = Σ(widths of systems before it) + (note.x - system.leftEdge)
      *
-     * In this space, X is monotonically increasing (no wrapping), so linear
-     * interpolation works. After interpolating, we use modular arithmetic
-     * to map back to the correct system and local X.
+     * Offsets are monotonically increasing (no wrapping), so linear
+     * interpolation works directly. After interpolating, _offsetToSystem
+     * maps the offset back to the correct system and local X.
      *
-     * ## Handling wraparound
+     * ## Sentinel and loop boundary
      *
-     * When two adjacent waypoints are in different systems, the right one
-     * has a higher absOffset (it's further along the strip). If the right
-     * one wraps around (e.g. loop repeat: last system → first system),
-     * its absOffset will be LESS than the left's. We detect this and add
-     * totalWidth to "unwrap" it before interpolating:
+     * A sentinel waypoint at grooveEndMs with absOffset = firstNoteOffset
+     * creates a conceptual wrap-around: from the last note the strip
+     * extends past totalWidth and wraps back to the first note's offset.
+     * When interpolating between the last note and the sentinel, the
+     * right offset is unwrapped (+ totalWidth) so interpolation proceeds
+     * forward. The result is then folded back into [0, totalWidth) via
+     * modulo, producing a smooth visual wrap to the beginning of the
+     * score during the count-in tail.
      *
-     *   if (rightOffset < leftOffset) rightOffset += totalWidth;
-     *
-     * After interpolating, we take `result % totalWidth` to fold it back
-     * into the strip. This single modulo operation handles ALL wraparound
-     * cases identically: within-system, cross-system, and loop repeat.
-     *
-     * ## Mapping back to a system
-     *
-     * Given a modular offset, we walk through the system segments to find
-     * which one contains it, then convert back to local X:
-     *
-     *   localX = system.leftEdge + (modularOffset - segmentStart)
+     * During normal playback, _onRepeat resets sessionStartTime before
+     * times reach this range, so the modular wrap never triggers.
      *
      * ## Waypoints
      *
-     * Only notes and rests serve as waypoints — no measure boundaries.
-     * Boundaries are used solely to compute each system's width and edges.
-     *
-     * A sentinel waypoint is added at `grooveEndMs` with the same absolute
-     * offset as the first note. This creates continuity at the loop point:
-     * the play line smoothly moves to the right edge of the last system,
-     * wraps via modulo to the first system, and enters from the left.
+     * Notes, rests, and interior barlines serve as waypoints. Interior
+     * barlines are inverse-interpolated and added so the playline passes
+     * through each barline at the geometrically correct time.
      *
      * @returns {{ x: number, sys: Object } | null}
      */
@@ -410,8 +398,8 @@ export class FeedbackRenderer {
         }
         if (!left || !right) return null;
 
-        // Unwrap: if right wraps around, add totalWidth so interpolation
-        // proceeds forward instead of backward.
+        // Unwrap: if right wraps around (sentinel), add totalWidth so
+        // interpolation proceeds forward instead of backward.
         let rightOffset = right.absOffset;
         if (rightOffset < left.absOffset) rightOffset += totalWidth;
 
@@ -461,13 +449,17 @@ export class FeedbackRenderer {
         waypoints.sort((a, b) => a.timeMs - b.timeMs);
 
         // Sentinel for loop wraparound: a copy of the first waypoint at
-        // grooveEndMs so the play line continues past the last note and
+        // grooveEndMs so the playline continues past the last note and
         // wraps smoothly via modulo. Created before threshold computation
         // so it's available for the measure 0 wraparound threshold.
         const grooveEndMs = (waypoints.length > 0)
             ? Math.max(...this.systems.flatMap(s => s.measureBoundaries.map(b => b.timeMs)))
             : 0;
         const firstNoteOffset = waypoints.length > 0 ? waypoints[0].absOffset : 0;
+        // Save the count of real note waypoints BEFORE pushing the sentinel.
+        // The threshold loop below must iterate only over real notes, not the
+        // sentinel or any barline waypoints pushed during threshold computation.
+        const noteWaypointCount = waypoints.length;
         if (waypoints.length > 0) {
             waypoints.push({ timeMs: grooveEndMs, absOffset: firstNoteOffset });
         }
@@ -480,7 +472,17 @@ export class FeedbackRenderer {
         // "measurePlaylineThreshold" = the interpolated time at which the
         // playline crosses the barline, as opposed to k * measureDurationMs
         // which is when the first BEAT of the measure is played.
+        //
+        // System-boundary barlines (at segment edges like offset 884
+        // between seg0 and seg1) are recorded as thresholds for clearing
+        // but NOT added as waypoints. Their offset is past the last note
+        // of the system, but their interpolated time falls between notes
+        // within that system — creating a non-monotonic offset sequence
+        // that makes the playline bounce back before crossing systems.
         const thresholds = [];
+        const segmentBoundaryOffsets = new Set(
+            segments.map(s => s.offset).concat(segments.map(s => s.offset + s.width))
+        );
         for (const seg of segments) {
             for (const b of seg.sys.measureBoundaries) {
                 if (b.x === null) continue;
@@ -496,7 +498,7 @@ export class FeedbackRenderer {
                 // left = last waypoint with absOffset <= barlineOffset
                 // right = first waypoint with absOffset > barlineOffset
                 let left = null, right = null;
-                for (let i = 0; i < waypoints.length - 1; i++) {  // -1 to skip sentinel
+                for (let i = 0; i < noteWaypointCount; i++) {  // use saved count to skip sentinel + pushed barlines
                     const w = waypoints[i];
                     if (w.absOffset <= barlineOffset) left = w;
                     else if (!right) right = w;
@@ -512,41 +514,38 @@ export class FeedbackRenderer {
                     measureIndex: b.measureIndex,
                 });
 
-                // Add the barline as a waypoint so the playline passes through
-                // the barline at exactly this interpolated time
-                waypoints.push({ timeMs: thresholdTimeMs, absOffset: barlineOffset });
+                // Add the barline as a waypoint ONLY for interior barlines
+                // (within a single system). System-boundary barlines span
+                // across systems and would create non-monotonic offsets.
+                if (!segmentBoundaryOffsets.has(barlineOffset)) {
+                    waypoints.push({ timeMs: thresholdTimeMs, absOffset: barlineOffset });
+                }
             }
         }
 
         // --- Measure 0 threshold (loop-point wraparound) ---
-        // The barline at offset=totalWidth (≡ 0) marks the start of
-        // measure 0 when the playline wraps. Inverse-interpolate between
-        // the last real waypoint and the sentinel (with offset unwrapping).
+        // Inverse-interpolate to find when the playline reaches the right
+        // edge (offset=totalWidth). This fires during count-in to enable
+        // rendering before the first beat. No waypoint is added — the
+        // sentinel already anchors the right edge.
+        // firstNoteOffset already computed above (before sentinel push)
         if (waypoints.length >= 2) {
-            // Last REAL waypoint (before sentinel and any barline waypoints we just added)
-            // is the one with the highest absOffset among the original note waypoints.
-            // Since waypoints aren't re-sorted yet, find it by scanning.
+            // Find last real waypoint (highest offset, excluding sentinel)
             let lastReal = null;
             for (const w of waypoints) {
-                if (w.timeMs >= grooveEndMs) continue; // skip sentinel
+                if (w.timeMs >= grooveEndMs) continue;
                 if (!lastReal || w.absOffset > lastReal.absOffset) lastReal = w;
             }
-            const sentinel = waypoints.find(w => w.timeMs === grooveEndMs);
-
-            if (lastReal && sentinel && lastReal.absOffset < totalWidth) {
-                // Unwrap sentinel offset: it wraps to firstNoteOffset,
-                // so the effective forward offset is firstNoteOffset + totalWidth
+            if (lastReal && lastReal.absOffset < totalWidth) {
+                // Extrapolate past the last note toward the right edge at the
+                // rate implied by the sentinel's forward path
                 const unwrappedSentinelOffset = firstNoteOffset + totalWidth;
                 const ratio = (totalWidth - lastReal.absOffset) / (unwrappedSentinelOffset - lastReal.absOffset);
                 const thresholdTimeMs = lastReal.timeMs + ratio * (grooveEndMs - lastReal.timeMs);
-
                 thresholds.push({
                     timeMs: thresholdTimeMs,
                     measureIndex: 0,
                 });
-
-                // Add barline waypoint at the loop point
-                waypoints.push({ timeMs: thresholdTimeMs, absOffset: totalWidth });
             }
         }
 
@@ -572,8 +571,7 @@ export class FeedbackRenderer {
     }
 
     /**
-     * Map an absolute offset (modulo totalWidth) back to a system and
-     * local X coordinate.
+     * Map an absolute offset back to a system and local X coordinate.
      * @param {number} offset - Position in the continuous strip, [0, totalWidth).
      * @returns {{ x: number, sys: Object }}
      */
