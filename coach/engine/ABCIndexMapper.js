@@ -33,10 +33,9 @@ export class ABCIndexMapper {
         let currentIndex = 0;
         const { totalTicks } = metrics;
 
-        // 1. Stickings Voice (Rendered first in abc2svg)
-        for (let i = 0; i < totalTicks; i++) {
-            if (data.sticking_array && data.sticking_array[i]) currentIndex++;
-        }
+        // Stickings use hidden rests (x) in abc2svg, which don't increment
+        // ScoreLayoutExtractor's abcIndex counter.  Skip them here to stay
+        // in sync with the extractor's numbering.
 
         const kickStemsUp = !!data.kickStemsUp;
 
