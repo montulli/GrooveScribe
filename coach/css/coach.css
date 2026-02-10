@@ -1,6 +1,6 @@
 /* Drum Coach Styles */
 
-#coach-feedback-layer circle {
+.coach-feedback-layer circle {
     stroke: white;
     stroke-width: 1px;
     pointer-events: none;

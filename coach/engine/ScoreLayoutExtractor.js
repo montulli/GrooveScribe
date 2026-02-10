@@ -321,7 +321,6 @@ export class ScoreLayoutExtractor {
             }
 
             const result = {
-                svgIndex: legendCount + (idx - legendCount),
                 topY: system.topY,
                 measureOffset: globalMeasureOffset,
                 chords: system.chords.map(n => ({

@@ -134,9 +134,9 @@ export class Controller {
 
         // Ensure sniffer is hooked to the engine and has processed the current ABC
         const abc = this.grooveWriter.myGrooveUtils.abc_obj;
-        if (abc && window.scoreLayout) {
-            window.scoreLayout.hook(abc);
-            const sniffedData = window.scoreLayout.getSniffedData();
+        if (abc && scoreLayoutExtractor) {
+            scoreLayoutExtractor.hook(abc);
+            const sniffedData = scoreLayoutExtractor.getSniffedData();
             console.log('[Controller] ScoreLayoutExtractor re-hooked. Sniffed data:', sniffedData?.systems?.[0]?.chords.length || 0, 'chords');
         }
 
@@ -539,9 +539,8 @@ export class Controller {
     _refreshAndSyncUI() {
         if (!this.grooveWriter || !this.isCoachingActive) return;
 
-        // Ensure sniffer processes the new SVG (it hooks automatically via abc2svg hooks,
-        // but we want to make sure we have the latest data before updating renderer)
-        const sniffedData = window.scoreLayout ? window.scoreLayout.getSniffedData() : null;
+        // scoreLayoutExtractor hooks automatically via abc2svg hooks,
+        // but sniffedData is fetched fresh inside setRendererGrooveContext().
 
         // Re-map drum indices as they might have shifted
         this._refreshAbcMapping();

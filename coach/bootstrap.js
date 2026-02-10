@@ -1,15 +1,26 @@
 import { Controller } from './Controller.js';
 
+const BOOTSTRAP_RETRY_MS = 500;
+const BOOTSTRAP_MAX_RETRIES = 20;    // 10 seconds total
+const BUTTON_INJECT_RETRY_MS = 1000;
+const BUTTON_INJECT_MAX_RETRIES = 10; // 10 seconds total
+
 /**
  * Bootstraps the Drum Coach and attaches it to the global window object
  */
+let bootstrapRetries = 0;
 async function bootstrap() {
     console.log('[Drum Coach] Bootstrapping...');
 
     // Wait for myGrooveWriter to be available
     if (!window.myGrooveWriter) {
+        bootstrapRetries++;
+        if (bootstrapRetries > BOOTSTRAP_MAX_RETRIES) {
+            console.error('[Drum Coach] myGrooveWriter not found after max retries, giving up.');
+            return;
+        }
         console.warn('[Drum Coach] myGrooveWriter not found, waiting...');
-        setTimeout(bootstrap, 500);
+        setTimeout(bootstrap, BOOTSTRAP_RETRY_MS);
         return;
     }
 
@@ -35,12 +46,18 @@ async function bootstrap() {
     console.log('[Drum Coach] Ready');
 }
 
+let buttonRetries = 0;
 function addCoachToggleButton() {
     // Try multiple possible containers if upperRight is missing or cleared
     const topNav = document.getElementById('upperRight') || document.getElementById('TopNav');
     if (!topNav) {
+        buttonRetries++;
+        if (buttonRetries > BUTTON_INJECT_MAX_RETRIES) {
+            console.error('[Drum Coach] Navigation container not found after max retries, giving up.');
+            return;
+        }
         console.warn('[Drum Coach] Navigation container not found, retrying button injection...');
-        setTimeout(addCoachToggleButton, 1000);
+        setTimeout(addCoachToggleButton, BUTTON_INJECT_RETRY_MS);
         return;
     }
 

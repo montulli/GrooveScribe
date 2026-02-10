@@ -111,10 +111,10 @@ export class Renderer {
 
         svgs.forEach((svg) => {
             svg.style.overflow = 'visible';
-            let layer = svg.querySelector('#coach-feedback-layer');
+            let layer = svg.querySelector('.coach-feedback-layer');
             if (!layer) {
                 layer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-                layer.setAttribute('id', 'coach-feedback-layer');
+                layer.classList.add('coach-feedback-layer');
                 svg.appendChild(layer);
             }
             this.svgLayers.push({ svg, layer });
