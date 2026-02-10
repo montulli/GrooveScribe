@@ -2,16 +2,16 @@
  * ResultsDialog - Shows session results after performance mode
  */
 export class ResultsDialog {
-    constructor() {
-        this.container = null;
-    }
+  constructor() {
+    this.container = null;
+  }
 
-    inject() {
-        if (document.getElementById('coachResultsDialog')) return;
+  inject() {
+    if (document.getElementById('coachResultsDialog')) return;
 
-        const dialog = document.createElement('div');
-        dialog.id = 'coachResultsDialog';
-        dialog.innerHTML = `
+    const dialog = document.createElement('div');
+    dialog.id = 'coachResultsDialog';
+    dialog.innerHTML = `
       <h2>Session Complete!</h2>
       
       <div class="coach-results-grid">
@@ -54,48 +54,46 @@ export class ResultsDialog {
       </div>
     `;
 
-        document.body.appendChild(dialog);
-        this.container = dialog;
-        this._setupEventListeners();
-    }
+    document.body.appendChild(dialog);
+    this.container = dialog;
+    this._setupEventListeners();
+  }
 
-    _setupEventListeners() {
-        const closeBtn = this.container.querySelector('#results-close-btn');
-        const retryBtn = this.container.querySelector('#results-retry-btn');
+  _setupEventListeners() {
+    const closeBtn = this.container.querySelector('#results-close-btn');
+    const retryBtn = this.container.querySelector('#results-retry-btn');
 
-        closeBtn.addEventListener('click', () => this.hide());
-        retryBtn.addEventListener('click', () => {
-            this.hide();
-            window.dispatchEvent(new CustomEvent('coach-start-requested'));
-        });
-    }
+    closeBtn.addEventListener('click', () => this.hide());
+    retryBtn.addEventListener('click', () => {
+      this.hide();
+      window.dispatchEvent(new CustomEvent('coach-start-requested'));
+    });
+  }
 
-    /**
-     * Show the results dialog with stats
-     * @param {Object} stats - { perfect, good, close, miss, extra, totalNotes }
-     */
-    show(stats) {
-        // Update values
-        this.container.querySelector('#result-perfect').textContent = stats.perfect;
-        this.container.querySelector('#result-good').textContent = stats.good;
-        this.container.querySelector('#result-close').textContent = stats.close;
-        this.container.querySelector('#result-miss').textContent = stats.miss;
-        this.container.querySelector('#result-total').textContent = stats.totalNotes;
+  /**
+   * Show the results dialog with stats
+   * @param {Object} stats - { perfect, good, close, miss, extra, totalNotes }
+   */
+  show(stats) {
+    // Update values
+    this.container.querySelector('#result-perfect').textContent = stats.perfect;
+    this.container.querySelector('#result-good').textContent = stats.good;
+    this.container.querySelector('#result-close').textContent = stats.close;
+    this.container.querySelector('#result-miss').textContent = stats.miss;
+    this.container.querySelector('#result-total').textContent = stats.totalNotes;
 
-        // Calculate accuracy (perfect + good + close) / totalNotes
-        const hitCount = stats.perfect + stats.good + stats.close;
-        const accuracy = stats.totalNotes > 0 ? Math.round((hitCount / stats.totalNotes) * 100) : 0;
-        this.container.querySelector('#result-accuracy').textContent = `${accuracy}%`;
+    // Calculate accuracy (perfect + good + close) / totalNotes
+    const hitCount = stats.perfect + stats.good + stats.close;
+    const accuracy = stats.totalNotes > 0 ? Math.round((hitCount / stats.totalNotes) * 100) : 0;
+    this.container.querySelector('#result-accuracy').textContent = `${accuracy}%`;
 
-        // Calculate score (weighted)
-        // Perfect = 100pts, Good = 75pts, Close = 50pts, Miss = 0pts
-        const score = (stats.perfect * 100) + (stats.good * 75) + (stats.close * 50);
-        this.container.querySelector('#result-score').textContent = score;
+    // Score: use the Engine's weighted percentage (0–100)
+    this.container.querySelector('#result-score').textContent = stats.score;
 
-        this.container.style.display = 'block';
-    }
+    this.container.style.display = 'block';
+  }
 
-    hide() {
-        this.container.style.display = 'none';
-    }
+  hide() {
+    this.container.style.display = 'none';
+  }
 }

@@ -37,6 +37,8 @@ export class MidiInputHandler {
             const drum = this.drumMap[note];
             if (drum && ModuleDrumTypes.includes(drum)) {
                 this.onHit(drum, event.timeStamp, velocity);
+            } else {
+                console.log(`[MidiInputHandler] Unmapped MIDI note ${note} (vel=${velocity}, drum=${drum || 'none'})`);
             }
         }
     }

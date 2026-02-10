@@ -202,7 +202,10 @@ export class Controller {
             return;
         }
 
-        // Reset engine timing for new repetition
+        // Reset engine timing for new repetition.
+        // No back-dating: _onPlaybackStart back-dates sessionStartTime to
+        // simulate the count-in as the groove's last measure, but repeats
+        // start at groove time 0 with no count-in.
         this.sessionStartTime = performance.now();
         this.engine.start(this.sessionStartTime);
         this.renderer.scheduleMeasureClearing(0);
