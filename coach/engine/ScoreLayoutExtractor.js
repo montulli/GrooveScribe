@@ -12,6 +12,14 @@ import { DrumType } from './DrumConstants.js';
 
 const BASE_STAFF_STEP = 6;
 
+// Two notes at X positions within this distance (px, internal coords) are
+// considered the same beat position for abc index counting purposes.
+const SAME_POSITION_TOLERANCE_PX = 2;
+
+// Barlines within this distance (px, scaled coords) are considered
+// duplicates and merged during system splitting.
+const BAR_DEDUP_TOLERANCE_PX = 5;
+
 /**
  * Y offset in half-gaps from topY for each drum type.
  * One half-gap = scaledStep / 2 (half the distance between two staff lines).
@@ -153,7 +161,7 @@ export class ScoreLayoutExtractor {
                 }
 
                 if (type !== "grace") {
-                    if (Math.abs(preciseX - self.lastNoteX) > 2) {
+                    if (Math.abs(preciseX - self.lastNoteX) > SAME_POSITION_TOLERANCE_PX) {
                         if (self.lastNoteX !== -100) self.abcIndexCount++;
                         self.lastNoteX = preciseX;
                     }
@@ -226,7 +234,7 @@ export class ScoreLayoutExtractor {
             } else if (evt.kind === 'rest') {
                 system.rests.push(evt);
             } else if (evt.kind === 'bar') {
-                if (!system.bars.some(tb => Math.abs(tb.x - evt.x) < 5)) {
+                if (!system.bars.some(tb => Math.abs(tb.x - evt.x) < BAR_DEDUP_TOLERANCE_PX)) {
                     system.bars.push({ x: evt.x, time: 0 });
                 }
             } else if (evt.kind === 'clef') {
@@ -277,6 +285,9 @@ export class ScoreLayoutExtractor {
         // Use the scaled step captured during annotation callbacks,
         // falling back to the raw BASE_STAFF_STEP if not yet captured.
         const step = this.data.scaledStep || BASE_STAFF_STEP;
+        if (!this.data.scaledStep) {
+            console.warn('[ScoreLayoutExtractor] scaledStep not captured, using unscaled BASE_STAFF_STEP');
+        }
         const systems = this._splitIntoSystems();
 
         console.log(`[ScoreLayoutExtractor] Split into ${systems.length} systems from ${this.data.events.length} events`);

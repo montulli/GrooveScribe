@@ -30,7 +30,8 @@ export class StateManager {
 
     set mode(value) {
         if (!VALID_MODES.includes(value)) {
-            value = DEFAULTS.mode;
+            console.warn(`[State] Invalid mode '${value}', keeping '${this._data.mode}'`);
+            return;
         }
         this._data.mode = value;
     }
@@ -42,7 +43,8 @@ export class StateManager {
 
     set tolerance(value) {
         if (!VALID_TOLERANCES.includes(value)) {
-            value = DEFAULTS.tolerance;
+            console.warn(`[State] Invalid tolerance '${value}', keeping '${this._data.tolerance}'`);
+            return;
         }
         this._data.tolerance = value;
     }

@@ -16,6 +16,14 @@ const MAX_CLEAR_AHEAD_MS = 400;    // ceiling: never earlier than 400ms
 // circle shifts horizontally from the target note to reflect timing error
 const TIER_CLAMP_LIMITS = { perfect: 3, good: 8, close: 12, extra: 50 };
 
+// Horizontal offset per ms of timing error (px/ms).
+// Controls how visually pronounced early/late hits appear.
+const TIMING_ERROR_PX_PER_MS = 0.15;
+
+// If a 'perfect' hit's timing error is below this threshold (ms),
+// snap the circle exactly to the note position (no visual offset).
+const PERFECT_SNAP_THRESHOLD_MS = 8;
+
 // Tier colors for hit feedback circles
 const TIER_COLORS = { perfect: '#00BFFF', good: '#32CD32', close: '#FFD700', extra: '#888888' };
 
@@ -289,11 +297,10 @@ export class FeedbackRenderer {
         if (!note) return;
 
         // Timing-based visual offset
-        const pixelsPerMs = 0.15;
         const clampLimit = TIER_CLAMP_LIMITS[tier];
-        let xOffset = timingError * pixelsPerMs;
+        let xOffset = timingError * TIMING_ERROR_PX_PER_MS;
         xOffset = Math.max(-clampLimit, Math.min(clampLimit, xOffset));
-        if (tier === 'perfect' && Math.abs(timingError) < 8) xOffset = 0;
+        if (tier === 'perfect' && Math.abs(timingError) < PERFECT_SNAP_THRESHOLD_MS) xOffset = 0;
 
         const measureIndex = this._getMeasureIndex(hitTimeMs);
         this._drawCircle(note.x + xOffset, note.y, tier, targetLayerIndex, measureIndex);

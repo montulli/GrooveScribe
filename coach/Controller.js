@@ -356,8 +356,11 @@ export class Controller {
         const playTimeEl = document.getElementById('MIDIPlayTime' + utils.grooveUtilsUniqueIndex);
         if (playTimeEl) playTimeEl.innerHTML = '0:00';
 
-        // Restore updateMidiPlayTime after all pending callbacks have flushed
-        setTimeout(() => { utils.updateMidiPlayTime = origUpdateMidiPlayTime; }, 500);
+        // Restore updateMidiPlayTime after all pending callbacks have flushed.
+        // The MIDI player fires callbacks asynchronously; this delay ensures
+        // our overridden updateMidiPlayTime doesn't interfere after stop.
+        const CALLBACK_FLUSH_DELAY_MS = 500;
+        setTimeout(() => { utils.updateMidiPlayTime = origUpdateMidiPlayTime; }, CALLBACK_FLUSH_DELAY_MS);
 
         console.log('[Controller] Session Stopped');
     }
@@ -466,11 +469,9 @@ export class Controller {
             notesPerMeasure: metrics.notesPerMeasure
         };
 
-        // Capture high-precision sniffer data
-        // Use imported instance directly to avoid window property issues
-        const layoutInstance = scoreLayoutExtractor || window.scoreLayout;
-        const sniffedData = layoutInstance ? layoutInstance.getSniffedData() : null;
-        console.log('[Controller] Captured Sniffed Data:', sniffedData ? (sniffedData.systems?.[0]?.chords?.length + ' chords') : 'None', 'Instance:', !!layoutInstance);
+        // Capture high-precision sniffer data from the imported instance
+        const sniffedData = scoreLayoutExtractor ? scoreLayoutExtractor.getSniffedData() : null;
+        console.log('[Controller] Captured Sniffed Data:', sniffedData ? (sniffedData.systems?.[0]?.chords?.length + ' chords') : 'None');
 
         const timeline = [];
 
