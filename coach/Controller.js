@@ -2,7 +2,7 @@ import { Engine } from './engine/Engine.js';
 import { MidiInputHandler } from './engine/MidiInputHandler.js';
 import { LatencyManager } from './engine/LatencyManager.js';
 import { ABCIndexMapper } from './engine/ABCIndexMapper.js';
-import { FeedbackRenderer, SHOW_DEBUG } from './ui/FeedbackRenderer.js';
+import { Renderer as FeedbackRenderer, SHOW_DEBUG } from './ui/feedback/Renderer.js';
 import { PlayerBar } from './ui/PlayerBar.js';
 import { SettingsDialog } from './ui/SettingsDialog.js';
 import { ResultsDialog } from './ui/ResultsDialog.js';
@@ -68,7 +68,7 @@ export class Controller {
             this._initDebugHotkeys();
         }
 
-        // Debug grid is controlled by SHOW_DEBUG constant in FeedbackRenderer.js
+        // Debug grid is controlled by SHOW_DEBUG constant in feedback/Renderer.js
 
         // Hook into GrooveWriter's playback system
         this._hookPlaybackEvents();

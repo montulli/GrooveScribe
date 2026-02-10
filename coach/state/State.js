@@ -62,7 +62,7 @@ export class StateManager {
 
     // CountIn property
     get countIn() {
-        return this._data.countIn ?? DEFAULTS.countIn;
+        return this._data.countIn;
     }
 
     set countIn(value) {
@@ -71,12 +71,7 @@ export class StateManager {
 
     // Get tolerance windows for current setting
     getToleranceWindows() {
-        const windows = TOLERANCE_WINDOWS[this.tolerance];
-        if (!windows) {
-            console.error(`[State] Unknown tolerance '${this.tolerance}', falling back to 'normal'`);
-            return TOLERANCE_WINDOWS.normal;
-        }
-        return windows;
+        return TOLERANCE_WINDOWS[this.tolerance];
     }
 
     // Convert to plain object
