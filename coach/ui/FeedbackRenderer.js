@@ -697,14 +697,8 @@ export class FeedbackRenderer {
         // Find first threshold whose clear time (threshold - clearAheadMs)
         // is still in the future relative to startTimeMs
         const thresholds = this._measurePlaylineThresholds || [];
-        this._thresholdCursor = 0;
-        for (let i = 0; i < thresholds.length; i++) {
-            if (thresholds[i].timeMs - this._clearAheadMs > startTimeMs) {
-                this._thresholdCursor = i;
-                break;
-            }
-            this._thresholdCursor = thresholds.length; // all in the past
-        }
+        const idx = thresholds.findIndex(t => t.timeMs - this._clearAheadMs > startTimeMs);
+        this._thresholdCursor = idx >= 0 ? idx : thresholds.length;
 
         if (thresholds.length > 0 && this._thresholdCursor < thresholds.length) {
             const next = thresholds[this._thresholdCursor];
@@ -956,8 +950,13 @@ export class FeedbackRenderer {
         const thresholds = this._measurePlaylineThresholds || [];
         while (this._thresholdCursor < thresholds.length) {
             const t = thresholds[this._thresholdCursor];
-            if (timeMs >= t.timeMs - this._clearAheadMs) {
-                console.log(`[FeedbackRenderer] Clearing M${t.measureIndex} (t=${timeMs.toFixed(0)}ms, threshold=${t.timeMs.toFixed(0)}ms)`);
+            // When the destination measure is the same as the current measure
+            // (self-loop, e.g. single-measure grooves), don't clear ahead —
+            // we'd wipe circles we're still actively drawing.
+            const currentMeasure = this._getMeasureIndex(timeMs);
+            const ahead = (t.measureIndex === currentMeasure) ? 0 : this._clearAheadMs;
+            if (timeMs >= t.timeMs - ahead) {
+                console.log(`[FeedbackRenderer] Clearing M${t.measureIndex} (t=${timeMs.toFixed(0)}ms, threshold=${t.timeMs.toFixed(0)}ms, ahead=${ahead.toFixed(0)}ms)`);
                 this._clearMeasureRegion(t.measureIndex);
                 this._thresholdCursor++;
             } else {
