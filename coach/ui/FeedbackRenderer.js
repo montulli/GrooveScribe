@@ -105,7 +105,6 @@ export class FeedbackRenderer {
      */
     clearAll() {
         this.stopPlayLine();
-        this.cancelScheduledClearing();
         for (const { layer } of this.svgLayers) {
             layer.remove();
         }
@@ -640,18 +639,7 @@ export class FeedbackRenderer {
         }
     }
 
-    /**
-     * Ensure a measure's circles are cleared exactly once per pass.
-     * Called proactively from _tickPlayLine for the NEXT measure
-     * so old circles are always removed before rushing hits arrive.
-     */
-    _ensureMeasureCleared(measureIndex) {
-        if (!this.clearedMeasures.has(measureIndex)) {
-            console.log(`[FeedbackRenderer] Clearing measure ${measureIndex} region`);
-            this._clearMeasureRegion(measureIndex);
-            this.clearedMeasures.add(measureIndex);
-        }
-    }
+
 
     /**
      * Reset clearing state and initialize the threshold cursor for a
@@ -699,12 +687,6 @@ export class FeedbackRenderer {
         console.log('[FeedbackRenderer] Rendering enabled');
     }
 
-    /**
-     * No-op — retained for API compatibility with Controller.
-     */
-    cancelScheduledClearing() {
-        // On-demand clearing has no timers to cancel.
-    }
 
     // --- Circle drawing ---
 

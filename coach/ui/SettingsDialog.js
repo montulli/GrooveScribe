@@ -85,7 +85,7 @@ export class SettingsDialog {
     // Load current state into fields
     this.container.querySelector('#coach-mode-select').value = coachState.mode;
     this.container.querySelector('#coach-reps-input').value = coachState.reps;
-    this.container.querySelector('#coach-countin-check').checked = coachState.countInEnabled;
+    this.container.querySelector('#coach-countin-check').checked = coachState.countIn;
     this.container.querySelector('#coach-tolerance-select').value = coachState.tolerance;
 
     this.container.querySelector('#performance-options').style.display = coachState.mode === 'performance' ? 'block' : 'none';
@@ -100,8 +100,8 @@ export class SettingsDialog {
   save() {
     coachState.mode = this.container.querySelector('#coach-mode-select').value;
     coachState.reps = parseInt(this.container.querySelector('#coach-reps-input').value);
-    coachState.countInEnabled = this.container.querySelector('#coach-countin-check').checked;
+    coachState.countIn = this.container.querySelector('#coach-countin-check').checked;
     coachState.tolerance = this.container.querySelector('#coach-tolerance-select').value;
-    coachState.saveToStorage();
+    coachState.save();
   }
 }
