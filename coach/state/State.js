@@ -16,6 +16,7 @@ const DEFAULTS = {
     tolerance: 'normal',
     reps: 4,
     countIn: true,
+    calibrationOffset: 0,
 };
 
 export class StateManager {
@@ -69,6 +70,20 @@ export class StateManager {
         this._data.countIn = Boolean(value);
     }
 
+    // CalibrationOffset property (ms, can be negative)
+    get calibrationOffset() {
+        return this._data.calibrationOffset;
+    }
+
+    set calibrationOffset(value) {
+        value = Number(value);
+        if (Number.isNaN(value)) {
+            console.warn(`[State] Invalid calibrationOffset '${value}', keeping '${this._data.calibrationOffset}'`);
+            return;
+        }
+        this._data.calibrationOffset = Math.round(value);
+    }
+
     // Get tolerance windows for current setting
     getToleranceWindows() {
         return TOLERANCE_WINDOWS[this.tolerance];
@@ -81,6 +96,7 @@ export class StateManager {
             tolerance: this.tolerance,
             reps: this.reps,
             countIn: this.countIn,
+            calibrationOffset: this.calibrationOffset,
         };
     }
 
@@ -90,6 +106,7 @@ export class StateManager {
         if (obj.tolerance !== undefined) this.tolerance = obj.tolerance;
         if (obj.reps !== undefined) this.reps = obj.reps;
         if (obj.countIn !== undefined) this.countIn = obj.countIn;
+        if (obj.calibrationOffset !== undefined) this.calibrationOffset = obj.calibrationOffset;
     }
 
     // Persistence

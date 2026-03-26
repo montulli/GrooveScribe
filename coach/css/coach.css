@@ -61,6 +61,33 @@
     min-width: 140px;
 }
 
+/* Latency row: input + calibrate button side by side */
+.coach-latency-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #666;
+}
+
+.coach-latency-group input[type="number"] {
+    width: 60px;
+    min-width: 60px;
+    text-align: right;
+}
+
+.coach-btn-calibrate {
+    font-size: 12px;
+    padding: 5px 12px;
+    background: #EEE;
+    border: 1px solid #CCC;
+    color: #555;
+}
+
+.coach-btn-calibrate:hover {
+    background: #DDD;
+}
+
 .coach-setting-row input[type="checkbox"] {
     width: 18px;
     height: 18px;
@@ -303,4 +330,167 @@
     padding-top: 12px;
     margin-top: 8px;
     border-top: 2px solid var(--highlight-color, #f08d49);
+}
+
+/* ---- Calibration Dialog ---- */
+
+#coachCalibrationDialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #FFF;
+    color: #333;
+    padding: 20px 25px;
+    border: solid 2px #999;
+    border-radius: 5px;
+    z-index: 2002;
+    display: none;
+    width: 380px;
+    font-family: 'Lato', sans-serif;
+    text-align: center;
+}
+
+#coachCalibrationDialog h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--highlight-color, #f08d49);
+}
+
+/* Instructions phase */
+#calib-instructions p {
+    margin: 8px 0;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+}
+
+.calib-subtle {
+    font-size: 12px !important;
+    color: #999 !important;
+}
+
+/* Countdown phase */
+#calib-countdown {
+    padding: 20px 0;
+}
+
+#calib-countdown-number {
+    font-size: 72px;
+    font-weight: 700;
+    color: var(--highlight-color, #f08d49);
+    line-height: 1;
+}
+
+.calib-countdown-pulse {
+    animation: calib-pulse 0.3s ease-out;
+}
+
+@keyframes calib-pulse {
+    0%   { transform: scale(1.3); opacity: 0.6; }
+    100% { transform: scale(1);   opacity: 1; }
+}
+
+/* Tapping phase */
+#calib-beat-counter {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#calib-beat-indicator {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #EEE;
+    margin: 0 auto 15px;
+    transition: background 0.1s;
+}
+
+#calib-beat-indicator.calib-flash {
+    animation: calib-hit-flash 0.2s ease-out;
+}
+
+@keyframes calib-hit-flash {
+    0%   { background: var(--highlight-color, #f08d49); transform: scale(1.2); }
+    100% { background: #EEE; transform: scale(1); }
+}
+
+/* Timing strip */
+#calib-timing-strip {
+    position: relative;
+    height: 50px;
+    background: #F5F5F5;
+    border-radius: 4px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.calib-strip-center-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #CCC;
+    transform: translateX(-50%);
+}
+
+.calib-strip-label {
+    position: absolute;
+    bottom: 2px;
+    font-size: 10px;
+    color: #BBB;
+    text-transform: uppercase;
+}
+
+.calib-strip-label-early {
+    left: 8px;
+}
+
+.calib-strip-label-late {
+    right: 8px;
+}
+
+.calib-strip-dot {
+    position: absolute;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--highlight-color, #f08d49);
+    transform: translate(-50%, -50%);
+    opacity: 0.9;
+}
+
+.calib-strip-dot-warmup {
+    background: #CCC;
+    opacity: 0.5;
+}
+
+/* Running offset display */
+#calib-running-offset {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+    margin-top: 10px;
+    min-height: 28px;
+}
+
+/* Result phase */
+#calib-result-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--highlight-color, #f08d49);
+    margin: 15px 0 10px;
+}
+
+#calib-result-explanation {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 10px;
 }

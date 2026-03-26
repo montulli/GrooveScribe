@@ -45,7 +45,14 @@ export class SettingsDialog {
         </select>
       </div>
 
-      
+      <div class="coach-setting-row">
+        <label>Latency Offset</label>
+        <span class="coach-latency-group">
+          <input type="number" id="coach-latency-input" step="1" value="0"> ms
+          <button class="coach-btn coach-btn-calibrate" id="coach-calibrate-btn">Calibrate</button>
+        </span>
+      </div>
+
       <div class="coach-dialog-buttons">
         <button class="coach-btn coach-btn-secondary" id="coach-cancel-btn">Cancel</button>
         <button class="coach-btn coach-btn-primary" id="coach-start-btn">Start Session</button>
@@ -67,7 +74,11 @@ export class SettingsDialog {
       perfOptions.style.display = modeSelect.value === 'performance' ? 'block' : 'none';
     });
 
-
+    this.container.querySelector('#coach-calibrate-btn').addEventListener('click', () => {
+      this.save();
+      this.hide();
+      window.dispatchEvent(new CustomEvent('coach-calibrate-requested'));
+    });
 
     startBtn.addEventListener('click', () => {
       this.save();
@@ -87,6 +98,7 @@ export class SettingsDialog {
     this.container.querySelector('#coach-reps-input').value = coachState.reps;
     this.container.querySelector('#coach-countin-check').checked = coachState.countIn;
     this.container.querySelector('#coach-tolerance-select').value = coachState.tolerance;
+    this.container.querySelector('#coach-latency-input').value = coachState.calibrationOffset;
 
     this.container.querySelector('#performance-options').style.display = coachState.mode === 'performance' ? 'block' : 'none';
 
@@ -102,6 +114,7 @@ export class SettingsDialog {
     coachState.reps = parseInt(this.container.querySelector('#coach-reps-input').value);
     coachState.countIn = this.container.querySelector('#coach-countin-check').checked;
     coachState.tolerance = this.container.querySelector('#coach-tolerance-select').value;
+    coachState.calibrationOffset = parseInt(this.container.querySelector('#coach-latency-input').value) || 0;
     coachState.save();
   }
 }

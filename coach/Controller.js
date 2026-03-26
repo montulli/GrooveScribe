@@ -6,6 +6,7 @@ import { Renderer as FeedbackRenderer, SHOW_DEBUG } from './ui/feedback/Renderer
 import { PlayerBar } from './ui/PlayerBar.js';
 import { SettingsDialog } from './ui/SettingsDialog.js';
 import { ResultsDialog } from './ui/ResultsDialog.js';
+import { CalibrationDialog } from './ui/CalibrationDialog.js';
 import { coachState } from './state/State.js';
 import { DrumType } from './engine/DrumConstants.js';
 import { scoreLayoutExtractor } from './engine/ScoreLayoutExtractor.js';
@@ -40,6 +41,10 @@ export class Controller {
         });
         this.dialog = new SettingsDialog();
         this.resultsDialog = new ResultsDialog();
+        this.calibrationDialog = new CalibrationDialog({
+            midiHandler: this.midiHandler,
+            latencyManager: this.latencyManager,
+        });
         this.state = coachState;
 
         this.isInitialized = false;
@@ -57,10 +62,21 @@ export class Controller {
 
         this.dialog.inject();
         this.resultsDialog.inject();
+        this.calibrationDialog.inject();
         this.renderer.init();
 
         // Listen for start requests from dialog
         window.addEventListener('coach-start-requested', () => this.startSession());
+
+        // Listen for calibration requests — ensure MIDI is connected first
+        window.addEventListener('coach-calibrate-requested', async () => {
+            await this._ensureMidiConnected();
+            this.calibrationDialog.show();
+        });
+
+        // When calibration finishes, return to settings dialog
+        window.addEventListener('calibration-accepted', () => this.dialog.show());
+        window.addEventListener('calibration-cancelled', () => this.dialog.show());
 
         // Inject debug grooves into the Grooves menu when debug is enabled
         if (SHOW_DEBUG) {
@@ -247,16 +263,7 @@ export class Controller {
     async startSession({ autoPlay = true } = {}) {
         try {
             // 0. Connect MIDI on first session (lazy initialization)
-            if (!this.midiConnected) {
-                try {
-                    await this.midiHandler.connect();
-                    this.midiConnected = true;
-                    console.log('[Controller] MIDI Connected');
-                } catch (e) {
-                    console.warn('[Controller] MIDI failed to connect', e);
-                    // Continue anyway - user can still practice without MIDI input
-                }
-            }
+            await this._ensureMidiConnected();
 
             // 1. Get current groove data from writer
             const grooveData = this.getGrooveAsTimeline();
@@ -571,6 +578,17 @@ export class Controller {
             if (!this.isCoachingActive || !this.engine.isPlaying) return;
             this.handleMidiHit(drum, performance.now(), 100);
         });
+    }
+
+    async _ensureMidiConnected() {
+        if (this.midiConnected) return;
+        try {
+            await this.midiHandler.connect();
+            this.midiConnected = true;
+            console.log('[Controller] MIDI Connected');
+        } catch (e) {
+            console.warn('[Controller] MIDI failed to connect', e);
+        }
     }
 
     /**

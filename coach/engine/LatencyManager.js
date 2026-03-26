@@ -1,15 +1,17 @@
+import { coachState } from '../state/State.js';
+
 /**
  * LatencyManager - Handles audio and MIDI latency measurement.
  *
- * Owns all latency-related state. Future work: calibration UI for
- * real drum kits (tap-to-calibrate MIDI input latency).
+ * Owns all latency-related state. The calibrationOffset is persisted
+ * in coachState (localStorage) and set via the CalibrationDialog.
  */
 export class LatencyManager {
     constructor() {
         this.audioContext = null;
         this.audioLatency = 0; // No default guess — use init() for browser auto-detection
         this.midiLatency = 1;   // Default 1ms (USB MIDI is very fast)
-        this.calibrationOffset = 0;
+        this.calibrationOffset = coachState.calibrationOffset;
     }
 
     init(audioContext) {
