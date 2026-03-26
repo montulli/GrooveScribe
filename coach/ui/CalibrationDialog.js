@@ -29,6 +29,7 @@ export class CalibrationDialog {
         this._schedulerTimer = null;
         this._countdownLeft = 0;
         this._originalMidiOnHit = null;
+        this._onKeyDown = (e) => this._handleKeyTap(e);
     }
 
     inject() {
@@ -40,7 +41,7 @@ export class CalibrationDialog {
             <h2>Latency Calibration</h2>
 
             <div id="calib-instructions">
-                <p>Hit any drum pad in time with the metronome click.</p>
+                <p>Hit any drum pad or press any key in time with the metronome click.</p>
                 <p class="calib-subtle">The first ${WARMUP_TAPS} taps are warm-up and won't count.</p>
             </div>
 
@@ -159,7 +160,10 @@ export class CalibrationDialog {
 
         // Hook MIDI input — save original handler, replace with ours
         this._originalMidiOnHit = this.midiHandler.onHit;
-        this.midiHandler.onHit = (drum, timestamp, velocity) => this._onMidiHit(timestamp);
+        this.midiHandler.onHit = (drum, timestamp, velocity) => this._onTap(timestamp);
+
+        // Hook keyboard input — any key counts as a tap
+        document.addEventListener('keydown', this._onKeyDown);
 
         // Schedule all beats up front in audio time for precise timing
         this._scheduleBeatClicks();
@@ -184,7 +188,15 @@ export class CalibrationDialog {
         }
     }
 
-    _onMidiHit(timestamp) {
+    _handleKeyTap(e) {
+        if (!this._active) return;
+        // Ignore modifier keys and repeats
+        if (e.repeat || e.key === 'Escape') return;
+        e.preventDefault();
+        this._onTap(performance.now());
+    }
+
+    _onTap(timestamp) {
         if (!this._active) return;
 
         // Find the nearest beat
@@ -363,6 +375,7 @@ export class CalibrationDialog {
             this._schedulerTimer = null;
         }
         this._restoreMidiHandler();
+        document.removeEventListener('keydown', this._onKeyDown);
     }
 
     _restoreMidiHandler() {
