@@ -289,6 +289,7 @@ export class CalibrationDialog {
         const rounded = Math.round(median);
 
         coachState.calibrationOffset = rounded;
+        coachState.calibrated = true;
         coachState.save();
         this.latencyManager.calibrationOffset = rounded;
 

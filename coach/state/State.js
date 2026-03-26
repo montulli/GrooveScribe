@@ -17,6 +17,7 @@ const DEFAULTS = {
     reps: 4,
     countIn: true,
     calibrationOffset: 0,
+    calibrated: false,
 };
 
 export class StateManager {
@@ -84,6 +85,15 @@ export class StateManager {
         this._data.calibrationOffset = Math.round(value);
     }
 
+    // Calibrated property — tracks whether calibration has been run
+    get calibrated() {
+        return this._data.calibrated;
+    }
+
+    set calibrated(value) {
+        this._data.calibrated = Boolean(value);
+    }
+
     // Get tolerance windows for current setting
     getToleranceWindows() {
         return TOLERANCE_WINDOWS[this.tolerance];
@@ -97,6 +107,7 @@ export class StateManager {
             reps: this.reps,
             countIn: this.countIn,
             calibrationOffset: this.calibrationOffset,
+            calibrated: this.calibrated,
         };
     }
 
@@ -107,6 +118,7 @@ export class StateManager {
         if (obj.reps !== undefined) this.reps = obj.reps;
         if (obj.countIn !== undefined) this.countIn = obj.countIn;
         if (obj.calibrationOffset !== undefined) this.calibrationOffset = obj.calibrationOffset;
+        if (obj.calibrated !== undefined) this.calibrated = obj.calibrated;
     }
 
     // Persistence

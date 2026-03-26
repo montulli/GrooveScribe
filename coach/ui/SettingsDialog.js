@@ -52,6 +52,7 @@ export class SettingsDialog {
           <button class="coach-btn coach-btn-calibrate" id="coach-calibrate-btn">Calibrate</button>
         </span>
       </div>
+      <div id="coach-calib-hint" class="coach-calib-hint" style="display:none;">Not calibrated</div>
 
       <div class="coach-dialog-buttons">
         <button class="coach-btn coach-btn-secondary" id="coach-cancel-btn">Cancel</button>
@@ -101,6 +102,8 @@ export class SettingsDialog {
     this.container.querySelector('#coach-latency-input').value = coachState.calibrationOffset;
 
     this.container.querySelector('#performance-options').style.display = coachState.mode === 'performance' ? 'block' : 'none';
+
+    this.container.querySelector('#coach-calib-hint').style.display = coachState.calibrated ? 'none' : 'block';
 
     this.container.style.display = 'block';
   }
