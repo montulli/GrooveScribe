@@ -17,5 +17,9 @@
   "alesis/nitro",
   "alesis/surge",
   "alesis/strike",
-  "alesis/command"
+  "alesis/command",
+  "efnote/_base",
+  "efnote/efnote3",
+  "efnote/efnote5",
+  "efnote/efnote7"
 ]
