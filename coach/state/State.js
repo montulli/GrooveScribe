@@ -21,6 +21,7 @@ const DEFAULTS = {
     drumMapPreset: '_gm',
     drumMapCustom: null,
     drumMapConfigured: false,
+    showDebugGrid: true,
 };
 
 export class StateManager {
@@ -97,6 +98,15 @@ export class StateManager {
         this._data.calibrated = Boolean(value);
     }
 
+    // ShowDebugGrid property
+    get showDebugGrid() {
+        return this._data.showDebugGrid;
+    }
+
+    set showDebugGrid(value) {
+        this._data.showDebugGrid = Boolean(value);
+    }
+
     // DrumMapPreset property — file path relative to modulemappings/ or 'custom'
     get drumMapPreset() {
         return this._data.drumMapPreset;
@@ -146,6 +156,7 @@ export class StateManager {
             countIn: this.countIn,
             calibrationOffset: this.calibrationOffset,
             calibrated: this.calibrated,
+            showDebugGrid: this.showDebugGrid,
             drumMapPreset: this.drumMapPreset,
             drumMapCustom: this.drumMapCustom,
             drumMapConfigured: this.drumMapConfigured,
@@ -160,6 +171,7 @@ export class StateManager {
         if (obj.countIn !== undefined) this.countIn = obj.countIn;
         if (obj.calibrationOffset !== undefined) this.calibrationOffset = obj.calibrationOffset;
         if (obj.calibrated !== undefined) this.calibrated = obj.calibrated;
+        if (obj.showDebugGrid !== undefined) this.showDebugGrid = obj.showDebugGrid;
         if (obj.drumMapPreset !== undefined) this.drumMapPreset = obj.drumMapPreset;
         if (obj.drumMapCustom !== undefined) this.drumMapCustom = obj.drumMapCustom;
         if (obj.drumMapConfigured !== undefined) this.drumMapConfigured = obj.drumMapConfigured;

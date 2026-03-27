@@ -2,8 +2,7 @@ import { DrumType } from '../../engine/DrumConstants.js';
 import { PlaylineInterpolator } from './PlaylineInterpolator.js';
 import { MeasureClearer } from './MeasureClearer.js';
 
-// Set to true to render debug grid overlay (measure boundaries, note positions, staff lines)
-export const SHOW_DEBUG = true;
+import { coachState } from '../../state/State.js';
 
 // Timing threshold (ms) for matching a MIDI hit to a timeline note position
 const HIT_TIME_MATCH_TOLERANCE_MS = 15;
@@ -293,7 +292,7 @@ export class Renderer {
         this._interpolator.build(this.systems);
         this._clearer.init(this.systems, this.svgLayers, this._interpolator.thresholds, this.measureDurationMs);
 
-        if (SHOW_DEBUG) {
+        if (coachState.showDebugGrid) {
             this.renderDebugGrid();
         }
     }

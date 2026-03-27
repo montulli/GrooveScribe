@@ -60,6 +60,11 @@ export class SettingsDialog {
       </div>
       <div id="coach-calib-hint" class="coach-calib-hint" style="display:none;">Not calibrated</div>
 
+      <div class="coach-setting-row">
+        <label>Debug Grid</label>
+        <input type="checkbox" id="coach-debug-grid-check" checked>
+      </div>
+
       <div class="coach-dialog-buttons">
         <button class="coach-btn coach-btn-secondary" id="coach-cancel-btn">Cancel</button>
         <button class="coach-btn coach-btn-primary" id="coach-start-btn">Start Session</button>
@@ -112,6 +117,7 @@ export class SettingsDialog {
     this.container.querySelector('#coach-countin-check').checked = coachState.countIn;
     this.container.querySelector('#coach-tolerance-select').value = coachState.tolerance;
     this.container.querySelector('#coach-latency-input').value = coachState.calibrationOffset;
+    this.container.querySelector('#coach-debug-grid-check').checked = coachState.showDebugGrid;
 
     this.container.querySelector('#performance-options').style.display = coachState.mode === 'performance' ? 'block' : 'none';
 
@@ -139,6 +145,7 @@ export class SettingsDialog {
     coachState.countIn = this.container.querySelector('#coach-countin-check').checked;
     coachState.tolerance = this.container.querySelector('#coach-tolerance-select').value;
     coachState.calibrationOffset = parseInt(this.container.querySelector('#coach-latency-input').value) || 0;
+    coachState.showDebugGrid = this.container.querySelector('#coach-debug-grid-check').checked;
     coachState.save();
   }
 }

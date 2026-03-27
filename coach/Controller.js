@@ -2,7 +2,7 @@ import { Engine } from './engine/Engine.js';
 import { MidiInputHandler } from './engine/MidiInputHandler.js';
 import { LatencyManager } from './engine/LatencyManager.js';
 import { ABCIndexMapper } from './engine/ABCIndexMapper.js';
-import { Renderer as FeedbackRenderer, SHOW_DEBUG } from './ui/feedback/Renderer.js';
+import { Renderer as FeedbackRenderer } from './ui/feedback/Renderer.js';
 import { PlayerBar } from './ui/PlayerBar.js';
 import { SettingsDialog } from './ui/SettingsDialog.js';
 import { ResultsDialog } from './ui/ResultsDialog.js';
@@ -119,12 +119,12 @@ export class Controller {
         window.addEventListener('drummap-cancelled', () => this.dialog.show());
 
         // Inject debug grooves into the Grooves menu when debug is enabled
-        if (SHOW_DEBUG) {
+        if (coachState.showDebugGrid) {
             this._injectDebugGrooves();
             this._initDebugHotkeys();
         }
 
-        // Debug grid is controlled by SHOW_DEBUG constant in feedback/Renderer.js
+        // Debug grid is controlled by coachState.showDebugGrid constant in feedback/Renderer.js
 
         // Hook into GrooveWriter's playback system
         this._hookPlaybackEvents();
@@ -227,7 +227,7 @@ export class Controller {
             () => performance.now() - this.sessionStartTime - this.engine.audioLatency
         );
 
-        if (SHOW_DEBUG) {
+        if (coachState.showDebugGrid) {
             this.renderer.renderDebugGrid();
         }
     }
@@ -280,7 +280,7 @@ export class Controller {
         }
 
         // Re-render grid if debug is enabled
-        if (SHOW_DEBUG) {
+        if (coachState.showDebugGrid) {
             this.renderer.renderDebugGrid();
         }
     }
