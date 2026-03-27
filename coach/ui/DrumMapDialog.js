@@ -163,10 +163,12 @@ export class DrumMapDialog {
         this._renderChips();
         this._clearConflictNotice();
         this.container.style.display = 'block';
+        this._startPassiveListening();
     }
 
     hide() {
         this._stopListening();
+        this._stopPassiveListening();
         this.container.style.display = 'none';
     }
 
@@ -242,6 +244,8 @@ export class DrumMapDialog {
     _startListening(drumType) {
         // Stop any previous listening
         this._stopListening();
+        // Pause passive listening during MIDI-learn
+        this._stopPassiveListening();
 
         this._listeningDrumType = drumType;
 
@@ -311,6 +315,85 @@ export class DrumMapDialog {
 
         // Re-render chips (replaces the "Hit a pad..." prompt)
         this._renderChips();
+
+        // Resume passive listening if dialog is still open
+        if (this.container.style.display === 'block') {
+            this._startPassiveListening();
+        }
+    }
+
+    /**
+     * Passive MIDI listening: while the dialog is open (but not in MIDI-learn mode),
+     * flash the row when a mapped pad is hit, or show "Unmapped: XX" for unknown notes.
+     */
+    _startPassiveListening() {
+        this._stopPassiveListening();
+        if (!this.midiHandler.midiAccess) return;
+
+        this._passiveMidiHandler = (event) => {
+            const [status, note, velocity] = event.data;
+            const isNoteOn = (status & 0xF0) === 0x90 && velocity > 0;
+            if (!isNoteOn) return;
+            // Don't interfere with MIDI-learn mode
+            if (this._listeningDrumType) return;
+
+            // Find which instrument this note is mapped to
+            const mappedType = this._findMappedType(note);
+            if (mappedType) {
+                this._flashRow(mappedType, note);
+            } else {
+                this._showConflictNotice(`Unmapped note: ${note}`);
+            }
+        };
+
+        for (const input of this.midiHandler.midiAccess.inputs.values()) {
+            input.onmidimessage = this._passiveMidiHandler;
+        }
+    }
+
+    _stopPassiveListening() {
+        if (!this._passiveMidiHandler) return;
+        // Restore original MIDI message handler
+        if (this.midiHandler.midiAccess) {
+            for (const input of this.midiHandler.midiAccess.inputs.values()) {
+                input.onmidimessage = this.midiHandler._handleMidiMessage.bind(this.midiHandler);
+            }
+        }
+        this._passiveMidiHandler = null;
+    }
+
+    /**
+     * Find which drum type a MIDI note is mapped to in the current editing map.
+     */
+    _findMappedType(noteNum) {
+        for (const type of ModuleDrumTypes) {
+            if (this._editingMap[type] && this._editingMap[type].includes(noteNum)) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Flash a row and highlight the specific chip that was triggered.
+     */
+    _flashRow(drumType, noteNum) {
+        const row = this.container.querySelector(`.drummap-row[data-drum-type="${drumType}"]`);
+        if (!row) return;
+
+        // Flash the row
+        row.classList.remove('drummap-hit');
+        // Force reflow to restart animation
+        void row.offsetWidth;
+        row.classList.add('drummap-hit');
+
+        // Highlight the specific chip
+        const chip = this.container.querySelector(`.drummap-chip[data-note="${noteNum}"][data-drum-type="${drumType}"]`);
+        if (chip) {
+            chip.classList.remove('drummap-chip-hit');
+            void chip.offsetWidth;
+            chip.classList.add('drummap-chip-hit');
+        }
     }
 
     _showConflictNotice(message) {

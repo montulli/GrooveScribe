@@ -634,6 +634,26 @@
     color: #555;
 }
 
+/* Hit feedback: row flash when a mapped pad is struck */
+.drummap-row.drummap-hit {
+    animation: drummap-row-flash 0.4s ease-out;
+}
+
+@keyframes drummap-row-flash {
+    0%   { background: rgba(240, 141, 73, 0.25); }
+    100% { background: transparent; }
+}
+
+/* Hit feedback: chip highlight when its specific note is struck */
+.drummap-chip.drummap-chip-hit {
+    animation: drummap-chip-flash 0.4s ease-out;
+}
+
+@keyframes drummap-chip-flash {
+    0%   { background: var(--highlight-color, #f08d49); color: #FFF; border-color: var(--highlight-color, #f08d49); }
+    100% { background: #EEE; color: #555; border-color: #DDD; }
+}
+
 .drummap-conflict-notice {
     display: none;
     font-size: 12px;
