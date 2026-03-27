@@ -26,19 +26,20 @@
     display: none;
     width: 350px;
     font-family: 'Lato', sans-serif;
+    font-size: 14px;
 }
 
 #coachSettingsDialog h2 {
     margin-top: 0;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     text-align: center;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--highlight-color, #f08d49);
 }
 
 .coach-setting-row {
-    margin: 12px 0;
+    margin: 10px 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -56,7 +57,7 @@
     color: #666;
     background-color: #EEE;
     border: 1px solid #CCC;
-    padding: 5px 10px;
+    padding: 4px 10px;
     border-radius: 4px;
     min-width: 140px;
 }
@@ -66,7 +67,6 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 14px;
     color: #666;
 }
 
@@ -77,11 +77,13 @@
 }
 
 .coach-btn-calibrate {
-    font-size: 12px;
-    padding: 5px 12px;
+    font-size: 13px;
+    padding: 4px 12px;
     background: #EEE;
     border: 1px solid #CCC;
     color: #555;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .coach-btn-calibrate:hover {
@@ -92,12 +94,12 @@
     text-align: right;
     font-size: 12px;
     color: #c0392b;
-    margin: -6px 0 8px 0;
+    margin: -4px 0 6px 0;
 }
 
 .coach-setting-row input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     accent-color: var(--highlight-color, #f08d49);
 }
 
@@ -105,15 +107,15 @@
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin-top: 25px;
+    margin-top: 20px;
 }
 
 .coach-btn {
-    font-size: 16px;
+    font-size: 14px;
     font-family: 'Lato', sans-serif;
     font-weight: 500;
-    padding: 8px 20px;
-    border: 0px;
+    padding: 7px 20px;
+    border: 0;
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.2s;
@@ -250,20 +252,21 @@
     transform: translate(-50%, -50%);
     background-color: #FFF;
     color: #333;
-    padding: 20px;
+    padding: 15px 20px;
     border: solid 2px #999;
     border-radius: 5px;
     z-index: 2001;
     display: none;
     width: 400px;
     font-family: 'Lato', sans-serif;
+    font-size: 14px;
 }
 
 #coachResultsDialog h2 {
     margin-top: 0;
-    margin-bottom: 15px;
+    margin-bottom: 14px;
     text-align: center;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--highlight-color, #f08d49);
 }
@@ -348,20 +351,21 @@
     transform: translate(-50%, -50%);
     background-color: #FFF;
     color: #333;
-    padding: 20px 25px;
+    padding: 15px 20px;
     border: solid 2px #999;
     border-radius: 5px;
     z-index: 2002;
     display: none;
     width: 380px;
     font-family: 'Lato', sans-serif;
+    font-size: 14px;
     text-align: center;
 }
 
 #coachCalibrationDialog h2 {
     margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 18px;
+    margin-bottom: 14px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--highlight-color, #f08d49);
 }
@@ -511,7 +515,7 @@
     transform: translate(-50%, -50%);
     background-color: #FFF;
     color: #333;
-    padding: 20px 25px;
+    padding: 15px 20px;
     border: solid 2px #999;
     border-radius: 5px;
     z-index: 2002;
@@ -520,25 +524,26 @@
     max-height: 80vh;
     overflow-y: auto;
     font-family: 'Lato', sans-serif;
+    font-size: 14px;
 }
 
 #coachDrumMapDialog h2 {
     margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 18px;
+    margin-bottom: 14px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--highlight-color, #f08d49);
     text-align: center;
 }
 
 #drummap-instrument-list {
-    margin: 15px 0;
+    margin: 12px 0;
 }
 
 .drummap-row {
     display: flex;
     align-items: center;
-    padding: 6px 0;
+    padding: 5px 0;
     border-bottom: 1px solid #F0F0F0;
     gap: 8px;
 }
@@ -551,12 +556,11 @@
     background: #FFF8F0;
     border-radius: 4px;
     margin: 0 -8px;
-    padding: 6px 8px;
+    padding: 5px 8px;
 }
 
 .drummap-label {
     flex: 0 0 90px;
-    font-size: 13px;
     font-weight: 500;
     color: #555;
 }
@@ -566,7 +570,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
-    min-height: 26px;
+    min-height: 24px;
     align-items: center;
 }
 
@@ -576,8 +580,7 @@
     background: #EEE;
     border: 1px solid #DDD;
     border-radius: 3px;
-    padding: 2px 6px;
-    font-size: 12px;
+    padding: 1px 6px;
     font-family: monospace;
     color: #555;
     gap: 4px;
@@ -586,7 +589,6 @@
 .drummap-chip-remove {
     cursor: pointer;
     color: #999;
-    font-size: 14px;
     line-height: 1;
 }
 
@@ -595,12 +597,10 @@
 }
 
 .drummap-empty {
-    font-size: 12px;
     color: #CCC;
 }
 
 .drummap-listen-prompt {
-    font-size: 12px;
     color: var(--highlight-color, #f08d49);
     font-style: italic;
     animation: drummap-pulse 1s ease-in-out infinite;
@@ -612,14 +612,14 @@
 }
 
 .drummap-learn-btn {
-    flex: 0 0 28px;
-    width: 28px;
-    height: 28px;
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     border: 1px solid #CCC;
     background: #F5F5F5;
     color: #888;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1;
     cursor: pointer;
     display: flex;
@@ -651,19 +651,19 @@
     transform: translate(-50%, -50%);
     background-color: #FFF;
     color: #333;
-    padding: 20px 25px;
+    padding: 15px 20px;
     border: solid 2px #999;
     border-radius: 5px;
     z-index: 2003;
     display: none;
     width: 360px;
     font-family: 'Lato', sans-serif;
+    font-size: 14px;
     text-align: center;
 }
 
 .coach-setup-prompt p {
-    margin: 0 0 20px;
-    font-size: 14px;
+    margin: 0 0 18px;
     color: #555;
     line-height: 1.5;
 }
