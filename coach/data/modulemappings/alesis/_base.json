@@ -1,0 +1,14 @@
+{
+  "label": "Alesis (base)",
+  "base": "_gm",
+  "map": {
+    "kick": [36],
+    "snare": [38],
+    "hh_foot": [44, 21],
+    "hh_open": [46, 23],
+    "tom_high": [48, 50],
+    "tom_low": [45, 47, 43, 58],
+    "ride_bell": [],
+    "cow_bell": []
+  }
+}

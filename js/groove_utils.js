@@ -1056,9 +1056,13 @@ function GrooveUtils() {
 		if (myGrooveData.debugMode)
 			fullURL += "Debug=1&";
 
-		if (root.coachMode)
+		if (root.coachMode) {
 			fullURL += "Mode=coach&";
-		else if (myGrooveData.viewMode)
+			// Include drum map in URL for sharing
+			if (root.coachDrumMapParam) {
+				fullURL += root.coachDrumMapParam;
+			}
+		} else if (myGrooveData.viewMode)
 			fullURL += "Mode=view&";
 
 		if (myGrooveData.grooveDBAuthoring)

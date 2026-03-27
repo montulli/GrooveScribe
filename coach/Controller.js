@@ -10,6 +10,9 @@ import { CalibrationDialog } from './ui/CalibrationDialog.js';
 import { coachState } from './state/State.js';
 import { DrumType } from './engine/DrumConstants.js';
 import { scoreLayoutExtractor } from './engine/ScoreLayoutExtractor.js';
+import { loadDrumMapPresets, getPresetMap } from './data/DrumMapLoader.js';
+import { drumMapToRuntime, encodeDrumMap } from './data/DrumMapUtils.js';
+import { DrumMapDialog } from './ui/DrumMapDialog.js';
 
 /**
  * Controller - Orchestrates the entire Drum Coach feature
@@ -21,17 +24,10 @@ export class Controller {
         this.abcMapper = new ABCIndexMapper();
         this.midiHandler = new MidiInputHandler({
             onHit: (drum, timestamp, velocity) => this.handleMidiHit(drum, timestamp, velocity),
-            drumMap: {
-                36: DrumType.KICK, 35: DrumType.KICK,
-                38: DrumType.SNARE, 40: DrumType.SNARE, 37: DrumType.SNARE_XSTICK,
-                42: DrumType.HH_CLOSED, 44: DrumType.HH_FOOT, 46: DrumType.HH_OPEN,
-                48: DrumType.TOM_HIGH, 50: DrumType.TOM_HIGH, 47: DrumType.TOM_HIGH,
-                45: DrumType.TOM_LOW, 43: DrumType.TOM_LOW, 41: DrumType.TOM_LOW,
-                49: DrumType.CRASH, 57: DrumType.CRASH,
-                51: DrumType.RIDE, 53: DrumType.RIDE_BELL,
-                39: DrumType.SNARE
-            }
+            drumMap: {} // Populated from presets in init()
         });
+        this.drumMapPresets = null; // Loaded in init()
+        this.drumMapPresetsById = null;
         this.latencyManager = new LatencyManager();
         this.renderer = new FeedbackRenderer('#svgTarget');
         this.playerBar = new PlayerBar({
@@ -45,6 +41,7 @@ export class Controller {
             midiHandler: this.midiHandler,
             latencyManager: this.latencyManager,
         });
+        this.drumMapDialog = null; // Created in init() after presets load
         this.state = coachState;
 
         this.isInitialized = false;
@@ -60,13 +57,36 @@ export class Controller {
     async init() {
         if (this.isInitialized) return;
 
+        // Load drum map presets and apply current mapping
+        try {
+            const { presets, byId } = await loadDrumMapPresets();
+            this.drumMapPresets = presets;
+            this.drumMapPresetsById = byId;
+            this._applyDrumMapFromState();
+        } catch (e) {
+            console.error('[Controller] Failed to load drum map presets:', e);
+            // Continue with empty map — user can still configure manually
+            this.drumMapPresets = [];
+            this.drumMapPresetsById = new Map();
+        }
+
+        this.drumMapDialog = new DrumMapDialog({
+            midiHandler: this.midiHandler,
+            presets: this.drumMapPresets,
+            presetsById: this.drumMapPresetsById,
+        });
+
         this.dialog.inject();
         this.resultsDialog.inject();
         this.calibrationDialog.inject();
+        this.drumMapDialog.inject();
         this.renderer.init();
 
+        // Update the drum mapping button label with the loaded preset name
+        this._updateDrumMapLabel();
+
         // Listen for start requests from dialog
-        window.addEventListener('coach-start-requested', () => this.startSession());
+        window.addEventListener('coach-start-requested', () => this._startSessionWithNudge());
 
         // Listen for calibration requests — ensure MIDI is connected first
         window.addEventListener('coach-calibrate-requested', async () => {
@@ -75,8 +95,28 @@ export class Controller {
         });
 
         // When calibration finishes, return to settings dialog
-        window.addEventListener('calibration-accepted', () => this.dialog.show());
-        window.addEventListener('calibration-cancelled', () => this.dialog.show());
+        window.addEventListener('calibration-accepted', () => {
+            this._updateDrumMapLabel();
+            this.dialog.show();
+        });
+        window.addEventListener('calibration-cancelled', () => {
+            this._updateDrumMapLabel();
+            this.dialog.show();
+        });
+
+        // Listen for drum map dialog requests
+        window.addEventListener('coach-drummap-requested', async () => {
+            await this._ensureMidiConnected();
+            this.drumMapDialog.show();
+        });
+
+        // When drum map dialog finishes, apply the new map and return to settings
+        window.addEventListener('drummap-applied', () => {
+            this._applyDrumMapFromState();
+            this._updateDrumMapLabel();
+            this.dialog.show();
+        });
+        window.addEventListener('drummap-cancelled', () => this.dialog.show());
 
         // Inject debug grooves into the Grooves menu when debug is enabled
         if (SHOW_DEBUG) {
@@ -322,8 +362,9 @@ export class Controller {
             this._refreshAbcMapping();
             this.setRendererGrooveContext();
 
-            // 7. Set coach mode URL flag and update URL immediately
+            // 7. Set coach mode URL flag and drum map params, then update URL
             this.grooveWriter.myGrooveUtils.coachMode = true;
+            this.grooveWriter.myGrooveUtils.coachDrumMapParam = this._buildDrumMapUrlParam();
             this.grooveWriter.updateCurrentURL();
 
             // 8. Start playback if requested
@@ -411,8 +452,9 @@ export class Controller {
 
         console.log('[Controller] Restored editor state', saved);
 
-        // 5. Clear coach mode flag and force clean URL update
+        // 5. Clear coach mode flag and drum map param, force clean URL update
         this.grooveWriter.myGrooveUtils.coachMode = false;
+        this.grooveWriter.myGrooveUtils.coachDrumMapParam = '';
         try {
             this.grooveWriter.updateCurrentURL();
         } catch (e) { console.warn('[Controller] URL update:', e); }
@@ -578,6 +620,110 @@ export class Controller {
             if (!this.isCoachingActive || !this.engine.isPlaying) return;
             this.handleMidiHit(drum, performance.now(), 100);
         });
+    }
+
+    /**
+     * Resolve the active drum map from state and apply it to MidiInputHandler.
+     */
+    _applyDrumMapFromState() {
+        let editingMap;
+        if (coachState.drumMapPreset === 'custom' && coachState.drumMapCustom) {
+            editingMap = coachState.drumMapCustom;
+        } else {
+            editingMap = getPresetMap(this.drumMapPresetsById, coachState.drumMapPreset);
+            if (!editingMap) {
+                // Fallback to GM
+                editingMap = getPresetMap(this.drumMapPresetsById, '_gm');
+            }
+        }
+        if (editingMap) {
+            this.midiHandler.drumMap = drumMapToRuntime(editingMap);
+        }
+    }
+
+    /**
+     * Update the drum mapping button label in the settings dialog.
+     */
+    _updateDrumMapLabel() {
+        const btn = document.getElementById('coach-drummap-btn');
+        if (!btn) return;
+        if (coachState.drumMapPreset === 'custom') {
+            btn.textContent = 'Custom';
+        } else {
+            const preset = this.drumMapPresets.find(p => p.id === coachState.drumMapPreset);
+            btn.textContent = preset ? preset.label : coachState.drumMapPreset;
+        }
+    }
+
+    /**
+     * Wraps startSession with a combined soft-nudge for unconfigured mapping/calibration.
+     */
+    _startSessionWithNudge() {
+        const needsCalibration = !coachState.calibrated;
+        const needsMapping = !coachState.drumMapConfigured;
+
+        if ((needsCalibration || needsMapping) && !coachState._hasSeenSetupPrompt) {
+            let message;
+            if (needsCalibration && needsMapping) {
+                message = "You haven't configured your drum mapping or calibrated latency yet.";
+            } else if (needsMapping) {
+                message = "You haven't configured your drum mapping yet.";
+            } else {
+                message = "You haven't calibrated latency yet.";
+            }
+            this._showSetupPrompt(message);
+            return;
+        }
+
+        this.startSession();
+    }
+
+    /**
+     * Show a one-time prompt suggesting configuration before first session.
+     */
+    _showSetupPrompt(message) {
+        // Reuse the settings dialog pattern — create a simple prompt overlay
+        let prompt = document.getElementById('coachSetupPrompt');
+        if (!prompt) {
+            prompt = document.createElement('div');
+            prompt.id = 'coachSetupPrompt';
+            prompt.className = 'coach-setup-prompt';
+            prompt.innerHTML = `
+                <p id="coach-setup-message"></p>
+                <div class="coach-dialog-buttons">
+                    <button class="coach-btn coach-btn-secondary" id="coach-setup-skip">Skip</button>
+                    <button class="coach-btn coach-btn-primary" id="coach-setup-configure">Configure</button>
+                </div>
+            `;
+            document.body.appendChild(prompt);
+
+            prompt.querySelector('#coach-setup-skip').addEventListener('click', () => {
+                prompt.style.display = 'none';
+                coachState._hasSeenSetupPrompt = true;
+                this.startSession();
+            });
+            prompt.querySelector('#coach-setup-configure').addEventListener('click', () => {
+                prompt.style.display = 'none';
+                coachState._hasSeenSetupPrompt = true;
+                this.dialog.show();
+            });
+        }
+
+        prompt.querySelector('#coach-setup-message').textContent = message + ' Configure now?';
+        prompt.style.display = 'block';
+    }
+
+    /**
+     * Build the DrumMap URL parameter string for sharing.
+     */
+    _buildDrumMapUrlParam() {
+        if (coachState.drumMapPreset === 'custom' && coachState.drumMapCustom) {
+            return `DrumMap=custom&DM=${encodeDrumMap(coachState.drumMapCustom)}&`;
+        }
+        if (coachState.drumMapPreset && coachState.drumMapPreset !== '_gm') {
+            return `DrumMap=${coachState.drumMapPreset}&`;
+        }
+        return '';
     }
 
     async _ensureMidiConnected() {

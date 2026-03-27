@@ -29,11 +29,35 @@ async function bootstrap() {
 
     await controller.init();
 
+    // Apply DrumMap URL param if present
+    const utils = window.myGrooveWriter.myGrooveUtils;
+    const drumMapParam = utils.getQueryVariableFromURL('DrumMap', '');
+    if (drumMapParam) {
+        if (drumMapParam === 'custom') {
+            const dmParam = utils.getQueryVariableFromURL('DM', '');
+            if (dmParam) {
+                const { decodeDrumMap } = await import('./data/DrumMapUtils.js');
+                const { coachState } = await import('./state/State.js');
+                coachState.drumMapPreset = 'custom';
+                coachState.drumMapCustom = decodeDrumMap(dmParam);
+                coachState.drumMapConfigured = true;
+                coachState.save();
+                controller._applyDrumMapFromState();
+            }
+        } else {
+            const { coachState } = await import('./state/State.js');
+            coachState.drumMapPreset = drumMapParam;
+            coachState.drumMapConfigured = true;
+            coachState.save();
+            controller._applyDrumMapFromState();
+        }
+    }
+
     // Add a toggle button to the UI
     addCoachToggleButton();
 
     // Auto-start coach mode if Mode=coach in URL
-    const mode = window.myGrooveWriter.myGrooveUtils.getQueryVariableFromURL('Mode', '');
+    const mode = utils.getQueryVariableFromURL('Mode', '');
     if (mode === 'coach') {
         console.log('[Drum Coach] Mode=coach detected, auto-starting session');
         try {

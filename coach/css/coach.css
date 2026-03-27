@@ -501,3 +501,169 @@
     line-height: 1.5;
     margin-bottom: 10px;
 }
+
+/* ---- Drum Map Dialog ---- */
+
+#coachDrumMapDialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #FFF;
+    color: #333;
+    padding: 20px 25px;
+    border: solid 2px #999;
+    border-radius: 5px;
+    z-index: 2002;
+    display: none;
+    width: 420px;
+    max-height: 80vh;
+    overflow-y: auto;
+    font-family: 'Lato', sans-serif;
+}
+
+#coachDrumMapDialog h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--highlight-color, #f08d49);
+    text-align: center;
+}
+
+#drummap-instrument-list {
+    margin: 15px 0;
+}
+
+.drummap-row {
+    display: flex;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid #F0F0F0;
+    gap: 8px;
+}
+
+.drummap-row:last-child {
+    border-bottom: none;
+}
+
+.drummap-row.drummap-listening {
+    background: #FFF8F0;
+    border-radius: 4px;
+    margin: 0 -8px;
+    padding: 6px 8px;
+}
+
+.drummap-label {
+    flex: 0 0 90px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+}
+
+.drummap-chips {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-height: 26px;
+    align-items: center;
+}
+
+.drummap-chip {
+    display: inline-flex;
+    align-items: center;
+    background: #EEE;
+    border: 1px solid #DDD;
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-family: monospace;
+    color: #555;
+    gap: 4px;
+}
+
+.drummap-chip-remove {
+    cursor: pointer;
+    color: #999;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.drummap-chip-remove:hover {
+    color: #e74c3c;
+}
+
+.drummap-empty {
+    font-size: 12px;
+    color: #CCC;
+}
+
+.drummap-listen-prompt {
+    font-size: 12px;
+    color: var(--highlight-color, #f08d49);
+    font-style: italic;
+    animation: drummap-pulse 1s ease-in-out infinite;
+}
+
+@keyframes drummap-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.drummap-learn-btn {
+    flex: 0 0 28px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid #CCC;
+    background: #F5F5F5;
+    color: #888;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.drummap-learn-btn:hover {
+    background: #EEE;
+    border-color: #999;
+    color: #555;
+}
+
+.drummap-conflict-notice {
+    display: none;
+    font-size: 12px;
+    color: #e67e22;
+    text-align: center;
+    padding: 4px 0;
+}
+
+/* ---- Setup Prompt (first-run nudge) ---- */
+
+.coach-setup-prompt {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #FFF;
+    color: #333;
+    padding: 20px 25px;
+    border: solid 2px #999;
+    border-radius: 5px;
+    z-index: 2003;
+    display: none;
+    width: 360px;
+    font-family: 'Lato', sans-serif;
+    text-align: center;
+}
+
+.coach-setup-prompt p {
+    margin: 0 0 20px;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+}

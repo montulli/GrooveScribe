@@ -18,6 +18,9 @@ const DEFAULTS = {
     countIn: true,
     calibrationOffset: 0,
     calibrated: false,
+    drumMapPreset: '_gm',
+    drumMapCustom: null,
+    drumMapConfigured: false,
 };
 
 export class StateManager {
@@ -94,6 +97,41 @@ export class StateManager {
         this._data.calibrated = Boolean(value);
     }
 
+    // DrumMapPreset property — file path relative to modulemappings/ or 'custom'
+    get drumMapPreset() {
+        return this._data.drumMapPreset;
+    }
+
+    set drumMapPreset(value) {
+        if (typeof value !== 'string' || value.length === 0) {
+            console.warn(`[State] Invalid drumMapPreset '${value}', keeping '${this._data.drumMapPreset}'`);
+            return;
+        }
+        this._data.drumMapPreset = value;
+    }
+
+    // DrumMapCustom property — editing-shape map object, or null
+    get drumMapCustom() {
+        return this._data.drumMapCustom;
+    }
+
+    set drumMapCustom(value) {
+        if (value !== null && typeof value !== 'object') {
+            console.warn(`[State] Invalid drumMapCustom, keeping current value`);
+            return;
+        }
+        this._data.drumMapCustom = value;
+    }
+
+    // DrumMapConfigured property — tracks whether user has explicitly chosen a mapping
+    get drumMapConfigured() {
+        return this._data.drumMapConfigured;
+    }
+
+    set drumMapConfigured(value) {
+        this._data.drumMapConfigured = Boolean(value);
+    }
+
     // Get tolerance windows for current setting
     getToleranceWindows() {
         return TOLERANCE_WINDOWS[this.tolerance];
@@ -108,6 +146,9 @@ export class StateManager {
             countIn: this.countIn,
             calibrationOffset: this.calibrationOffset,
             calibrated: this.calibrated,
+            drumMapPreset: this.drumMapPreset,
+            drumMapCustom: this.drumMapCustom,
+            drumMapConfigured: this.drumMapConfigured,
         };
     }
 
@@ -119,6 +160,9 @@ export class StateManager {
         if (obj.countIn !== undefined) this.countIn = obj.countIn;
         if (obj.calibrationOffset !== undefined) this.calibrationOffset = obj.calibrationOffset;
         if (obj.calibrated !== undefined) this.calibrated = obj.calibrated;
+        if (obj.drumMapPreset !== undefined) this.drumMapPreset = obj.drumMapPreset;
+        if (obj.drumMapCustom !== undefined) this.drumMapCustom = obj.drumMapCustom;
+        if (obj.drumMapConfigured !== undefined) this.drumMapConfigured = obj.drumMapConfigured;
     }
 
     // Persistence

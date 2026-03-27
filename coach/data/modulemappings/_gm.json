@@ -1,0 +1,18 @@
+{
+  "label": "General MIDI",
+  "map": {
+    "kick": [36, 35],
+    "snare": [38, 40],
+    "snare_xstick": [37],
+    "hh_closed": [42],
+    "hh_foot": [44],
+    "hh_open": [46],
+    "tom_high": [48, 50, 47],
+    "tom_low": [45, 43, 41],
+    "crash": [49, 57],
+    "ride": [51],
+    "ride_bell": [53],
+    "cow_bell": [56],
+    "stacker": []
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "label": "Yamaha DTX (base)",
+  "base": "_gm",
+  "map": {
+    "hh_closed": [42, 79, 86],
+    "hh_foot": [44, 83],
+    "hh_open": [46, 78, 85],
+    "tom_high": [48],
+    "tom_low": [47, 43],
+    "crash": [49, 55, 57, 59],
+    "ride": [51, 52],
+    "cow_bell": []
+  }
+}

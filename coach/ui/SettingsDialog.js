@@ -46,6 +46,12 @@ export class SettingsDialog {
       </div>
 
       <div class="coach-setting-row">
+        <label>Drum Mapping</label>
+        <button class="coach-btn coach-btn-calibrate" id="coach-drummap-btn">General MIDI</button>
+      </div>
+      <div id="coach-drummap-hint" class="coach-calib-hint" style="display:none;">Not configured</div>
+
+      <div class="coach-setting-row">
         <label>Latency Offset</label>
         <span class="coach-latency-group">
           <input type="number" id="coach-latency-input" step="1" value="0"> ms
@@ -81,6 +87,12 @@ export class SettingsDialog {
       window.dispatchEvent(new CustomEvent('coach-calibrate-requested'));
     });
 
+    this.container.querySelector('#coach-drummap-btn').addEventListener('click', () => {
+      this.save();
+      this.hide();
+      window.dispatchEvent(new CustomEvent('coach-drummap-requested'));
+    });
+
     startBtn.addEventListener('click', () => {
       this.save();
       this.hide();
@@ -104,6 +116,15 @@ export class SettingsDialog {
     this.container.querySelector('#performance-options').style.display = coachState.mode === 'performance' ? 'block' : 'none';
 
     this.container.querySelector('#coach-calib-hint').style.display = coachState.calibrated ? 'none' : 'block';
+
+    // Update drum mapping button label
+    const drumMapBtn = this.container.querySelector('#coach-drummap-btn');
+    if (coachState.drumMapPreset === 'custom') {
+      drumMapBtn.textContent = 'Custom';
+    } else {
+      drumMapBtn.textContent = coachState.drumMapPreset === '_gm' ? 'General MIDI' : coachState.drumMapPreset;
+    }
+    this.container.querySelector('#coach-drummap-hint').style.display = coachState.drumMapConfigured ? 'none' : 'block';
 
     this.container.style.display = 'block';
   }
