@@ -337,7 +337,8 @@ export class CalibrationDialog {
         gain.connect(ctx.destination);
         osc.frequency.value = CLICK_FREQ_HZ;
         osc.type = 'sine';
-        gain.gain.setValueAtTime(0.5, audioTime);
+        const clickGain = 0.5 * (coachState.metronomeVolume / 100);
+        gain.gain.setValueAtTime(clickGain, audioTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioTime + CLICK_DURATION_S);
         osc.start(audioTime);
         osc.stop(audioTime + CLICK_DURATION_S);

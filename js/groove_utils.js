@@ -2386,10 +2386,11 @@ function GrooveUtils() {
             noteDelay = 32;  // 16th notes over x/16 time
 
 		// add count in
-		midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_1, 0, constant_OUR_MIDI_VELOCITY_NORMAL);
+		var countInVelocity = (root.metronomeVelocityOverride !== undefined) ? root.metronomeVelocityOverride : constant_OUR_MIDI_VELOCITY_NORMAL;
+		midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_1, 0, countInVelocity);
 		midiTrack.addNoteOff(9, constant_OUR_MIDI_METRONOME_1, noteDelay);
 		for (var i = 1; i < timeSigTop; i++) {
-			midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_NORMAL, 0, constant_OUR_MIDI_VELOCITY_NORMAL);
+			midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_NORMAL, 0, countInVelocity);
 			midiTrack.addNoteOff(9, constant_OUR_MIDI_METRONOME_NORMAL, noteDelay);
 		}
 
@@ -2467,7 +2468,7 @@ function GrooveUtils() {
 
 			// Metronome sounds.
 			var metronome_note = false;
-			var metronome_velocity = constant_OUR_MIDI_VELOCITY_ACCENT;
+			var metronome_velocity = (root.metronomeVelocityOverride !== undefined) ? root.metronomeVelocityOverride : constant_OUR_MIDI_VELOCITY_ACCENT;
 			if (metronome_frequency > 0) {
 				var quarterNoteFrequency = (isTriplets ? 12 : 8);
 				var eighthNoteFrequency = (isTriplets ? 6 : 4);

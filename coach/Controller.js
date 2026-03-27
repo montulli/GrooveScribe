@@ -321,6 +321,10 @@ export class Controller {
             this.isCoachingActive = true;
             this.currentRepetition = 0;
 
+            // 3a. Apply metronome volume override (percentage → MIDI velocity 0-127)
+            const metVelocity = Math.round(coachState.metronomeVolume * 127 / 100);
+            this.grooveWriter.myGrooveUtils.metronomeVelocityOverride = metVelocity;
+
             // 4. Save pre-coaching state for later restoration
             this._savedState = {
                 viewMode: this.grooveWriter.myGrooveUtils.viewMode,
@@ -452,9 +456,10 @@ export class Controller {
 
         console.log('[Controller] Restored editor state', saved);
 
-        // 5. Clear coach mode flag and drum map param, force clean URL update
+        // 5. Clear coach mode flag, drum map param, and metronome override
         this.grooveWriter.myGrooveUtils.coachMode = false;
         this.grooveWriter.myGrooveUtils.coachDrumMapParam = '';
+        delete this.grooveWriter.myGrooveUtils.metronomeVelocityOverride;
         try {
             this.grooveWriter.updateCurrentURL();
         } catch (e) { console.warn('[Controller] URL update:', e); }

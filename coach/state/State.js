@@ -22,6 +22,7 @@ const DEFAULTS = {
     drumMapCustom: null,
     drumMapConfigured: false,
     showDebugGrid: true,
+    metronomeVolume: 100,
 };
 
 export class StateManager {
@@ -107,6 +108,17 @@ export class StateManager {
         this._data.showDebugGrid = Boolean(value);
     }
 
+    // MetronomeVolume property (0-100 percentage, maps to MIDI velocity 0-127)
+    get metronomeVolume() {
+        return this._data.metronomeVolume;
+    }
+
+    set metronomeVolume(value) {
+        value = Number(value);
+        if (Number.isNaN(value)) return;
+        this._data.metronomeVolume = Math.max(0, Math.min(100, Math.round(value)));
+    }
+
     // DrumMapPreset property — file path relative to modulemappings/ or 'custom'
     get drumMapPreset() {
         return this._data.drumMapPreset;
@@ -157,6 +169,7 @@ export class StateManager {
             calibrationOffset: this.calibrationOffset,
             calibrated: this.calibrated,
             showDebugGrid: this.showDebugGrid,
+            metronomeVolume: this.metronomeVolume,
             drumMapPreset: this.drumMapPreset,
             drumMapCustom: this.drumMapCustom,
             drumMapConfigured: this.drumMapConfigured,
@@ -172,6 +185,7 @@ export class StateManager {
         if (obj.calibrationOffset !== undefined) this.calibrationOffset = obj.calibrationOffset;
         if (obj.calibrated !== undefined) this.calibrated = obj.calibrated;
         if (obj.showDebugGrid !== undefined) this.showDebugGrid = obj.showDebugGrid;
+        if (obj.metronomeVolume !== undefined) this.metronomeVolume = obj.metronomeVolume;
         if (obj.drumMapPreset !== undefined) this.drumMapPreset = obj.drumMapPreset;
         if (obj.drumMapCustom !== undefined) this.drumMapCustom = obj.drumMapCustom;
         if (obj.drumMapConfigured !== undefined) this.drumMapConfigured = obj.drumMapConfigured;

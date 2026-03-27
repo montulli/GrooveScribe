@@ -61,6 +61,14 @@ export class SettingsDialog {
       <div id="coach-calib-hint" class="coach-calib-hint" style="display:none;">Not calibrated</div>
 
       <div class="coach-setting-row">
+        <label>Metronome Vol</label>
+        <span class="coach-slider-group">
+          <input type="range" id="coach-metronome-vol" min="0" max="100" value="100">
+          <span id="coach-metronome-vol-label">100%</span>
+        </span>
+      </div>
+
+      <div class="coach-setting-row">
         <label>Debug Grid</label>
         <input type="checkbox" id="coach-debug-grid-check" checked>
       </div>
@@ -92,6 +100,10 @@ export class SettingsDialog {
       window.dispatchEvent(new CustomEvent('coach-calibrate-requested'));
     });
 
+    this.container.querySelector('#coach-metronome-vol').addEventListener('input', (e) => {
+      this.container.querySelector('#coach-metronome-vol-label').textContent = e.target.value + '%';
+    });
+
     this.container.querySelector('#coach-drummap-btn').addEventListener('click', () => {
       this.save();
       this.hide();
@@ -118,6 +130,8 @@ export class SettingsDialog {
     this.container.querySelector('#coach-tolerance-select').value = coachState.tolerance;
     this.container.querySelector('#coach-latency-input').value = coachState.calibrationOffset;
     this.container.querySelector('#coach-debug-grid-check').checked = coachState.showDebugGrid;
+    this.container.querySelector('#coach-metronome-vol').value = coachState.metronomeVolume;
+    this.container.querySelector('#coach-metronome-vol-label').textContent = coachState.metronomeVolume + '%';
 
     this.container.querySelector('#performance-options').style.display = coachState.mode === 'performance' ? 'block' : 'none';
 
@@ -146,6 +160,7 @@ export class SettingsDialog {
     coachState.tolerance = this.container.querySelector('#coach-tolerance-select').value;
     coachState.calibrationOffset = parseInt(this.container.querySelector('#coach-latency-input').value) || 0;
     coachState.showDebugGrid = this.container.querySelector('#coach-debug-grid-check').checked;
+    coachState.metronomeVolume = parseInt(this.container.querySelector('#coach-metronome-vol').value);
     coachState.save();
   }
 }
