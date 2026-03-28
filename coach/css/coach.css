@@ -536,12 +536,12 @@
     transform: translate(-50%, -50%);
     background-color: #FFF;
     color: #333;
-    padding: 15px 20px;
+    padding: 12px 16px;
     border: solid 2px #999;
     border-radius: 5px;
     z-index: 2002;
     display: none;
-    width: 420px;
+    width: 400px;
     max-height: 80vh;
     overflow-y: auto;
     font-family: 'Lato', sans-serif;
@@ -550,7 +550,7 @@
 
 #coachDrumMapDialog h2 {
     margin-top: 0;
-    margin-bottom: 14px;
+    margin-bottom: 8px;
     font-size: 16px;
     font-weight: 700;
     color: var(--highlight-color, #f08d49);
@@ -558,15 +558,15 @@
 }
 
 #drummap-instrument-list {
-    margin: 12px 0;
+    margin: 6px 0;
 }
 
 .drummap-row {
     display: flex;
     align-items: center;
-    padding: 5px 0;
+    padding: 2px 0;
     border-bottom: 1px solid #F0F0F0;
-    gap: 8px;
+    gap: 6px;
 }
 
 .drummap-row:last-child {
@@ -576,22 +576,23 @@
 .drummap-row.drummap-listening {
     background: #FFF8F0;
     border-radius: 4px;
-    margin: 0 -8px;
-    padding: 5px 8px;
+    margin: 0 -6px;
+    padding: 2px 6px;
 }
 
 .drummap-label {
-    flex: 0 0 90px;
+    flex: 0 0 78px;
     font-weight: 500;
     color: #555;
+    font-size: 12px;
 }
 
 .drummap-chips {
     flex: 1;
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
-    min-height: 24px;
+    gap: 3px;
+    min-height: 20px;
     align-items: center;
 }
 
@@ -601,10 +602,12 @@
     background: #EEE;
     border: 1px solid #DDD;
     border-radius: 3px;
-    padding: 1px 6px;
+    padding: 0 5px;
     font-family: monospace;
+    font-size: 11px;
     color: #555;
-    gap: 4px;
+    gap: 3px;
+    line-height: 18px;
 }
 
 .drummap-chip-remove {
@@ -633,14 +636,14 @@
 }
 
 .drummap-learn-btn {
-    flex: 0 0 24px;
-    width: 24px;
-    height: 24px;
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     border: 1px solid #CCC;
     background: #F5F5F5;
     color: #888;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1;
     cursor: pointer;
     display: flex;
@@ -659,9 +662,10 @@
 .drummap-cc-section {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 0;
-    margin-top: 4px;
+    gap: 8px;
+    padding: 5px 0;
+    margin-top: 2px;
+    font-size: 12px;
     border-top: 1px solid #E0E0E0;
 }
 
@@ -689,8 +693,9 @@
 }
 
 .drummap-cc-fields input[type="number"] {
-    width: 48px;
-    padding: 2px 4px;
+    width: 40px;
+    padding: 1px 3px;
+    font-size: 11px;
     border: 1px solid #CCC;
     border-radius: 3px;
     font-family: monospace;
