@@ -10,7 +10,7 @@ import { CalibrationDialog } from './ui/CalibrationDialog.js';
 import { coachState } from './state/State.js';
 import { DrumType } from './engine/DrumConstants.js';
 import { scoreLayoutExtractor } from './engine/ScoreLayoutExtractor.js';
-import { loadDrumMapPresets, getPresetMap } from './data/DrumMapLoader.js';
+import { loadDrumMapPresets, getPresetMap, getPresetHihatCC } from './data/DrumMapLoader.js';
 import { drumMapToRuntime, encodeDrumMap } from './data/DrumMapUtils.js';
 import { DrumMapDialog } from './ui/DrumMapDialog.js';
 
@@ -632,17 +632,22 @@ export class Controller {
      */
     _applyDrumMapFromState() {
         let editingMap;
+        let hihatCC;
         if (coachState.drumMapPreset === 'custom' && coachState.drumMapCustom) {
             editingMap = coachState.drumMapCustom;
+            hihatCC = coachState.drumMapCustomHihatCC || { enabled: false, cc: 4, threshold: 64 };
         } else {
             editingMap = getPresetMap(this.drumMapPresetsById, coachState.drumMapPreset);
+            hihatCC = getPresetHihatCC(this.drumMapPresetsById, coachState.drumMapPreset);
             if (!editingMap) {
                 // Fallback to GM
                 editingMap = getPresetMap(this.drumMapPresetsById, '_gm');
+                hihatCC = { enabled: false, cc: 4, threshold: 64 };
             }
         }
         if (editingMap) {
             this.midiHandler.drumMap = drumMapToRuntime(editingMap);
+            this.midiHandler.hihatCC = hihatCC;
         }
     }
 

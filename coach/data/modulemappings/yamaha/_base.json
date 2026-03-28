@@ -1,6 +1,7 @@
 {
   "label": "Yamaha DTX (base)",
   "base": "_gm",
+  "hihatCC": { "enabled": true, "cc": 4, "threshold": 64 },
   "map": {
     "hh_closed": [42, 79, 86],
     "hh_foot": [44, 83],

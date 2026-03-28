@@ -65,6 +65,7 @@ export async function loadDrumMapPresets() {
     // Resolve inheritance and validate
     for (const entry of byId.values()) {
         entry.resolvedMap = resolveMap(entry, byId);
+        entry.resolvedHihatCC = resolveHihatCC(entry, byId);
         const result = validateMap(entry.resolvedMap);
         if (!result.valid) {
             console.warn(`[DrumMapLoader] Validation errors in '${entry.id}':`, result.errors);
@@ -80,6 +81,7 @@ export async function loadDrumMapPresets() {
             id: entry.id,
             label: entry.label,
             map: entry.resolvedMap,
+            hihatCC: entry.resolvedHihatCC,
         });
     }
 
@@ -120,6 +122,29 @@ function resolveMap(entry, byId) {
     return resolved;
 }
 
+const DEFAULT_HIHAT_CC = { enabled: false, cc: 4, threshold: 64 };
+
+/**
+ * Resolves hihatCC config through the inheritance chain.
+ * The most specific (leaf) definition wins; falls back to default if none found.
+ */
+function resolveHihatCC(entry, byId) {
+    let current = entry;
+    const visited = new Set();
+
+    while (current) {
+        if (visited.has(current.id)) break;
+        visited.add(current.id);
+        if (current.hihatCC !== undefined) {
+            return { ...DEFAULT_HIHAT_CC, ...current.hihatCC };
+        }
+        if (!current.base) break;
+        current = byId.get(current.base);
+    }
+
+    return { ...DEFAULT_HIHAT_CC };
+}
+
 /**
  * Gets the resolved map for a preset id, or null if not found.
  */
@@ -127,4 +152,13 @@ export function getPresetMap(byId, presetId) {
     const entry = byId.get(presetId);
     if (!entry) return null;
     return entry.resolvedMap;
+}
+
+/**
+ * Gets the resolved hihatCC config for a preset id.
+ */
+export function getPresetHihatCC(byId, presetId) {
+    const entry = byId.get(presetId);
+    if (!entry) return { ...DEFAULT_HIHAT_CC };
+    return entry.resolvedHihatCC;
 }

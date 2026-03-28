@@ -39,11 +39,15 @@ export class DrumMapDialog {
 
         // Working copy of the current map being edited
         this._editingMap = null;
+        // Working copy of hihatCC config
+        this._editingHihatCC = { enabled: false, cc: 4, threshold: 64 };
         // The preset id that matches the current editing map (or 'custom')
         this._activePresetId = null;
         // MIDI learn state
         this._listeningDrumType = null;
         this._savedOnHit = null;
+        // Last CC value seen during passive listening (for hi-hat feedback)
+        this._lastPassiveCC = 0;
     }
 
     inject() {
@@ -85,6 +89,17 @@ export class DrumMapDialog {
                 ${instrumentRows}
             </div>
 
+            <div class="drummap-cc-section">
+                <label class="drummap-cc-toggle">
+                    <input type="checkbox" id="drummap-cc-enabled">
+                    Pedal CC
+                </label>
+                <span class="drummap-cc-fields" id="drummap-cc-fields">
+                    CC <input type="number" id="drummap-cc-num" min="0" max="127" value="4">
+                    Close &ge; <input type="number" id="drummap-cc-threshold" min="0" max="127" value="64">
+                </span>
+            </div>
+
             <div id="drummap-conflict-notice" class="drummap-conflict-notice"></div>
 
             <div class="coach-dialog-buttons">
@@ -102,8 +117,30 @@ export class DrumMapDialog {
             const preset = this.presets.find(p => p.id === presetId);
             if (!preset) return;
             this._editingMap = cloneDrumMap(preset.map);
+            this._editingHihatCC = { ...preset.hihatCC };
             this._activePresetId = presetId;
             this._renderChips();
+            this._renderCCConfig();
+        });
+
+        // CC config inputs
+        const ccEnabled = this.container.querySelector('#drummap-cc-enabled');
+        const ccFields = this.container.querySelector('#drummap-cc-fields');
+        const ccNum = this.container.querySelector('#drummap-cc-num');
+        const ccThreshold = this.container.querySelector('#drummap-cc-threshold');
+
+        ccEnabled.addEventListener('change', () => {
+            this._editingHihatCC.enabled = ccEnabled.checked;
+            ccFields.classList.toggle('drummap-cc-disabled', !ccEnabled.checked);
+            this._markCustomIfChanged();
+        });
+        ccNum.addEventListener('change', () => {
+            this._editingHihatCC.cc = parseInt(ccNum.value) || 4;
+            this._markCustomIfChanged();
+        });
+        ccThreshold.addEventListener('change', () => {
+            this._editingHihatCC.threshold = parseInt(ccThreshold.value) || 64;
+            this._markCustomIfChanged();
         });
 
         // MIDI learn buttons
@@ -145,23 +182,30 @@ export class DrumMapDialog {
         // Load current state into working copy
         if (coachState.drumMapPreset === 'custom' && coachState.drumMapCustom) {
             this._editingMap = cloneDrumMap(coachState.drumMapCustom);
+            this._editingHihatCC = coachState.drumMapCustomHihatCC
+                ? { ...coachState.drumMapCustomHihatCC }
+                : { enabled: false, cc: 4, threshold: 64 };
             this._activePresetId = 'custom';
         } else {
             const preset = this.presets.find(p => p.id === coachState.drumMapPreset);
             if (preset) {
                 this._editingMap = cloneDrumMap(preset.map);
+                this._editingHihatCC = { ...preset.hihatCC };
                 this._activePresetId = preset.id;
             } else {
                 // Fallback to GM
                 const gm = this.presetsById.get('_gm');
                 this._editingMap = cloneDrumMap(gm.resolvedMap);
+                this._editingHihatCC = { enabled: false, cc: 4, threshold: 64 };
                 this._activePresetId = '_gm';
             }
         }
 
         this.container.querySelector('#drummap-preset-select').value = this._activePresetId;
         this._renderChips();
+        this._renderCCConfig();
         this._clearConflictNotice();
+        this._lastPassiveCC = 0;
         this.container.style.display = 'block';
         this._startPassiveListening();
     }
@@ -229,6 +273,18 @@ export class DrumMapDialog {
 
         this._markCustomIfChanged();
         this._renderChips();
+    }
+
+    _renderCCConfig() {
+        const ccEnabled = this.container.querySelector('#drummap-cc-enabled');
+        const ccFields = this.container.querySelector('#drummap-cc-fields');
+        const ccNum = this.container.querySelector('#drummap-cc-num');
+        const ccThreshold = this.container.querySelector('#drummap-cc-threshold');
+
+        ccEnabled.checked = this._editingHihatCC.enabled;
+        ccNum.value = this._editingHihatCC.cc;
+        ccThreshold.value = this._editingHihatCC.threshold;
+        ccFields.classList.toggle('drummap-cc-disabled', !this._editingHihatCC.enabled);
     }
 
     _markCustomIfChanged() {
@@ -331,18 +387,32 @@ export class DrumMapDialog {
         if (!this.midiHandler.midiAccess) return;
 
         this._passiveMidiHandler = (event) => {
-            const [status, note, velocity] = event.data;
-            const isNoteOn = (status & 0xF0) === 0x90 && velocity > 0;
+            const [status, data1, data2] = event.data;
+
+            // Track CC for hi-hat pedal feedback
+            const isCC = (status & 0xF0) === 0xB0;
+            if (isCC && this._editingHihatCC.enabled && data1 === this._editingHihatCC.cc) {
+                this._lastPassiveCC = data2;
+                return;
+            }
+
+            const isNoteOn = (status & 0xF0) === 0x90 && data2 > 0;
             if (!isNoteOn) return;
             // Don't interfere with MIDI-learn mode
             if (this._listeningDrumType) return;
 
             // Find which instrument this note is mapped to
-            const mappedType = this._findMappedType(note);
+            let mappedType = this._findMappedType(data1);
+
+            // CC-based hi-hat resolution for passive feedback
+            if (this._editingHihatCC.enabled && mappedType === 'hh_open' && this._lastPassiveCC >= this._editingHihatCC.threshold) {
+                mappedType = 'hh_closed';
+            }
+
             if (mappedType) {
-                this._flashRow(mappedType, note);
+                this._flashRow(mappedType, data1);
             } else {
-                this._showConflictNotice(`Unmapped note: ${note}`);
+                this._showConflictNotice(`Unmapped note: ${data1}`);
             }
         };
 
@@ -416,9 +486,11 @@ export class DrumMapDialog {
         if (this._activePresetId === 'custom') {
             coachState.drumMapPreset = 'custom';
             coachState.drumMapCustom = cloneDrumMap(this._editingMap);
+            coachState.drumMapCustomHihatCC = { ...this._editingHihatCC };
         } else {
             coachState.drumMapPreset = this._activePresetId;
             coachState.drumMapCustom = null;
+            coachState.drumMapCustomHihatCC = null;
         }
         coachState.drumMapConfigured = true;
         coachState.save();

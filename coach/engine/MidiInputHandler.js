@@ -8,6 +8,9 @@ export class MidiInputHandler {
         this.midiAccess = null;
         this.onHit = options.onHit || (() => { });
         this.drumMap = options.drumMap || {};
+        // Hi-hat CC config: { enabled, cc, threshold }
+        this.hihatCC = options.hihatCC || { enabled: false, cc: 4, threshold: 64 };
+        this._lastHiHatCC = 0; // 0 = fully open, 127 = fully closed
     }
 
     async connect() {
@@ -30,15 +33,27 @@ export class MidiInputHandler {
     }
 
     _handleMidiMessage(event) {
-        const [status, note, velocity] = event.data;
-        const isNoteOn = (status & 0xF0) === 0x90 && velocity > 0;
+        const [status, data1, data2] = event.data;
 
+        // Track CC messages for hi-hat pedal
+        const isCC = (status & 0xF0) === 0xB0;
+        if (isCC && this.hihatCC.enabled && data1 === this.hihatCC.cc) {
+            this._lastHiHatCC = data2;
+            return;
+        }
+
+        const isNoteOn = (status & 0xF0) === 0x90 && data2 > 0;
         if (isNoteOn) {
-            const drum = this.drumMap[note];
+            let drum = this.drumMap[data1];
             if (drum && ModuleDrumTypes.includes(drum)) {
-                this.onHit(drum, event.timeStamp, velocity);
+                // CC-based hi-hat resolution: if a note maps to hh_open but
+                // the pedal CC says closed, report as hh_closed instead
+                if (this.hihatCC.enabled && drum === 'hh_open' && this._lastHiHatCC >= this.hihatCC.threshold) {
+                    drum = 'hh_closed';
+                }
+                this.onHit(drum, event.timeStamp, data2);
             } else {
-                console.log(`[MidiInputHandler] Unmapped MIDI note ${note} (vel=${velocity}, drum=${drum || 'none'})`);
+                console.log(`[MidiInputHandler] Unmapped MIDI note ${data1} (vel=${data2}, drum=${drum || 'none'})`);
             }
         }
     }

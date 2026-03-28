@@ -20,6 +20,7 @@ const DEFAULTS = {
     calibrated: false,
     drumMapPreset: '_gm',
     drumMapCustom: null,
+    drumMapCustomHihatCC: null,
     drumMapConfigured: false,
     showDebugGrid: true,
     metronomeVolume: 100,
@@ -145,6 +146,19 @@ export class StateManager {
         this._data.drumMapCustom = value;
     }
 
+    // DrumMapCustomHihatCC property — hi-hat CC config object, or null
+    get drumMapCustomHihatCC() {
+        return this._data.drumMapCustomHihatCC;
+    }
+
+    set drumMapCustomHihatCC(value) {
+        if (value !== null && typeof value !== 'object') {
+            console.warn(`[State] Invalid drumMapCustomHihatCC, keeping current value`);
+            return;
+        }
+        this._data.drumMapCustomHihatCC = value;
+    }
+
     // DrumMapConfigured property — tracks whether user has explicitly chosen a mapping
     get drumMapConfigured() {
         return this._data.drumMapConfigured;
@@ -172,6 +186,7 @@ export class StateManager {
             metronomeVolume: this.metronomeVolume,
             drumMapPreset: this.drumMapPreset,
             drumMapCustom: this.drumMapCustom,
+            drumMapCustomHihatCC: this.drumMapCustomHihatCC,
             drumMapConfigured: this.drumMapConfigured,
         };
     }
@@ -188,6 +203,7 @@ export class StateManager {
         if (obj.metronomeVolume !== undefined) this.metronomeVolume = obj.metronomeVolume;
         if (obj.drumMapPreset !== undefined) this.drumMapPreset = obj.drumMapPreset;
         if (obj.drumMapCustom !== undefined) this.drumMapCustom = obj.drumMapCustom;
+        if (obj.drumMapCustomHihatCC !== undefined) this.drumMapCustomHihatCC = obj.drumMapCustomHihatCC;
         if (obj.drumMapConfigured !== undefined) this.drumMapConfigured = obj.drumMapConfigured;
     }
 

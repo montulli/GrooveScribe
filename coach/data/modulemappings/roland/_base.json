@@ -1,6 +1,7 @@
 {
   "label": "Roland V-Drums (base)",
   "base": "_gm",
+  "hihatCC": { "enabled": true, "cc": 4, "threshold": 64 },
   "map": {
     "kick": [36],
     "hh_closed": [42, 22],
