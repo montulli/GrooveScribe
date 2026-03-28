@@ -98,6 +98,13 @@ export class DrumMapDialog {
                     CC <input type="number" id="drummap-cc-num" min="0" max="127" value="4">
                     Close &ge; <input type="number" id="drummap-cc-threshold" min="0" max="127" value="64">
                 </span>
+                <span class="drummap-cc-live" id="drummap-cc-live">
+                    <span class="drummap-cc-bar-track">
+                        <span class="drummap-cc-bar-fill" id="drummap-cc-bar-fill"></span>
+                        <span class="drummap-cc-bar-threshold" id="drummap-cc-bar-threshold"></span>
+                    </span>
+                    <span class="drummap-cc-value" id="drummap-cc-value">0</span>
+                </span>
             </div>
 
             <div id="drummap-conflict-notice" class="drummap-conflict-notice"></div>
@@ -140,6 +147,7 @@ export class DrumMapDialog {
         });
         ccThreshold.addEventListener('change', () => {
             this._editingHihatCC.threshold = parseInt(ccThreshold.value) || 64;
+            this._updateThresholdMarker();
             this._markCustomIfChanged();
         });
 
@@ -280,11 +288,39 @@ export class DrumMapDialog {
         const ccFields = this.container.querySelector('#drummap-cc-fields');
         const ccNum = this.container.querySelector('#drummap-cc-num');
         const ccThreshold = this.container.querySelector('#drummap-cc-threshold');
+        const ccLive = this.container.querySelector('#drummap-cc-live');
 
         ccEnabled.checked = this._editingHihatCC.enabled;
         ccNum.value = this._editingHihatCC.cc;
         ccThreshold.value = this._editingHihatCC.threshold;
         ccFields.classList.toggle('drummap-cc-disabled', !this._editingHihatCC.enabled);
+        ccLive.classList.toggle('drummap-cc-disabled', !this._editingHihatCC.enabled);
+
+        // Position threshold marker
+        this._updateThresholdMarker();
+        this._updateCCDisplay(0);
+    }
+
+    _updateThresholdMarker() {
+        const marker = this.container.querySelector('#drummap-cc-bar-threshold');
+        if (marker) {
+            const pct = (this._editingHihatCC.threshold / 127) * 100;
+            marker.style.left = pct + '%';
+        }
+    }
+
+    _updateCCDisplay(value) {
+        const fill = this.container.querySelector('#drummap-cc-bar-fill');
+        const valueEl = this.container.querySelector('#drummap-cc-value');
+        if (!fill || !valueEl) return;
+
+        const pct = (value / 127) * 100;
+        fill.style.width = pct + '%';
+        valueEl.textContent = value;
+
+        // Color: green when below threshold (open), orange when at/above (closed)
+        const isClosed = value >= this._editingHihatCC.threshold;
+        fill.classList.toggle('drummap-cc-closed', isClosed);
     }
 
     _markCustomIfChanged() {
@@ -393,6 +429,7 @@ export class DrumMapDialog {
             const isCC = (status & 0xF0) === 0xB0;
             if (isCC && this._editingHihatCC.enabled && data1 === this._editingHihatCC.cc) {
                 this._lastPassiveCC = data2;
+                this._updateCCDisplay(data2);
                 return;
             }
 
@@ -405,12 +442,14 @@ export class DrumMapDialog {
             let mappedType = this._findMappedType(data1);
 
             // CC-based hi-hat resolution for passive feedback
+            let ccResolved = false;
             if (this._editingHihatCC.enabled && mappedType === 'hh_open' && this._lastPassiveCC >= this._editingHihatCC.threshold) {
                 mappedType = 'hh_closed';
+                ccResolved = true;
             }
 
             if (mappedType) {
-                this._flashRow(mappedType, data1);
+                this._flashRow(mappedType, data1, ccResolved);
             } else {
                 this._showConflictNotice(`Unmapped note: ${data1}`);
             }
@@ -446,19 +485,21 @@ export class DrumMapDialog {
 
     /**
      * Flash a row and highlight the specific chip that was triggered.
+     * @param {boolean} ccResolved - true if this hit was resolved via CC (not a fixed note match)
      */
-    _flashRow(drumType, noteNum) {
+    _flashRow(drumType, noteNum, ccResolved = false) {
         const row = this.container.querySelector(`.drummap-row[data-drum-type="${drumType}"]`);
         if (!row) return;
 
-        // Flash the row
-        row.classList.remove('drummap-hit');
-        // Force reflow to restart animation
+        // Flash the row — use a different class for CC-resolved hits
+        row.classList.remove('drummap-hit', 'drummap-hit-cc');
         void row.offsetWidth;
-        row.classList.add('drummap-hit');
+        row.classList.add(ccResolved ? 'drummap-hit-cc' : 'drummap-hit');
 
-        // Highlight the specific chip
-        const chip = this.container.querySelector(`.drummap-chip[data-note="${noteNum}"][data-drum-type="${drumType}"]`);
+        // For CC-resolved hits, the chip lives on the hh_open row, not hh_closed
+        // So highlight it on the original row
+        const chipRow = ccResolved ? 'hh_open' : drumType;
+        const chip = this.container.querySelector(`.drummap-chip[data-note="${noteNum}"][data-drum-type="${chipRow}"]`);
         if (chip) {
             chip.classList.remove('drummap-chip-hit');
             void chip.offsetWidth;

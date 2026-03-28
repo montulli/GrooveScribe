@@ -704,6 +704,60 @@
     pointer-events: none;
 }
 
+/* Live CC value display */
+.drummap-cc-live {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+}
+
+.drummap-cc-live.drummap-cc-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.drummap-cc-bar-track {
+    position: relative;
+    width: 60px;
+    height: 10px;
+    background: #E8E8E8;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.drummap-cc-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0%;
+    background: #27ae60;
+    border-radius: 5px;
+    transition: width 0.05s;
+}
+
+.drummap-cc-bar-fill.drummap-cc-closed {
+    background: var(--highlight-color, #f08d49);
+}
+
+.drummap-cc-bar-threshold {
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    width: 2px;
+    background: #333;
+    transform: translateX(-50%);
+    border-radius: 1px;
+}
+
+.drummap-cc-value {
+    font-family: monospace;
+    min-width: 24px;
+    text-align: right;
+    color: #777;
+}
+
 /* Hit feedback: row flash when a mapped pad is struck */
 .drummap-row.drummap-hit {
     animation: drummap-row-flash 0.4s ease-out;
@@ -711,6 +765,16 @@
 
 @keyframes drummap-row-flash {
     0%   { background: rgba(240, 141, 73, 0.25); }
+    100% { background: transparent; }
+}
+
+/* CC-resolved hit: flash with a blue tint to distinguish from direct note match */
+.drummap-row.drummap-hit-cc {
+    animation: drummap-row-flash-cc 0.4s ease-out;
+}
+
+@keyframes drummap-row-flash-cc {
+    0%   { background: rgba(52, 152, 219, 0.3); }
     100% { background: transparent; }
 }
 
