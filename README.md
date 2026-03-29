@@ -51,8 +51,6 @@ The Drum Coach is an interactive practice mode that evaluates your timing agains
 
 **Architecture:** The coach is a self-contained ES module tree under `coach/`. See `coach/data/modulemappings/README.md` for the MIDI mapping preset format and how to add new module presets. The coach bootstraps via a `<script type="module">` tag in `index.html` and hooks into GrooveWriter's playback system without modifying the core codebase. See [SOURCE_CODE_README.md](SOURCE_CODE_README.md) for detailed architecture.
 
-**Live demo:** https://2opremio.github.io/GrooveScribe/
-
 ### Contribution guidelines ###
 
 * Writing tests
