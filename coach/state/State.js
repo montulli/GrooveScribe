@@ -22,7 +22,7 @@ const DEFAULTS = {
     drumMapCustom: null,
     drumMapCustomHihatCC: null,
     drumMapConfigured: false,
-    showDebugGrid: true,
+    showDebugGrid: false,
     metronomeVolume: 100,
 };
 

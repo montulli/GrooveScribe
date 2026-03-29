@@ -70,7 +70,7 @@ export class SettingsDialog {
 
       <div class="coach-setting-row">
         <label>Debug Grid</label>
-        <input type="checkbox" id="coach-debug-grid-check" checked>
+        <input type="checkbox" id="coach-debug-grid-check">
       </div>
 
       <div class="coach-dialog-buttons">
