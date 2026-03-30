@@ -10,7 +10,6 @@ const BUTTON_INJECT_MAX_RETRIES = 10; // 10 seconds total
  */
 let bootstrapRetries = 0;
 async function bootstrap() {
-    console.log('[Drum Coach] Bootstrapping...');
 
     // Wait for myGrooveWriter to be available
     if (!window.myGrooveWriter) {
@@ -59,7 +58,6 @@ async function bootstrap() {
     // Auto-start coach mode if Mode=coach in URL
     const mode = utils.getQueryVariableFromURL('Mode', '');
     if (mode === 'coach') {
-        console.log('[Drum Coach] Mode=coach detected, auto-starting session');
         try {
             controller.startSession({ autoPlay: false });
         } catch (e) {
@@ -67,7 +65,6 @@ async function bootstrap() {
         }
     }
 
-    console.log('[Drum Coach] Ready');
 }
 
 let buttonRetries = 0;
@@ -100,7 +97,6 @@ function addCoachToggleButton() {
     };
 
     topNav.insertBefore(btn, topNav.firstChild);
-    console.log('[Drum Coach] Button injected into UI');
 }
 
 // Inject CSS

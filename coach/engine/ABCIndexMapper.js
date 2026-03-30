@@ -81,7 +81,6 @@ export class ABCIndexMapper {
                 }
             }
         }
-        console.log(`[ABCIndexMapper] Mapped ${this.noteMap.size} keys to ${currentIndex} indices`);
     }
 
     /**
@@ -106,7 +105,6 @@ export class ABCIndexMapper {
         const { bpm, msPerTick, totalTicks } = metrics;
         const timeline = [];
 
-        console.log(`[ABCIndexMapper] Generating timeline: ${totalTicks} ticks, ${bpm} BPM, ${msPerTick.toFixed(2)} ms / tick`);
 
         for (let i = 0; i < totalTicks; i++) {
             // Hi-Hats & Cymbals

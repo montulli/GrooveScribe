@@ -133,7 +133,6 @@ export class Controller {
         // We debounce or just hook into the existing refresh_ABC logic if possible
         window.addEventListener('resize', () => {
             if (this.isCoachingActive) {
-                console.log('[Controller] Resize detected, updating feedback UI');
                 this._refreshAndSyncUI();
             }
         });
@@ -143,7 +142,6 @@ export class Controller {
         this.grooveWriter.displayNewSVG = (...args) => {
             originalDisplaySVG.apply(this.grooveWriter, args);
             if (this.isCoachingActive) {
-                console.log('[Controller] Notation re-rendered, refreshing feedback UI');
                 this._refreshAndSyncUI();
             }
         };
@@ -185,7 +183,6 @@ export class Controller {
      * Called when MIDI playback starts - synchronizes timing and prepares renderer
      */
     _onPlaybackStart() {
-        console.log('[Controller] Playback started, syncing engine');
         this._refreshAbcMapping(); // Map instruments to staff indices
 
         // Ensure sniffer is hooked to the engine and has processed the current ABC
@@ -193,7 +190,6 @@ export class Controller {
         if (abc && scoreLayoutExtractor) {
             scoreLayoutExtractor.hook(abc);
             const sniffedData = scoreLayoutExtractor.getSniffedData();
-            console.log('[Controller] ScoreLayoutExtractor re-hooked. Sniffed data:', sniffedData?.systems?.[0]?.chords.length || 0, 'chords');
         }
 
         // Ensure visual feedback is ready
@@ -236,7 +232,6 @@ export class Controller {
      * Called when MIDI playback stops - handles performance results
      */
     _onPlaybackStop() {
-        console.log('[Controller] Playback stopped');
         this.renderer.stopPlayLine();
         if (coachState.mode === 'performance' && this.isCoachingActive) {
             this._showResults();
@@ -250,7 +245,6 @@ export class Controller {
      */
     _onRepeat() {
         this.currentRepetition++;
-        console.log(`[Controller] Repeat ${this.currentRepetition}`);
 
         if (coachState.mode === 'performance' && this.currentRepetition >= coachState.reps) {
             // Stop playback after reaching target repetitions in performance mode
@@ -290,7 +284,6 @@ export class Controller {
      */
     _showResults() {
         const stats = this.engine.getResults();
-        console.log('[Controller] Session Results:', stats);
         this.isCoachingActive = false;
         this.renderer.clearAll();
         this._restoreEditorGrid();
@@ -379,7 +372,6 @@ export class Controller {
                 this.grooveWriter.myGrooveUtils.startOrPauseMIDI_playback();
             }
 
-            console.log('[Controller] Session Started (autoPlay=' + autoPlay + ')');
         } catch (error) {
             console.error('[Controller] CRITICAL ERROR IN startSession:', error);
             throw error;
@@ -417,7 +409,6 @@ export class Controller {
         const CALLBACK_FLUSH_DELAY_MS = 500;
         setTimeout(() => { utils.updateMidiPlayTime = origUpdateMidiPlayTime; }, CALLBACK_FLUSH_DELAY_MS);
 
-        console.log('[Controller] Session Stopped');
     }
 
     /**
@@ -454,7 +445,6 @@ export class Controller {
         const countInMenuItem = document.getElementById('metronomeOptionsContextMenuCountIn');
         if (countInMenuItem) countInMenuItem.style.display = '';
 
-        console.log('[Controller] Restored editor state', saved);
 
         // 5. Clear coach mode flag, drum map param, and metronome override
         this.grooveWriter.myGrooveUtils.coachMode = false;
@@ -528,7 +518,6 @@ export class Controller {
 
         // Capture high-precision sniffer data from the imported instance
         const sniffedData = scoreLayoutExtractor ? scoreLayoutExtractor.getSniffedData() : null;
-        console.log('[Controller] Captured Sniffed Data:', sniffedData ? (sniffedData.systems?.[0]?.chords?.length + ' chords') : 'None');
 
         const timeline = [];
 
@@ -561,7 +550,6 @@ export class Controller {
 
         this.renderer.setGrooveContext(context, timeline, sniffedData);
         const graceCount = timeline.filter(n => n.isGrace).length;
-        console.log(`[Controller] Set renderer groove context: ${timeline.length} notes (${graceCount} grace notes)`);
     }
 
     /**
@@ -741,7 +729,6 @@ export class Controller {
         try {
             await this.midiHandler.connect();
             this.midiConnected = true;
-            console.log('[Controller] MIDI Connected');
         } catch (e) {
             console.warn('[Controller] MIDI failed to connect', e);
         }

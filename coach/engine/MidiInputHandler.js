@@ -52,8 +52,6 @@ export class MidiInputHandler {
                     drum = 'hh_closed';
                 }
                 this.onHit(drum, event.timeStamp, data2);
-            } else {
-                console.log(`[MidiInputHandler] Unmapped MIDI note ${data1} (vel=${data2}, drum=${drum || 'none'})`);
             }
         }
     }

@@ -63,19 +63,13 @@ export class MeasureClearer {
             MIN_CLEAR_AHEAD_MS,
             Math.min(MAX_CLEAR_AHEAD_MS, this._measureDurationMs * CLEAR_AHEAD_FRACTION)
         );
-        console.log(`[MeasureClearer] clearAheadMs=${this._clearAheadMs.toFixed(0)}ms (measureDuration=${this._measureDurationMs.toFixed(0)}ms)`);
 
         // Find first threshold whose clear time (threshold - clearAheadMs)
         // is still in the future relative to startTimeMs
         const idx = this._thresholds.findIndex(t => t.timeMs - this._clearAheadMs > startTimeMs);
         this._thresholdCursor = idx >= 0 ? idx : this._thresholds.length;
 
-        if (this._thresholds.length > 0 && this._thresholdCursor < this._thresholds.length) {
-            const next = this._thresholds[this._thresholdCursor];
-            console.log(`[MeasureClearer] Clear schedule: cursor at threshold ${this._thresholdCursor} — M${next.measureIndex} clears at t≥${(next.timeMs - this._clearAheadMs).toFixed(0)}ms (threshold ${next.timeMs.toFixed(0)}ms)`);
-        } else {
-            console.log(`[MeasureClearer] Clear schedule: no thresholds ahead of startTime=${startTimeMs.toFixed(0)}ms`);
-        }
+
     }
 
     /**
@@ -94,7 +88,6 @@ export class MeasureClearer {
             const currentMeasure = getMeasureIndex(timeMs);
             const ahead = (t.measureIndex === currentMeasure) ? 0 : this._clearAheadMs;
             if (timeMs >= t.timeMs - ahead) {
-                console.log(`[MeasureClearer] Clearing M${t.measureIndex} (t=${timeMs.toFixed(0)}ms, threshold=${t.timeMs.toFixed(0)}ms, ahead=${ahead.toFixed(0)}ms)`);
                 this._clearRegion(t.measureIndex);
                 this._thresholdCursor++;
             } else {
@@ -130,9 +123,7 @@ export class MeasureClearer {
                     removed++;
                 }
             });
-            if (removed > 0) {
-                console.log(`[MeasureClearer] Removed ${removed} circles from M${measureIndex} (X: ${leftX.toFixed(1)}–${rightX === Infinity ? '∞' : rightX.toFixed(1)}, sys ${sys.layerIndex})`);
-            }
+
         }
     }
 }

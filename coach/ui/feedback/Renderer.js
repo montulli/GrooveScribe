@@ -124,7 +124,6 @@ export class Renderer {
             this.svgLayers.push({ svg, layer });
         });
 
-        console.log(`[FeedbackRenderer] Ensured ${this.svgLayers.length} feedback layer(s)`);
         return true;
     }
 
@@ -392,7 +391,6 @@ export class Renderer {
         if (this._playLine) {
             this._playLine.style.display = '';
         }
-        console.log('[FeedbackRenderer] Rendering enabled');
     }
 
 
@@ -402,7 +400,6 @@ export class Renderer {
         const layer = this.svgLayers[layerIndex]?.layer;
         if (!layer) return;
 
-        console.log(`[FeedbackRenderer] Drawing ${tier} circle at x=${x.toFixed(1)} in M${measureIndex} (layer ${layerIndex})`);
 
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
         circle.setAttribute('cx', x);

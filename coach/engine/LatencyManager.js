@@ -22,9 +22,6 @@ export class LatencyManager {
             if (browserLatency > 0) {
                 this.audioLatency = browserLatency;
             }
-            console.log(`[LatencyManager] Auto-detected audio latency: ${this.audioLatency.toFixed(1)}ms ` +
-                `(outputLatency=${((audioContext.outputLatency || 0) * 1000).toFixed(1)}ms, ` +
-                `baseLatency=${((audioContext.baseLatency || 0) * 1000).toFixed(1)}ms)`);
         }
     }
 

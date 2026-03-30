@@ -107,8 +107,6 @@ export class PlaylineInterpolator {
         this._thresholds = thresholds;
         this.cursor = 0;
 
-        console.log(`[PlaylineInterpolator] Built ${thresholds.length} thresholds:`,
-            thresholds.map(t => `M${t.measureIndex}@${t.timeMs.toFixed(1)}ms`).join(', '));
     }
 
     /**

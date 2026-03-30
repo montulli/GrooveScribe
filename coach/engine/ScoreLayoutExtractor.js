@@ -65,7 +65,6 @@ const NOTE_Y_OFFSETS = {
 
 export class ScoreLayoutExtractor {
     constructor() {
-        console.log('[ScoreLayoutExtractor] Instance created');
         this._initData();
         this.abcIndexCount = 0;
         this.lastNoteX = -100;
@@ -111,7 +110,6 @@ export class ScoreLayoutExtractor {
                 anno_stop: typeof target.anno_stop === 'function' ? target.anno_stop : null,
                 img_out: typeof target.img_out === 'function' ? target.img_out : null
             };
-            console.log('[ScoreLayoutExtractor] Captured original callback functions');
         }
 
         // Hook img_out to count SVG emissions — each call marks a system boundary.
@@ -200,7 +198,6 @@ export class ScoreLayoutExtractor {
     }
 
     reset(startIndex = 0) {
-        console.log(`[ScoreLayoutExtractor] Resetting data. Previous events: ${this.data.events.length}. New startIndex: ${startIndex}`);
         this._initData();
 
         this.abcIndexCount = startIndex;
@@ -290,7 +287,6 @@ export class ScoreLayoutExtractor {
         }
         const systems = this._splitIntoSystems();
 
-        console.log(`[ScoreLayoutExtractor] Split into ${systems.length} systems from ${this.data.events.length} events`);
 
         let globalMeasureOffset = 0;
         let legendCount = 0;
@@ -298,12 +294,10 @@ export class ScoreLayoutExtractor {
         const systems2 = systems.map((system, idx) => {
             // Filter out legend systems: all chords have negative abcIndex
             if (system.chords.length > 0 && system.chords.every(n => n.abcIndex < 0)) {
-                console.log(`[ScoreLayoutExtractor] Filtering legend system #${idx} (${system.chords.length} chords with negative abcIndex)`);
                 legendCount++;
                 return null;
             }
             if (system.chords.length === 0 && system.bars.length === 0) {
-                console.log(`[ScoreLayoutExtractor] Filtering empty system #${idx}`);
                 legendCount++;
                 return null;
             }
@@ -352,9 +346,7 @@ export class ScoreLayoutExtractor {
 
         for (let i = 0; i < systems2.length; i++) {
             const s = systems2[i];
-            console.log(`[ScoreLayoutExtractor] System #${i + 1}: svgIndex=${s.svgIndex}, topY=${s.topY !== null ? s.topY.toFixed(1) : 'null'}, ${s.chords.length} chords, ${s.measureBoundaries.length} boundaries`);
         }
-        console.log(`[ScoreLayoutExtractor] Total: ${systems2.length} systems, ${totalChords} chords, ${totalBoundaries} boundaries`);
 
         return result;
     }
@@ -377,4 +369,3 @@ export class ScoreLayoutExtractor {
 
 export const scoreLayoutExtractor = new ScoreLayoutExtractor();
 window.scoreLayout = scoreLayoutExtractor;
-console.log('[ScoreLayoutExtractor] Module loaded and instance exposed to window');

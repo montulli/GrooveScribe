@@ -164,7 +164,6 @@ export class Engine {
         // Always >= relativeHitTime (the hit happened before or at performance.now()).
         const playbackTime = performance.now() - this.startTime;
 
-        console.log(`[Engine] searching for ${drum} hit at relTime ${relativeHitTime.toFixed(2)}ms (lat: ${this.audioLatency})`);
 
         // Step 1: Advance cursor past notes that are definitively unmatchable.
         // A note is unmatchable when its expected-heard-time (note.time + audioLatency)
@@ -193,7 +192,6 @@ export class Engine {
         }
 
         if (!bestMatch) {
-            console.log(`[Engine] No match found for ${drum} (Timeline size: ${tl.length})`);
             const evaluation = {
                 timingError: 0,
                 tier: 'extra',
@@ -205,7 +203,6 @@ export class Engine {
             return evaluation;
         }
 
-        console.log(`[Engine] Matched ${drum} with note at ${bestMatch.time}ms (diff: ${minDiff.toFixed(2)}ms)${bestIsGrace ? ' [GRACE NOTE]' : ''}`);
 
         let evaluation;
         if (bestIsGrace) {
