@@ -120,7 +120,7 @@ export class Controller {
 
         // Inject debug grooves into the Grooves menu when debug is enabled
         if (coachState.showDebugGrid) {
-            this._injectDebugGrooves();
+            // this._injectDebugGrooves(); // Disabled for PR
             this._initDebugHotkeys();
         }
 
