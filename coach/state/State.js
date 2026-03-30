@@ -38,8 +38,7 @@ export class StateManager {
 
     set mode(value) {
         if (!VALID_MODES.includes(value)) {
-            console.warn(`[State] Invalid mode '${value}', keeping '${this._data.mode}'`);
-            return;
+            throw new Error(`[State] Invalid mode '${value}'`);
         }
         this._data.mode = value;
     }

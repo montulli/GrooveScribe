@@ -41,7 +41,7 @@ export class Engine {
         this.noteTimeline = groove.target.map((note, index) => {
             const moduleType = EditorDrumToModuleDrum[note.type];
             if (moduleType === undefined) {
-                console.warn(`[Engine] No EditorDrumToModuleDrum mapping for '${note.type}'`);
+                throw new Error(`[Engine] No EditorDrumToModuleDrum mapping for '${note.type}'`);
             }
             return {
                 ...note,

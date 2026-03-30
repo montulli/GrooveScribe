@@ -68,7 +68,7 @@ export async function loadDrumMapPresets() {
         entry.resolvedHihatCC = resolveHihatCC(entry, byId);
         const result = validateMap(entry.resolvedMap);
         if (!result.valid) {
-            console.warn(`[DrumMapLoader] Validation errors in '${entry.id}':`, result.errors);
+            throw new Error(`[DrumMapLoader] Validation errors in '${entry.id}': ` + JSON.stringify(result.errors));
         }
     }
 
