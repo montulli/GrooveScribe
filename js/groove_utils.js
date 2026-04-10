@@ -1199,14 +1199,16 @@ function GrooveUtils() {
 		'%%annotationfont calibri 16\n' +
 		'%%infofont calibri 16\n' +
 		'%%textfont calibri 16\n' +
-		'%%deco (. 0 a 5 1 1 "@-8,-3("\n' +
-		'%%deco ). 0 a 5 1 1 "@4,-3)"\n' +
 		'%%beginsvg\n' +
 		' <defs>\n' +
 		' <path id="Xhead" d="m-3,-3 l6,6 m0,-6 l-6,6" class="stroke" style="stroke-width:1.2"/>\n' +
 		' <path id="Trihead" d="m-3,2 l 6,0 l-3,-6 l-3,6 l6,0" class="stroke" style="stroke-width:1.2"/>\n' +
+		' <text id="ghost_lp" style="font:16px serif">(</text>\n' +
+		' <text id="ghost_rp" style="font:16px serif">)</text>\n' +
 		' </defs>\n' +
 		'%%endsvg\n' +
+		'%%deco (. 0 ghost_lp 5 1 1 "@-8,-3"\n' +
+		'%%deco ). 0 ghost_rp 5 1 1 "@4,-3"\n' +
 		'%%map drum ^g heads=Xhead print=g       % Hi-Hat\n' +
 		'%%map drum ^c\' heads=Xhead print=c\'   % Crash\n' +
 		'%%map drum ^d\' heads=Xhead print=d\'   % Stacker\n' +

@@ -7799,7 +7799,7 @@ sw-=dy/8
 output+='v'+h.toFixed(1)+'m'+dx.toFixed(1)+' '+(-dy).toFixed(1)+'v'+(-h).toFixed(1)+'"/>\n'+'<path class="stroke" stroke-dasharray="'+
 (dxx/2).toFixed(1)+' '+sw.toFixed(1)+'" d="m';out_sxsy(x,' ',y-h);output+='l'+dx.toFixed(1)+' '+(-dy).toFixed(1)+'"/>\n'}
 function out_wln(x,y,w){out_XYAB('<path class="stroke" stroke-width="0.8" d="mX YhF"/>\n',x,y+3,w)}
-var deco_str_style={crdc:{dx:0,dy:5,style:'font:italic 14px text,serif'},dacs:{dx:0,dy:3,style:'font:16px text,serif',anchor:' text-anchor="middle"'},pf:{dx:0,dy:5,style:'font:italic bold 16px text,serif'},'@':{dx:0,dy:5,style:'font:12px text,sans-serif'}}
+var deco_str_style={crdc:{dx:0,dy:5,style:'font:italic 14px text,serif'},dacs:{dx:0,dy:3,style:'font:16px text,serif',anchor:' text-anchor="middle"'},pf:{dx:0,dy:5,style:'font:italic bold 16px text,serif'},'@':{dx:0,dy:5,style:'font:12px text,sans-serif'},a:{dx:0,dy:0,style:'font:16px text,serif'}}
 function out_deco_str(x,y,name,str){if(name=='fng'){out_XYAB('\
 <text x="X" y="Y" style="font-size:14px" text-anchor="middle">A</text>\n',x,y,m_gl(str))
 return}
