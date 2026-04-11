@@ -1704,9 +1704,16 @@ function GrooveUtils() {
 					}
 
 
-					// creates the 3, 6 or 12 over the note grouping
-					// looks like (3:3:3 or (6:6:6 or (12:12:12
-					hh_snare_voice_string += "(" + notes_in_triplet_group +	":" + notes_in_triplet_group + ":" + notes_in_triplet_group;
+					// creates the triplet grouping over the notes
+					// ABC tuplet (p:q:r means "p notes in the time of q, for next r notes"
+					// e.g. (3:2:3 means 3 notes in time of 2 (standard triplet)
+					var notes_in_time_of = notes_in_triplet_group * 2 / 3;
+					var tuplet_str = "(" + notes_in_triplet_group + ":" + notes_in_time_of + ":" + notes_in_triplet_group;
+					stickings_voice_string += tuplet_str;
+					hh_snare_voice_string += tuplet_str;
+					if (!kick_stems_up) {
+						kick_voice_string += tuplet_str;
+					}
 				}
 			}
 
