@@ -123,6 +123,9 @@ function GrooveUtils() {
 	// debug & special view
 	root.debugMode = false;
 	root.viewMode = true;  // by default to prevent screen flicker
+
+	// Count-in state (managed by groove_writer closure, this is a no-op stub)
+	root.setMetronomeCountIn = function (enabled) { };
 	root.grooveDBAuthoring = false;
 
 	// midi state variables
@@ -782,6 +785,8 @@ function GrooveUtils() {
 
 		return tabChar;
 	}
+	root.tablatureToABCNotationPerNote = tablatureToABCNotationPerNote;
+	root.abcNotationToTablaturePerNote = abcNotationToTablaturePerNote;
 
 	// takes two drum tab lines and merges them.    "-" are blanks so they will get overwritten in a merge.
 	// if there are two non "-" positions to merge, the dominateLine takes priority.
@@ -1051,7 +1056,13 @@ function GrooveUtils() {
 		if (myGrooveData.debugMode)
 			fullURL += "Debug=1&";
 
-		if (myGrooveData.viewMode)
+		if (root.coachMode) {
+			fullURL += "Mode=coach&";
+			// Include drum map in URL for sharing
+			if (root.coachDrumMapParam) {
+				fullURL += root.coachDrumMapParam;
+			}
+		} else if (myGrooveData.viewMode)
 			fullURL += "Mode=view&";
 
 		if (myGrooveData.grooveDBAuthoring)
@@ -1166,8 +1177,8 @@ function GrooveUtils() {
 			renderWidth = 400; // min-width
 		if (renderWidth > 3000)
 			renderWidth = 3000; // max-width
-		// the width of the music is always 25% bigger than what we pass in.   Go figure.
-		renderWidth = Math.floor(renderWidth * 0.75);
+		// renderWidth is now passed as-is (pixel-perfect with scale=1.0)
+		// renderWidth = Math.floor(renderWidth * 0.75); // HACK REMOVED
 
 		fullABC += "L:1/" + (32) + "\n"; // 4/4 = 32,  6/8 = 64
 
@@ -1188,14 +1199,16 @@ function GrooveUtils() {
 		'%%annotationfont calibri 16\n' +
 		'%%infofont calibri 16\n' +
 		'%%textfont calibri 16\n' +
-		'%%deco (. 0 a 5 1 1 "@-8,-3("\n' +
-		'%%deco ). 0 a 5 1 1 "@4,-3)"\n' +
 		'%%beginsvg\n' +
 		' <defs>\n' +
 		' <path id="Xhead" d="m-3,-3 l6,6 m0,-6 l-6,6" class="stroke" style="stroke-width:1.2"/>\n' +
 		' <path id="Trihead" d="m-3,2 l 6,0 l-3,-6 l-3,6 l6,0" class="stroke" style="stroke-width:1.2"/>\n' +
+		' <text id="ghost_lp" style="font:16px serif">(</text>\n' +
+		' <text id="ghost_rp" style="font:16px serif">)</text>\n' +
 		' </defs>\n' +
 		'%%endsvg\n' +
+		'%%deco (. 0 ghost_lp 5 1 1 "@-8,-3"\n' +
+		'%%deco ). 0 ghost_rp 5 1 1 "@4,-3"\n' +
 		'%%map drum ^g heads=Xhead print=g       % Hi-Hat\n' +
 		'%%map drum ^c\' heads=Xhead print=c\'   % Crash\n' +
 		'%%map drum ^d\' heads=Xhead print=d\'   % Stacker\n' +
@@ -2084,6 +2097,7 @@ function GrooveUtils() {
 
 	// callback class for abc generator library
 	function SVGLibCallback() {
+		var self = this;
 		// -- required methods
 		this.abc_svg_output = "";
 		this.abc_error_output = "";
@@ -2098,7 +2112,7 @@ function GrooveUtils() {
 		};
 
 		// for possible playback or linkage
-		this.get_abcmodel = function (tsfirst, voice_tb, music_types) {
+		this.get_abcmodel = function (tsfirst, voice_tb, music_types, info) {
 
 			/*
 			console.log(tsfirst);
@@ -2112,20 +2126,22 @@ function GrooveUtils() {
 		};
 
 		// annotations
-		this.anno_start = function (type, start, stop, x, y, w, h) {};
+		this.anno_start = function (type, start, stop, x, y, w, h, s) {
+			// Hooked automatically by ScoreLayout
+		};
 		this.svg_highlight_y = 0;
 		this.svg_highlight_h = 44;
-		this.anno_stop = function (type, start, stop, x, y, w, h) {
+		this.anno_stop = function (type, start, stop, x, y, w, h, s) {
 
 			// create a rectangle
 			if (type == "bar") {
 				// use the bar as the default y & hack
-				this.svg_highlight_y = y + 5;
-				this.svg_highlight_h = h + 10;
+				self.svg_highlight_y = y + 5;
+				self.svg_highlight_h = h + 10;
 			}
 			if (type == "note" || type == "grace") {
-				y = this.svg_highlight_y;
-				h = this.svg_highlight_h;
+				y = self.svg_highlight_y;
+				h = self.svg_highlight_h;
 				root.abc_obj.out_svg('<rect style="fill: transparent;" class="abcr" id="abcNoteNum_' + root.grooveUtilsUniqueIndex + "_" + root.abcNoteNumIndex + '" x="');
 				root.abc_obj.out_sxsy(x, '" y="', y);
 				root.abc_obj.out_svg('" width="' + w.toFixed(2) + '" height="' + h.toFixed(2) + '"/>\n');
@@ -2152,11 +2168,18 @@ function GrooveUtils() {
 	// converts incoming ABC notation source into an svg image.
 	// returns an object with two items.   "svg" and "error_html"
 	root.renderABCtoSVG = function (abc_source) {
-		root.abc_obj = new Abc(abcToSVGCallback);
+		root.abc_obj = new abc2svg.Abc(abcToSVGCallback);
+		root.abc_obj.user = abcToSVGCallback; // Expose callback for ScoreLayout hooking
+
+		// Hook for Drum Coach coordinate extraction
+		if (window.scoreLayout) window.scoreLayout.hook(root.abc_obj);
+
 		if ((root.myGrooveData && root.myGrooveData.showLegend) || root.isLegendVisable)
 			root.abcNoteNumIndex = -15; // subtract out the legend notes for a proper index.
 		else
 			root.abcNoteNumIndex = 0;
+
+		if (window.scoreLayout) window.scoreLayout.reset(root.abcNoteNumIndex);
 		abcToSVGCallback.abc_svg_output = ''; // clear
 		abcToSVGCallback.abc_error_output = ''; // clear
 
@@ -2365,10 +2388,11 @@ function GrooveUtils() {
             noteDelay = 32;  // 16th notes over x/16 time
 
 		// add count in
-		midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_1, 0, constant_OUR_MIDI_VELOCITY_NORMAL);
+		var countInVelocity = (root.metronomeVelocityOverride !== undefined) ? root.metronomeVelocityOverride : constant_OUR_MIDI_VELOCITY_NORMAL;
+		midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_1, 0, countInVelocity);
 		midiTrack.addNoteOff(9, constant_OUR_MIDI_METRONOME_1, noteDelay);
 		for (var i = 1; i < timeSigTop; i++) {
-			midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_NORMAL, 0, constant_OUR_MIDI_VELOCITY_NORMAL);
+			midiTrack.addNoteOn(9, constant_OUR_MIDI_METRONOME_NORMAL, 0, countInVelocity);
 			midiTrack.addNoteOff(9, constant_OUR_MIDI_METRONOME_NORMAL, noteDelay);
 		}
 
@@ -2446,7 +2470,7 @@ function GrooveUtils() {
 
 			// Metronome sounds.
 			var metronome_note = false;
-			var metronome_velocity = constant_OUR_MIDI_VELOCITY_ACCENT;
+			var metronome_velocity = (root.metronomeVelocityOverride !== undefined) ? root.metronomeVelocityOverride : constant_OUR_MIDI_VELOCITY_ACCENT;
 			if (metronome_frequency > 0) {
 				var quarterNoteFrequency = (isTriplets ? 12 : 8);
 				var eighthNoteFrequency = (isTriplets ? 6 : 4);
