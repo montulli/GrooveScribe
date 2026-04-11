@@ -21,10 +21,6 @@ const TIMING_ERROR_PX_PER_MS = 0.15;
 // snap the circle exactly to the note position (no visual offset).
 const PERFECT_SNAP_THRESHOLD_MS = 8;
 
-// Drift threshold (ms) for warning about time source mismatch
-// between abc2svg tick-derived time and engine-derived time.
-const ABC_TIME_DRIFT_WARN_MS = 0.1;
-
 // Tier colors for hit feedback circles
 const TIER_COLORS = { perfect: '#00BFFF', good: '#32CD32', close: '#FFD700', extra: '#888888' };
 
@@ -180,11 +176,6 @@ export class Renderer {
         this.clearedMeasures = new Set();
         const step = this.verticalStep;
 
-        // abc2svg uses C.BLEN = 1536 ticks per whole note, so one quarter
-        // note = 384 ticks. BPM is always quarter notes per minute.
-        const BLEN = 1536;
-        const msPerAbcTick = (60000 / bpm) / (BLEN / 4);
-
         // Build per-system rendering data
         if (sniffedData && sniffedData.systems) {
             for (let sysIdx = 0; sysIdx < sniffedData.systems.length; sysIdx++) {
@@ -244,16 +235,13 @@ export class Renderer {
                             const noteType = note.isGrace ? DrumType.FLAM_GRACE : note.type;
                             const noteY = systemData.noteYs[noteType];
                             if (noteY === undefined) continue; // skip unknown drum types
-                            const abcTimeMs = sniffed.abcTime * msPerAbcTick;
-
-                            // Consistency check: abcTime-derived ms should match engine-derived ms
-                            const drift = Math.abs(abcTimeMs - note.time);
-                            if (drift > ABC_TIME_DRIFT_WARN_MS) {
-                                console.warn(`[FeedbackRenderer] Time source mismatch for abcIndex=${sniffed.abcIndex}: ` +
-                                    `engine=${note.time.toFixed(2)}ms, abcTime=${abcTimeMs.toFixed(2)}ms (drift=${drift.toFixed(2)}ms)`);
-                            }
+                            // Use engine-derived time (note.time), not abc2svg's s.time.
+                            // abc2svg's s.time is wrong for triplets because the ABC uses
+                            // (p:p:p) tuplet notation (no timing adjustment) to avoid
+                            // rendering artifacts, so s.time reflects nominal spacing
+                            // instead of actual triplet timing.
                             systemData.timeline.push({
-                                timeMs: abcTimeMs,
+                                timeMs: note.time,
                                 tickIndex: note.tickIndex,
                                 type: noteType,
                                 abcIndex: sniffed.abcIndex,
@@ -265,14 +253,25 @@ export class Renderer {
                     }
                 }
 
-                // 3. Add rests to timeline (same time source as notes)
-                if (msPerAbcTick !== null) {
+                // 3. Add rests with time interpolated from surrounding notes.
+                // We can't use abc2svg's s.time for rests (same triplet
+                // distortion as notes — see comment above). Instead,
+                // interpolate each rest's time from the note waypoints
+                // using its X position, which abc2svg places correctly.
+                if (systemData.timeline.length >= 2) {
+                    const notesByX = systemData.timeline
+                        .filter(t => t.x !== undefined)
+                        .sort((a, b) => a.x - b.x);
                     for (const rest of (system.rests || [])) {
-                        systemData.timeline.push({
-                            timeMs: rest.abcTime * msPerAbcTick,
-                            type: 'rest',
-                            x: rest.x
-                        });
+                        const rx = rest.x;
+                        const timeMs = this._interpolateTimeFromX(notesByX, rx);
+                        if (timeMs !== null) {
+                            systemData.timeline.push({
+                                timeMs,
+                                type: 'rest',
+                                x: rx
+                            });
+                        }
                     }
                 }
 
@@ -603,6 +602,27 @@ export class Renderer {
         this._playLineGetTime = null;
         this._renderingEnabled = false;
         this._lastGeoMeasure = -1;
+    }
+
+    /**
+     * Interpolate a time value for an X position from a sorted array of
+     * {x, timeMs} waypoints. Returns null if interpolation isn't possible.
+     */
+    _interpolateTimeFromX(notesByX, x) {
+        if (notesByX.length === 0) return null;
+        // Clamp to range
+        if (x <= notesByX[0].x) return notesByX[0].timeMs;
+        if (x >= notesByX.at(-1).x) return notesByX.at(-1).timeMs;
+        // Find surrounding notes
+        for (let i = 0; i < notesByX.length - 1; i++) {
+            if (x >= notesByX[i].x && x <= notesByX[i + 1].x) {
+                const dx = notesByX[i + 1].x - notesByX[i].x;
+                if (dx === 0) return notesByX[i].timeMs;
+                const t = (x - notesByX[i].x) / dx;
+                return notesByX[i].timeMs + t * (notesByX[i + 1].timeMs - notesByX[i].timeMs);
+            }
+        }
+        return null;
     }
 
     /**
