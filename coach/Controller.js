@@ -323,6 +323,7 @@ export class Controller {
                 viewMode: this.grooveWriter.myGrooveUtils.viewMode,
                 countInEnabled: !!document.getElementById('metronomeOptionsContextMenuCountIn')?.classList.contains('menuChecked'),
                 metronomeFrequency: this.grooveWriter.getMetronomeFrequency(),
+                soloEnabled: this.grooveWriter.myGrooveUtils.getMetronomeSolo(),
                 url: window.location.href,
             };
 
@@ -353,6 +354,13 @@ export class Controller {
             }
             const countInMenuItem = document.getElementById('metronomeOptionsContextMenuCountIn');
             if (countInMenuItem) countInMenuItem.style.display = 'none';
+
+            // 5e. Apply Solo setting (mute synth so only metronome plays)
+            if (coachState.startWithSolo !== this._savedState.soloEnabled) {
+                this.grooveWriter.metronomeOptionsMenuPopupClick('Solo');
+                const soloBtn = document.getElementById('coachSoloBtn');
+                if (soloBtn) soloBtn.classList.toggle('active', this.grooveWriter.myGrooveUtils.getMetronomeSolo());
+            }
 
             // 6. Initialize visual feedback context
             this.grooveWriter.displayNewSVG();
@@ -445,6 +453,10 @@ export class Controller {
         const countInMenuItem = document.getElementById('metronomeOptionsContextMenuCountIn');
         if (countInMenuItem) countInMenuItem.style.display = '';
 
+        // 4b. Restore Solo state
+        if (!!saved.soloEnabled !== this.grooveWriter.myGrooveUtils.getMetronomeSolo()) {
+            try { this.grooveWriter.metronomeOptionsMenuPopupClick('Solo'); } catch (e) { console.warn('[Controller] restore solo:', e); }
+        }
 
         // 5. Clear coach mode flag, drum map param, and metronome override
         this.grooveWriter.myGrooveUtils.coachMode = false;

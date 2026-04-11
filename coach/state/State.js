@@ -24,6 +24,7 @@ const DEFAULTS = {
     drumMapConfigured: false,
     showDebugGrid: false,
     metronomeVolume: 100,
+    startWithSolo: true,
 };
 
 export class StateManager {
@@ -119,6 +120,15 @@ export class StateManager {
         this._data.metronomeVolume = Math.max(0, Math.min(100, Math.round(value)));
     }
 
+    // StartWithSolo property — enable Solo (mute synth) when session starts
+    get startWithSolo() {
+        return this._data.startWithSolo;
+    }
+
+    set startWithSolo(value) {
+        this._data.startWithSolo = Boolean(value);
+    }
+
     // DrumMapPreset property — file path relative to modulemappings/ or 'custom'
     get drumMapPreset() {
         return this._data.drumMapPreset;
@@ -183,6 +193,7 @@ export class StateManager {
             calibrated: this.calibrated,
             showDebugGrid: this.showDebugGrid,
             metronomeVolume: this.metronomeVolume,
+            startWithSolo: this.startWithSolo,
             drumMapPreset: this.drumMapPreset,
             drumMapCustom: this.drumMapCustom,
             drumMapCustomHihatCC: this.drumMapCustomHihatCC,
@@ -200,6 +211,7 @@ export class StateManager {
         if (obj.calibrated !== undefined) this.calibrated = obj.calibrated;
         if (obj.showDebugGrid !== undefined) this.showDebugGrid = obj.showDebugGrid;
         if (obj.metronomeVolume !== undefined) this.metronomeVolume = obj.metronomeVolume;
+        if (obj.startWithSolo !== undefined) this.startWithSolo = obj.startWithSolo;
         if (obj.drumMapPreset !== undefined) this.drumMapPreset = obj.drumMapPreset;
         if (obj.drumMapCustom !== undefined) this.drumMapCustom = obj.drumMapCustom;
         if (obj.drumMapCustomHihatCC !== undefined) this.drumMapCustomHihatCC = obj.drumMapCustomHihatCC;

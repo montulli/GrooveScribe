@@ -69,6 +69,11 @@ export class SettingsDialog {
       </div>
 
       <div class="coach-setting-row">
+        <label>Start in Solo</label>
+        <input type="checkbox" id="coach-start-solo-check" checked>
+      </div>
+
+      <div class="coach-setting-row">
         <label>Debug Grid</label>
         <input type="checkbox" id="coach-debug-grid-check">
       </div>
@@ -130,6 +135,7 @@ export class SettingsDialog {
     this.container.querySelector('#coach-tolerance-select').value = coachState.tolerance;
     this.container.querySelector('#coach-latency-input').value = coachState.calibrationOffset;
     this.container.querySelector('#coach-debug-grid-check').checked = coachState.showDebugGrid;
+    this.container.querySelector('#coach-start-solo-check').checked = coachState.startWithSolo;
     this.container.querySelector('#coach-metronome-vol').value = coachState.metronomeVolume;
     this.container.querySelector('#coach-metronome-vol-label').textContent = coachState.metronomeVolume + '%';
 
@@ -160,6 +166,7 @@ export class SettingsDialog {
     coachState.tolerance = this.container.querySelector('#coach-tolerance-select').value;
     coachState.calibrationOffset = parseInt(this.container.querySelector('#coach-latency-input').value) || 0;
     coachState.showDebugGrid = this.container.querySelector('#coach-debug-grid-check').checked;
+    coachState.startWithSolo = this.container.querySelector('#coach-start-solo-check').checked;
     coachState.metronomeVolume = parseInt(this.container.querySelector('#coach-metronome-vol').value);
     coachState.save();
   }
