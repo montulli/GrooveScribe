@@ -106,6 +106,8 @@ if (typeof(GrooveDisplay) === "undefined") {
 
 		//	<!--   our custom JS  -->
 		root.loadjscssfile("./groove_utils.js", "js");
+		//	<!-- iOS: allow Web Audio to play through the silent switch -->
+		root.loadjscssfile("./unmute.js", "js");
 
 		// stylesheet
 		root.loadjscssfile("https://fonts.googleapis.com/css?family=Lato:400,700,300", "css");
