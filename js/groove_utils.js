@@ -2886,6 +2886,13 @@ function GrooveUtils() {
 			instruments : ["gunshot"],
 			callback : function () {
 				MIDI.programChange(9, 127); // use "Gunshot" instrument because I don't know how to create new ones
+				// iOS: keep a silent media track playing so Web Audio uses the media
+				// channel (audible with the silent switch on) and auto-resume the
+				// context on interaction. No-op if unmute.js isn't loaded or there's
+				// no Web Audio context (e.g. the audiotag fallback).
+				if (typeof unmute === "function" && MIDI.Player && MIDI.Player.ctx && !MIDI.Player.unmuteController) {
+					MIDI.Player.unmuteController = unmute(MIDI.Player.ctx);
+				}
 				root.midiEventCallbacks.midiInitialized(root.midiEventCallbacks.classRoot);
 			}
 		});
