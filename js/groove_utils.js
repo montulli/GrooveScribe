@@ -23,7 +23,6 @@
 
 // GrooveWriter class.   The only one in this file.
 
-/*jslint browser:true devel:true */
 /*global Abc, MIDI, Midi */
 
 var global_num_GrooveUtilsCreated = 0;

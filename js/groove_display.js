@@ -24,9 +24,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with Groove Scribe.  If not, see <http://www.gnu.org/licenses/>.
 
-/*jshint multistr: true */
-/*jslint browser:true devel:true */
-/*jslint evil: true */
 /*global GrooveUtils, GrooveDisplay */
 
 // GrooveDisplay class.   The only one in this file.

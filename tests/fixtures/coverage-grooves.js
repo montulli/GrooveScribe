@@ -178,5 +178,3 @@ export const coverageGrooves = [
     url: '?TimeSig=4/4&Div=16&Tempo=80&Measures=1&Stickings=|oz--------------|&H=|dfglLO----------|&S=|cmnNrRs+Xz------|&K=|bBz-------------|',
   },
 ];
-
-export default coverageGrooves;

@@ -33,7 +33,7 @@ const GROOVE_UTILS_SRC = path.resolve(__dirname, '../../js/groove_utils.js');
  * GrooveUtils), reproducing the browser's shared classic-script scope.
  * @returns {object} the GrooveUtils constructor now available on globalThis.
  */
-export function installGrooveUtilsGlobals() {
+function installGrooveUtilsGlobals() {
   const src = fs.readFileSync(GROOVE_UTILS_SRC, 'utf8');
   // Indirect eval runs `src` in the global scope; its non-strict top-level
   // `var`/`function` declarations become properties of globalThis.
