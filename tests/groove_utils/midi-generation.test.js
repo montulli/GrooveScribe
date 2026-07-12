@@ -154,7 +154,7 @@ describe('GrooveUtils MIDI generation', () => {
     //   '^g' = normal hi-hat, 'c' = normal snare, 'F' = normal kick, 'e' = tom 1
     it('adds MIDI events to the track for a small hh/snare/kick pattern', () => {
       const midiTrack = new globalThis.Midi.Track();
-      expect(midiTrack.events.length).toBe(0);
+      expect(midiTrack.events).toHaveLength(0);
 
       const HH = ['^g', false, '^g', false];
       const Snare = [false, false, 'c', false];
@@ -179,7 +179,7 @@ describe('GrooveUtils MIDI generation', () => {
       // for the default open-hihat placeholder + note-on for hh + note-on for
       // kick at i=0, a note-on for hh + note-on for snare at i=2, and a final
       // blank spacer note-off for trailing delay.
-      expect(midiTrack.events.length).toBe(7);
+      expect(midiTrack.events).toHaveLength(7);
     });
 
     it('does not add the leading blank spacer note a second time once the track already has >= 4 events', () => {
@@ -254,7 +254,7 @@ describe('GrooveUtils MIDI generation', () => {
       );
 
       // Observed: leading blank spacer + tom note-on + trailing blank spacer = 3.
-      expect(midiTrack.events.length).toBe(3);
+      expect(midiTrack.events).toHaveLength(3);
     });
 
     it('adds metronome click events when metronome_frequency is non-zero', () => {
@@ -322,7 +322,7 @@ describe('GrooveUtils MIDI generation', () => {
       }).not.toThrow();
 
       // Matches the event count of the equivalent zero-swing case above.
-      expect(midiTrack.events.length).toBe(5);
+      expect(midiTrack.events).toHaveLength(5);
     });
   });
 

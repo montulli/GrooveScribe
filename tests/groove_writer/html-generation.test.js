@@ -135,15 +135,15 @@ describe('HTMLforStaffContainer', () => {
       const n = gw.notesPerMeasure();
       expect(n).toBe(16); // default: 4/4 time, 16th-note division
 
-      expect((html.match(/id="sticking\d+"/g) || []).length).toBe(n);
-      expect((html.match(/id="hi-hat\d+"/g) || []).length).toBe(n);
-      expect((html.match(/id="snare\d+"/g) || []).length).toBe(n);
-      expect((html.match(/id="kick\d+"/g) || []).length).toBe(n);
-      expect((html.match(/id="tom1-\d+"/g) || []).length).toBe(n);
-      expect((html.match(/id="tom4-\d+"/g) || []).length).toBe(n);
+      expect(html.match(/id="sticking\d+"/g) || []).toHaveLength(n);
+      expect(html.match(/id="hi-hat\d+"/g) || []).toHaveLength(n);
+      expect(html.match(/id="snare\d+"/g) || []).toHaveLength(n);
+      expect(html.match(/id="kick\d+"/g) || []).toHaveLength(n);
+      expect(html.match(/id="tom1-\d+"/g) || []).toHaveLength(n);
+      expect(html.match(/id="tom4-\d+"/g) || []).toHaveLength(n);
       // Background-highlight cells (used for playback/hover highlighting) also
       // scale with notesPerMeasure.
-      expect((html.match(/id="bg-highlight\d+"/g) || []).length).toBe(n);
+      expect(html.match(/id="bg-highlight\d+"/g) || []).toHaveLength(n);
     });
 
     it('note ids run from indexStartForNotes .. indexStartForNotes+notesPerMeasure-1', async () => {
@@ -253,7 +253,7 @@ describe('HTMLforStaffContainer', () => {
       gw = await newGrooveWriter();
       expect(gw.notesPerMeasure()).toBe(24); // (24/4)*4 beats -- see calc_notes_per_measure
       const html = gw.HTMLforStaffContainer(1, 0);
-      expect((html.match(/id="hi-hat\d+"/g) || []).length).toBe(24);
+      expect(html.match(/id="hi-hat\d+"/g) || []).toHaveLength(24);
       expect(stickingGroupTokens(html)).toEqual([
         0,
         1,

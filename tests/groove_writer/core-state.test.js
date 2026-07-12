@@ -275,7 +275,7 @@ describe('GrooveWriter core state & undo/redo', () => {
       for (let i = 0; i < 45; i++) {
         gw.AddItemToUndoOrRedoStack('item' + i, stack);
       }
-      expect(stack.length).toBe(40);
+      expect(stack).toHaveLength(40);
       expect(stack[0]).toBe('item5'); // the first 5 pushes were shifted off
       expect(stack[stack.length - 1]).toBe('item44');
     });

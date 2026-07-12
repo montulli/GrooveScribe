@@ -89,12 +89,12 @@ describe('addMeasureButtonClick / closeMeasureButtonClick', () => {
     // addMeasureButtonClick rewrites #measureContainer's innerHTML (via
     // changeDivisionWithNotes) with one .staff-container per measure.
     expect(
-      document.getElementById('measureContainer').querySelectorAll('.staff-container').length
-    ).toBe(2);
+      document.getElementById('measureContainer').querySelectorAll('.staff-container')
+    ).toHaveLength(2);
 
     const gd = gw.grooveDataFromClickableUI();
     expect(gd.numberOfMeasures).toBe(2);
-    expect(gd.hh_array.length).toBe(2 * gw.notesPerMeasure()); // 32 notes for 2 measures of 16ths
+    expect(gd.hh_array).toHaveLength(2 * gw.notesPerMeasure()); // 32 notes for 2 measures of 16ths
   });
 
   it("copies the last measure's notes into the new measure, and preserves existing notes", () => {
@@ -124,9 +124,9 @@ describe('addMeasureButtonClick / closeMeasureButtonClick', () => {
 
     expect(gw.numberOfMeasures()).toBe(1);
     expect(
-      document.getElementById('measureContainer').querySelectorAll('.staff-container').length
-    ).toBe(1);
-    expect(gw.grooveDataFromClickableUI().hh_array.length).toBe(gw.notesPerMeasure());
+      document.getElementById('measureContainer').querySelectorAll('.staff-container')
+    ).toHaveLength(1);
+    expect(gw.grooveDataFromClickableUI().hh_array).toHaveLength(gw.notesPerMeasure());
   });
 
   // BUG (observed, not asserting it's desirable): closeMeasureButtonClick has no

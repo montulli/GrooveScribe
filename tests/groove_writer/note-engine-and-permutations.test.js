@@ -89,7 +89,7 @@ describe('GrooveWriter note-setting engine (loadNewGroove sweep)', () => {
   it.each(GROOVES)('loads "$name" into the grid without error', ({ url }) => {
     expect(() => gw.loadNewGroove(url)).not.toThrow();
     const gd = gw.grooveDataFromClickableUI();
-    expect(gd.hh_array.length).toBe(gd.notesPerMeasure * gd.numberOfMeasures);
+    expect(gd.hh_array).toHaveLength(gd.notesPerMeasure * gd.numberOfMeasures);
   });
 
   it('round-trips a groove: loaded notes read back as the same voices', () => {
@@ -97,7 +97,7 @@ describe('GrooveWriter note-setting engine (loadNewGroove sweep)', () => {
       '?TimeSig=4/4&Div=16&Tempo=110&Measures=1&H=|x-x-x-x-x-x-x-x-|&S=|----O-------O---|&K=|o-------o-------|'
     );
     const gd = gw.grooveDataFromClickableUI();
-    expect(gd.hh_array.filter(Boolean).length).toBe(8);
+    expect(gd.hh_array.filter(Boolean)).toHaveLength(8);
     expect(gd.snare_array[4]).toBeTruthy();
     expect(gd.kick_array[0]).toBeTruthy();
     expect(gd.kick_array[8]).toBeTruthy();

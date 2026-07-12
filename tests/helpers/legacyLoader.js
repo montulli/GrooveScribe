@@ -50,7 +50,6 @@ export async function installMidiGlobal() {
   const { fileURLToPath } = await import('node:url');
   const here = path.dirname(fileURLToPath(import.meta.url));
   const src = fs.readFileSync(path.resolve(here, '../../js/jsmidgen.js'), 'utf8');
-  // eslint-disable-next-line no-new-func
   const factory = new Function(`${src}\n;return (typeof Midi !== 'undefined') ? Midi : this.Midi;`);
   const Midi = factory();
   globalThis.Midi = Midi;

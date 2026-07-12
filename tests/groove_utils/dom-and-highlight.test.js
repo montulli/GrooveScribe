@@ -610,7 +610,6 @@ describe('GrooveUtils.renderABCtoSVG (real abc2svg-1.js)', () => {
     if (AbcCtor === undefined) {
       const here = path.dirname(fileURLToPath(import.meta.url));
       const src = fs.readFileSync(path.resolve(here, '../../js/abc2svg-1.js'), 'utf8');
-      // eslint-disable-next-line no-new-func
       const factory = new Function(
         `${src}\n;return (typeof Abc !== 'undefined') ? Abc : undefined;`
       );

@@ -28,7 +28,7 @@ import { fileURLToPath } from 'node:url';
 // (not a mock) executes for the handlers that reach it.
 const __here = path.dirname(fileURLToPath(import.meta.url));
 const __grooveUtilsSrc = fs.readFileSync(path.resolve(__here, '../../js/groove_utils.js'), 'utf8');
-const __constRe = /^var (constant_[A-Za-z0-9_]+) = (.+?);(?:\s*\/\/.*)?$/gm;
+const __constRe = /^var (constant_\w+) = (.+?);(?:\s*\/\/.*)?$/gm;
 let __m;
 while ((__m = __constRe.exec(__grooveUtilsSrc))) {
   try {

@@ -25,9 +25,9 @@ describe('articulation & rendering coverage sweep', () => {
     expect(gd.notesPerMeasure).toBeGreaterThan(0);
     expect(gd.numberOfMeasures).toBeGreaterThanOrEqual(1);
     const expectedLen = gd.notesPerMeasure * gd.numberOfMeasures;
-    expect(gd.hh_array.length).toBe(expectedLen);
-    expect(gd.snare_array.length).toBe(expectedLen);
-    expect(gd.kick_array.length).toBe(expectedLen);
+    expect(gd.hh_array).toHaveLength(expectedLen);
+    expect(gd.snare_array).toHaveLength(expectedLen);
+    expect(gd.kick_array).toHaveLength(expectedLen);
   });
 
   it.each(coverageGrooves)('renders "$name" to a non-empty ABC string', ({ url }) => {
@@ -66,8 +66,8 @@ describe('articulation & rendering coverage sweep', () => {
       expect(encoded).toContain('TimeSig=');
       // Re-parsing the encoding must yield the same voice array lengths.
       const gd2 = gu.getGrooveDataFromUrlString(encoded);
-      expect(gd2.hh_array.length).toBe(gd.hh_array.length);
-      expect(gd2.snare_array.length).toBe(gd.snare_array.length);
+      expect(gd2.hh_array).toHaveLength(gd.hh_array.length);
+      expect(gd2.snare_array).toHaveLength(gd.snare_array.length);
     }
   );
 

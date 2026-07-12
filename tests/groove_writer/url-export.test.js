@@ -213,7 +213,7 @@ describe('GrooveWriter url-export (js/groove_writer.js)', () => {
 
       gw.shortenerCheckboxChanged();
 
-      expect(instances.length).toBe(0);
+      expect(instances).toHaveLength(0);
       expect(document.getElementById('fullURLPopupTextField').value).toContain('TimeSig=4/4');
       expect(document.getElementById('fullURLPopup').style.display).toBe('block');
     });
@@ -227,7 +227,7 @@ describe('GrooveWriter url-export (js/groove_writer.js)', () => {
 
       gw.shortenerCheckboxChanged();
 
-      expect(instances.length).toBe(1);
+      expect(instances).toHaveLength(1);
       expect(instances[0].method).toBe('POST');
       expect(instances[0].url).toContain('firebasedynamiclinks.googleapis.com/v1/shortLinks');
       const body = JSON.parse(instances[0].sentBody);
@@ -275,7 +275,7 @@ describe('GrooveWriter url-export (js/groove_writer.js)', () => {
 
       gw.embedCodeCheckboxChanged();
 
-      expect(instances.length).toBe(0);
+      expect(instances).toHaveLength(0);
       const value = document.getElementById('fullURLPopupTextField').value;
       expect(value).toMatch(/^<iframe width="100%" height="240" src="/);
       // "display" destination swaps index.html for GrooveEmbed.html.
@@ -292,7 +292,7 @@ describe('GrooveWriter url-export (js/groove_writer.js)', () => {
 
       gw.embedCodeCheckboxChanged();
 
-      expect(instances.length).toBe(1);
+      expect(instances).toHaveLength(1);
       expect(instances[0].url).toContain('firebasedynamiclinks.googleapis.com/v1/shortLinks');
     });
   });
@@ -584,7 +584,7 @@ describe('GrooveWriter url-export (js/groove_writer.js)', () => {
 
       // The decoded notes are now readable back off the grid.
       const gd = gw.grooveDataFromClickableUI();
-      expect(gd.hh_array.filter(Boolean).length).toBe(8); // x-x-... => 8 hits
+      expect(gd.hh_array.filter(Boolean)).toHaveLength(8); // x-x-... => 8 hits
       expect(gd.snare_array[4]).toBeTruthy();
       expect(gd.kick_array[0]).toBeTruthy();
       expect(gw.myGrooveUtils.getTempo()).toBe(100);

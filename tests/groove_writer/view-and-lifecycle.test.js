@@ -417,10 +417,9 @@ describe('GrooveWriter view & lifecycle', () => {
     );
 
     function shimConstants() {
-      const re = /^var (constant_[A-Za-z0-9_]+)\s*=\s*(.+?);/gm;
+      const re = /^var (constant_\w+)\s*=(.+?);/gm;
       let m;
       while ((m = re.exec(groove_utils_src))) {
-        // eslint-disable-next-line no-new-func
         globalThis[m[1]] = new Function(`return (${m[2]});`)();
       }
     }
