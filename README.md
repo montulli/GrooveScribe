@@ -41,3 +41,4 @@ To edit this Readme:
 ### See also ###
 
 * [SOURCE_CODE_README.md](SOURCE_CODE_README.md)
+* [tests/README.md](tests/README.md) — automated test suite (Vitest)
