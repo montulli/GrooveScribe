@@ -1,0 +1,19 @@
+{
+  "name": "groovescribe",
+  "version": "1.0.0",
+  "description": "Groove Scribe - drum notation and playback web application",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "coverage": "vitest run --coverage"
+  },
+  "license": "GPL-2.0-or-later",
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.4",
+    "jsdom": "^26.1.0",
+    "vitest": "^3.2.4"
+  }
+}
