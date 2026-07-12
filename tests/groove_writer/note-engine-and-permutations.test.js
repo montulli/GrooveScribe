@@ -51,14 +51,38 @@ describe('GrooveWriter note-setting engine (loadNewGroove sweep)', () => {
   // Each groove uses a different mix of articulations / divisions / voices so
   // that setNotesFromABCArray's per-symbol switch is exercised broadly.
   const GROOVES = [
-    { name: 'straight 16 basic', url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&H=|x-x-x-x-x-x-x-x-|&S=|----O-------O---|&K=|o-------o-------|' },
-    { name: 'HH articulations', url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&H=|bcmnNorsxX+-oR--|&S=|----O-------O---|&K=|o-------o-------|' },
-    { name: 'snare articulations', url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&H=|xxxxxxxxxxxxxxxx|&S=|Ogfdxbo---------|&K=|o-------o-------|' },
-    { name: 'kick articulations', url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&H=|xxxxxxxxxxxxxxxx|&S=|----O-------O---|&K=|oxX-o-x-o-------|' },
-    { name: 'stickings shown', url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&Stickings=|RLRLRLRLRLRLRLRL|&H=|xxxxxxxxxxxxxxxx|&S=|----O-------O---|&K=|o-------o-------|' },
-    { name: 'toms shown', url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&H=|----------------|&S=|----------------|&K=|o-------o-------|&T1=|x---o-----------|&T4=|--------ox------|' },
-    { name: 'triplets', url: '?TimeSig=4/4&Div=12&Tempo=90&Measures=1&H=|rrrrrrrrrrrr|&S=|---O----O---|&K=|o--o--o--o--|' },
-    { name: 'two measures', url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=2&H=|xxxxxxxxxxxxxxxx|xxxxxxxxxxxxxxxx|&S=|----O-------O---|----O-------O---|&K=|o-------o-------|o-------o-------|' },
+    {
+      name: 'straight 16 basic',
+      url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&H=|x-x-x-x-x-x-x-x-|&S=|----O-------O---|&K=|o-------o-------|',
+    },
+    {
+      name: 'HH articulations',
+      url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&H=|bcmnNorsxX+-oR--|&S=|----O-------O---|&K=|o-------o-------|',
+    },
+    {
+      name: 'snare articulations',
+      url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&H=|xxxxxxxxxxxxxxxx|&S=|Ogfdxbo---------|&K=|o-------o-------|',
+    },
+    {
+      name: 'kick articulations',
+      url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&H=|xxxxxxxxxxxxxxxx|&S=|----O-------O---|&K=|oxX-o-x-o-------|',
+    },
+    {
+      name: 'stickings shown',
+      url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&Stickings=|RLRLRLRLRLRLRLRL|&H=|xxxxxxxxxxxxxxxx|&S=|----O-------O---|&K=|o-------o-------|',
+    },
+    {
+      name: 'toms shown',
+      url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&H=|----------------|&S=|----------------|&K=|o-------o-------|&T1=|x---o-----------|&T4=|--------ox------|',
+    },
+    {
+      name: 'triplets',
+      url: '?TimeSig=4/4&Div=12&Tempo=90&Measures=1&H=|rrrrrrrrrrrr|&S=|---O----O---|&K=|o--o--o--o--|',
+    },
+    {
+      name: 'two measures',
+      url: '?TimeSig=4/4&Div=16&Tempo=90&Measures=2&H=|xxxxxxxxxxxxxxxx|xxxxxxxxxxxxxxxx|&S=|----O-------O---|----O-------O---|&K=|o-------o-------|o-------o-------|',
+    },
     { name: '6/8', url: '?TimeSig=6/8&Div=8&Tempo=90&Measures=1&H=|xxxxxx|&S=|--O--O|&K=|o--o--|' },
   ];
 
@@ -135,14 +159,26 @@ describe('GrooveWriter permutation generation engine', () => {
   // misspelling). shouldDisplayPermutationForSection reads .checked on these.
   const SUB_OPTIONS = [
     'PermuationOptionsSkipSomeFirstNotes',
-    'PermuationOptionsOstinato', 'PermuationOptionsOstinato_sub',
-    'PermuationOptionsSingles', 'PermuationOptionsSingles_sub1', 'PermuationOptionsSingles_sub2',
-    'PermuationOptionsSingles_sub3', 'PermuationOptionsSingles_sub4',
-    'PermuationOptionsDoubles', 'PermuationOptionsDoubles_sub1', 'PermuationOptionsDoubles_sub2',
-    'PermuationOptionsDoubles_sub3', 'PermuationOptionsDoubles_sub4',
-    'PermuationOptionsUpsDowns', 'PermuationOptionsUpsDowns_sub1', 'PermuationOptionsUpsDowns_sub2',
-    'PermuationOptionsTriples', 'PermuationOptionsTriples_sub1', 'PermuationOptionsTriples_sub2',
-    'PermuationOptionsTriples_sub3', 'PermuationOptionsTriples_sub4',
+    'PermuationOptionsOstinato',
+    'PermuationOptionsOstinato_sub',
+    'PermuationOptionsSingles',
+    'PermuationOptionsSingles_sub1',
+    'PermuationOptionsSingles_sub2',
+    'PermuationOptionsSingles_sub3',
+    'PermuationOptionsSingles_sub4',
+    'PermuationOptionsDoubles',
+    'PermuationOptionsDoubles_sub1',
+    'PermuationOptionsDoubles_sub2',
+    'PermuationOptionsDoubles_sub3',
+    'PermuationOptionsDoubles_sub4',
+    'PermuationOptionsUpsDowns',
+    'PermuationOptionsUpsDowns_sub1',
+    'PermuationOptionsUpsDowns_sub2',
+    'PermuationOptionsTriples',
+    'PermuationOptionsTriples_sub1',
+    'PermuationOptionsTriples_sub2',
+    'PermuationOptionsTriples_sub3',
+    'PermuationOptionsTriples_sub4',
     'PermuationOptionsQuads',
   ];
   const checkAllPermutationSections = () => {

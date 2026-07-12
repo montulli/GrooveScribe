@@ -177,9 +177,12 @@ describe('GrooveDBFormatPutGrooveOnPage', () => {
     });
 
     GD.GrooveDBFormatPutGrooveOnPage({
-      snareAccentTab: 'S', snareOtherTab: '-',
-      kickTab: 'K', footOtherTab: '-',
-      notesPerTabMeasure: 16, measures: 1,
+      snareAccentTab: 'S',
+      snareOtherTab: '-',
+      kickTab: 'K',
+      footOtherTab: '-',
+      notesPerTabMeasure: 16,
+      measures: 1,
     });
 
     expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('<span id="GrooveDisplay'));

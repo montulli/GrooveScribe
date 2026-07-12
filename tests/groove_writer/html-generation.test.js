@@ -120,12 +120,12 @@ describe('HTMLforStaffContainer', () => {
       expect(html).toContain('class="kick-container"');
 
       // Row labels, each wired to noteLabelClick with this baseindex.
-      expect(html).toContain(">STICKINGS</div>");
-      expect(html).toContain(">Hi-hat</div>");
+      expect(html).toContain('>STICKINGS</div>');
+      expect(html).toContain('>Hi-hat</div>');
       expect(html).toContain('id="tom1-label"');
-      expect(html).toContain(">Snare</div>");
+      expect(html).toContain('>Snare</div>');
       expect(html).toContain('id="tom4-label"');
-      expect(html).toContain(">Kick</div>");
+      expect(html).toContain('>Kick</div>');
     });
 
     it('emits exactly notesPerMeasure() note cells for every instrument row', async () => {
@@ -225,10 +225,25 @@ describe('HTMLforStaffContainer', () => {
       expect(gw.notesPerMeasure()).toBe(16);
       const html = gw.HTMLforStaffContainer(1, 0);
       expect(stickingGroupTokens(html)).toEqual([
-        0, 1, 2, 3, 'GAP',
-        4, 5, 6, 7, 'GAP',
-        8, 9, 10, 11, 'GAP',
-        12, 13, 14, 15,
+        0,
+        1,
+        2,
+        3,
+        'GAP',
+        4,
+        5,
+        6,
+        7,
+        'GAP',
+        8,
+        9,
+        10,
+        11,
+        'GAP',
+        12,
+        13,
+        14,
+        15,
       ]);
     });
 
@@ -240,10 +255,33 @@ describe('HTMLforStaffContainer', () => {
       const html = gw.HTMLforStaffContainer(1, 0);
       expect((html.match(/id="hi-hat\d+"/g) || []).length).toBe(24);
       expect(stickingGroupTokens(html)).toEqual([
-        0, 1, 2, 3, 4, 5, 'GAP',
-        6, 7, 8, 9, 10, 11, 'GAP',
-        12, 13, 14, 15, 16, 17, 'GAP',
-        18, 19, 20, 21, 22, 23,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        'GAP',
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        'GAP',
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        'GAP',
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
       ]);
     });
   });

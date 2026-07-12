@@ -31,7 +31,8 @@ describe('GrooveUtils tempo & swing controls', () => {
     });
 
     it('parses the tempoInput element value when present', () => {
-      document.body.innerHTML = '<input id="tempoInput' + gu.grooveUtilsUniqueIndex + '" value="120">';
+      document.body.innerHTML =
+        '<input id="tempoInput' + gu.grooveUtilsUniqueIndex + '" value="120">';
       expect(gu.getTempo()).toBe(120);
     });
 
@@ -40,7 +41,8 @@ describe('GrooveUtils tempo & swing controls', () => {
     // "clamp to default" branch is dead code: out-of-range values pass
     // through unmodified. This locks in that actual (buggy) behavior.
     it('does not clamp values below 19 or above 281 (the clamp condition is unreachable)', () => {
-      document.body.innerHTML = '<input id="tempoInput' + gu.grooveUtilsUniqueIndex + '" value="5">';
+      document.body.innerHTML =
+        '<input id="tempoInput' + gu.grooveUtilsUniqueIndex + '" value="5">';
       expect(gu.getTempo()).toBe(5);
 
       document.getElementById('tempoInput' + gu.grooveUtilsUniqueIndex).value = '500';
@@ -51,14 +53,20 @@ describe('GrooveUtils tempo & swing controls', () => {
   describe('setTempo / getTempo round trip', () => {
     beforeEach(() => {
       document.body.innerHTML =
-        '<input id="tempoInput' + gu.grooveUtilsUniqueIndex + '">' +
-        '<input id="tempoTextField' + gu.grooveUtilsUniqueIndex + '">';
+        '<input id="tempoInput' +
+        gu.grooveUtilsUniqueIndex +
+        '">' +
+        '<input id="tempoTextField' +
+        gu.grooveUtilsUniqueIndex +
+        '">';
     });
 
     it('writes the new tempo to both the slider and the text field', () => {
       gu.setTempo(150);
       expect(document.getElementById('tempoInput' + gu.grooveUtilsUniqueIndex).value).toBe('150');
-      expect(document.getElementById('tempoTextField' + gu.grooveUtilsUniqueIndex).value).toBe('150');
+      expect(document.getElementById('tempoTextField' + gu.grooveUtilsUniqueIndex).value).toBe(
+        '150'
+      );
       expect(gu.getTempo()).toBe(150);
     });
 
@@ -77,8 +85,12 @@ describe('GrooveUtils tempo & swing controls', () => {
   describe('upTempo / downTempo', () => {
     beforeEach(() => {
       document.body.innerHTML =
-        '<input id="tempoInput' + gu.grooveUtilsUniqueIndex + '">' +
-        '<input id="tempoTextField' + gu.grooveUtilsUniqueIndex + '">';
+        '<input id="tempoInput' +
+        gu.grooveUtilsUniqueIndex +
+        '">' +
+        '<input id="tempoTextField' +
+        gu.grooveUtilsUniqueIndex +
+        '">';
     });
 
     it('upTempo nudges the tempo up by exactly 1', () => {
@@ -98,40 +110,56 @@ describe('GrooveUtils tempo & swing controls', () => {
   describe('tempoUpdate / tempoUpdateFromTextField / tempoUpdateFromSlider', () => {
     beforeEach(() => {
       document.body.innerHTML =
-        '<input id="tempoInput' + gu.grooveUtilsUniqueIndex + '">' +
-        '<input id="tempoTextField' + gu.grooveUtilsUniqueIndex + '">';
+        '<input id="tempoInput' +
+        gu.grooveUtilsUniqueIndex +
+        '">' +
+        '<input id="tempoTextField' +
+        gu.grooveUtilsUniqueIndex +
+        '">';
     });
 
     it('tempoUpdate writes the tempo string into the text field and fires tempoChangeCallback', () => {
       let callbackValue = null;
-      gu.tempoChangeCallback = (t) => { callbackValue = t; };
+      gu.tempoChangeCallback = (t) => {
+        callbackValue = t;
+      };
 
       gu.tempoUpdate(133);
 
-      expect(document.getElementById('tempoTextField' + gu.grooveUtilsUniqueIndex).value).toBe('133');
+      expect(document.getElementById('tempoTextField' + gu.grooveUtilsUniqueIndex).value).toBe(
+        '133'
+      );
       expect(callbackValue).toBe(133);
     });
 
     it('tempoUpdateFromTextField copies the field value into the slider and calls tempoUpdate', () => {
       let callbackValue = null;
-      gu.tempoChangeCallback = (t) => { callbackValue = t; };
+      gu.tempoChangeCallback = (t) => {
+        callbackValue = t;
+      };
 
       // event.target.value is a string, as it would be for a real <input>.
       gu.tempoUpdateFromTextField({ target: { value: '133' } });
 
       expect(document.getElementById('tempoInput' + gu.grooveUtilsUniqueIndex).value).toBe('133');
-      expect(document.getElementById('tempoTextField' + gu.grooveUtilsUniqueIndex).value).toBe('133');
+      expect(document.getElementById('tempoTextField' + gu.grooveUtilsUniqueIndex).value).toBe(
+        '133'
+      );
       // the value is forwarded as-is (string), not coerced to a number.
       expect(callbackValue).toBe('133');
     });
 
     it('tempoUpdateFromSlider forwards the slider value straight to tempoUpdate', () => {
       let callbackValue = null;
-      gu.tempoChangeCallback = (t) => { callbackValue = t; };
+      gu.tempoChangeCallback = (t) => {
+        callbackValue = t;
+      };
 
       gu.tempoUpdateFromSlider({ target: { value: '144' } });
 
-      expect(document.getElementById('tempoTextField' + gu.grooveUtilsUniqueIndex).value).toBe('144');
+      expect(document.getElementById('tempoTextField' + gu.grooveUtilsUniqueIndex).value).toBe(
+        '144'
+      );
       expect(callbackValue).toBe('144');
     });
   });
@@ -166,16 +194,24 @@ describe('GrooveUtils tempo & swing controls', () => {
 
     it('reads the swingInput value once swing is enabled', () => {
       document.body.innerHTML =
-        '<input id="swingInput' + gu.grooveUtilsUniqueIndex + '" value="30">' +
-        '<span id="swingOutput' + gu.grooveUtilsUniqueIndex + '"></span>';
+        '<input id="swingInput' +
+        gu.grooveUtilsUniqueIndex +
+        '" value="30">' +
+        '<span id="swingOutput' +
+        gu.grooveUtilsUniqueIndex +
+        '"></span>';
       gu.swingIsEnabled = true;
       expect(gu.getSwing()).toBe(30);
     });
 
     it('clamps out-of-range slider values back to 0 (only on read, not on write)', () => {
       document.body.innerHTML =
-        '<input id="swingInput' + gu.grooveUtilsUniqueIndex + '" value="999">' +
-        '<span id="swingOutput' + gu.grooveUtilsUniqueIndex + '"></span>';
+        '<input id="swingInput' +
+        gu.grooveUtilsUniqueIndex +
+        '" value="999">' +
+        '<span id="swingOutput' +
+        gu.grooveUtilsUniqueIndex +
+        '"></span>';
       gu.swingIsEnabled = true;
       expect(gu.getSwing()).toBe(0);
       // the slider element itself is left untouched at the invalid value -
@@ -187,15 +223,21 @@ describe('GrooveUtils tempo & swing controls', () => {
   describe('setSwing', () => {
     beforeEach(() => {
       document.body.innerHTML =
-        '<input id="swingInput' + gu.grooveUtilsUniqueIndex + '">' +
-        '<span id="swingOutput' + gu.grooveUtilsUniqueIndex + '"></span>';
+        '<input id="swingInput' +
+        gu.grooveUtilsUniqueIndex +
+        '">' +
+        '<span id="swingOutput' +
+        gu.grooveUtilsUniqueIndex +
+        '"></span>';
     });
 
     it('writes the slider value and the % text when swing is enabled', () => {
       gu.swingIsEnabled = true;
       gu.setSwing(30);
       expect(document.getElementById('swingInput' + gu.grooveUtilsUniqueIndex).value).toBe('30');
-      expect(document.getElementById('swingOutput' + gu.grooveUtilsUniqueIndex).innerHTML).toBe('30%');
+      expect(document.getElementById('swingOutput' + gu.grooveUtilsUniqueIndex).innerHTML).toBe(
+        '30%'
+      );
       expect(gu.getSwing()).toBe(30);
       expect(gu.swingPercent).toBe(30);
     });
@@ -205,7 +247,9 @@ describe('GrooveUtils tempo & swing controls', () => {
       gu.setSwing(30);
       expect(document.getElementById('swingInput' + gu.grooveUtilsUniqueIndex).value).toBe('0');
       // swingUpdateText ignores its argument entirely when disabled.
-      expect(document.getElementById('swingOutput' + gu.grooveUtilsUniqueIndex).innerHTML).toBe('N/A');
+      expect(document.getElementById('swingOutput' + gu.grooveUtilsUniqueIndex).innerHTML).toBe(
+        'N/A'
+      );
     });
   });
 
@@ -215,22 +259,34 @@ describe('GrooveUtils tempo & swing controls', () => {
       // swingUpdateText(root.getSwing()), and getSwing() parses whatever is
       // currently in the (empty) swingInput element.
       document.body.innerHTML =
-        '<input id="swingInput' + gu.grooveUtilsUniqueIndex + '">' +
-        '<span id="swingOutput' + gu.grooveUtilsUniqueIndex + '"></span>';
+        '<input id="swingInput' +
+        gu.grooveUtilsUniqueIndex +
+        '">' +
+        '<span id="swingOutput' +
+        gu.grooveUtilsUniqueIndex +
+        '"></span>';
       gu.swingEnabled(true);
       expect(gu.swingIsEnabled).toBe(true);
-      expect(document.getElementById('swingOutput' + gu.grooveUtilsUniqueIndex).innerHTML).toBe('NaN%');
+      expect(document.getElementById('swingOutput' + gu.grooveUtilsUniqueIndex).innerHTML).toBe(
+        'NaN%'
+      );
     });
 
     it('disabling swing sets the amount to 0 and shows N/A', () => {
       document.body.innerHTML =
-        '<input id="swingInput' + gu.grooveUtilsUniqueIndex + '" value="30">' +
-        '<span id="swingOutput' + gu.grooveUtilsUniqueIndex + '"></span>';
+        '<input id="swingInput' +
+        gu.grooveUtilsUniqueIndex +
+        '" value="30">' +
+        '<span id="swingOutput' +
+        gu.grooveUtilsUniqueIndex +
+        '"></span>';
       gu.swingIsEnabled = true;
       gu.swingEnabled(false);
       expect(gu.swingIsEnabled).toBe(false);
       expect(document.getElementById('swingInput' + gu.grooveUtilsUniqueIndex).value).toBe('0');
-      expect(document.getElementById('swingOutput' + gu.grooveUtilsUniqueIndex).innerHTML).toBe('N/A');
+      expect(document.getElementById('swingOutput' + gu.grooveUtilsUniqueIndex).innerHTML).toBe(
+        'N/A'
+      );
       expect(gu.getSwing()).toBe(0);
     });
   });
@@ -238,14 +294,20 @@ describe('GrooveUtils tempo & swing controls', () => {
   describe('swingUpdateEvent', () => {
     beforeEach(() => {
       document.body.innerHTML =
-        '<input id="swingInput' + gu.grooveUtilsUniqueIndex + '">' +
-        '<span id="swingOutput' + gu.grooveUtilsUniqueIndex + '"></span>';
+        '<input id="swingInput' +
+        gu.grooveUtilsUniqueIndex +
+        '">' +
+        '<span id="swingOutput' +
+        gu.grooveUtilsUniqueIndex +
+        '"></span>';
     });
 
     it('updates the % text from the event value when swing is enabled', () => {
       gu.swingIsEnabled = true;
       gu.swingUpdateEvent({ target: { value: '25' } });
-      expect(document.getElementById('swingOutput' + gu.grooveUtilsUniqueIndex).innerHTML).toBe('25%');
+      expect(document.getElementById('swingOutput' + gu.grooveUtilsUniqueIndex).innerHTML).toBe(
+        '25%'
+      );
     });
 
     it('resets the slider to 0 (ignoring the event value) when swing is disabled', () => {

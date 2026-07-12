@@ -63,9 +63,7 @@ describe('GrooveUtils MIDI generation', () => {
 
     it('produces a different URL when only the tempo changes', () => {
       const gdSlow = grooveFromUrl(BASIC_QS); // Tempo=90
-      const gdFast = grooveFromUrl(
-        BASIC_QS.replace('Tempo=90', 'Tempo=150')
-      );
+      const gdFast = grooveFromUrl(BASIC_QS.replace('Tempo=90', 'Tempo=150'));
       const urlSlow = gu.create_MIDIURLFromGrooveData(gdSlow, 0);
       const urlFast = gu.create_MIDIURLFromGrooveData(gdFast, 0);
       expect(urlFast).not.toBe(urlSlow);
@@ -163,10 +161,18 @@ describe('GrooveUtils MIDI generation', () => {
       const Kick = ['F', false, false, false];
 
       gu.MIDI_from_HH_Snare_Kick_Arrays(
-        midiTrack, HH, Snare, Kick, false,
-        'general_MIDI', /* metronome_frequency */ 0,
-        /* num_notes */ 4, /* num_notes_for_swing */ 4,
-        /* swing_percentage */ 0, /* timeSigTop */ 4, /* timeSigBottom */ 4
+        midiTrack,
+        HH,
+        Snare,
+        Kick,
+        false,
+        'general_MIDI',
+        /* metronome_frequency */ 0,
+        /* num_notes */ 4,
+        /* num_notes_for_swing */ 4,
+        /* swing_percentage */ 0,
+        /* timeSigTop */ 4,
+        /* timeSigBottom */ 4
       );
 
       // Observed: 7 events - an initial blank spacer note-off, the note-off
@@ -182,11 +188,37 @@ describe('GrooveUtils MIDI generation', () => {
       const Snare = [false, false, false, false];
       const Kick = [false, false, false, false];
 
-      gu.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH, Snare, Kick, false, 'general_MIDI', 0, 4, 4, 0, 4, 4);
+      gu.MIDI_from_HH_Snare_Kick_Arrays(
+        midiTrack,
+        HH,
+        Snare,
+        Kick,
+        false,
+        'general_MIDI',
+        0,
+        4,
+        4,
+        0,
+        4,
+        4
+      );
       const lenAfterFirst = midiTrack.events.length; // 4 (observed)
       expect(lenAfterFirst).toBe(4);
 
-      gu.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH, Snare, Kick, false, 'general_MIDI', 0, 4, 4, 0, 4, 4);
+      gu.MIDI_from_HH_Snare_Kick_Arrays(
+        midiTrack,
+        HH,
+        Snare,
+        Kick,
+        false,
+        'general_MIDI',
+        0,
+        4,
+        4,
+        0,
+        4,
+        4
+      );
       const lenAfterSecond = midiTrack.events.length;
 
       // Second call only adds this call's own note events (no extra leading
@@ -206,7 +238,20 @@ describe('GrooveUtils MIDI generation', () => {
         [false, false, false, false],
       ];
 
-      gu.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH, Snare, Kick, Toms, 'general_MIDI', 0, 4, 4, 0, 4, 4);
+      gu.MIDI_from_HH_Snare_Kick_Arrays(
+        midiTrack,
+        HH,
+        Snare,
+        Kick,
+        Toms,
+        'general_MIDI',
+        0,
+        4,
+        4,
+        0,
+        4,
+        4
+      );
 
       // Observed: leading blank spacer + tom note-on + trailing blank spacer = 3.
       expect(midiTrack.events.length).toBe(3);
@@ -219,8 +264,34 @@ describe('GrooveUtils MIDI generation', () => {
       const Snare = new Array(16).fill(false);
       const Kick = new Array(16).fill(false);
 
-      gu.MIDI_from_HH_Snare_Kick_Arrays(withMetronome, HH, Snare, Kick, false, 'general_MIDI', 4, 16, 16, 0, 4, 4);
-      gu.MIDI_from_HH_Snare_Kick_Arrays(withoutMetronome, HH, Snare, Kick, false, 'general_MIDI', 0, 16, 16, 0, 4, 4);
+      gu.MIDI_from_HH_Snare_Kick_Arrays(
+        withMetronome,
+        HH,
+        Snare,
+        Kick,
+        false,
+        'general_MIDI',
+        4,
+        16,
+        16,
+        0,
+        4,
+        4
+      );
+      gu.MIDI_from_HH_Snare_Kick_Arrays(
+        withoutMetronome,
+        HH,
+        Snare,
+        Kick,
+        false,
+        'general_MIDI',
+        0,
+        16,
+        16,
+        0,
+        4,
+        4
+      );
 
       expect(withMetronome.events.length).toBeGreaterThan(withoutMetronome.events.length);
     });
@@ -234,7 +305,20 @@ describe('GrooveUtils MIDI generation', () => {
       // swing_percentage of 1.5 is out of the valid (0, 0.99) range; the
       // function logs a warning internally and falls back to 0 swing.
       expect(() => {
-        gu.MIDI_from_HH_Snare_Kick_Arrays(midiTrack, HH, Snare, Kick, false, 'general_MIDI', 0, 4, 4, 1.5, 4, 4);
+        gu.MIDI_from_HH_Snare_Kick_Arrays(
+          midiTrack,
+          HH,
+          Snare,
+          Kick,
+          false,
+          'general_MIDI',
+          0,
+          4,
+          4,
+          1.5,
+          4,
+          4
+        );
       }).not.toThrow();
 
       // Matches the event count of the equivalent zero-swing case above.
@@ -272,15 +356,22 @@ describe('GrooveUtils MIDI generation', () => {
 
       // Default callback surface - all present as functions.
       for (const method of [
-        'playEvent', 'loadMidiDataEvent', 'doesMidiDataNeedRefresh',
-        'pauseEvent', 'resumeEvent', 'stopEvent', 'repeatChangeEvent',
-        'percentProgress', 'notePlaying', 'midiInitialized',
+        'playEvent',
+        'loadMidiDataEvent',
+        'doesMidiDataNeedRefresh',
+        'pauseEvent',
+        'resumeEvent',
+        'stopEvent',
+        'repeatChangeEvent',
+        'percentProgress',
+        'notePlaying',
+        'midiInitialized',
       ]) {
         expect(typeof cb[method]).toBe('function');
       }
     });
 
-    it('doesMidiDataNeedRefresh reads root.midiEventCallbacks (the GrooveUtils singleton), not the instance\'s own flag', () => {
+    it("doesMidiDataNeedRefresh reads root.midiEventCallbacks (the GrooveUtils singleton), not the instance's own flag", () => {
       const cb = new gu.midiEventCallbackClass(gu);
 
       // A freshly-constructed instance's own flag is false, and so is the

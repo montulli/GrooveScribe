@@ -125,7 +125,11 @@ function buildRenderPipelineFixtures() {
   document.body.innerHTML +=
     '<textarea id="ABCsource"></textarea><div id="svgTarget"></div><div id="diverr"></div>' +
     '<div id="measureContainer"></div><input id="musicalInput">' +
-    '<span id="swingOutput' + idx + '"></span><input id="swingInput' + idx + '" type="range">';
+    '<span id="swingOutput' +
+    idx +
+    '"></span><input id="swingInput' +
+    idx +
+    '" type="range">';
 }
 
 beforeEach(async () => {
@@ -201,7 +205,9 @@ describe('metronome options menu', () => {
     expect(gw.myGrooveUtils.getMetronomeSolo()).toBe(true);
     // Solo forces a frequency when starting from 0 (metronome off).
     expect(gw.getMetronomeFrequency()).toBe(4);
-    expect(document.getElementById('metronomeOptionsContextMenuSolo').className).toContain('menuChecked');
+    expect(document.getElementById('metronomeOptionsContextMenuSolo').className).toContain(
+      'menuChecked'
+    );
     // metronomeOptionsMenuSetSelectedState() marks the anchor "selected" while solo is active.
     expect(document.getElementById('metronomeOptionsAnchor').className).toContain('selected');
   });
@@ -210,13 +216,19 @@ describe('metronome options menu', () => {
     gw.metronomeOptionsMenuPopupClick('Solo');
     gw.metronomeOptionsMenuPopupClick('Solo');
     expect(gw.myGrooveUtils.getMetronomeSolo()).toBe(false);
-    expect(document.getElementById('metronomeOptionsContextMenuSolo').className).not.toContain('menuChecked');
+    expect(document.getElementById('metronomeOptionsContextMenuSolo').className).not.toContain(
+      'menuChecked'
+    );
   });
 
   it('metronomeOptionsMenuPopupClick("SpeedUp") shows the auto-speedup configuration and checks the menu item', () => {
     gw.metronomeOptionsMenuPopupClick('SpeedUp');
-    expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe('block');
-    expect(document.getElementById('metronomeOptionsContextMenuSpeedUp').className).toContain('menuChecked');
+    expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe(
+      'block'
+    );
+    expect(document.getElementById('metronomeOptionsContextMenuSpeedUp').className).toContain(
+      'menuChecked'
+    );
     expect(document.getElementById('metronomeOptionsAnchor').className).toContain('selected');
   });
 
@@ -224,7 +236,9 @@ describe('metronome options menu', () => {
     gw.metronomeOptionsMenuPopupClick('SpeedUp');
     document.getElementById('metronomeAutoSpeedupConfiguration').style.display = 'none'; // simulate user closing it
     gw.metronomeOptionsMenuPopupClick('SpeedUp');
-    expect(document.getElementById('metronomeOptionsContextMenuSpeedUp').className).not.toContain('menuChecked');
+    expect(document.getElementById('metronomeOptionsContextMenuSpeedUp').className).not.toContain(
+      'menuChecked'
+    );
     // turning off does not re-open the popup
     expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe('none');
   });
@@ -241,8 +255,12 @@ describe('metronome options menu', () => {
 
   it('metronomeOptionsMenuPopupClick("OffTheOne") opens the non-triplet offset submenu by default', () => {
     gw.metronomeOptionsMenuPopupClick('OffTheOne');
-    expect(document.getElementById('metronomeOptionsOffsetClickContextMenu').style.display).toBe('block');
-    expect(document.getElementById('metronomeOptionsOffsetClickForTripletsContextMenu').style.display).toBe('');
+    expect(document.getElementById('metronomeOptionsOffsetClickContextMenu').style.display).toBe(
+      'block'
+    );
+    expect(
+      document.getElementById('metronomeOptionsOffsetClickForTripletsContextMenu').style.display
+    ).toBe('');
   });
 
   it('metronomeOptionsMenuPopupClick("OffTheOne") opens the triplets offset submenu when the division is a triplet division', () => {
@@ -253,8 +271,12 @@ describe('metronome options menu', () => {
 
     gw.metronomeOptionsMenuPopupClick('OffTheOne');
 
-    expect(document.getElementById('metronomeOptionsOffsetClickForTripletsContextMenu').style.display).toBe('block');
-    expect(document.getElementById('metronomeOptionsOffsetClickContextMenu').style.display).toBe('');
+    expect(
+      document.getElementById('metronomeOptionsOffsetClickForTripletsContextMenu').style.display
+    ).toBe('block');
+    expect(document.getElementById('metronomeOptionsOffsetClickContextMenu').style.display).toBe(
+      ''
+    );
   });
 
   it('metronomeOptionsMenuPopupClick("Dropper") is a documented no-op branch', () => {
@@ -274,23 +296,33 @@ describe('metronome options menu', () => {
     gw.metronomeOptionsMenuOffsetClickPopupClick('E');
 
     expect(gw.myGrooveUtils.getMetronomeOffsetClickStart()).toBe('E');
-    expect(document.getElementById('metronomeOptionsOffsetClickContextMenuOnTheE').className).toContain('menuChecked');
-    expect(document.getElementById('metronomeOptionsOffsetClickContextMenuOnThe1').className).not.toContain('menuChecked');
+    expect(
+      document.getElementById('metronomeOptionsOffsetClickContextMenuOnTheE').className
+    ).toContain('menuChecked');
+    expect(
+      document.getElementById('metronomeOptionsOffsetClickContextMenuOnThe1').className
+    ).not.toContain('menuChecked');
     // non-default offset (!= "1") marks the parent "Offset click" menu item checked too
-    expect(document.getElementById('metronomeOptionsContextMenuOffTheOne').className).toContain('menuChecked');
+    expect(document.getElementById('metronomeOptionsContextMenuOffTheOne').className).toContain(
+      'menuChecked'
+    );
   });
 
   it('metronomeOptionsMenuOffsetClickPopupClick("1") leaves the parent menu item unchecked (default state)', () => {
     gw.metronomeOptionsMenuOffsetClickPopupClick('E'); // move off default first
     gw.metronomeOptionsMenuOffsetClickPopupClick('1'); // back to default
-    expect(document.getElementById('metronomeOptionsContextMenuOffTheOne').className).not.toContain('menuChecked');
+    expect(document.getElementById('metronomeOptionsContextMenuOffTheOne').className).not.toContain(
+      'menuChecked'
+    );
   });
 
   it('resetMetronomeOptionsMenuOffsetClick resets the offset back to "1"', () => {
     gw.metronomeOptionsMenuOffsetClickPopupClick('E');
     gw.resetMetronomeOptionsMenuOffsetClick();
     expect(gw.myGrooveUtils.getMetronomeOffsetClickStart()).toBe('1');
-    expect(document.getElementById('metronomeOptionsContextMenuOffTheOne').className).not.toContain('menuChecked');
+    expect(document.getElementById('metronomeOptionsContextMenuOffTheOne').className).not.toContain(
+      'menuChecked'
+    );
   });
 });
 

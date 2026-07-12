@@ -43,8 +43,8 @@ describe('GrooveDisplay asset loading', () => {
     it('resolves a relative "./" path against the local script root', () => {
       GD.loadjscssfile('./relative.js', 'js');
       // The root is prepended verbatim, so the "./" segment is preserved.
-      const script = Array.from(document.getElementsByTagName('script')).find((s) =>
-        s.getAttribute('src') && s.getAttribute('src').endsWith('relative.js')
+      const script = Array.from(document.getElementsByTagName('script')).find(
+        (s) => s.getAttribute('src') && s.getAttribute('src').endsWith('relative.js')
       );
       expect(script).toBeTruthy();
       expect(script.getAttribute('src')).toBe('http://localhost/js/./relative.js');
@@ -78,18 +78,14 @@ describe('GrooveDisplay asset loading', () => {
       expect(GD.filesadded).not.toContain('[http://cdn.example.com/new.js]');
       GD.checkloadjscssfile('http://cdn.example.com/new.js', 'js');
       expect(GD.filesadded).toContain('[http://cdn.example.com/new.js]');
-      expect(
-        document.querySelector('script[src="http://cdn.example.com/new.js"]')
-      ).toBeTruthy();
+      expect(document.querySelector('script[src="http://cdn.example.com/new.js"]')).toBeTruthy();
     });
 
     it('does not re-add a file that is already present, and logs instead', () => {
       const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
       GD.checkloadjscssfile('http://cdn.example.com/dup.js', 'js');
       GD.checkloadjscssfile('http://cdn.example.com/dup.js', 'js');
-      const count = document.querySelectorAll(
-        'script[src="http://cdn.example.com/dup.js"]'
-      ).length;
+      const count = document.querySelectorAll('script[src="http://cdn.example.com/dup.js"]').length;
       expect(count).toBe(1);
       expect(logSpy).toHaveBeenCalledWith(
         expect.stringContaining('file already added!http://cdn.example.com/dup.js')

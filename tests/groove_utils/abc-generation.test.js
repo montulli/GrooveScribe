@@ -24,15 +24,16 @@ describe('GrooveUtils ABC notation generation', () => {
   describe('get_top_ABC_BoilerPlate', () => {
     it('emits title/author/comments/legend/meter for a fully-populated call', () => {
       const abc = gu.get_top_ABC_BoilerPlate(
-        false,        // isPermutation
-        'My Title',   // tuneTitle
-        'My Author',  // tuneAuthor
+        false, // isPermutation
+        'My Title', // tuneTitle
+        'My Author', // tuneAuthor
         'My Comment', // tuneComments
-        true,         // showLegend
-        false,        // isTriplets
-        true,         // kick_stems_up
-        4, 4,         // timeSigTop/Bottom
-        900           // renderWidth
+        true, // showLegend
+        false, // isTriplets
+        true, // kick_stems_up
+        4,
+        4, // timeSigTop/Bottom
+        900 // renderWidth
       );
 
       // header basics
@@ -65,15 +66,16 @@ describe('GrooveUtils ABC notation generation', () => {
 
     it('omits C:/P: lines, uses stretchlast 0, clamps small renderWidth, and skips the legend when disabled', () => {
       const abc = gu.get_top_ABC_BoilerPlate(
-        true,   // isPermutation
-        '',     // tuneTitle
-        '',     // tuneAuthor
-        '',     // tuneComments
-        false,  // showLegend
-        true,   // isTriplets (unused by this function - see below)
-        false,  // kick_stems_up (unused by this function - see below)
-        6, 8,   // timeSigTop/Bottom
-        100     // renderWidth (below the 400 minimum)
+        true, // isPermutation
+        '', // tuneTitle
+        '', // tuneAuthor
+        '', // tuneComments
+        false, // showLegend
+        true, // isTriplets (unused by this function - see below)
+        false, // kick_stems_up (unused by this function - see below)
+        6,
+        8, // timeSigTop/Bottom
+        100 // renderWidth (below the 400 minimum)
       );
 
       expect(abc).toContain('M:6/8\n');
@@ -96,42 +98,42 @@ describe('GrooveUtils ABC notation generation', () => {
       const normalized = abc.replace(/%%fullsvg _\d+\n/, '%%fullsvg _X\n');
       expect(normalized).toBe(
         '%abc\n%%fullsvg _X\nX:6\n' +
-        'M:6/8\n' +
-        'T: \n' +
-        'L:1/32\n' +
-        '%%stretchlast 0\n' +
-        '%%flatbeams 1\n' +
-        '%%ornament up\n' +
-        '%%pagewidth 300px\n' +
-        '%%leftmargin 0cm\n' +
-        '%%rightmargin 0cm\n' +
-        '%%topspace 10px\n' +
-        '%%titlefont calibri 20\n' +
-        '%%partsfont calibri 16\n' +
-        '%%gchordfont calibri 16\n' +
-        '%%annotationfont calibri 16\n' +
-        '%%infofont calibri 16\n' +
-        '%%textfont calibri 16\n' +
-        '%%deco (. 0 a 5 1 1 "@-8,-3("\n' +
-        '%%deco ). 0 a 5 1 1 "@4,-3)"\n' +
-        '%%beginsvg\n' +
-        ' <defs>\n' +
-        ' <path id="Xhead" d="m-3,-3 l6,6 m0,-6 l-6,6" class="stroke" style="stroke-width:1.2"/>\n' +
-        ' <path id="Trihead" d="m-3,2 l 6,0 l-3,-6 l-3,6 l6,0" class="stroke" style="stroke-width:1.2"/>\n' +
-        ' </defs>\n' +
-        '%%endsvg\n' +
-        '%%map drum ^g heads=Xhead print=g       % Hi-Hat\n' +
-        '%%map drum ^c\' heads=Xhead print=c\'   % Crash\n' +
-        '%%map drum ^d\' heads=Xhead print=d\'   % Stacker\n' +
-        '%%map drum ^e\' heads=Xhead print=e\'   % Metronome click\n' +
-        '%%map drum ^f\' heads=Xhead print=f\'   % Metronome beep\n' +
-        '%%map drum ^A\' heads=Xhead print=A\'   % Ride\n' +
-        '%%map drum ^B\' heads=Trihead print=A\' % Ride Bell\n' +
-        '%%map drum ^D\' heads=Trihead print=g   % Cow Bell\n' +
-        '%%map drum ^c heads=Xhead print=c  % Cross Stick\n' +
-        '%%map drum ^d, heads=Xhead print=d,  % Foot Splash\n' +
-        '%%staves (Stickings Hands Feet)\n' +
-        'K:C clef=perc\n'
+          'M:6/8\n' +
+          'T: \n' +
+          'L:1/32\n' +
+          '%%stretchlast 0\n' +
+          '%%flatbeams 1\n' +
+          '%%ornament up\n' +
+          '%%pagewidth 300px\n' +
+          '%%leftmargin 0cm\n' +
+          '%%rightmargin 0cm\n' +
+          '%%topspace 10px\n' +
+          '%%titlefont calibri 20\n' +
+          '%%partsfont calibri 16\n' +
+          '%%gchordfont calibri 16\n' +
+          '%%annotationfont calibri 16\n' +
+          '%%infofont calibri 16\n' +
+          '%%textfont calibri 16\n' +
+          '%%deco (. 0 a 5 1 1 "@-8,-3("\n' +
+          '%%deco ). 0 a 5 1 1 "@4,-3)"\n' +
+          '%%beginsvg\n' +
+          ' <defs>\n' +
+          ' <path id="Xhead" d="m-3,-3 l6,6 m0,-6 l-6,6" class="stroke" style="stroke-width:1.2"/>\n' +
+          ' <path id="Trihead" d="m-3,2 l 6,0 l-3,-6 l-3,6 l6,0" class="stroke" style="stroke-width:1.2"/>\n' +
+          ' </defs>\n' +
+          '%%endsvg\n' +
+          '%%map drum ^g heads=Xhead print=g       % Hi-Hat\n' +
+          "%%map drum ^c' heads=Xhead print=c'   % Crash\n" +
+          "%%map drum ^d' heads=Xhead print=d'   % Stacker\n" +
+          "%%map drum ^e' heads=Xhead print=e'   % Metronome click\n" +
+          "%%map drum ^f' heads=Xhead print=f'   % Metronome beep\n" +
+          "%%map drum ^A' heads=Xhead print=A'   % Ride\n" +
+          "%%map drum ^B' heads=Trihead print=A' % Ride Bell\n" +
+          "%%map drum ^D' heads=Trihead print=g   % Cow Bell\n" +
+          '%%map drum ^c heads=Xhead print=c  % Cross Stick\n' +
+          '%%map drum ^d, heads=Xhead print=d,  % Foot Splash\n' +
+          '%%staves (Stickings Hands Feet)\n' +
+          'K:C clef=perc\n'
       );
     });
 
@@ -154,13 +156,43 @@ describe('GrooveUtils ABC notation generation', () => {
     // straight divisions, 48 for triplet divisions), exactly like
     // createABCFromGrooveData produces internally via scaleNoteArrayToFullSize.
     function buildFullSizeArrays(gd) {
-      const sticking = gu.scaleNoteArrayToFullSize(gd.sticking_array, gd.numberOfMeasures, gd.notesPerMeasure, gd.numBeats, gd.noteValue);
-      const hh = gu.scaleNoteArrayToFullSize(gd.hh_array, gd.numberOfMeasures, gd.notesPerMeasure, gd.numBeats, gd.noteValue);
-      const snare = gu.scaleNoteArrayToFullSize(gd.snare_array, gd.numberOfMeasures, gd.notesPerMeasure, gd.numBeats, gd.noteValue);
-      const kick = gu.scaleNoteArrayToFullSize(gd.kick_array, gd.numberOfMeasures, gd.notesPerMeasure, gd.numBeats, gd.noteValue);
+      const sticking = gu.scaleNoteArrayToFullSize(
+        gd.sticking_array,
+        gd.numberOfMeasures,
+        gd.notesPerMeasure,
+        gd.numBeats,
+        gd.noteValue
+      );
+      const hh = gu.scaleNoteArrayToFullSize(
+        gd.hh_array,
+        gd.numberOfMeasures,
+        gd.notesPerMeasure,
+        gd.numBeats,
+        gd.noteValue
+      );
+      const snare = gu.scaleNoteArrayToFullSize(
+        gd.snare_array,
+        gd.numberOfMeasures,
+        gd.notesPerMeasure,
+        gd.numBeats,
+        gd.noteValue
+      );
+      const kick = gu.scaleNoteArrayToFullSize(
+        gd.kick_array,
+        gd.numberOfMeasures,
+        gd.notesPerMeasure,
+        gd.numBeats,
+        gd.noteValue
+      );
       const toms = [];
       for (let i = 0; i < 4; i++) {
-        toms[i] = gu.scaleNoteArrayToFullSize(gd.toms_array[i], gd.numberOfMeasures, gd.notesPerMeasure, gd.numBeats, gd.noteValue);
+        toms[i] = gu.scaleNoteArrayToFullSize(
+          gd.toms_array[i],
+          gd.numberOfMeasures,
+          gd.notesPerMeasure,
+          gd.numBeats,
+          gd.noteValue
+        );
       }
       return { sticking, hh, snare, kick, toms };
     }
@@ -170,16 +202,25 @@ describe('GrooveUtils ABC notation generation', () => {
         '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&H=|xxxxxxxxxxxxxxxx|&S=|----o-------o---|&K=|o-------o-------|'
       );
       const { sticking, hh, snare, kick, toms } = buildFullSizeArrays(gd);
-      const is_triplet_division = gu.isTripletDivisionFromNotesPerMeasure(gd.notesPerMeasure, gd.numBeats, gd.noteValue);
+      const is_triplet_division = gu.isTripletDivisionFromNotesPerMeasure(
+        gd.notesPerMeasure,
+        gd.numBeats,
+        gd.noteValue
+      );
 
       const out = gu.create_ABC_from_snare_HH_kick_arrays(
-        sticking, hh, snare, kick, toms,
+        sticking,
+        hh,
+        snare,
+        kick,
+        toms,
         '|\n',
         hh.length,
         gd.timeDivision,
         gu.notesPerMeasureInFullSizeArray(is_triplet_division, gd.numBeats, gd.noteValue),
         gd.kickStemsUp,
-        gd.numBeats, gd.noteValue
+        gd.numBeats,
+        gd.noteValue
       );
 
       // Fully deterministic (no volatile unique-index) -> exact string check.
@@ -187,10 +228,10 @@ describe('GrooveUtils ABC notation generation', () => {
       // hi-hat token, e.g. "[^g2F2]", because kickStemsUp defaults to true.
       expect(out).toBe(
         'V:Stickings\n' +
-        'x8 x8 x8 x8 ||\n' +
-        'V:Hands stem=up\n' +
-        '%%voicemap drum\n' +
-        '[^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 [^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 ||\n'
+          'x8 x8 x8 x8 ||\n' +
+          'V:Hands stem=up\n' +
+          '%%voicemap drum\n' +
+          '[^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 [^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 ||\n'
       );
     });
 
@@ -200,16 +241,25 @@ describe('GrooveUtils ABC notation generation', () => {
       );
       gd.kickStemsUp = false;
       const { sticking, hh, snare, kick, toms } = buildFullSizeArrays(gd);
-      const is_triplet_division = gu.isTripletDivisionFromNotesPerMeasure(gd.notesPerMeasure, gd.numBeats, gd.noteValue);
+      const is_triplet_division = gu.isTripletDivisionFromNotesPerMeasure(
+        gd.notesPerMeasure,
+        gd.numBeats,
+        gd.noteValue
+      );
 
       const out = gu.create_ABC_from_snare_HH_kick_arrays(
-        sticking, hh, snare, kick, toms,
+        sticking,
+        hh,
+        snare,
+        kick,
+        toms,
         '|\n',
         hh.length,
         gd.timeDivision,
         gu.notesPerMeasureInFullSizeArray(is_triplet_division, gd.numBeats, gd.noteValue),
         gd.kickStemsUp,
-        gd.numBeats, gd.noteValue
+        gd.numBeats,
+        gd.noteValue
       );
 
       expect(out).toContain('V:Feet stem=down\n%%voicemap drum\nF8 z8 F8 z8 ||\n');
@@ -222,17 +272,26 @@ describe('GrooveUtils ABC notation generation', () => {
         '?TimeSig=4/4&Div=12&Tempo=90&Measures=1&H=|xxxxxxxxxxxx|&S=|----o-------|&K=|o-----------|'
       );
       const { sticking, hh, snare, kick, toms } = buildFullSizeArrays(gd);
-      const is_triplet_division = gu.isTripletDivisionFromNotesPerMeasure(gd.notesPerMeasure, gd.numBeats, gd.noteValue);
+      const is_triplet_division = gu.isTripletDivisionFromNotesPerMeasure(
+        gd.notesPerMeasure,
+        gd.numBeats,
+        gd.noteValue
+      );
       expect(is_triplet_division).toBe(true);
 
       const out = gu.create_ABC_from_snare_HH_kick_arrays(
-        sticking, hh, snare, kick, toms,
+        sticking,
+        hh,
+        snare,
+        kick,
+        toms,
         '|\n',
         hh.length,
         gd.timeDivision,
         gu.notesPerMeasureInFullSizeArray(is_triplet_division, gd.numBeats, gd.noteValue),
         gd.kickStemsUp,
-        gd.numBeats, gd.noteValue
+        gd.numBeats,
+        gd.noteValue
       );
 
       expect(out).toContain('(3:3:3');
@@ -250,47 +309,47 @@ describe('GrooveUtils ABC notation generation', () => {
 
       expect(normalized).toBe(
         '%abc\n%%fullsvg _X\nX:6\n' +
-        'M:4/4\n' +
-        'T: \n' +
-        'L:1/32\n' +
-        '%%stretchlast 1\n' +
-        '%%flatbeams 1\n' +
-        '%%ornament up\n' +
-        '%%pagewidth 675px\n' +
-        '%%leftmargin 0cm\n' +
-        '%%rightmargin 0cm\n' +
-        '%%topspace 10px\n' +
-        '%%titlefont calibri 20\n' +
-        '%%partsfont calibri 16\n' +
-        '%%gchordfont calibri 16\n' +
-        '%%annotationfont calibri 16\n' +
-        '%%infofont calibri 16\n' +
-        '%%textfont calibri 16\n' +
-        '%%deco (. 0 a 5 1 1 "@-8,-3("\n' +
-        '%%deco ). 0 a 5 1 1 "@4,-3)"\n' +
-        '%%beginsvg\n' +
-        ' <defs>\n' +
-        ' <path id="Xhead" d="m-3,-3 l6,6 m0,-6 l-6,6" class="stroke" style="stroke-width:1.2"/>\n' +
-        ' <path id="Trihead" d="m-3,2 l 6,0 l-3,-6 l-3,6 l6,0" class="stroke" style="stroke-width:1.2"/>\n' +
-        ' </defs>\n' +
-        '%%endsvg\n' +
-        '%%map drum ^g heads=Xhead print=g       % Hi-Hat\n' +
-        '%%map drum ^c\' heads=Xhead print=c\'   % Crash\n' +
-        '%%map drum ^d\' heads=Xhead print=d\'   % Stacker\n' +
-        '%%map drum ^e\' heads=Xhead print=e\'   % Metronome click\n' +
-        '%%map drum ^f\' heads=Xhead print=f\'   % Metronome beep\n' +
-        '%%map drum ^A\' heads=Xhead print=A\'   % Ride\n' +
-        '%%map drum ^B\' heads=Trihead print=A\' % Ride Bell\n' +
-        '%%map drum ^D\' heads=Trihead print=g   % Cow Bell\n' +
-        '%%map drum ^c heads=Xhead print=c  % Cross Stick\n' +
-        '%%map drum ^d, heads=Xhead print=d,  % Foot Splash\n' +
-        '%%staves (Stickings Hands Feet)\n' +
-        'K:C clef=perc\n' +
-        'V:Stickings\n' +
-        'x8 x8 x8 x8 ||\n' +
-        'V:Hands stem=up\n' +
-        '%%voicemap drum\n' +
-        '[^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 [^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 ||\n'
+          'M:4/4\n' +
+          'T: \n' +
+          'L:1/32\n' +
+          '%%stretchlast 1\n' +
+          '%%flatbeams 1\n' +
+          '%%ornament up\n' +
+          '%%pagewidth 675px\n' +
+          '%%leftmargin 0cm\n' +
+          '%%rightmargin 0cm\n' +
+          '%%topspace 10px\n' +
+          '%%titlefont calibri 20\n' +
+          '%%partsfont calibri 16\n' +
+          '%%gchordfont calibri 16\n' +
+          '%%annotationfont calibri 16\n' +
+          '%%infofont calibri 16\n' +
+          '%%textfont calibri 16\n' +
+          '%%deco (. 0 a 5 1 1 "@-8,-3("\n' +
+          '%%deco ). 0 a 5 1 1 "@4,-3)"\n' +
+          '%%beginsvg\n' +
+          ' <defs>\n' +
+          ' <path id="Xhead" d="m-3,-3 l6,6 m0,-6 l-6,6" class="stroke" style="stroke-width:1.2"/>\n' +
+          ' <path id="Trihead" d="m-3,2 l 6,0 l-3,-6 l-3,6 l6,0" class="stroke" style="stroke-width:1.2"/>\n' +
+          ' </defs>\n' +
+          '%%endsvg\n' +
+          '%%map drum ^g heads=Xhead print=g       % Hi-Hat\n' +
+          "%%map drum ^c' heads=Xhead print=c'   % Crash\n" +
+          "%%map drum ^d' heads=Xhead print=d'   % Stacker\n" +
+          "%%map drum ^e' heads=Xhead print=e'   % Metronome click\n" +
+          "%%map drum ^f' heads=Xhead print=f'   % Metronome beep\n" +
+          "%%map drum ^A' heads=Xhead print=A'   % Ride\n" +
+          "%%map drum ^B' heads=Trihead print=A' % Ride Bell\n" +
+          "%%map drum ^D' heads=Trihead print=g   % Cow Bell\n" +
+          '%%map drum ^c heads=Xhead print=c  % Cross Stick\n' +
+          '%%map drum ^d, heads=Xhead print=d,  % Foot Splash\n' +
+          '%%staves (Stickings Hands Feet)\n' +
+          'K:C clef=perc\n' +
+          'V:Stickings\n' +
+          'x8 x8 x8 x8 ||\n' +
+          'V:Hands stem=up\n' +
+          '%%voicemap drum\n' +
+          '[^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 [^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 ||\n'
       );
     });
 
@@ -335,24 +394,24 @@ describe('GrooveUtils ABC notation generation', () => {
     it('joins multiple measures with a single bar "|" and ends the voice with "||"', () => {
       const gd = gu.getGrooveDataFromUrlString(
         '?TimeSig=4/4&Div=16&Tempo=90&Measures=2' +
-        '&H=|xxxxxxxxxxxxxxxx|xxxxxxxxxxxxxxxx|' +
-        '&S=|----o-------o---|----o-------o---|' +
-        '&K=|o-------o-------|o-------o-------|'
+          '&H=|xxxxxxxxxxxxxxxx|xxxxxxxxxxxxxxxx|' +
+          '&S=|----o-------o---|----o-------o---|' +
+          '&K=|o-------o-------|o-------o-------|'
       );
       const abc = gu.createABCFromGrooveData(gd, 900);
       const handsVoice = abc.split('V:Hands stem=up\n%%voicemap drum\n')[1];
       // exactly one mid-line bar "|" (not "||") separating the two measures, then "||" at the end
       expect(handsVoice).toBe(
         '[^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 [^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 |\n' +
-        '[^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 [^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 ||\n'
+          '[^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 [^g2F2]^g2^g2^g2 [c2^g2]^g2^g2^g2 ||\n'
       );
     });
 
     it('adds a tom voice-chord token when showToms is enabled via a T1-T4 URL param', () => {
       const gd = gu.getGrooveDataFromUrlString(
         '?TimeSig=4/4&Div=16&Tempo=90&Measures=1' +
-        '&H=|xxxxxxxxxxxxxxxx|&S=|----o-------o---|&K=|o-------o-------|' +
-        '&T1=|----------------|&T2=|----------o-----|'
+          '&H=|xxxxxxxxxxxxxxxx|&S=|----o-------o---|&K=|o-------o-------|' +
+          '&T1=|----------------|&T2=|----------o-----|'
       );
       expect(gd.showToms).toBe(true);
       const abc = gu.createABCFromGrooveData(gd, 900);
@@ -363,12 +422,14 @@ describe('GrooveUtils ABC notation generation', () => {
     it('renders per-note sticking annotations in the Stickings voice when showStickings is enabled', () => {
       const gd = gu.getGrooveDataFromUrlString(
         '?TimeSig=4/4&Div=16&Tempo=90&Measures=1' +
-        '&H=|xxxxxxxxxxxxxxxx|&S=|----o-------o---|&K=|o-------o-------|' +
-        '&Stickings=|RLRLRLRLRLRLRLRL|'
+          '&H=|xxxxxxxxxxxxxxxx|&S=|----o-------o---|&K=|o-------o-------|' +
+          '&Stickings=|RLRLRLRLRLRLRLRL|'
       );
       expect(gd.showStickings).toBe(true);
       const abc = gu.createABCFromGrooveData(gd, 900);
-      expect(abc).toContain('V:Stickings\n"R"x2"L"x2"R"x2"L"x2 "R"x2"L"x2"R"x2"L"x2 "R"x2"L"x2"R"x2"L"x2 "R"x2"L"x2"R"x2"L"x2 ||\n');
+      expect(abc).toContain(
+        'V:Stickings\n"R"x2"L"x2"R"x2"L"x2 "R"x2"L"x2"R"x2"L"x2 "R"x2"L"x2"R"x2"L"x2 "R"x2"L"x2"R"x2"L"x2 ||\n'
+      );
     });
 
     it('is unaffected by swingPercent (swing only affects MIDI playback, not ABC notation)', () => {

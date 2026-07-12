@@ -115,10 +115,18 @@ function buildFixture(gw, measures = 1) {
     '<span id="showHideTomsButton"></span>' +
     '<span id="stickingsButton"></span>' +
     '<input id="showLegend" type="checkbox">' +
-    '<div id="swingOutput' + gw.myGrooveUtils.grooveUtilsUniqueIndex + '"></div>' +
-    '<input id="swingInput' + gw.myGrooveUtils.grooveUtilsUniqueIndex + '">' +
-    '<input id="tempoInput' + gw.myGrooveUtils.grooveUtilsUniqueIndex + '" value="80">' +
-    '<input id="tempoTextField' + gw.myGrooveUtils.grooveUtilsUniqueIndex + '">' +
+    '<div id="swingOutput' +
+    gw.myGrooveUtils.grooveUtilsUniqueIndex +
+    '"></div>' +
+    '<input id="swingInput' +
+    gw.myGrooveUtils.grooveUtilsUniqueIndex +
+    '">' +
+    '<input id="tempoInput' +
+    gw.myGrooveUtils.grooveUtilsUniqueIndex +
+    '" value="80">' +
+    '<input id="tempoTextField' +
+    gw.myGrooveUtils.grooveUtilsUniqueIndex +
+    '">' +
     '<input id="GrooveDB_source">';
   document.body.appendChild(chrome);
 
@@ -347,10 +355,14 @@ describe('GrooveWriter core state & undo/redo', () => {
       let gd = gw.grooveDataFromClickableUI();
       expect(gd.sticking_array[0]).toBe('"R"x'); // constant_ABC_STICK_R
 
-      gw.AddFullURLToUndoStack(gw.myGrooveUtils.getUrlStringFromGrooveData(gw.grooveDataFromClickableUI()));
+      gw.AddFullURLToUndoStack(
+        gw.myGrooveUtils.getUrlStringFromGrooveData(gw.grooveDataFromClickableUI())
+      );
       // change the sticking again and record a 2nd, different state
       gw.noteLeftClick(null, 'sticking', 0); // right -> left
-      gw.AddFullURLToUndoStack(gw.myGrooveUtils.getUrlStringFromGrooveData(gw.grooveDataFromClickableUI()));
+      gw.AddFullURLToUndoStack(
+        gw.myGrooveUtils.getUrlStringFromGrooveData(gw.grooveDataFromClickableUI())
+      );
 
       gw.undoCommand(); // restore the "right" state
       gd = gw.grooveDataFromClickableUI();
@@ -445,7 +457,9 @@ describe('GrooveWriter metronomeAutoSpeedUpTempoUpdate', () => {
       Player: {
         timeWarp: null,
         BPM: null,
-        loadFile: vi.fn((url, cb) => { if (cb) cb(); }),
+        loadFile: vi.fn((url, cb) => {
+          if (cb) cb();
+        }),
         pause: vi.fn(),
         resume: vi.fn(),
         stop: vi.fn(),
@@ -458,7 +472,9 @@ describe('GrooveWriter metronomeAutoSpeedUpTempoUpdate', () => {
         endTime: 0,
         ctx: { resume: vi.fn() },
       },
-      loadPlugin: vi.fn((opts) => { if (opts && opts.callback) opts.callback(); }),
+      loadPlugin: vi.fn((opts) => {
+        if (opts && opts.callback) opts.callback();
+      }),
       programChange: vi.fn(),
     };
   }
@@ -486,8 +502,12 @@ describe('GrooveWriter metronomeAutoSpeedUpTempoUpdate', () => {
     globalThis.MIDI = makeMidiMock();
     const gw = await newGrooveWriter();
     document.body.innerHTML =
-      '<input id="tempoInput' + gw.myGrooveUtils.grooveUtilsUniqueIndex + '" value="80">' +
-      '<input id="tempoTextField' + gw.myGrooveUtils.grooveUtilsUniqueIndex + '">';
+      '<input id="tempoInput' +
+      gw.myGrooveUtils.grooveUtilsUniqueIndex +
+      '" value="80">' +
+      '<input id="tempoTextField' +
+      gw.myGrooveUtils.grooveUtilsUniqueIndex +
+      '">';
 
     gw.myGrooveUtils.startMIDI_playback(); // sets the module-level start time to "now"
     gw.metronomeAutoSpeedUpTempoUpdate();
@@ -501,8 +521,12 @@ describe('GrooveWriter metronomeAutoSpeedUpTempoUpdate', () => {
     globalThis.MIDI = makeMidiMock();
     const gw = await newGrooveWriter();
     document.body.innerHTML =
-      '<input id="tempoInput' + gw.myGrooveUtils.grooveUtilsUniqueIndex + '" value="80">' +
-      '<input id="tempoTextField' + gw.myGrooveUtils.grooveUtilsUniqueIndex + '">';
+      '<input id="tempoInput' +
+      gw.myGrooveUtils.grooveUtilsUniqueIndex +
+      '" value="80">' +
+      '<input id="tempoTextField' +
+      gw.myGrooveUtils.grooveUtilsUniqueIndex +
+      '">';
 
     gw.myGrooveUtils.startMIDI_playback();
     gw.metronomeAutoSpeedUpTempoUpdate(); // baseline, t=0
@@ -525,8 +549,12 @@ describe('GrooveWriter metronomeAutoSpeedUpTempoUpdate', () => {
     globalThis.MIDI = makeMidiMock();
     const gw = await newGrooveWriter();
     document.body.innerHTML =
-      '<input id="tempoInput' + gw.myGrooveUtils.grooveUtilsUniqueIndex + '" value="80">' +
-      '<input id="tempoTextField' + gw.myGrooveUtils.grooveUtilsUniqueIndex + '">' +
+      '<input id="tempoInput' +
+      gw.myGrooveUtils.grooveUtilsUniqueIndex +
+      '" value="80">' +
+      '<input id="tempoTextField' +
+      gw.myGrooveUtils.grooveUtilsUniqueIndex +
+      '">' +
       '<input id="metronomeAutoSpeedupTempoIncreaseAmount" value="5">' +
       '<input id="metronomeAutoSpeedupTempoIncreaseInterval" value="1">' + // 1 minute -> 60s
       '<input id="metronomeAutoSpeedUpKeepGoingForever" type="checkbox">';
@@ -550,8 +578,12 @@ describe('GrooveWriter metronomeAutoSpeedUpTempoUpdate', () => {
     globalThis.MIDI = makeMidiMock();
     const gw = await newGrooveWriter();
     document.body.innerHTML =
-      '<input id="tempoInput' + gw.myGrooveUtils.grooveUtilsUniqueIndex + '" value="80">' +
-      '<input id="tempoTextField' + gw.myGrooveUtils.grooveUtilsUniqueIndex + '">' +
+      '<input id="tempoInput' +
+      gw.myGrooveUtils.grooveUtilsUniqueIndex +
+      '" value="80">' +
+      '<input id="tempoTextField' +
+      gw.myGrooveUtils.grooveUtilsUniqueIndex +
+      '">' +
       '<input id="metronomeAutoSpeedupTempoIncreaseAmount" value="1">' +
       '<input id="metronomeAutoSpeedupTempoIncreaseInterval" value="1">' +
       '<input id="metronomeAutoSpeedUpKeepGoingForever" type="checkbox" checked>';

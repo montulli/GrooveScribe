@@ -246,7 +246,9 @@ describe('GrooveWriter url-export (js/groove_writer.js)', () => {
       instances[0].responseText = JSON.stringify({ shortLink: 'https://gscribe.com/share/xyz' });
       instances[0].onload();
 
-      expect(document.getElementById('fullURLPopupTextField').value).toBe('https://gscribe.com/share/xyz');
+      expect(document.getElementById('fullURLPopupTextField').value).toBe(
+        'https://gscribe.com/share/xyz'
+      );
       expect(document.getElementById('shortenerCheckbox').checked).toBe(true);
     });
 
@@ -440,7 +442,11 @@ describe('GrooveWriter url-export (js/groove_writer.js)', () => {
       // separator when a title is set (so "MyTune" + "svg" = "MyTunesvg"),
       // unlike the untitled-case default "notation." (which already has a
       // trailing dot baked in).
-      expect(PabloFn.lastChain.download).toHaveBeenCalledWith('svg', 'MyTunesvg', expect.any(Function));
+      expect(PabloFn.lastChain.download).toHaveBeenCalledWith(
+        'svg',
+        'MyTunesvg',
+        expect.any(Function)
+      );
     });
 
     it('SVGSaveAs falls back to "notation.svg" as the filename when no title is set', async () => {
@@ -451,7 +457,11 @@ describe('GrooveWriter url-export (js/groove_writer.js)', () => {
 
       gw.SVGSaveAs();
 
-      expect(PabloFn.lastChain.download).toHaveBeenCalledWith('svg', 'notation.svg', expect.any(Function));
+      expect(PabloFn.lastChain.download).toHaveBeenCalledWith(
+        'svg',
+        'notation.svg',
+        expect.any(Function)
+      );
     });
 
     it('PNGSaveAs calls Pablo.support.image.png(...) and, when acceptable, downloads as "png"', async () => {
@@ -464,7 +474,11 @@ describe('GrooveWriter url-export (js/groove_writer.js)', () => {
       gw.PNGSaveAs();
 
       expect(PabloFn.support.image.png).toHaveBeenCalledTimes(1);
-      expect(PabloFn.lastChain.download).toHaveBeenCalledWith('png', 'MyTunepng', expect.any(Function));
+      expect(PabloFn.lastChain.download).toHaveBeenCalledWith(
+        'png',
+        'MyTunepng',
+        expect.any(Function)
+      );
     });
 
     it('PNGSaveAs alerts and skips the download when the browser cannot export PNG', async () => {
@@ -561,7 +575,7 @@ describe('GrooveWriter url-export (js/groove_writer.js)', () => {
 
       gw.loadNewGroove(
         '?TimeSig=4/4&Div=16&Title=Foo&Author=Bar&Tempo=100&Measures=1' +
-        '&H=|x-x-x-x-x-x-x-x-|&S=|----O-------O---|&K=|o-------o-------|'
+          '&H=|x-x-x-x-x-x-x-x-|&S=|----O-------O---|&K=|o-------o-------|'
       );
 
       // Metadata fields populated from the URL.

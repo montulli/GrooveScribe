@@ -29,24 +29,24 @@ function shimCrossModuleConstants() {
   globalThis.constant_ABC_HH_Stacker = "^d'";
   globalThis.constant_ABC_HH_Metronome_Normal = "^e'";
   globalThis.constant_ABC_HH_Metronome_Accent = "^f'";
-  globalThis.constant_ABC_HH_Open = "!open!^g";
-  globalThis.constant_ABC_HH_Close = "!plus!^g";
-  globalThis.constant_ABC_HH_Accent = "!accent!^g";
-  globalThis.constant_ABC_HH_Normal = "^g";
-  globalThis.constant_ABC_SN_Ghost = "!(.!!).!c";
-  globalThis.constant_ABC_SN_Accent = "!accent!c";
-  globalThis.constant_ABC_SN_Normal = "c";
-  globalThis.constant_ABC_SN_XStick = "^c";
-  globalThis.constant_ABC_SN_Buzz = "!///!c";
-  globalThis.constant_ABC_SN_Flam = "!accent!{/c}c";
-  globalThis.constant_ABC_SN_Drag = "{/cc}c";
-  globalThis.constant_ABC_KI_SandK = "[F^d,]";
-  globalThis.constant_ABC_KI_Splash = "^d,";
-  globalThis.constant_ABC_KI_Normal = "F";
-  globalThis.constant_ABC_T1_Normal = "e";
-  globalThis.constant_ABC_T2_Normal = "d";
-  globalThis.constant_ABC_T3_Normal = "B";
-  globalThis.constant_ABC_T4_Normal = "A";
+  globalThis.constant_ABC_HH_Open = '!open!^g';
+  globalThis.constant_ABC_HH_Close = '!plus!^g';
+  globalThis.constant_ABC_HH_Accent = '!accent!^g';
+  globalThis.constant_ABC_HH_Normal = '^g';
+  globalThis.constant_ABC_SN_Ghost = '!(.!!).!c';
+  globalThis.constant_ABC_SN_Accent = '!accent!c';
+  globalThis.constant_ABC_SN_Normal = 'c';
+  globalThis.constant_ABC_SN_XStick = '^c';
+  globalThis.constant_ABC_SN_Buzz = '!///!c';
+  globalThis.constant_ABC_SN_Flam = '!accent!{/c}c';
+  globalThis.constant_ABC_SN_Drag = '{/cc}c';
+  globalThis.constant_ABC_KI_SandK = '[F^d,]';
+  globalThis.constant_ABC_KI_Splash = '^d,';
+  globalThis.constant_ABC_KI_Normal = 'F';
+  globalThis.constant_ABC_T1_Normal = 'e';
+  globalThis.constant_ABC_T2_Normal = 'd';
+  globalThis.constant_ABC_T3_Normal = 'B';
+  globalThis.constant_ABC_T4_Normal = 'A';
   globalThis.constant_NUMBER_OF_TOMS = 4;
   globalThis.constant_ABC_OFF = false;
   globalThis.constant_OUR_MIDI_VELOCITY_NORMAL = 85;
@@ -100,10 +100,18 @@ function addExtraFixtures() {
 
   // Context menus referenced by noteRightClick/noteLabelClick.
   const menuIds = [
-    'stickingContextMenu', 'hhContextMenu', 'tom1ContextMenu', 'tom4ContextMenu',
-    'snareContextMenu', 'kickContextMenu',
-    'stickingsLabelContextMenu', 'hhLabelContextMenu', 'tom1LabelContextMenu',
-    'tom4LabelContextMenu', 'snareLabelContextMenu', 'kickLabelContextMenu',
+    'stickingContextMenu',
+    'hhContextMenu',
+    'tom1ContextMenu',
+    'tom4ContextMenu',
+    'snareContextMenu',
+    'kickContextMenu',
+    'stickingsLabelContextMenu',
+    'hhLabelContextMenu',
+    'tom1LabelContextMenu',
+    'tom4LabelContextMenu',
+    'snareLabelContextMenu',
+    'kickLabelContextMenu',
   ];
   menuIds.forEach((id) => {
     const ul = document.createElement('ul');

@@ -164,8 +164,8 @@ describe('GrooveUtils metronome & state helpers', () => {
   describe('isTripletDivisionFromNotesPerMeasure', () => {
     it('detects triplet divisions (implied division divisible by 12) in 4/4', () => {
       expect(gu.isTripletDivisionFromNotesPerMeasure(16, 4, 4)).toBe(false); // division 16
-      expect(gu.isTripletDivisionFromNotesPerMeasure(12, 4, 4)).toBe(true);  // division 12
-      expect(gu.isTripletDivisionFromNotesPerMeasure(24, 4, 4)).toBe(true);  // division 24
+      expect(gu.isTripletDivisionFromNotesPerMeasure(12, 4, 4)).toBe(true); // division 12
+      expect(gu.isTripletDivisionFromNotesPerMeasure(24, 4, 4)).toBe(true); // division 24
     });
 
     it('accounts for the time signature when deriving the implied division', () => {
@@ -178,23 +178,13 @@ describe('GrooveUtils metronome & state helpers', () => {
 
   describe('figure_out_sticking_count_for_index', () => {
     it('labels a 16/4/4 measure as 1,e,&,a groups per beat', () => {
-      const expected = [
-        1, 'e', '&', 'a',
-        2, 'e', '&', 'a',
-        3, 'e', '&', 'a',
-        4, 'e', '&', 'a',
-      ];
+      const expected = [1, 'e', '&', 'a', 2, 'e', '&', 'a', 3, 'e', '&', 'a', 4, 'e', '&', 'a'];
       const actual = expected.map((_, i) => gu.figure_out_sticking_count_for_index(i, 16, 16, 4));
       expect(actual).toEqual(expected);
     });
 
     it('labels a 12/4/4 (8th-note triplet) measure as 1,&,a groups per beat', () => {
-      const expected = [
-        1, '&', 'a',
-        2, '&', 'a',
-        3, '&', 'a',
-        4, '&', 'a',
-      ];
+      const expected = [1, '&', 'a', 2, '&', 'a', 3, '&', 'a', 4, '&', 'a'];
       const actual = expected.map((_, i) => gu.figure_out_sticking_count_for_index(i, 12, 12, 4));
       expect(actual).toEqual(expected);
     });

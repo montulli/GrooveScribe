@@ -35,10 +35,7 @@ function legacyGlobalExportsPlugin() {
       // Guard each name with `typeof` so a file that conditionally defines its
       // global (e.g. grooves.js / groove_display.js) still exports cleanly.
       const decls = names
-        .map(
-          (n) =>
-            `const __export_${n} = (typeof ${n} !== 'undefined') ? ${n} : undefined;`
-        )
+        .map((n) => `const __export_${n} = (typeof ${n} !== 'undefined') ? ${n} : undefined;`)
         .join('\n');
       const exportList = names.map((n) => `__export_${n} as ${n}`).join(', ');
       return {

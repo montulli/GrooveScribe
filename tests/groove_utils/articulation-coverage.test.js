@@ -41,29 +41,35 @@ describe('articulation & rendering coverage sweep', () => {
     expect(abc).toMatch(/M:\s*\d+\/\d+/);
   });
 
-  it.each(coverageGrooves)('generates a MIDI data URL for "$name" (both output types)', ({ url }) => {
-    const gd = gu.getGrooveDataFromUrlString(url);
-    // Default (Custom / "our" velocities) path...
-    const custom = gu.create_MIDIURLFromGrooveData(gd);
-    // ...and the general_MIDI path (different velocity/note mapping branch).
-    const general = gu.create_MIDIURLFromGrooveData(gd, 'general_MIDI');
-    for (const midiUrl of [custom, general]) {
-      expect(midiUrl.startsWith('data:audio/midi;base64,')).toBe(true);
-      const b64 = midiUrl.slice('data:audio/midi;base64,'.length);
-      // Decoded MIDI files begin with the "MThd" header chunk.
-      expect(atob(b64).startsWith('MThd')).toBe(true);
+  it.each(coverageGrooves)(
+    'generates a MIDI data URL for "$name" (both output types)',
+    ({ url }) => {
+      const gd = gu.getGrooveDataFromUrlString(url);
+      // Default (Custom / "our" velocities) path...
+      const custom = gu.create_MIDIURLFromGrooveData(gd);
+      // ...and the general_MIDI path (different velocity/note mapping branch).
+      const general = gu.create_MIDIURLFromGrooveData(gd, 'general_MIDI');
+      for (const midiUrl of [custom, general]) {
+        expect(midiUrl.startsWith('data:audio/midi;base64,')).toBe(true);
+        const b64 = midiUrl.slice('data:audio/midi;base64,'.length);
+        // Decoded MIDI files begin with the "MThd" header chunk.
+        expect(atob(b64).startsWith('MThd')).toBe(true);
+      }
     }
-  });
+  );
 
-  it.each(coverageGrooves)('round-trips "$name" through URL encoding without throwing', ({ url }) => {
-    const gd = gu.getGrooveDataFromUrlString(url);
-    const encoded = gu.getUrlStringFromGrooveData(gd);
-    expect(encoded).toContain('TimeSig=');
-    // Re-parsing the encoding must yield the same voice array lengths.
-    const gd2 = gu.getGrooveDataFromUrlString(encoded);
-    expect(gd2.hh_array.length).toBe(gd.hh_array.length);
-    expect(gd2.snare_array.length).toBe(gd.snare_array.length);
-  });
+  it.each(coverageGrooves)(
+    'round-trips "$name" through URL encoding without throwing',
+    ({ url }) => {
+      const gd = gu.getGrooveDataFromUrlString(url);
+      const encoded = gu.getUrlStringFromGrooveData(gd);
+      expect(encoded).toContain('TimeSig=');
+      // Re-parsing the encoding must yield the same voice array lengths.
+      const gd2 = gu.getGrooveDataFromUrlString(encoded);
+      expect(gd2.hh_array.length).toBe(gd.hh_array.length);
+      expect(gd2.snare_array.length).toBe(gd.snare_array.length);
+    }
+  );
 
   it('produces deterministic ABC and MIDI for a given groove', () => {
     const { url } = coverageGrooves[0];

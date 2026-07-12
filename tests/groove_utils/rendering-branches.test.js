@@ -14,8 +14,10 @@ describe('groove_utils rendering & environment branches', () => {
 
   // ---- kick stems down: the alternate ABC/MIDI voice layout ------------------
   describe('kickStemsUp = false layout', () => {
-    const STRAIGHT = '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&H=|xxxxxxxxxxxxxxxx|&S=|----O-------O---|&K=|o-x-o-X-o-x-o---|';
-    const TRIPLET = '?TimeSig=4/4&Div=12&Tempo=90&Measures=1&H=|rrrrrrrrrrrr|&S=|---O----O---|&K=|o--o--o--o--|';
+    const STRAIGHT =
+      '?TimeSig=4/4&Div=16&Tempo=90&Measures=1&H=|xxxxxxxxxxxxxxxx|&S=|----O-------O---|&K=|o-x-o-X-o-x-o---|';
+    const TRIPLET =
+      '?TimeSig=4/4&Div=12&Tempo=90&Measures=1&H=|rrrrrrrrrrrr|&S=|---O----O---|&K=|o--o--o--o--|';
 
     it('renders straight grooves with a separate Feet voice', () => {
       const gd = gu.getGrooveDataFromUrlString(STRAIGHT);
@@ -56,7 +58,11 @@ describe('groove_utils rendering & environment branches', () => {
     it.each([
       ['Chrome', 'Netscape', 'Mozilla/5.0 (Windows NT 10.0) Chrome/120.0.0.0 Safari/537.36'],
       ['Edge', 'Netscape', 'Mozilla/5.0 (Windows NT 10.0) Chrome/44 Edge/12.0'],
-      ['Firefox', 'Netscape', 'Mozilla/5.0 (Windows NT 10.0; rv:120.0) Gecko/20100101 Firefox/120.0'],
+      [
+        'Firefox',
+        'Netscape',
+        'Mozilla/5.0 (Windows NT 10.0; rv:120.0) Gecko/20100101 Firefox/120.0',
+      ],
       ['Safari', 'Netscape', 'Mozilla/5.0 (Macintosh) AppleWebKit/605 Version/17.0 Safari/605.1'],
       ['MSIE', 'Netscape', 'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko'],
       ['MSIE', 'Microsoft Internet Explorer', 'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1)'],
@@ -78,8 +84,10 @@ describe('groove_utils rendering & environment branches', () => {
 
   // ---- metronome click-offset shifting inside MIDI generation ----------------
   describe('metronome offset click-start in MIDI', () => {
-    const STRAIGHT_METRO = '?TimeSig=4/4&Div=16&Tempo=90&MetronomeFreq=4&Measures=1&H=|xxxxxxxxxxxxxxxx|&S=|----O-------O---|&K=|o-------o-------|';
-    const TRIPLET_METRO = '?TimeSig=4/4&Div=12&Tempo=90&MetronomeFreq=12&Measures=1&H=|rrrrrrrrrrrr|&S=|---O----O---|&K=|o---o---o---|';
+    const STRAIGHT_METRO =
+      '?TimeSig=4/4&Div=16&Tempo=90&MetronomeFreq=4&Measures=1&H=|xxxxxxxxxxxxxxxx|&S=|----O-------O---|&K=|o-------o-------|';
+    const TRIPLET_METRO =
+      '?TimeSig=4/4&Div=12&Tempo=90&MetronomeFreq=12&Measures=1&H=|rrrrrrrrrrrr|&S=|---O----O---|&K=|o---o---o---|';
 
     it.each(['1', 'E', 'AND', 'A'])('generates MIDI with straight offset "%s"', (offset) => {
       gu.setMetronomeOffsetClickStart(offset);

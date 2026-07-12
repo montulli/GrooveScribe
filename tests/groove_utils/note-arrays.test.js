@@ -19,9 +19,7 @@ describe('GrooveUtils note-array conversions', () => {
 
   describe('noteArraysFromURLData', () => {
     it('decodes a hi-hat tab line into ABC note tokens with rests as false', () => {
-      expect(gu.noteArraysFromURLData('H', '|x-x-|', 4, 1)).toEqual([
-        '^g', false, '^g', false,
-      ]);
+      expect(gu.noteArraysFromURLData('H', '|x-x-|', 4, 1)).toEqual(['^g', false, '^g', false]);
     });
 
     it('decodes accents and rests on the snare line', () => {

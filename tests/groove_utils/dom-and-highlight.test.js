@@ -132,7 +132,7 @@ describe('GrooveUtils.isElementOnScreen', () => {
     gu = await newGrooveUtils();
   });
 
-  it('returns false for an element with jsdom\'s default (all-zero) bounding rect', () => {
+  it("returns false for an element with jsdom's default (all-zero) bounding rect", () => {
     // jsdom's getBoundingClientRect() always returns zeros, and the function
     // requires rect.top >= 80, so a real, un-mocked element is never "on screen".
     document.body.innerHTML = '<div id="el"></div>';
@@ -140,7 +140,7 @@ describe('GrooveUtils.isElementOnScreen', () => {
     expect(gu.isElementOnScreen(el)).toBe(false);
   });
 
-  it('returns true when the element\'s rect fits within the window bounds', () => {
+  it("returns true when the element's rect fits within the window bounds", () => {
     document.body.innerHTML = '<div id="el"></div>';
     const el = document.getElementById('el');
     el.getBoundingClientRect = () => ({
@@ -185,7 +185,9 @@ describe('GrooveUtils ABC/SVG note highlighting', () => {
 
       gu.highlightNoteInABCSVGByIndex(0);
 
-      expect(document.getElementById(`abcNoteNum_${idx}_0`).getAttribute('class')).toBe('note highlighted');
+      expect(document.getElementById(`abcNoteNum_${idx}_0`).getAttribute('class')).toBe(
+        'note highlighted'
+      );
       expect(document.getElementById(`abcNoteNum_${idx}_1`).getAttribute('class')).toBe('note');
       expect(gu.abcNoteNumCurrentlyHighlighted).toBe(0);
     });
@@ -199,7 +201,9 @@ describe('GrooveUtils ABC/SVG note highlighting', () => {
       gu.highlightNoteInABCSVGByIndex(1);
 
       expect(document.getElementById(`abcNoteNum_${idx}_0`).getAttribute('class')).toBe('note');
-      expect(document.getElementById(`abcNoteNum_${idx}_1`).getAttribute('class')).toBe('note highlighted');
+      expect(document.getElementById(`abcNoteNum_${idx}_1`).getAttribute('class')).toBe(
+        'note highlighted'
+      );
       expect(gu.abcNoteNumCurrentlyHighlighted).toBe(1);
     });
 
@@ -220,7 +224,9 @@ describe('GrooveUtils ABC/SVG note highlighting', () => {
       gu.clearHighlightNoteInABCSVG();
 
       // untouched, because the guard `if (root.abcNoteNumCurrentlyHighlighted > -1)` short-circuits.
-      expect(document.getElementById(`abcNoteNum_${idx}_0`).getAttribute('class')).toBe('note highlighted');
+      expect(document.getElementById(`abcNoteNum_${idx}_0`).getAttribute('class')).toBe(
+        'note highlighted'
+      );
     });
 
     describe('debugMode auto-scroll behavior', () => {
@@ -282,7 +288,9 @@ describe('GrooveUtils ABC/SVG note highlighting', () => {
 
       // curNoteIndex = 0.5 * 4 = 2; loop i=0,1 both truthy -> real_note_index ends at 1.
       expect(gu.abcNoteNumCurrentlyHighlighted).toBe(1);
-      expect(document.getElementById(`abcNoteNum_${idx}_1`).getAttribute('class')).toBe('note highlighted');
+      expect(document.getElementById(`abcNoteNum_${idx}_1`).getAttribute('class')).toBe(
+        'note highlighted'
+      );
     });
 
     it('is a no-op when note_mapping_array is null', () => {
@@ -329,7 +337,9 @@ describe('GrooveUtils.setMetronomeFrequencyDisplay', () => {
 
   it('adds " selected" to the menu class when the new frequency is > 0', () => {
     gu.setMetronomeFrequencyDisplay(4);
-    expect(document.getElementById(`midiMetronomeMenu${idx}`).className).toBe('midiMetronomeMenu selected');
+    expect(document.getElementById(`midiMetronomeMenu${idx}`).className).toBe(
+      'midiMetronomeMenu selected'
+    );
   });
 
   it('removes " selected" when the new frequency is 0', () => {
@@ -360,7 +370,9 @@ describe('GrooveUtils.metronomeMiniMenuClick', () => {
     gu.metronomeMiniMenuClick();
 
     expect(gu.myGrooveData.metronomeFrequency).toBe(4);
-    expect(document.getElementById(`midiMetronomeMenu${idx}`).className).toBe('midiMetronomeMenu selected');
+    expect(document.getElementById(`midiMetronomeMenu${idx}`).className).toBe(
+      'midiMetronomeMenu selected'
+    );
     expect(gu.midiEventCallbacks.noteHasChangedSinceLastDataLoad).toBe(true);
   });
 
@@ -393,11 +405,19 @@ describe('GrooveUtils.expandOrRetractMIDI_playback', () => {
     gu.expandOrRetractMIDI_playback();
 
     expect(document.getElementById(`playerControl${idx}`).className).toBe('playerControl large');
-    expect(document.getElementById(`playerControlsRow${idx}`).className).toBe('playerControlsRow large');
-    expect(document.getElementById(`tempoAndProgress${idx}`).className).toBe('tempoAndProgress large');
-    expect(document.getElementById(`midiMetronomeMenu${idx}`).className).toBe('midiMetronomeMenu large');
+    expect(document.getElementById(`playerControlsRow${idx}`).className).toBe(
+      'playerControlsRow large'
+    );
+    expect(document.getElementById(`tempoAndProgress${idx}`).className).toBe(
+      'tempoAndProgress large'
+    );
+    expect(document.getElementById(`midiMetronomeMenu${idx}`).className).toBe(
+      'midiMetronomeMenu large'
+    );
     expect(document.getElementById(`midiGSLogo${idx}`).className).toBe('midiGSLogo large');
-    expect(document.getElementById(`midiExpandImage${idx}`).className).toBe('midiExpandImage large');
+    expect(document.getElementById(`midiExpandImage${idx}`).className).toBe(
+      'midiExpandImage large'
+    );
     expect(document.getElementById(`MIDIPlayTime${idx}`).className).toBe('MIDIPlayTime large');
   });
 
@@ -406,7 +426,9 @@ describe('GrooveUtils.expandOrRetractMIDI_playback', () => {
     gu.expandOrRetractMIDI_playback(); // -> small
 
     expect(document.getElementById(`playerControl${idx}`).className).toBe('playerControl small');
-    expect(document.getElementById(`midiExpandImage${idx}`).className).toBe('midiExpandImage small');
+    expect(document.getElementById(`midiExpandImage${idx}`).className).toBe(
+      'midiExpandImage small'
+    );
   });
 
   it('forcing expansion while already large re-appends " large" (documents a duplicate-class quirk)', () => {
@@ -417,7 +439,9 @@ describe('GrooveUtils.expandOrRetractMIDI_playback', () => {
     gu.expandOrRetractMIDI_playback(); // -> "playerControl large"
     gu.expandOrRetractMIDI_playback(true, true); // force expand again
 
-    expect(document.getElementById(`playerControl${idx}`).className).toBe('playerControl large large');
+    expect(document.getElementById(`playerControl${idx}`).className).toBe(
+      'playerControl large large'
+    );
   });
 });
 
@@ -463,7 +487,9 @@ describe('GrooveUtils.AddMidiPlayerToPage', () => {
     gu.AddMidiPlayerToPage('target', 16, true);
 
     let observedTempo = null;
-    gu.tempoChangeCallback = (t) => { observedTempo = t; };
+    gu.tempoChangeCallback = (t) => {
+      observedTempo = t;
+    };
 
     const slider = document.getElementById('tempoInput' + gu.grooveUtilsUniqueIndex);
     slider.value = '133';
@@ -538,7 +564,7 @@ describe('GrooveUtils.loadFullScreenGrooveScribe', () => {
     vi.restoreAllMocks();
   });
 
-  it('throws when myGrooveData is undefined (documents grooveDataNew\'s constructor bug)', () => {
+  it("throws when myGrooveData is undefined (documents grooveDataNew's constructor bug)", () => {
     // root.myGrooveData is initialized via `root.myGrooveData = root.grooveDataNew();`
     // but grooveDataNew is a constructor-style function meant to be invoked with
     // `new` (it sets fields on `this` and returns nothing). Called as a plain
@@ -585,7 +611,9 @@ describe('GrooveUtils.renderABCtoSVG (real abc2svg-1.js)', () => {
       const here = path.dirname(fileURLToPath(import.meta.url));
       const src = fs.readFileSync(path.resolve(here, '../../js/abc2svg-1.js'), 'utf8');
       // eslint-disable-next-line no-new-func
-      const factory = new Function(`${src}\n;return (typeof Abc !== 'undefined') ? Abc : undefined;`);
+      const factory = new Function(
+        `${src}\n;return (typeof Abc !== 'undefined') ? Abc : undefined;`
+      );
       AbcCtor = factory() || null;
     }
     if (AbcCtor) globalThis.Abc = AbcCtor;

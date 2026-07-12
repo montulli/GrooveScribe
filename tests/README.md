@@ -1,7 +1,7 @@
 # Groove Scribe Test Suite
 
 Automated tests built with [Vitest](https://vitest.dev/). The suite exists as a
-**regression net**: it locks in the *current* behavior of the production code so
+**regression net**: it locks in the _current_ behavior of the production code so
 that the planned refactoring and ESLint cleanup can proceed without silently
 changing what the app does.
 
@@ -19,7 +19,7 @@ Groove Scribe ships as classic browser `<script>` files. Each declares its API
 as a top-level global (`function GrooveUtils() {}`, `var grooves = {}`, …) with
 **no module exports**, so the files cannot be `import`ed directly.
 
-To test them *without modifying the production source*, `vitest.config.js`
+To test them _without modifying the production source_, `vitest.config.js`
 installs a small transform plugin (`legacyGlobalExportsPlugin`) that appends a
 named `export` for each file's global **in memory as the file passes through
 Vitest's module pipeline**. Nothing on disk is changed. Because the code now
@@ -85,7 +85,7 @@ are never part of the deployed/minified app.
 ### Testing orchestration layers (`groove_display.js`)
 
 `groove_display.js` is thin wiring over `GrooveUtils`, the MIDI player, and
-abc2svg. Its own logic is *which* GrooveUtils methods it calls, with what
+abc2svg. Its own logic is _which_ GrooveUtils methods it calls, with what
 arguments, and what HTML it emits -- not the rendering itself. So those suites
 replace the `GrooveUtils` global with a spy constructor
 (`helpers/mockGrooveUtils.js`) and assert the wiring, keeping the audio/SVG
@@ -140,7 +140,7 @@ driven almost entirely through the DOM. Two things make it testable:
   the load/render/lifecycle pipeline reads. `runsOnPageLoad()` runs to completion
   against `buildFullPageDOM` + a mock `MIDI` global.
 
-### What is intentionally *not* covered
+### What is intentionally _not_ covered
 
 - `groove_utils.js` ~96% statement / ~98% function. Remainder: deep 32nd-triplet
   notation sub-branches, MIDI note-load callbacks needing the real MIDI.js

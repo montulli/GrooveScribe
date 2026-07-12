@@ -12,7 +12,9 @@ import { vi } from 'vitest';
 //
 // Seed the <script> with a stable src ("http://localhost/js/...") so the
 // computed script root is predictable: "http://localhost/js/".
-export async function loadGrooveDisplay({ scriptSrc = 'http://localhost/js/groove_display.js' } = {}) {
+export async function loadGrooveDisplay({
+  scriptSrc = 'http://localhost/js/groove_display.js',
+} = {}) {
   document.head.innerHTML = '';
   document.body.innerHTML = '';
   const seed = document.createElement('script');

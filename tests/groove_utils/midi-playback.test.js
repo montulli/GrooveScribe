@@ -456,7 +456,14 @@ describe('GrooveUtils MIDI playback controls', () => {
     it('does not throw for a "note on" (message 144) kick event mid-song', () => {
       const cb = captureCallback();
       expect(() =>
-        cb({ now: 100, end: 1000, message: 144, note: 35 /* constant_OUR_MIDI_KICK_NORMAL */, channel: 9, velocity: 100 })
+        cb({
+          now: 100,
+          end: 1000,
+          message: 144,
+          note: 35 /* constant_OUR_MIDI_KICK_NORMAL */,
+          channel: 9,
+          velocity: 100,
+        })
       ).not.toThrow();
     });
 
@@ -479,7 +486,9 @@ describe('GrooveUtils MIDI playback controls', () => {
       globalThis.MIDI.Player.stop.mockClear();
       globalThis.MIDI.Player.start.mockClear();
 
-      expect(() => cb({ now: 1000, end: 1000, message: 0, note: 0, channel: 9, velocity: 0 })).not.toThrow();
+      expect(() =>
+        cb({ now: 1000, end: 1000, message: 0, note: 0, channel: 9, velocity: 0 })
+      ).not.toThrow();
 
       expect(globalThis.MIDI.Player.stop).toHaveBeenCalledTimes(1);
       expect(globalThis.MIDI.Player.start).toHaveBeenCalledTimes(1);

@@ -95,15 +95,18 @@ describe('GrooveUtils URL serialization (extended)', () => {
       [1, 1],
       [2, 2],
       [3, 3],
-    ])('Measures=%i -> numberOfMeasures=%i, arrays sized notesPerMeasure*measures', (m, expected) => {
-      const gd = gu.getGrooveDataFromUrlString(`?TimeSig=4/4&Div=16&Measures=${m}`);
-      expect(gd.numberOfMeasures).toBe(expected);
-      expect(gd.hh_array).toHaveLength(16 * expected);
-      expect(gd.snare_array).toHaveLength(16 * expected);
-      expect(gd.kick_array).toHaveLength(16 * expected);
-      expect(gd.sticking_array).toHaveLength(16 * expected);
-      expect(gd.toms_array[0]).toHaveLength(16 * expected);
-    });
+    ])(
+      'Measures=%i -> numberOfMeasures=%i, arrays sized notesPerMeasure*measures',
+      (m, expected) => {
+        const gd = gu.getGrooveDataFromUrlString(`?TimeSig=4/4&Div=16&Measures=${m}`);
+        expect(gd.numberOfMeasures).toBe(expected);
+        expect(gd.hh_array).toHaveLength(16 * expected);
+        expect(gd.snare_array).toHaveLength(16 * expected);
+        expect(gd.kick_array).toHaveLength(16 * expected);
+        expect(gd.sticking_array).toHaveLength(16 * expected);
+        expect(gd.toms_array[0]).toHaveLength(16 * expected);
+      }
+    );
 
     it('clamps zero, negative, and non-numeric values up to the minimum of 1', () => {
       for (const bad of [0, -1, 'abc']) {
@@ -195,9 +198,7 @@ describe('GrooveUtils URL serialization (extended)', () => {
 
   describe('Stickings voice', () => {
     it('parses a provided Stickings string and flags showStickings true', () => {
-      const gd = gu.getGrooveDataFromUrlString(
-        '?TimeSig=4/4&Div=16&Stickings=|RLRLRLRLRLRLRLRL|'
-      );
+      const gd = gu.getGrooveDataFromUrlString('?TimeSig=4/4&Div=16&Stickings=|RLRLRLRLRLRLRLRL|');
       expect(gd.showStickings).toBe(true);
       // R/L decode to accented sticking ABC notation
       expect(gd.sticking_array[0]).toBe('"R"x');
@@ -212,7 +213,9 @@ describe('GrooveUtils URL serialization (extended)', () => {
     });
 
     it('is only written to the URL when showStickings is true', () => {
-      const withSticking = gu.getGrooveDataFromUrlString('?TimeSig=4/4&Div=16&Stickings=|RLRLRLRLRLRLRLRL|');
+      const withSticking = gu.getGrooveDataFromUrlString(
+        '?TimeSig=4/4&Div=16&Stickings=|RLRLRLRLRLRLRLRL|'
+      );
       expect(gu.getUrlStringFromGrooveData(withSticking)).toContain('Stickings=|RLRLRLRLRLRLRLRL|');
 
       const withoutSticking = gu.getGrooveDataFromUrlString('?TimeSig=4/4&Div=16');
@@ -222,9 +225,7 @@ describe('GrooveUtils URL serialization (extended)', () => {
 
   describe('Toms voices (T1-T4)', () => {
     it('parses each of T1..T4 independently and sets showToms when any is present', () => {
-      const gd = gu.getGrooveDataFromUrlString(
-        '?TimeSig=4/4&Div=16&T2=|o---------------|'
-      );
+      const gd = gu.getGrooveDataFromUrlString('?TimeSig=4/4&Div=16&T2=|o---------------|');
       expect(gd.showToms).toBe(true);
       expect(gd.toms_array[1][0]).toBe('d'); // T2 "o" -> constant_ABC_T2_Normal
       // T1/T3/T4 fell back to the default (empty/rest) groove
@@ -429,8 +430,22 @@ describe('GrooveUtils URL serialization (extended)', () => {
       expect(gd.hh_array).toHaveLength(16);
       // Every other slot gets a hit, the rest are left as the false (rest) initializer.
       expect(gd.hh_array).toEqual([
-        '^g', false, '^g', false, '^g', false, '^g', false,
-        '^g', false, '^g', false, '^g', false, '^g', false,
+        '^g',
+        false,
+        '^g',
+        false,
+        '^g',
+        false,
+        '^g',
+        false,
+        '^g',
+        false,
+        '^g',
+        false,
+        '^g',
+        false,
+        '^g',
+        false,
       ]);
     });
   });
@@ -439,7 +454,11 @@ describe('GrooveUtils URL serialization (extended)', () => {
     it('with no destination, builds a URL against the current page (no path change)', () => {
       const gd = gu.getGrooveDataFromUrlString('?TimeSig=4/4&Div=16');
       const out = gu.getUrlStringFromGrooveData(gd);
-      expect(out.startsWith(window.location.protocol + '//' + window.location.host + window.location.pathname + '?')).toBe(true);
+      expect(
+        out.startsWith(
+          window.location.protocol + '//' + window.location.host + window.location.pathname + '?'
+        )
+      ).toBe(true);
     });
 
     it('"display" appends GrooveEmbed.html to the path (jsdom pathname has neither index.html nor /gscribe)', () => {
@@ -475,8 +494,7 @@ describe('GrooveUtils URL serialization (extended)', () => {
     const grooves = [
       {
         name: '3/4 triplet-division groove with tempo/measures',
-        url:
-          '?TimeSig=3/4&Div=12&Measures=1&Tempo=140&H=|x-xx-xx-xx-x|&S=|----O-------|&K=|o-----------|',
+        url: '?TimeSig=3/4&Div=12&Measures=1&Tempo=140&H=|x-xx-xx-xx-x|&S=|----O-------|&K=|o-----------|',
       },
       {
         name: '6/8 two-measure groove with title and swing',
@@ -494,13 +512,16 @@ describe('GrooveUtils URL serialization (extended)', () => {
       },
     ];
 
-    it.each(grooves.map((g) => [g.name, g.url]))('%s stays byte-identical after a second round trip', (_name, url) => {
-      const gd1 = gu.getGrooveDataFromUrlString(url);
-      const out1 = gu.getUrlStringFromGrooveData(gd1);
-      const gd2 = gu.getGrooveDataFromUrlString(out1);
-      const out2 = gu.getUrlStringFromGrooveData(gd2);
-      expect(out2).toBe(out1);
-    });
+    it.each(grooves.map((g) => [g.name, g.url]))(
+      '%s stays byte-identical after a second round trip',
+      (_name, url) => {
+        const gd1 = gu.getGrooveDataFromUrlString(url);
+        const out1 = gu.getUrlStringFromGrooveData(gd1);
+        const gd2 = gu.getGrooveDataFromUrlString(out1);
+        const out2 = gu.getUrlStringFromGrooveData(gd2);
+        expect(out2).toBe(out1);
+      }
+    );
 
     it('preserves the H=/S=/K= tab notation verbatim through a round trip', () => {
       const url =

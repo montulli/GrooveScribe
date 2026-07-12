@@ -120,12 +120,15 @@ describe('GrooveWriter view & lifecycle', () => {
 
       gw.expandAuthoringViewWhenNecessary(17, 1);
 
-      expect(document.getElementById('musicalInput').className).toBe('fullWidthEle edit-block expanded');
+      expect(document.getElementById('musicalInput').className).toBe(
+        'fullWidthEle edit-block expanded'
+      );
     });
 
     it('removes "expanded" when numNotesPerMeasure <= 16 and the closure measure count is 1', async () => {
       const gw = await newGrooveWriter();
-      document.body.innerHTML = '<div id="musicalInput" class="fullWidthEle edit-block expanded"></div>';
+      document.body.innerHTML =
+        '<div id="musicalInput" class="fullWidthEle edit-block expanded"></div>';
 
       gw.expandAuthoringViewWhenNecessary(4, 1);
 
@@ -174,20 +177,30 @@ describe('GrooveWriter view & lifecycle', () => {
 
       gw.show_MetronomeAutoSpeedupConfiguration();
 
-      expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe('block');
-      expect(document.getElementById('metronomeAutoSpeedupTempoIncreaseAmountOutput').innerHTML).toBe('7');
-      expect(document.getElementById('metronomeAutoSpeedupTempoIncreaseIntervalOutput').innerHTML).toBe('3');
+      expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe(
+        'block'
+      );
+      expect(
+        document.getElementById('metronomeAutoSpeedupTempoIncreaseAmountOutput').innerHTML
+      ).toBe('7');
+      expect(
+        document.getElementById('metronomeAutoSpeedupTempoIncreaseIntervalOutput').innerHTML
+      ).toBe('3');
     });
 
     it('close_MetronomeAutoSpeedupConfiguration hides the popup', async () => {
       const gw = await newGrooveWriter();
       buildPopupFixture();
       gw.show_MetronomeAutoSpeedupConfiguration();
-      expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe('block');
+      expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe(
+        'block'
+      );
 
       gw.close_MetronomeAutoSpeedupConfiguration();
 
-      expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe('none');
+      expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe(
+        'none'
+      );
     });
 
     it('close_MetronomeAutoSpeedupConfiguration does not throw when the popup element is absent', async () => {
@@ -276,7 +289,9 @@ describe('GrooveWriter view & lifecycle', () => {
       const gw = await newGrooveWriter();
       document.body.innerHTML =
         '<textarea id="ABCsource">X:1</textarea><div id="svgTarget"></div><div id="diverr"></div>';
-      gw.myGrooveUtils.renderABCtoSVG = vi.fn().mockReturnValue({ svg: '<svg>hi</svg>', error_html: '' });
+      gw.myGrooveUtils.renderABCtoSVG = vi
+        .fn()
+        .mockReturnValue({ svg: '<svg>hi</svg>', error_html: '' });
 
       gw.displayNewSVG();
 
@@ -396,7 +411,10 @@ describe('GrooveWriter view & lifecycle', () => {
     // runsOnPageLoad runs to completion without throwing.
 
     const here = path.dirname(fileURLToPath(import.meta.url));
-    const groove_utils_src = fs.readFileSync(path.resolve(here, '../../js/groove_utils.js'), 'utf8');
+    const groove_utils_src = fs.readFileSync(
+      path.resolve(here, '../../js/groove_utils.js'),
+      'utf8'
+    );
 
     function shimConstants() {
       const re = /^var (constant_[A-Za-z0-9_]+)\s*=\s*(.+?);/gm;
@@ -442,7 +460,9 @@ describe('GrooveWriter view & lifecycle', () => {
       buildFixture(gw);
       // out of scope for this file (covered by displayNewSVG's own describe
       // block above); avoid pulling in abc2svg here.
-      gw.myGrooveUtils.renderABCtoSVG = vi.fn().mockReturnValue({ svg: '<svg>stub</svg>', error_html: '' });
+      gw.myGrooveUtils.renderABCtoSVG = vi
+        .fn()
+        .mockReturnValue({ svg: '<svg>stub</svg>', error_html: '' });
       // silence jsdom's harmless "not implemented" pseudo-element console noise
       vi.spyOn(window, 'getComputedStyle').mockReturnValue({ getPropertyValue: () => '' });
       return gw;

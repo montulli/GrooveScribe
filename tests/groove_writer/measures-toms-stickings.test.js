@@ -61,7 +61,9 @@ function buildMeasureFixture(gw, measures = 1) {
     '<input id="tuneAuthor" value="">' +
     '<input id="tuneComments" value="">' +
     '<input id="showLegend" type="checkbox">' +
-    '<div id="swingOutput' + gw.myGrooveUtils.grooveUtilsUniqueIndex + '"></div>';
+    '<div id="swingOutput' +
+    gw.myGrooveUtils.grooveUtilsUniqueIndex +
+    '"></div>';
   document.body.appendChild(chrome);
 
   return container;
@@ -86,14 +88,16 @@ describe('addMeasureButtonClick / closeMeasureButtonClick', () => {
     expect(gw.numberOfMeasures()).toBe(2);
     // addMeasureButtonClick rewrites #measureContainer's innerHTML (via
     // changeDivisionWithNotes) with one .staff-container per measure.
-    expect(document.getElementById('measureContainer').querySelectorAll('.staff-container').length).toBe(2);
+    expect(
+      document.getElementById('measureContainer').querySelectorAll('.staff-container').length
+    ).toBe(2);
 
     const gd = gw.grooveDataFromClickableUI();
     expect(gd.numberOfMeasures).toBe(2);
     expect(gd.hh_array.length).toBe(2 * gw.notesPerMeasure()); // 32 notes for 2 measures of 16ths
   });
 
-  it('copies the last measure\'s notes into the new measure, and preserves existing notes', () => {
+  it("copies the last measure's notes into the new measure, and preserves existing notes", () => {
     // Turn kick on at note 0 of measure 1 (off -> "normal" on the first click).
     gw.noteLeftClick(null, 'kick', 0);
     expect(gw.grooveDataFromClickableUI().kick_array[0]).toBe('F'); // constant_ABC_KI_Normal
@@ -119,7 +123,9 @@ describe('addMeasureButtonClick / closeMeasureButtonClick', () => {
     gw.closeMeasureButtonClick(2); // 1-indexed: remove the 2nd measure
 
     expect(gw.numberOfMeasures()).toBe(1);
-    expect(document.getElementById('measureContainer').querySelectorAll('.staff-container').length).toBe(1);
+    expect(
+      document.getElementById('measureContainer').querySelectorAll('.staff-container').length
+    ).toBe(1);
     expect(gw.grooveDataFromClickableUI().hh_array.length).toBe(gw.notesPerMeasure());
   });
 
@@ -198,7 +204,8 @@ describe('stickingsShowHide / stickingsShowHideToggle', () => {
     buildGridDOM(gw, 1);
     // stickingsShowHideToggle calls stickingsShowHide with dontRefreshScreen=false,
     // which runs the full updateSheetMusic() pipeline -- needs #ABCsource.
-    document.body.innerHTML += '<span id="stickingsButton"></span><textarea id="ABCsource"></textarea>';
+    document.body.innerHTML +=
+      '<span id="stickingsButton"></span><textarea id="ABCsource"></textarea>';
     gw.updateCurrentURL = vi.fn();
     gw.displayNewSVG = vi.fn();
   });

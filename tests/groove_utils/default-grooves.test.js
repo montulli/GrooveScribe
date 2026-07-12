@@ -19,9 +19,7 @@ describe('GrooveUtils default grooves & note-array scaling', () => {
     });
 
     it('repeats the empty measure for multiple measures', () => {
-      expect(gu.GetDefaultStickingsGroove(16, 4, 4, 2)).toBe(
-        '|----------------|----------------|'
-      );
+      expect(gu.GetDefaultStickingsGroove(16, 4, 4, 2)).toBe('|----------------|----------------|');
     });
   });
 
@@ -64,9 +62,7 @@ describe('GrooveUtils default grooves & note-array scaling', () => {
     // is placed at the start of each ODD-numbered grouping (i.e. the
     // classic backbeat on beats 2 and 4 in straight time).
     it('places the backbeat (2 & 4) in 4/4 at 32 notes per measure', () => {
-      expect(gu.GetDefaultSnareGroove(32, 4, 4, 1)).toBe(
-        '|--------O---------------O-------|'
-      );
+      expect(gu.GetDefaultSnareGroove(32, 4, 4, 1)).toBe('|--------O---------------O-------|');
     });
 
     it('places the backbeat (2 & 4) in 4/4 at 16 notes per measure', () => {
@@ -83,9 +79,7 @@ describe('GrooveUtils default grooves & note-array scaling', () => {
     });
 
     it('repeats the same pattern across multiple measures', () => {
-      expect(gu.GetDefaultSnareGroove(16, 4, 4, 2)).toBe(
-        '|----O-------O---|----O-------O---|'
-      );
+      expect(gu.GetDefaultSnareGroove(16, 4, 4, 2)).toBe('|----O-------O---|----O-------O---|');
     });
   });
 
@@ -93,9 +87,7 @@ describe('GrooveUtils default grooves & note-array scaling', () => {
     // Mirror image of the snare default: a normal 'o' hit at the start of
     // each EVEN-numbered grouping (beats 1 and 3 in straight time).
     it('places kicks on 1 & 3 in 4/4 at 32 notes per measure', () => {
-      expect(gu.GetDefaultKickGroove(32, 4, 4, 1)).toBe(
-        '|o---------------o---------------|'
-      );
+      expect(gu.GetDefaultKickGroove(32, 4, 4, 1)).toBe('|o---------------o---------------|');
     });
 
     it('places kicks on 1 & 3 in 4/4 at 16 notes per measure', () => {
@@ -112,9 +104,7 @@ describe('GrooveUtils default grooves & note-array scaling', () => {
     });
 
     it('repeats the same pattern across multiple measures', () => {
-      expect(gu.GetDefaultKickGroove(16, 4, 4, 2)).toBe(
-        '|o-------o-------|o-------o-------|'
-      );
+      expect(gu.GetDefaultKickGroove(16, 4, 4, 2)).toBe('|o-------o-------|o-------o-------|');
     });
   });
 
