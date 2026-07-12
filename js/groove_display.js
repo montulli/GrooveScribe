@@ -24,7 +24,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with Groove Scribe.  If not, see <http://www.gnu.org/licenses/>.
 
-/*global GrooveUtils, GrooveDisplay */
+/*global GrooveUtils */
 
 // GrooveDisplay class.   The only one in this file.
 // singleton

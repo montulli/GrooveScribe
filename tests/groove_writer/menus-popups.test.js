@@ -33,7 +33,7 @@ let __m;
 while ((__m = __constRe.exec(__grooveUtilsSrc))) {
   try {
     globalThis[__m[1]] = new Function(`return (${__m[2]});`)();
-  } catch (e) {
+  } catch {
     // skip anything we can't safely eval; not needed by the paths under test
   }
 }

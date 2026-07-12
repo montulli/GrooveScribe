@@ -23,7 +23,9 @@
 
 // GrooveWriter class.   The only one in this file.
 
-/*global Abc, MIDI, Midi */
+// Abc, MIDI, and Midi are vendored third-party globals declared in
+// eslint.config.js (they're shared across multiple js/ files there, unlike
+// this file's own GrooveUtils global below).
 
 var global_num_GrooveUtilsCreated = 0;
 var global_grooveUtilsScriptSrc = '';
@@ -103,6 +105,10 @@ var global_total_midi_notes = 0;
 var global_total_midi_repeats = 0;
 
 // GrooveUtils class.   The only one in this file.
+// Consumed cross-file as a global by groove_display.js and groove_writer.js
+// (each declares it via its own `/* global GrooveUtils */` comment), so it
+// looks unused from this file's perspective alone.
+// eslint-disable-next-line no-unused-vars
 function GrooveUtils() {
   'use strict';
 
@@ -852,7 +858,7 @@ function GrooveUtils() {
     // ignore "|" by removing them
     //var notes = noteString.replace(/\|/g, '');
     // ignore "|" & ")" & "(" & "[" & "]" & "!" & ":" by removing them
-    var notes = noteString.replace(/\:|\!|\)|\(|\[|\]|\|/g, '');
+    var notes = noteString.replace(/:|!|\)|\(|\[|\]|\|/g, '');
 
     var noteStringScaler = 1;
     var displayScaler = 1;
@@ -950,7 +956,6 @@ function GrooveUtils() {
     var HH_string;
     var Snare_string;
     var Kick_string;
-    var stickings_set_from_URL = false;
     var myGrooveData = new root.grooveDataNew();
     var i;
 
@@ -1252,6 +1257,11 @@ function GrooveUtils() {
   };
 
   function setupHotKeys() {
+    // isCtrl is reassigned by the onkeyup/onkeydown handlers below (used to be
+    // read by now-commented-out CTRL-S code); removing the declaration would
+    // make those handler assignments implicit globals, which throw under
+    // 'use strict'.
+    // eslint-disable-next-line no-unused-vars
     var isCtrl = false;
     document.onkeyup = function (e) {
       if (e.which == 17) isCtrl = false;
@@ -1627,11 +1637,7 @@ function GrooveUtils() {
   ) {
     var scaler = root.getNoteScaler(notes_per_measure, timeSigTop, timeSigBottom); // fill proportionally
     var retArray = [];
-    var isTriplets = root.isTripletDivisionFromNotesPerMeasure(
-      notes_per_measure,
-      timeSigTop,
-      timeSigBottom
-    );
+    root.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom);
     var i;
 
     if (scaler == 1) return note_array; // no need to expand
@@ -1768,7 +1774,7 @@ function GrooveUtils() {
           for (var eighth_index = i; eighth_index <= i + 6; eighth_index += 6) {
             // code duplicated from below
             // clear any invalid stickings since they will mess up the formatting greatly
-            for (var si = eighth_index + 1; si < eighth_index + 6; si++) sticking_array[si] = false;
+            for (si = eighth_index + 1; si < eighth_index + 6; si++) sticking_array[si] = false;
             stickings_voice_string += getABCforRest(
               [sticking_array],
               eighth_index,
@@ -1823,10 +1829,10 @@ function GrooveUtils() {
           0 == count_active_notes_in_arrays(all_drum_array_of_array, i + 10, 2)
         ) {
           // think of the 1/8 notes as two groups of 3 notes
-          for (var eighth_index = i; eighth_index <= i + 9; eighth_index += 3) {
+          for (eighth_index = i; eighth_index <= i + 9; eighth_index += 3) {
             // code duplicated from below
             // clear any invalid stickings since they will mess up the formatting greatly
-            for (var si = eighth_index + 1; si < eighth_index + 3; si++) sticking_array[si] = false;
+            for (si = eighth_index + 1; si < eighth_index + 3; si++) sticking_array[si] = false;
             stickings_voice_string += getABCforRest(
               [sticking_array],
               eighth_index,
@@ -2771,11 +2777,7 @@ function GrooveUtils() {
     timeSigTop,
     timeSigBottom
   ) {
-    var prev_metronome_note = false;
     var prev_hh_note = 46; // default to open hi-hat so that the first hi-hat note also mutes any previous hh open.
-    var prev_snare_note = false;
-    var prev_kick_note = false;
-    var prev_kick_splash_note = false;
     var midi_channel = 9; // percussion
 
     if (swing_percentage < 0 || swing_percentage > 0.99) {
@@ -3373,7 +3375,6 @@ function GrooveUtils() {
     if (MidiPlayTime) MidiPlayTime.innerHTML = time_string;
   };
 
-  var debug_note_count = 0;
   //var class_midi_note_num = 0;  // global, but only used in this function
   // This is the function that the 3rd party midi library calls to give us events.
   // This is different from the callbacks that we use for the midi code in this library to

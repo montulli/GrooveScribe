@@ -64,7 +64,7 @@ function stickingGroupTokens(html) {
 function swallowingKnownHarnessGap(fn) {
   try {
     fn();
-  } catch (e) {
+  } catch {
     /* see comment above: expected ReferenceError from ABC-generation tail */
   }
 }

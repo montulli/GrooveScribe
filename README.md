@@ -24,11 +24,42 @@ Readme for Groove Scribe
 - Deployment instructions
   Deploy the files to an HTTP server.
 
+### Development
+
+The app itself needs no build step, but the repo ships tooling for tests and
+code quality. It requires [Node.js](https://nodejs.org/) (v18+); install the dev
+dependencies once with:
+
+```bash
+npm install
+```
+
+Available commands:
+
+| Command                | Tool             | What it does                                                                    |
+| ---------------------- | ---------------- | ------------------------------------------------------------------------------- |
+| `npm test`             | Vitest           | Run the automated test suite once                                               |
+| `npm run test:watch`   | Vitest           | Re-run tests on change (TDD loop)                                               |
+| `npm run coverage`     | Vitest + v8      | Run tests and print a coverage report (written to `coverage/`)                  |
+| `npm run lint`         | ESLint           | Lint `js/` and `tests/` (flat config + SonarJS rules)                           |
+| `npm run lint:fix`     | ESLint           | Lint and auto-fix what it safely can                                            |
+| `npm run format`       | Prettier         | Rewrite files to the project code style                                         |
+| `npm run format:check` | Prettier         | Check formatting without writing (CI-friendly)                                  |
+| `npm run typecheck`    | TypeScript       | Type-check the plain JS via JSDoc in `checkJs` mode (no TS conversion, no emit) |
+| `npm run knip`         | Knip             | Report unused files, exports, and dependencies                                  |
+| `npm run check`        | all of the above | `lint` + `typecheck` + `format:check` + `test` — the full gate                  |
+
+Configuration lives in `eslint.config.js`, `.prettierrc.json` / `.prettierignore`,
+`tsconfig.json`, and `knip.json`. Vendored third-party libraries (abc2svg, pablo,
+jsmidgen, share-button, MIDI.js) and the hand-authored HTML are excluded from
+these tools. See [tests/README.md](tests/README.md) for how the test harness
+loads the classic global-scoped source.
+
 ### Contribution guidelines
 
-- Writing tests
+- Run `npm run check` before opening a PR
+- Add or update tests for behavior changes (see [tests/README.md](tests/README.md))
 - Code review
-- Other guidelines
 
 ### Who do I talk to?
 

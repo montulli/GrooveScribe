@@ -14,6 +14,26 @@ import prettier from 'eslint-config-prettier';
 //
 // eslint-config-prettier is applied last so ESLint doesn't fight Prettier over
 // formatting.
+//
+// Severity policy: the core ESLint "recommended" rules are correctness/hygiene
+// and stay as errors (and are fixed). The SonarJS rules are code *smells* whose
+// only real fix is refactoring (cognitive complexity, nested conditionals,
+// duplicated branches, TODO tags, …); forcing those now would mean behavioral
+// changes, so they are downgraded to warnings — a visible backlog for the
+// planned refactor rather than a blocking gate.
+
+// SonarJS recommended, with every enabled rule dropped from error -> warn.
+const sonarjsAsWarnings = {
+  ...sonarjs.configs.recommended,
+  rules: Object.fromEntries(
+    Object.entries(sonarjs.configs.recommended.rules || {}).map(([rule, level]) => {
+      if (level === 'error' || level === 2) return [rule, 'warn'];
+      if (Array.isArray(level) && (level[0] === 'error' || level[0] === 2))
+        return [rule, ['warn', ...level.slice(1)]];
+      return [rule, level];
+    })
+  ),
+};
 
 export default [
   {
@@ -35,7 +55,7 @@ export default [
   },
 
   js.configs.recommended,
-  sonarjs.configs.recommended,
+  sonarjsAsWarnings,
 
   // Application source: classic browser scripts sharing one global scope.
   {
@@ -56,6 +76,12 @@ export default [
         ShareButton: 'readonly',
         Pablo: 'readonly',
       },
+    },
+    rules: {
+      // Don't flag unused function arguments: removing them would change
+      // signatures/arity of this legacy code. Only genuinely unused local
+      // variables are reported (and fixed).
+      'no-unused-vars': ['error', { args: 'none', caughtErrors: 'none' }],
     },
   },
 
