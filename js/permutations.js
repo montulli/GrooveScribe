@@ -12,6 +12,9 @@ import {
   constant_ABC_SN_Accent,
   constant_ABC_SN_Ghost,
   constant_ABC_SN_Buzz,
+  constant_ABC_KI_Normal,
+  constant_ABC_KI_SandK,
+  constant_ABC_KI_Splash,
 } from './constants.js';
 
 export function get_permutation_pre_ABC(section) {
@@ -1077,4 +1080,65 @@ export function get_numSectionsFor_permutation_array() {
 		 */
 
   return numSections;
+}
+
+// Reduce a kick array to just its splash notes (used when merging a permutation
+// kick line on top of the ostinato). Pure.
+export function filter_kick_array_for_permutation(old_kick_array) {
+  var new_kick_array = [];
+
+  for (var i in old_kick_array) {
+    if (old_kick_array[i] == constant_ABC_KI_Splash || old_kick_array[i] == constant_ABC_KI_SandK)
+      new_kick_array.push(constant_ABC_KI_Splash);
+    else new_kick_array.push(false);
+  }
+
+  return new_kick_array;
+}
+
+// merge 2 kick arrays
+//  4 possible states
+//  false   (off)
+//  constant_ABC_KI_Normal
+//  constant_ABC_KI_SandK
+//  constant_ABC_KI_Splash
+export function merge_kick_arrays(primary_kick_array, secondary_kick_array) {
+  var new_kick_array = [];
+
+  for (var i in primary_kick_array) {
+    switch (primary_kick_array[i]) {
+      case false:
+        new_kick_array.push(secondary_kick_array[i]);
+        break;
+
+      case constant_ABC_KI_SandK:
+        new_kick_array.push(constant_ABC_KI_SandK);
+        break;
+
+      case constant_ABC_KI_Normal:
+        if (
+          secondary_kick_array[i] == constant_ABC_KI_SandK ||
+          secondary_kick_array[i] == constant_ABC_KI_Splash
+        )
+          new_kick_array.push(constant_ABC_KI_SandK);
+        else new_kick_array.push(constant_ABC_KI_Normal);
+        break;
+
+      case constant_ABC_KI_Splash:
+        if (
+          secondary_kick_array[i] == constant_ABC_KI_Normal ||
+          secondary_kick_array[i] == constant_ABC_KI_SandK
+        )
+          new_kick_array.push(constant_ABC_KI_SandK);
+        else new_kick_array.push(constant_ABC_KI_Splash);
+        break;
+
+      default:
+        console.log('bad case in merge_kick_arrays()');
+        new_kick_array.push(primary_kick_array[i]);
+        break;
+    }
+  }
+
+  return new_kick_array;
 }

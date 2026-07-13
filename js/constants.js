@@ -64,3 +64,14 @@ export const constant_OUR_MIDI_TOM1_NORMAL = 48;
 export const constant_OUR_MIDI_TOM2_NORMAL = 47;
 export const constant_OUR_MIDI_TOM3_NORMAL = 45;
 export const constant_OUR_MIDI_TOM4_NORMAL = 43;
+
+// Grid note "on" colors. The gridState readers compare each cell's rendered
+// color against these to recover its state; the note setters paint the matching
+// color (note-on/snare-accent are painted via their hex form, which the browser
+// normalizes to these rgb strings on readback).
+export const constant_note_on_color_rgb = 'rgb(0, 0, 0)'; // black
+export const constant_snare_accent_on_color_rgb = 'rgb(255, 255, 255)';
+export const constant_sticking_right_on_color_rgb = 'rgb(36, 132, 192)';
+export const constant_sticking_left_on_color_rgb = 'rgb(57, 57, 57)';
+export const constant_sticking_both_on_color_rgb = 'rgb(57, 57, 57)';
+export const constant_sticking_count_on_color_rgb = 'rgb(57, 57, 57)';

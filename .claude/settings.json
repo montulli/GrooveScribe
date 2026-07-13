@@ -17,7 +17,10 @@
       "Bash(awk 'NR>=4632 && NR<=4770' js/groove_writer.js)",
       "Bash(awk 'NR>=4112 && NR<=4592' js/groove_writer.js)",
       "Bash(awk 'NR>=4632 && NR<=4767' js/groove_writer.js)",
-      "Bash(node /tmp/claude-1000/-home-montulli-GrooveScribe/c72288af-8deb-4c4d-aec0-002c903037d5/scratchpad/extract_viewhtml.mjs)"
+      "Bash(node /tmp/claude-1000/-home-montulli-GrooveScribe/c72288af-8deb-4c4d-aec0-002c903037d5/scratchpad/extract_viewhtml.mjs)",
+      "Bash(awk 'NR>=1823 && NR<=2189' js/groove_writer.js)",
+      "Bash(awk 'NR>=1884 && NR<=1941' js/groove_writer.js)",
+      "Bash(node /tmp/claude-1000/-home-montulli-GrooveScribe/c72288af-8deb-4c4d-aec0-002c903037d5/scratchpad/extract_gridstate.mjs)"
     ],
     "additionalDirectories": [
       "/tmp/claude-1000/-home-montulli-GrooveScribe/c72288af-8deb-4c4d-aec0-002c903037d5/scratchpad"

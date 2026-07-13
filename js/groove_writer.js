@@ -76,9 +76,14 @@ import {
   constant_OUR_MIDI_TOM1_NORMAL,
   constant_OUR_MIDI_TOM4_NORMAL,
   constant_OUR_MIDI_VELOCITY_NORMAL,
+  constant_sticking_right_on_color_rgb,
+  constant_sticking_left_on_color_rgb,
+  constant_sticking_both_on_color_rgb,
+  constant_sticking_count_on_color_rgb,
 } from './constants.js';
 import * as _perm from './permutations.js';
 import * as _view from './viewHtml.js';
+import * as _grid from './gridState.js';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -124,21 +129,16 @@ function GrooveWriter() {
   var class_measure_for_note_label_click = 0;
   var class_which_index_last_clicked = 0; // which note was last clicked for the context menu
 
-  // local constants
+  // local constants (UI colors used only by the note setters; the shared "on"
+  // colors the gridState readers also compare against now live in constants.js)
   var constant_note_on_color_hex = '#000000'; // black
-  var constant_note_on_color_rgb = 'rgb(0, 0, 0)'; // black
   var constant_note_off_color_hex = '#FFF';
   var constant_note_border_color_hex = '#999';
   var constant_hihat_note_off_color_hex = '#CCC';
   var constant_note_hidden_color_rgb = 'transparent';
-  var constant_sticking_right_on_color_rgb = 'rgb(36, 132, 192)';
-  var constant_sticking_left_on_color_rgb = 'rgb(57, 57, 57)';
-  var constant_sticking_both_on_color_rgb = 'rgb(57, 57, 57)';
-  var constant_sticking_count_on_color_rgb = 'rgb(57, 57, 57)';
   var constant_sticking_right_off_color_rgb = 'rgb(204, 204, 204)';
   var constant_sticking_left_off_color_rgb = 'rgb(204, 204, 204)';
   var constant_snare_accent_on_color_hex = '#FFF';
-  var constant_snare_accent_on_color_rgb = 'rgb(255, 255, 255)';
 
   // functions below
 
@@ -201,12 +201,34 @@ function GrooveWriter() {
     addOrRemoveKeywordFromClass(element, 'buttonSelected', false);
   }
 
+  // --- Clickable-grid note state (extracted to gridState.js) -----------------
+  // Thin wrappers preserving the in-file API; delegate to the pure DOM readers.
   function is_snare_on(id) {
-    var state = get_snare_state(id, 'ABC');
-
-    if (state !== false) return true;
-
-    return false;
+    return _grid.is_snare_on(id);
+  }
+  function get_snare_state(id, returnType) {
+    return _grid.get_snare_state(id, returnType);
+  }
+  function is_tom_on(id, tom_num) {
+    return _grid.is_tom_on(id, tom_num);
+  }
+  function get_tom_state(id, tom_num, returnType) {
+    return _grid.get_tom_state(id, tom_num, returnType);
+  }
+  function is_kick_on(id) {
+    return _grid.is_kick_on(id);
+  }
+  function get_kick_state(id, returnType) {
+    return _grid.get_kick_state(id, returnType);
+  }
+  function is_hh_on(id) {
+    return _grid.is_hh_on(id);
+  }
+  function get_hh_state(id, returnType) {
+    return _grid.get_hh_state(id, returnType);
+  }
+  function get_sticking_state(id, returnType) {
+    return _grid.get_sticking_state(id, returnType);
   }
 
   function play_single_note_for_note_setting(note_val) {
@@ -224,97 +246,10 @@ function GrooveWriter() {
   //  !accent!c == Snare Accent</li>
   //  _c == Ghost Note    shows an x with a circle around it.   Needs improvement
   //  ^c == xstick   shows an x
-  function get_snare_state(id, returnType) {
-    if (returnType != 'ABC' && returnType != 'URL') {
-      console.log('bad returnType in get_snare_state()');
-      returnType = 'ABC';
-    }
-
-    if (document.getElementById('snare_flam' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_SN_Flam; // snare flam
-      else if (returnType == 'URL') return 'f'; // snare flam
-    }
-    if (document.getElementById('snare_drag' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_SN_Drag; // snare drag
-      else if (returnType == 'URL') return 'd'; // snare drag
-    }
-    if (document.getElementById('snare_ghost' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_SN_Ghost; // ghost note
-      else if (returnType == 'URL') return 'g'; // ghost note
-    }
-    if (
-      document.getElementById('snare_accent' + id).style.color == constant_snare_accent_on_color_rgb
-    ) {
-      if (returnType == 'ABC')
-        return constant_ABC_SN_Accent; // snare accent
-      else if (returnType == 'URL') return 'O'; // snare accent
-    }
-    if (
-      document.getElementById('snare_circle' + id).style.backgroundColor ==
-      constant_note_on_color_rgb
-    ) {
-      if (returnType == 'ABC')
-        return constant_ABC_SN_Normal; // snare normal
-      else if (returnType == 'URL') return 'o'; // snare normal
-    }
-    if (document.getElementById('snare_xstick' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_SN_XStick; // snare Xstick
-      else if (returnType == 'URL') return 'x'; // snare xstick
-    }
-    if (document.getElementById('snare_buzz' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_SN_Buzz; // snare Buzz
-      else if (returnType == 'URL') return 'b'; // snare Buzz
-    }
-
-    if (returnType == 'ABC')
-      return false; // off (rest)
-    else if (returnType == 'URL') return '-'; // off (rest)
-  }
-
-  function is_tom_on(id, tom_num) {
-    var state = get_tom_state(id, tom_num, 'ABC');
-
-    if (state !== false) return true;
-
-    return false;
-  }
 
   // returns the ABC notation for the Tom state
   // false = off
   // "x" = normal tom
-  function get_tom_state(id, tom_num, returnType) {
-    var tomOn =
-      document.getElementById('tom_circle' + tom_num + '-' + id).style.backgroundColor ==
-      constant_note_on_color_rgb;
-
-    if (returnType != 'ABC' && returnType != 'URL') {
-      console.log('bad returnType in get_kick_state()');
-      returnType = 'ABC';
-    }
-
-    if (tomOn) {
-      if (returnType == 'ABC')
-        switch (tom_num) {
-          case 1:
-            return constant_ABC_T1_Normal; // normal
-          case 4:
-            return constant_ABC_T4_Normal; // normal
-          default:
-            console.log('bad switch in get_tom_state. bad tom num:' + tom_num);
-            break;
-        }
-      else if (returnType == 'URL') return 'x'; // normal
-    }
-
-    if (returnType == 'ABC')
-      return false; // off (rest)
-    else if (returnType == 'URL') return '-'; // off (rest)
-  }
 
   // set the tom note on with type
   function set_tom_state(id, tom_num, mode, make_sound) {
@@ -360,49 +295,12 @@ function GrooveWriter() {
   }
 
   // is the any kick note on for this note in the measure?
-  function is_kick_on(id) {
-    var state = get_kick_state(id, 'ABC');
-
-    if (state !== false) return true;
-
-    return false;
-  }
 
   // returns the ABC notation for the kick state
   // false = off
   // "F" = normal kick
   // "^d," = splash
   // "F^d,"  = kick & splash
-  function get_kick_state(id, returnType) {
-    var splashOn =
-      document.getElementById('kick_splash' + id).style.color == constant_note_on_color_rgb;
-    var kickOn =
-      document.getElementById('kick_circle' + id).style.backgroundColor ==
-      constant_note_on_color_rgb;
-
-    if (returnType != 'ABC' && returnType != 'URL') {
-      console.log('bad returnType in get_kick_state()');
-      returnType = 'ABC';
-    }
-
-    if (splashOn && kickOn) {
-      if (returnType == 'ABC')
-        return constant_ABC_KI_SandK; // kick & splash
-      else if (returnType == 'URL') return 'X'; // kick & splash
-    } else if (splashOn) {
-      if (returnType == 'ABC')
-        return constant_ABC_KI_Splash; // splash only
-      else if (returnType == 'URL') return 'x'; // splash only
-    } else if (kickOn) {
-      if (returnType == 'ABC')
-        return constant_ABC_KI_Normal; // kick normal
-      else if (returnType == 'URL') return 'o'; // kick normal
-    }
-
-    if (returnType == 'ABC')
-      return false; // off (rest)
-    else if (returnType == 'URL') return '-'; // off (rest)
-  }
 
   // set the kick note on with type
   function set_kick_state(id, mode, make_sound) {
@@ -507,87 +405,9 @@ function GrooveWriter() {
     }
   }
 
-  function is_hh_on(id) {
-    var state = get_hh_state(id, 'ABC');
-
-    if (state !== false) return true;
-
-    return false;
-  }
-
   // returns the ABC notation for the HH state
   // false = off
   // see the top constants for mappings
-  function get_hh_state(id, returnType) {
-    if (returnType != 'ABC' && returnType != 'URL') {
-      console.log('bad returnType in get_hh_state()');
-      returnType = 'ABC';
-    }
-
-    if (document.getElementById('hh_ride' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_HH_Ride; // ride
-      else if (returnType == 'URL') return 'r'; // ride
-    }
-    if (document.getElementById('hh_ride_bell' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_HH_Ride_Bell; // ride bell
-      else if (returnType == 'URL') return 'b'; // ride bell
-    }
-    if (document.getElementById('hh_cow_bell' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_HH_Cow_Bell; // cow bell
-      else if (returnType == 'URL') return 'm'; // (more) cow bell
-    }
-    if (document.getElementById('hh_crash' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_HH_Crash; // crash
-      else if (returnType == 'URL') return 'c'; // crash
-    }
-    if (document.getElementById('hh_stacker' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_HH_Stacker; // stacker
-      else if (returnType == 'URL') return 's'; // stacker
-    }
-    if (
-      document.getElementById('hh_metronome_normal' + id).style.color == constant_note_on_color_rgb
-    ) {
-      if (returnType == 'ABC')
-        return constant_ABC_HH_Metronome_Normal; // beep
-      else if (returnType == 'URL') return 'n'; // beep
-    }
-    if (
-      document.getElementById('hh_metronome_accent' + id).style.color == constant_note_on_color_rgb
-    ) {
-      if (returnType == 'ABC')
-        return constant_ABC_HH_Metronome_Accent; // beep
-      else if (returnType == 'URL') return 'N'; // beep
-    }
-    if (document.getElementById('hh_open' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_HH_Open; // hh Open
-      else if (returnType == 'URL') return 'o'; // hh Open
-    }
-    if (document.getElementById('hh_close' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_HH_Close; // hh close
-      else if (returnType == 'URL') return '+'; // hh close
-    }
-    if (document.getElementById('hh_accent' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_HH_Accent; // hh accent
-      else if (returnType == 'URL') return 'X'; // hh accent
-    }
-    if (document.getElementById('hh_cross' + id).style.color == constant_note_on_color_rgb) {
-      if (returnType == 'ABC')
-        return constant_ABC_HH_Normal; // hh normal
-      else if (returnType == 'URL') return 'x'; // hh normal
-    }
-
-    if (returnType == 'ABC')
-      return false; // off (rest)
-    else if (returnType == 'URL') return '-'; // off (rest)
-  }
 
   // TODO: refactor this using a lookup table of constants
   function set_hh_state(id, mode, make_sound) {
@@ -710,40 +530,6 @@ function GrooveWriter() {
         console.log('Bad state in set_sticking_state: ' + new_state);
         break;
     }
-  }
-
-  function get_sticking_state(id, returnType) {
-    if (returnType != 'ABC' && returnType != 'URL') {
-      console.log('bad returnType in get_kick_state()');
-      returnType = 'ABC';
-    }
-
-    var right_ele = document.getElementById('sticking_right' + id);
-    var left_ele = document.getElementById('sticking_left' + id);
-    var both_ele = document.getElementById('sticking_both' + id);
-    var count_ele = document.getElementById('sticking_count' + id);
-
-    if (both_ele.style.color == constant_sticking_both_on_color_rgb) {
-      // both is on
-      if (returnType == 'ABC') return constant_ABC_STICK_BOTH;
-      else if (returnType == 'URL') return 'B';
-    } else if (right_ele.style.color == constant_sticking_right_on_color_rgb) {
-      if (returnType == 'ABC') return constant_ABC_STICK_R;
-      else if (returnType == 'URL') return 'R';
-    } else if (left_ele.style.color == constant_sticking_left_on_color_rgb) {
-      if (returnType == 'ABC') return constant_ABC_STICK_L;
-      else if (returnType == 'URL') return 'L';
-    } else if (count_ele.style.color == constant_sticking_count_on_color_rgb) {
-      if (returnType == 'ABC') return constant_ABC_STICK_COUNT;
-      else if (returnType == 'URL') return 'c';
-    } else {
-      // none selected.  Call it off
-      if (returnType == 'ABC')
-        return constant_ABC_STICK_OFF; // off (rest)
-      else if (returnType == 'URL') return '-'; // off (rest)
-    }
-
-    return false; // should never get here
   }
 
   function sticking_rotate_state(id) {
@@ -1881,65 +1667,6 @@ function GrooveWriter() {
     }
   }
 
-  function filter_kick_array_for_permutation(old_kick_array) {
-    var new_kick_array = [];
-
-    for (var i in old_kick_array) {
-      if (old_kick_array[i] == constant_ABC_KI_Splash || old_kick_array[i] == constant_ABC_KI_SandK)
-        new_kick_array.push(constant_ABC_KI_Splash);
-      else new_kick_array.push(false);
-    }
-
-    return new_kick_array;
-  }
-
-  // merge 2 kick arrays
-  //  4 possible states
-  //  false   (off)
-  //  constant_ABC_KI_Normal
-  //  constant_ABC_KI_SandK
-  //  constant_ABC_KI_Splash
-  function merge_kick_arrays(primary_kick_array, secondary_kick_array) {
-    var new_kick_array = [];
-
-    for (var i in primary_kick_array) {
-      switch (primary_kick_array[i]) {
-        case false:
-          new_kick_array.push(secondary_kick_array[i]);
-          break;
-
-        case constant_ABC_KI_SandK:
-          new_kick_array.push(constant_ABC_KI_SandK);
-          break;
-
-        case constant_ABC_KI_Normal:
-          if (
-            secondary_kick_array[i] == constant_ABC_KI_SandK ||
-            secondary_kick_array[i] == constant_ABC_KI_Splash
-          )
-            new_kick_array.push(constant_ABC_KI_SandK);
-          else new_kick_array.push(constant_ABC_KI_Normal);
-          break;
-
-        case constant_ABC_KI_Splash:
-          if (
-            secondary_kick_array[i] == constant_ABC_KI_Normal ||
-            secondary_kick_array[i] == constant_ABC_KI_SandK
-          )
-            new_kick_array.push(constant_ABC_KI_SandK);
-          else new_kick_array.push(constant_ABC_KI_Splash);
-          break;
-
-        default:
-          console.log('bad case in merge_kick_arrays()');
-          new_kick_array.push(primary_kick_array[i]);
-          break;
-      }
-    }
-
-    return new_kick_array;
-  }
-
   function createMidiUrlFromClickableUI(MIDI_type) {
     var Sticking_Array = get_empty_note_array_in_32nds();
     var HH_Array = get_empty_note_array_in_32nds();
@@ -1996,8 +1723,8 @@ function GrooveWriter() {
             else new_kick_array = get_kick16th_permutation_array(i);
 
             // grab hi-hat foots from existing kick array and merge it in.
-            Kick_Array = filter_kick_array_for_permutation(Kick_Array);
-            new_kick_array = merge_kick_arrays(new_kick_array, Kick_Array);
+            Kick_Array = _perm.filter_kick_array_for_permutation(Kick_Array);
+            new_kick_array = _perm.merge_kick_arrays(new_kick_array, Kick_Array);
 
             root.myGrooveUtils.MIDI_from_HH_Snare_Kick_Arrays(
               midiTrack,
@@ -2500,8 +2227,8 @@ function GrooveWriter() {
             else new_kick_array = get_kick16th_permutation_array(i);
 
             // grab hi-hat foots from existing kick array and merge it in.
-            Kick_Array = filter_kick_array_for_permutation(Kick_Array);
-            new_kick_array = merge_kick_arrays(new_kick_array, Kick_Array);
+            Kick_Array = _perm.filter_kick_array_for_permutation(Kick_Array);
+            new_kick_array = _perm.merge_kick_arrays(new_kick_array, Kick_Array);
 
             post_abc = get_permutation_post_ABC(i);
 
