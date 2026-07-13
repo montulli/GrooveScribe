@@ -1370,6 +1370,15 @@ function GrooveWriter() {
         case 'kick':
           set_kick_state(id, action == 'off' ? 'off' : 'normal', true);
           break;
+        case 'tom1':
+          set_tom_state(id, 1, action == 'off' ? 'off' : 'normal', true);
+          break;
+        case 'tom4':
+          set_tom_state(id, 4, action == 'off' ? 'off' : 'normal', true);
+          break;
+        case 'sticking':
+          set_sticking_state(id, action == 'off' ? 'off' : 'right', true);
+          break;
         default:
           console.log('Bad case in noteOnMouseEnter');
           break;
