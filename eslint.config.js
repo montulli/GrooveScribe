@@ -85,9 +85,10 @@ export default [
     },
   },
 
-  // Test suite + build config: modern ESM, Node + Vitest environment.
+  // Test suite + build config: modern ESM, Node + Vitest environment. Covers the
+  // Vitest suite (tests/), the Playwright suite (tests-e2e/), and *.config.js.
   {
-    files: ['tests/**/*.js', '*.config.js'],
+    files: ['tests/**/*.js', 'tests-e2e/**/*.js', '*.config.js'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'module',

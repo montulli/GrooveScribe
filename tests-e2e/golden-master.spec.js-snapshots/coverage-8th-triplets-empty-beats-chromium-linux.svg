@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" color="black" width="9.22in" height="0.99in" viewBox="0 0 664 71">
+<title>abc2svg - 6.</title><style type="text/css">
+.fill {fill: currentColor}
+.stroke {stroke: currentColor; fill: none; stroke-width: .7}
+.f1_1 {font:italic 14px serif}
+</style><defs>
+<path id="pclef" class="stroke" style="stroke-width:1.4" d="m-4 10h5.4v-20h-5.4v20"></path>
+<ellipse id="hd" rx="4.1" ry="2.9" transform="rotate(-20)" class="fill"></ellipse>
+<path id="Xhead" d="m-3,-3 l6,6 m0,-6 l-6,6" class="stroke" style="stroke-width:1.2"></path>
+<path id="r4" class="fill" d="m-1 -8.5
+	l3.6 5.1 -2.1 5.2 2.2 4.3
+	c-2.6 -2.3 -5.1 0 -2.4 2.6
+	-4.8 -3 -1.5 -6.9 1.4 -4.1
+	l-3.1 -4.5 1.9 -5.1 -1.5 -3.5"></path>
+<g id="accent" class="stroke">
+	<path d="m-4 0l8 -2l-8 -2" style="stroke-width:1.2"></path>
+</g>
+</defs><g transform="scale(0.75)"><path class="stroke" d="m885.33 71.84v-24.00"></path>
+<path class="stroke" d="m882.33 71.84v-24.00"></path>
+<path class="stroke" d="m0.00 71.84
+h885.33m-885.33 -6h885.33m-885.33 -6h885.33m-885.33 -6h885.33m-885.33 -6h885.33"></path>
+<use x="12.00" y="59.84" xlink:href="#pclef"></use>
+<g style="font:bold 16px serif" transform="translate(30.50,71.84) scale(1.2,1)">
+	<text y="-12" text-anchor="middle">4</text>
+	<text text-anchor="middle">4</text>
+</g>
+<path class="stroke" d="m52.00 68.84v-41.00"></path>
+<use x="48.50" y="68.84" xlink:href="#hd"></use>
+<use x="48.50" y="44.84" xlink:href="#Xhead"></use>
+<rect style="fill: transparent;" class="abcr" id="abcNoteNum_1_0" x="42.00" y="38.84" width="13.00" height="42.00"></rect>
+<use x="268.72" y="59.84" xlink:href="#r4"></use>
+<path class="stroke" d="m492.44 56.84v-21.00"></path>
+<use x="488.94" y="56.84" xlink:href="#hd"></use>
+<rect style="fill: transparent;" class="abcr" id="abcNoteNum_1_1" x="482.44" y="38.84" width="13.00" height="42.00"></rect>
+<path class="stroke" d="m712.66 44.84v-19.00"></path>
+<use x="709.16" y="44.84" xlink:href="#Xhead"></use>
+<rect style="fill: transparent;" class="abcr" id="abcNoteNum_1_2" x="702.66" y="38.84" width="13.00" height="42.00"></rect>
+<use x="488.94" y="31.34" xlink:href="#accent"></use>
+</g></svg>

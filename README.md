@@ -41,7 +41,6 @@ Then open [http://localhost:8000/index.html](http://localhost:8000/index.html) i
 your browser (append any `?TimeSig=...` groove query string as usual). Stop the
 server with `Ctrl+C`.
 
-
 Any static file server works — `npx serve`, VS Code's "Live Server", etc. — the
 only requirement is HTTP rather than `file://`.
 
@@ -57,24 +56,40 @@ npm install
 
 Available commands:
 
-| Command                | Tool             | What it does                                                                    |
-| ---------------------- | ---------------- | ------------------------------------------------------------------------------- |
-| `npm test`             | Vitest           | Run the automated test suite once                                               |
-| `npm run test:watch`   | Vitest           | Re-run tests on change (TDD loop)                                               |
-| `npm run coverage`     | Vitest + v8      | Run tests and print a coverage report (written to `coverage/`)                  |
-| `npm run lint`         | ESLint           | Lint `js/` and `tests/` (flat config + SonarJS rules)                           |
-| `npm run lint:fix`     | ESLint           | Lint and auto-fix what it safely can                                            |
-| `npm run format`       | Prettier         | Rewrite files to the project code style                                         |
-| `npm run format:check` | Prettier         | Check formatting without writing (CI-friendly)                                  |
-| `npm run typecheck`    | TypeScript       | Type-check the plain JS via JSDoc in `checkJs` mode (no TS conversion, no emit) |
-| `npm run knip`         | Knip             | Report unused files, exports, and dependencies                                  |
-| `npm run check`        | all of the above | `lint` + `typecheck` + `format:check` + `test` — the full gate                  |
+| Command                   | Tool             | What it does                                                                    |
+| ------------------------- | ---------------- | ------------------------------------------------------------------------------- |
+| `npm test`                | Vitest           | Run the automated test suite once                                               |
+| `npm run test:watch`      | Vitest           | Re-run tests on change (TDD loop)                                               |
+| `npm run coverage`        | Vitest + v8      | Run tests and print a coverage report (written to `coverage/`)                  |
+| `npm run test:e2e`        | Playwright       | Browser end-to-end tests: real rendered SVG + MIDI golden master, UI flows      |
+| `npm run test:e2e:update` | Playwright       | Re-baseline the E2E snapshots (SVG / MIDI / screenshots) on purpose             |
+| `npm run lint`            | ESLint           | Lint `js/` and `tests/` (flat config + SonarJS rules)                           |
+| `npm run lint:fix`        | ESLint           | Lint and auto-fix what it safely can                                            |
+| `npm run format`          | Prettier         | Rewrite files to the project code style                                         |
+| `npm run format:check`    | Prettier         | Check formatting without writing (CI-friendly)                                  |
+| `npm run typecheck`       | TypeScript       | Type-check the plain JS via JSDoc in `checkJs` mode (no TS conversion, no emit) |
+| `npm run knip`            | Knip             | Report unused files, exports, and dependencies                                  |
+| `npm run check`           | all of the above | `lint` + `typecheck` + `format:check` + `test` — the full gate                  |
 
 Configuration lives in `eslint.config.js`, `.prettierrc.json` / `.prettierignore`,
 `tsconfig.json`, and `knip.json`. Vendored third-party libraries (abc2svg, pablo,
 jsmidgen, share-button, MIDI.js) and the hand-authored HTML are excluded from
 these tools. See [tests/README.md](tests/README.md) for how the test harness
 loads the classic global-scoped source.
+
+**End-to-end tests** (`tests-e2e/`, Playwright) run the real app in Chromium and
+serve as a pre-refactor **golden master**: they snapshot the rendered sheet-music
+SVG and generated MIDI for a corpus of grooves, exercise UI flows (editing,
+menus, playback, export), and guard against console errors. They start the local
+server automatically. First-time setup needs the browser binary:
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
+
+Committed `*-snapshots/` files are the baselines; regenerate them deliberately
+with `npm run test:e2e:update` when a change is _meant_ to alter output.
 
 ### Contribution guidelines
 
