@@ -1,273 +1,281 @@
 :root {
-	--header-bg-color: #243640;
-	--header-bg-start-color: #2a404d;
-	--header-bg-end-color: #1c2b33;
-	--bpm-bg-color: #222222;
-	--side-bg-color: #393939;
-	--bottom-bg-color: #393939;
-	--side-highlight-bg-color: #2484C0;
-	--note-overlay-bg-color: #BDEBDD;
+  --header-bg-color: #243640;
+  --header-bg-start-color: #2a404d;
+  --header-bg-end-color: #1c2b33;
+  --bpm-bg-color: #222222;
+  --side-bg-color: #393939;
+  --bottom-bg-color: #393939;
+  --side-highlight-bg-color: #2484c0;
+  --note-overlay-bg-color: #bdebdd;
 
-	--highlight-color: #2484C0;
-	--highlight-color-on-white: #2484C0;
+  --highlight-color: #2484c0;
+  --highlight-color-on-white: #2484c0;
 }
 
+/* this is for debugging layout issues - puts a read border around everything */
+/* body * { border: 1px solid red; }		 */
+body {
+}
+.warnings {
+  font-family: monospace;
+  display: none;
+}
 
-	/* this is for debugging layout issues - puts a read border around everything */
-	/* body * { border: 1px solid red; }		 */
-	body {
+.Printable {
+  display: block;
+}
+.nonPrintable {
+  display: block;
+}
 
-	}
-	.warnings {
-		font-family: monospace;
-		display: none;
-	}
+/* there is another .svgTarget definitiion in groove_writer.css */
+.svgTarget {
+  width: 100%;
+}
+.svgTarget svg {
+  width: 100%;
+  height: calc(100%); /* hack, should really be auto, but that causes old webkit to go nuts */
+}
+.playerControl {
+  display: inline-block;
+  background-color: #222222;
+  width: 100%; /* expand to the surounding element */
+  font-family: 'Lato', sans-serif;
+  white-space: nowrap;
+}
+.playerControl.large {
+  display: block;
+  width: calc(50% - 83px);
+  min-width: 500px;
+  border: 1px solid #009;
+  padding-left: 0px;
+  margin: 0px 0px 0px 0px;
+}
+.playerControl.small {
+  width: 90px;
+  border: 1px solid #009;
+  padding-left: 0px;
+}
+.playerControlsRow {
+  /display: flex;
+  /display: -webkit-flex;
+  padding-left: 6px;
+  height: 48px;
+  flex-flow: flex-start;
+  flex-wrap: nowrap;
+  -webkit-flex-flow: flex-start;
+  -webkit-flex-wrap: nowrap;
+}
+.playerControlsRow.large,
+.playerControlsRow.small {
+  padding-left: 0px;
+}
+.midiPlayImage,
+.midiRepeatImage,
+.midiExpandImage {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  margin: 4px 0px 4px 0px;
+  border: 0px solid #000;
+  color: #cccccc;
+  font-size: 20px;
+  font-family: FontAwesome;
+  text-align: center;
+  line-height: 40px;
+  vertical-align: top;
+  border-radius: 50%;
+  -webkit-flex: none;
+  flex: none;
+}
+.midiPlayImage,
+.midiRepeatImage {
+  background: #666666;
+  margin: 4px 4px 4px 4px;
+}
+.midiPlayImage:hover,
+.midiRepeatImage:hover {
+  color: #ffffff;
+  background: #777777;
+}
+.midiExpandImage {
+  font-size: 26px;
+  transition: all 0.6s ease-in-out;
+}
+.midiExpandImage.small:hover {
+  color: #68c2ff;
+  transform: scale(1.4);
+}
+.midiExpandImage.large:hover {
+  color: #68c2ff;
+  transform: scale(0.8);
+}
+.midiPlayImage:before {
+  color: #dd4444;
+  content: '\f05e';
+}
+.midiPlayImage.Stopped:before,
+.midiPlayImage.Paused:before {
+  color: #fff;
+  letter-spacing: -3px;
+  content: '\f04b';
+}
+.midiPlayImage.Playing:before {
+  color: #fff;
+  content: '\f04c';
+}
+.midiExpandImage.small:before {
+  letter-spacing: -3px;
+  content: '\f065';
+}
+.midiExpandImage.large:before {
+  letter-spacing: -3px;
+  content: '\f066';
+}
+.tempoAndProgress {
+  display: inline-block;
+  width: 60%;
+  width: calc(100% - 190px);
+  height: 46px;
+  vertical-align: top;
+  flex: 1;
+  -webkit-flex: 1;
+}
+.tempoAndProgress.small {
+  display: none;
+}
+.tempoRow,
+.swingRow {
+  /border: 1px solid red;
+  display: flex;
+  display: -webkit-flex;
+  height: 24px;
+  vertical-align: top;
+  flex-flow: flex-start;
+  flex-wrap: nowrap;
+}
+.tempoInput,
+.swingInput {
+  background-color: 3f91e5;
+  vertical-align: top;
+  padding: 0px;
+  margin: 8px 10px 0px 0px;
+  color: #66c0fe;
+  height: 8px;
+  width: 100%;
+  flex: 1;
+  -webkit-flex: 1;
+}
+.tempoSettings {
+  color: #fff;
+}
+.tempoLabel,
+.swingLabel {
+  text-align: right;
+  padding-top: 0px;
+  vertical-align: top;
+  font-size: 16px;
+  width: 60px;
+  color: #999999;
+  -webkit-flex: none;
+  flex: none;
+}
+.tempoTextField {
+  margin: 1px 6px 0 6px;
+  color: #999999;
+  background-color: #222;
+  border: none;
+  width: 30px;
+  text-align: center;
+  font-size: 16px;
+  padding: 0;
+  height: 18px;
+}
+.swingOutput {
+  display: inline-block;
+  vertical-align: top;
+  text-align: left;
+  padding-top: 0;
+  font-size: 16px;
+  color: #999999;
+  padding-left: 8px;
+  width: 34px;
+  -webkit-flex: none;
+  flex: none;
+}
+.swingSettings {
+  color: #fff;
+}
+.MIDIProgressRow {
+  display: none;
+}
+.MIDIProgressRow.large {
+  display: block;
+  margin-left: 60px;
+  display: flex;
+  display: -webkit-flex;
+  flex-flow: flex-start;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  height: 20px;
+}
+.MIDIProgressRow.small {
+  display: block;
+  margin-left: 8px;
+  padding: 0px;
+}
+.MIDIPlayTime {
+  display: inline-block;
+  width: 130px;
+  color: #999999;
+  font-size: 30px;
+  margin-left: 6px;
+  padding-top: 4px;
+  text-align: left;
+  line-height: 40px;
+  vertical-align: top;
+  flex: none;
+}
+.MIDIPlayTime.small {
+  display: none;
+}
+.MIDIProgress {
+  width: 85%;
+  height: 8px;
+  font-size: 0px;
+}
+.MIDIProgress.small {
+  width: 80px;
+}
+.MIDIProgress.large {
+  margin-top: 3px;
+}
 
-	.Printable {
-		display: block;
-	}
-	.nonPrintable {
-		display: block;
-	}
+#ABCSource {
+  font-family: monospace;
+  font-size: 14px;
+}
 
-	/* there is another .svgTarget definitiion in groove_writer.css */
-	.svgTarget {
-		width: 100%;
-	}
-	.svgTarget svg {
-		width: 100%;
-		height: calc(100%);  /* hack, should really be auto, but that causes old webkit to go nuts */
-	}
-	.playerControl {
-		display: inline-block;
-		background-color: #222222;
-		width: 100%;  /* expand to the surounding element */
-		font-family: 'Lato', sans-serif;
-		white-space: nowrap;
-	}
-	.playerControl.large {
-		display: block;
-		width: calc(50% - 83px);
-		min-width: 500px;
-		border: 1px solid #009;
-		padding-left: 0px;
-		margin: 0px 0px 0px 0px;
-	}
-	.playerControl.small {
-		width: 90px;
-		border: 1px solid #009;
-		padding-left: 0px;
-	}
-	.playerControlsRow {
-		/display: flex;
-		/display: -webkit-flex;
-		padding-left: 6px;
-		height: 48px;
-		flex-flow: flex-start;
-		flex-wrap: nowrap;
-		-webkit-flex-flow: flex-start;
-		-webkit-flex-wrap: nowrap;
-	}
-	.playerControlsRow.large, .playerControlsRow.small {
-		padding-left: 0px;
-	}
-	.midiPlayImage, .midiRepeatImage, .midiExpandImage {
-		display: inline-block;
-		width: 40px;
-		height: 40px;
-		cursor: pointer;
-		margin: 4px 0px 4px 0px;
-		border: 0px solid #000;
-		color: #cccccc;
-		font-size: 20px;
-		font-family: FontAwesome;
-		text-align: center;
-		line-height: 40px;
-		vertical-align: top;
-		border-radius: 50%;
-		-webkit-flex: none;
-		flex: none;
-	}
-	.midiPlayImage, .midiRepeatImage {
-		background: #666666;
-		margin: 4px 4px 4px 4px;
+button {
+  cursor: pointer;
+}
 
-	}
-	.midiPlayImage:hover, .midiRepeatImage:hover {
-		color: #ffffff;
-		background: #777777;
-	}
-	.midiExpandImage {
-		font-size: 26px;
-		transition: all .6s ease-in-out;
-	}
-	.midiExpandImage.small:hover {
-		color: #68c2ff;
-		transform: scale(1.4);
-	}
-	.midiExpandImage.large:hover {
-		color: #68c2ff;
-		transform: scale(.8);
-	}
-	.midiPlayImage:before   {
-		color: #DD4444;
-	 	content: "\f05e";
-	}
-	.midiPlayImage.Stopped:before ,  .midiPlayImage.Paused:before   {
-	 	color: #FFF;
-		letter-spacing: -3px;
-		content: "\f04b";
-	}
-	.midiPlayImage.Playing:before  {
-		color: #FFF;
-		content: "\f04c";
-	}
-	.midiExpandImage.small:before   {
-	 	letter-spacing: -3px;
-		content: "\f065";
-	}
-	.midiExpandImage.large:before   {
-	 	letter-spacing: -3px;
-		content: "\f066";
-	}
-	.tempoAndProgress {
-		display: inline-block;
-		width: 60%;
-		width: calc(100% - 190px);
-		height: 46px;
-		vertical-align: top;
-		flex: 1;
-		-webkit-flex: 1;
-	}
-	.tempoAndProgress.small {
-			display: none;
-	}
-	.tempoRow, .swingRow {
-		/border: 1px solid red;
-		display: flex;
-		display: -webkit-flex;
-		height: 24px;
-		vertical-align: top;
-		flex-flow: flex-start;
-		flex-wrap: nowrap;
-	}
-	.tempoInput, .swingInput {
-		background-color: 3f91e5;
-		vertical-align: top;
-		padding: 0px;
-		margin: 8px 10px 0px 0px;
-		color: #66c0fe;
-		height: 8px;
-		width: 100%;
-		flex: 1;
-		-webkit-flex: 1;
-	}
-	.tempoSettings {
-		color: #FFF;
-	}
-	.tempoLabel, .swingLabel {
-		text-align: right;
-		padding-top: 0px;
-		vertical-align: top;
-		font-size: 16px;
-		width: 60px;
-		color: #999999;
-		-webkit-flex: none;
-		flex: none;
-	}
-	.tempoTextField {
-		margin: 1px 6px 0 6px;
-		color: #999999;
-		background-color: #222;
-		border: none;
-		width: 30px;
-		text-align: center;
-		font-size: 16px;
-		padding: 0;
-		height: 18px;
-	}
-	.swingOutput {
-		display: inline-block;
-		vertical-align: top;
-		text-align: left;
-		padding-top: 0;
-		font-size: 16px;
-		color: #999999;
-		padding-left: 8px;
-		width: 34px;
-		-webkit-flex: none;
-		flex: none;
-	}
-	.swingSettings {
-		color: #FFF;
-	}
-	.MIDIProgressRow {
-		display: none;
-	}
-	.MIDIProgressRow.large {
-		display: block;
-		margin-left: 60px;
-		display: flex;
-		display: -webkit-flex;
-		flex-flow: flex-start;
-		flex-wrap: nowrap;
-		white-space: nowrap;
-		height: 20px;
-	}
-	.MIDIProgressRow.small {
-		display: block;
-		margin-left: 8px;
-		padding: 0px;
-	}
-	.MIDIPlayTime {
-		display: inline-block;
-		width: 130px;
-		color: #999999;
-		font-size: 30px;
-		margin-left: 6px;
-		padding-top: 4px;
-		text-align: left;
-		line-height: 40px;
-		vertical-align: top;
-		flex: none;
-	}
-	.MIDIPlayTime.small {
-		display: none;
-	}
-	.MIDIProgress {
-		width: 85%;
-		height: 8px;
-		font-size: 0px;
-	}
-	.MIDIProgress.small {
-		width: 80px;
-	}
-	.MIDIProgress.large {
-		margin-top: 3px;
-	}
+.abcr {
+  /* rectangles enclosing notes in ABC SVG */
+  fill: transparent;
+  fill-opactity: 0.25;
+}
+.abcr.highlighted {
+  fill: var(--highlight-color) !important;
+  fill-opacity: 0.2;
+}
+#GrooveDB_MetaData,
+#debugDisplayArea {
+  background-color: #ddd;
+}
 
-	#ABCSource {
-		font-family: monospace;
-		font-size: 14px;
-	}
-
-	button {
-		cursor: pointer;
-	}
-
-	.abcr {  /* rectangles enclosing notes in ABC SVG */
-		fill: transparent;
-		fill-opactity: 0.25;
-	}
-	.abcr.highlighted {
-		fill: var(--highlight-color) !important;
-		fill-opacity: 0.20;
-	}
-	#GrooveDB_MetaData , #debugDisplayArea {
-		background-color: #DDD;
-	}
-
-input[type=range] {
+input[type='range'] {
   -webkit-appearance: none;
   background: #888888;
   border-radius: 8px;
@@ -275,32 +283,32 @@ input[type=range] {
 
 /* MSIE hacks for range sliders */
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
-	input[type=range] {
-		margin-top: 0px;
-		background: #222222;
-		height: 24px;
-	}
+  input[type='range'] {
+    margin-top: 0px;
+    background: #222222;
+    height: 24px;
+  }
 }
-@supports (-ms-accelerator:true) {
-	input[type=range] {
-		margin-top: 0px;
-		background: #222222;
-		height: 24px;
-	}
+@supports (-ms-accelerator: true) {
+  input[type='range'] {
+    margin-top: 0px;
+    background: #222222;
+    height: 24px;
+  }
 }
 
-input[type=range]:before {
+input[type='range']:before {
   /* set this color for the runnable-track left of the thumb color */
   color: #888888;
 }
-input[type=range]:after {
+input[type='range']:after {
   /* set this color for the runnable-track right of the thumb color */
   color: #444444;
 }
-input[type=range]:focus {
+input[type='range']:focus {
   outline: none;
 }
-input[type=range]::-webkit-slider-runnable-track {
+input[type='range']::-webkit-slider-runnable-track {
   width: 100%;
   height: 8px;
   cursor: pointer;
@@ -308,7 +316,7 @@ input[type=range]::-webkit-slider-runnable-track {
   border-radius: 6px;
   border: 0px solid #010101;
 }
-input[type=range]::-webkit-slider-thumb {
+input[type='range']::-webkit-slider-thumb {
   border: 1px solid #444444;
   height: 18px;
   width: 18px;
@@ -319,16 +327,16 @@ input[type=range]::-webkit-slider-thumb {
   margin-top: -5px;
 }
 
-input[type=range].touch::-webkit-slider-thumb {
+input[type='range'].touch::-webkit-slider-thumb {
   height: 24px;
   width: 24px;
   margin-top: -8px;
 }
 
-input[type=range]:focus::-webkit-slider-runnable-track {
+input[type='range']:focus::-webkit-slider-runnable-track {
   background: #666666;
 }
-input[type=range]::-moz-range-track {
+input[type='range']::-moz-range-track {
   width: 100%;
   height: 8.4px;
   cursor: pointer;
@@ -336,7 +344,7 @@ input[type=range]::-moz-range-track {
   border-radius: 6px;
   border: 0px solid #010101;
 }
-input[type=range]::-moz-range-thumb {
+input[type='range']::-moz-range-thumb {
   border: 1px solid #444444;
   height: 18px;
   width: 18px;
@@ -344,7 +352,7 @@ input[type=range]::-moz-range-thumb {
   background: #888888;
   cursor: pointer;
 }
-input[type=range]::-ms-track {
+input[type='range']::-ms-track {
   width: 100%;
   height: 8.4px;
   cursor: pointer;
@@ -352,17 +360,17 @@ input[type=range]::-ms-track {
   border-color: transparent;
   color: transparent;
 }
-input[type=range]::-ms-fill-lower {
+input[type='range']::-ms-fill-lower {
   background: #888888;
   border: 0px solid #010101;
   border-radius: 2.6px;
 }
-input[type=range]::-ms-fill-upper {
+input[type='range']::-ms-fill-upper {
   background: #444444;
   border: 0px solid #010101;
   border-radius: 6px;
 }
-input[type=range]::-ms-thumb {
+input[type='range']::-ms-thumb {
   border: 1px solid #444444;
   height: 16px;
   width: 16px;
@@ -371,19 +379,28 @@ input[type=range]::-ms-thumb {
   cursor: pointer;
   margin-top: 0px;
 }
-input[type=range]:active::-moz-range-thumb {
-	background: #fff;
+input[type='range']:active::-moz-range-thumb {
+  background: #fff;
 }
-input[type=range]:active::-webkit-slider-thumb {
-	background: #fff;
+input[type='range']:active::-webkit-slider-thumb {
+  background: #fff;
 }
 @media print {
-	/* keep at bottom so it overrides the styles above */
-	body {margin:0; padding:0; border:0; background-color: transparent}
-	div.newpage {page-break-before: always}
-	div.nobrk {page-break-inside: avoid}
+  /* keep at bottom so it overrides the styles above */
+  body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+  }
+  div.newpage {
+    page-break-before: always;
+  }
+  div.nobrk {
+    page-break-inside: avoid;
+  }
 
-	.nonPrintable {
-		display: none !important;
-	}
+  .nonPrintable {
+    display: none !important;
+  }
 }

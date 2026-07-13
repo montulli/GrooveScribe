@@ -1,0 +1,14 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": ["index.html", "tests/**/*.test.js", "tests-e2e/**/*.spec.js", "*.config.js"],
+  "project": ["js/**/*.js", "tests/**/*.js", "tests-e2e/**/*.js"],
+  "ignore": [
+    "js/abc2svg-1.js",
+    "js/pablo.js",
+    "js/pablo.min.js",
+    "js/jsmidgen.js",
+    "js/share-button.min.js",
+    "js/*.min.js"
+  ],
+  "ignoreDependencies": []
+}

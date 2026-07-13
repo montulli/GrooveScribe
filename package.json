@@ -1,0 +1,38 @@
+{
+  "name": "groovescribe",
+  "version": "1.0.0",
+  "description": "Groove Scribe - drum notation and playback web application",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "serve": "python3 -m http.server 8000",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit",
+    "knip": "knip",
+    "check": "npm run lint && npm run typecheck && npm run format:check && npm run test"
+  },
+  "license": "GPL-2.0-or-later",
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.61.1",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-sonarjs": "^4.1.0",
+    "globals": "^17.7.0",
+    "jsdom": "^26.1.0",
+    "knip": "^6.26.0",
+    "prettier": "^3.9.5",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

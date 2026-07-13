@@ -1,0 +1,23 @@
+{
+  "// note": "Type-checks the plain-JS source via JSDoc without converting to TypeScript. Run with `npm run typecheck` (tsc --noEmit). The app source files are classic browser scripts sharing one global scope, so they are checked together.",
+  "compilerOptions": {
+    "target": "ES2021",
+    "lib": ["ES2021", "DOM", "DOM.Iterable"],
+    "module": "none",
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "types": []
+  },
+  "include": [
+    "types/globals.d.ts",
+    "js/groove_utils.js",
+    "js/groove_writer.js",
+    "js/groove_display.js",
+    "js/grooves.js"
+  ],
+  "exclude": ["node_modules"]
+}

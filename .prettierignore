@@ -1,0 +1,26 @@
+# Dependencies & build output
+node_modules/
+coverage/
+package-lock.json
+
+# Vendored third-party libraries (not ours to format)
+js/abc2svg-1.js
+js/pablo.js
+js/pablo.min.js
+js/jsmidgen.js
+js/share-button.min.js
+js/*.min.js
+css/share-button.min.css
+*.min.css
+MIDI.js/
+soundfont/
+font-awesome/
+cordova/
+
+# Generated test snapshots
+tests/**/__snapshots__/
+
+# Hand-authored application HTML — not exercised by the test suite (so
+# formatting changes can't be verified as behavior-preserving), and several
+# files contain pre-existing markup errors Prettier cannot parse.
+*.html
