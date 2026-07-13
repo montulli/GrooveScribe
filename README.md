@@ -10,6 +10,7 @@ Readme for Groove Scribe
 
 - Hosted here: http://www.mikeslessons.com/gscribe/
 - Also here: http://montulli.github.io/GrooveScribe/
+- Examples and html tests: http://montulli.github.io/GrooveScribe/html_examples_and_tests/index.html
 
 ### How do I get set up?
 

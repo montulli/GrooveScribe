@@ -25,7 +25,8 @@
       "Bash(node /tmp/claude-1000/-home-montulli-GrooveScribe/c72288af-8deb-4c4d-aec0-002c903037d5/scratchpad/rebuild_gdbcg.mjs)",
       "Bash(sed -n '/toggles tom1 and tom4/,/^  }\\);/p' tests/groove_writer/grid-notes.test.js)",
       "Bash(sed -n '/rotates sticking state/,/^  }\\);/p' tests/groove_writer/grid-notes.test.js)",
-      "Bash(awk '/groove_writer\\\\.js/{f=1} f')"
+      "Bash(awk '/groove_writer\\\\.js/{f=1} f')",
+      "Bash(git ls-tree *)"
     ],
     "additionalDirectories": [
       "/tmp/claude-1000/-home-montulli-GrooveScribe/c72288af-8deb-4c4d-aec0-002c903037d5/scratchpad"
