@@ -7,7 +7,20 @@
       "Bash(awk '/var class_empty_note_array = \\\\[/{f=1} f{print} /\\\\];/&&f{exit}' js/groove_utils.js)",
       "Bash(awk '/root.grooveDataNew = function/{f=1} f{print NR\": \"$0} f&&/^  };/{exit}' js/groove_utils.js)",
       "Bash(awk 'NR>=165 && NR<=205 {print NR\": \"$0}' js/groove_utils.js)",
-      "Bash(git stash *)"
+      "Bash(git stash *)",
+      "Bash(awk -F: '$1>4700')",
+      "Bash(awk 'NR>=1595 && NR<=2854 { if \\($0 ~ /function /\\) fn=$0; if \\($0 ~ /getElementById/\\) print fn }' js/groove_writer.js)",
+      "Bash(awk -F: '$1<1595 || $1>2854')",
+      "Bash(node /tmp/claude-1000/-home-montulli-GrooveScribe/c72288af-8deb-4c4d-aec0-002c903037d5/scratchpad/extract_permutations.mjs)",
+      "Bash(cd /home/montulli/GrooveScribe *)",
+      "Bash(awk 'NR>=4112 { print; if \\(NR>4112 && /^  };/\\) {print \"END:\"NR; exit} }' js/groove_writer.js)",
+      "Bash(awk 'NR>=4632 && NR<=4770' js/groove_writer.js)",
+      "Bash(awk 'NR>=4112 && NR<=4592' js/groove_writer.js)",
+      "Bash(awk 'NR>=4632 && NR<=4767' js/groove_writer.js)",
+      "Bash(node /tmp/claude-1000/-home-montulli-GrooveScribe/c72288af-8deb-4c4d-aec0-002c903037d5/scratchpad/extract_viewhtml.mjs)"
+    ],
+    "additionalDirectories": [
+      "/tmp/claude-1000/-home-montulli-GrooveScribe/c72288af-8deb-4c4d-aec0-002c903037d5/scratchpad"
     ]
   }
 }

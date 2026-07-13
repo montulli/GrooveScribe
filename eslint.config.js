@@ -94,6 +94,8 @@ export default [
       'js/noteArrays.js',
       'js/browserInfo.js',
       'js/grooveData.js',
+      'js/permutations.js',
+      'js/viewHtml.js',
       'js/urlSerialization.js',
       'js/midiFile.js',
       'js/abcNotation.js',
