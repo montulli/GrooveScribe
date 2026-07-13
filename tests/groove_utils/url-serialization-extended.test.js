@@ -19,6 +19,24 @@ describe('GrooveUtils URL serialization (extended)', () => {
     gu = await newGrooveUtils();
   });
 
+  describe('query strings with no leading "?"', () => {
+    // getQueryVariableFromString must tolerate a bare "Name=value&..." string
+    // (as GrooveDisplay embeds pass, e.g. GrooveEmbedSingle.html) and not eat the
+    // first parameter's leading character. With the old substring(1) this parsed
+    // "TimeSig=3/4" as "imeSig=3/4", losing it and falling back to the 4/4 default.
+    it('parses the first parameter when no "?" prefix is present', () => {
+      const gd = gu.getGrooveDataFromUrlString('TimeSig=3/4&Div=8&Measures=1');
+      expect(gd.numBeats).toBe(3);
+      expect(gd.noteValue).toBe(4);
+      expect(gd.timeDivision).toBe(8);
+    });
+
+    it('produces the same grooveData with or without the leading "?"', () => {
+      const url = 'TimeSig=5/4&Div=16&H=|xxxxxxxxxxxxxxxxxxxx|&K=|o-------o-------o---|';
+      expect(gu.getGrooveDataFromUrlString(url)).toEqual(gu.getGrooveDataFromUrlString('?' + url));
+    });
+  });
+
   describe('TimeSig parsing', () => {
     it.each([
       ['4/4', 4, 4, 16],
@@ -481,11 +499,16 @@ describe('GrooveUtils URL serialization (extended)', () => {
   });
 
   describe('getQueryVariableFromString edge behavior relied on by both functions', () => {
-    it('assumes a leading "?" (it always strips the first character)', () => {
-      // Without a leading "?", the first parameter's name is corrupted
-      // (its first character is chopped off), so it silently fails to match.
-      expect(gu.getQueryVariableFromString('tempo', 'def', 'Tempo=99')).toBe('def');
+    it('tolerates a query string with or without a leading "?"', () => {
+      // The '?' is stripped only when present, so the first parameter's name is
+      // preserved either way (GrooveDisplay embeds pass a bare "Name=value&...").
+      expect(gu.getQueryVariableFromString('tempo', 'def', 'Tempo=99')).toBe('99');
       expect(gu.getQueryVariableFromString('tempo', 'def', '?Tempo=99')).toBe('99');
+    });
+
+    it('returns the default for a variable that is not present', () => {
+      expect(gu.getQueryVariableFromString('missing', 'def', '?Tempo=99')).toBe('def');
+      expect(gu.getQueryVariableFromString('missing', 'def', 'Tempo=99')).toBe('def');
     });
   });
 

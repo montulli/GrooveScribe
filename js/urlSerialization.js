@@ -18,7 +18,11 @@ import {
 } from './noteArrays.js';
 
 export function getQueryVariableFromString(variable, def_value, my_string) {
-  var query = my_string.substring(1);
+  // Tolerate query strings with or without a leading '?'. window.location.search
+  // and share URLs include it; some callers (e.g. GrooveDisplay embeds) pass a
+  // bare 'Name=value&...' string. Only strip the '?' when it is actually there,
+  // otherwise the first parameter name loses its first character.
+  var query = my_string.charAt(0) === '?' ? my_string.substring(1) : my_string;
   var vars = query.split('&');
   for (var i = 0; i < vars.length; i++) {
     var pair = vars[i].split('=');
