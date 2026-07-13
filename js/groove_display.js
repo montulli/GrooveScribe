@@ -345,7 +345,7 @@ if (typeof GrooveDisplay === 'undefined') {
       // add an html Element to hold the grooveDisplay
       var HTMLElementID = 'GrooveDisplay' + root.GrooveDisplayUniqueCounter;
       var GrooveDisplayElement = document.createElement('div');
-      GrooveDisplayElement.class = 'GrooveDisplay';
+      GrooveDisplayElement.className = 'GrooveDisplay';
       GrooveDisplayElement.id = HTMLElementID;
       document.getElementsByTagName('body')[0].appendChild(GrooveDisplayElement);
 

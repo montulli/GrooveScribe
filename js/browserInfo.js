@@ -55,5 +55,9 @@ export function getBrowserInfo() {
 }
 
 export function is_touch_device() {
-  return 'ontouchstart' in window || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+  return (
+    'ontouchstart' in window ||
+    navigator.maxTouchPoints > 0 ||
+    /** @type {any} */ (navigator).msMaxTouchPoints > 0
+  );
 }

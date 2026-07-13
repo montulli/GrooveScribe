@@ -10,7 +10,9 @@ import { constant_DEFAULT_TEMPO } from './constants.js';
 
 // A fresh 32-slot note lane, every slot a rest. Each note array in a GrooveData
 // is a copy of this (never a shared reference), so mutating one lane or measure
-// never bleeds into another.
+// never bleeds into another. A populated slot holds an ABC-notation token
+// string (e.g. '^g'); an empty slot is `false`.
+/** @type {Array<string | false>} */
 const EMPTY_NOTE_ARRAY = [
   false,
   false,
@@ -56,11 +58,11 @@ const EMPTY_NOTE_ARRAY = [
  * @property {number} numberOfMeasures  Measure count.
  * @property {number} numBeats         Time-signature numerator (top).
  * @property {number} noteValue        Time-signature denominator (bottom).
- * @property {boolean[]} sticking_array  Sticking lane (R/L annotations), one slot per note.
- * @property {boolean[]} hh_array      Hi-hat / cymbal lane.
- * @property {boolean[]} snare_array   Snare lane.
- * @property {boolean[]} kick_array    Kick lane.
- * @property {boolean[][]} toms_array  Four tom lanes (T1–T4), index 0-based.
+ * @property {Array<string|boolean>} sticking_array  Sticking lane (R/L annotations); each slot is an ABC token or false.
+ * @property {Array<string|boolean>} hh_array      Hi-hat / cymbal lane; each slot is an ABC token or false.
+ * @property {Array<string|boolean>} snare_array   Snare lane; each slot is an ABC token or false.
+ * @property {Array<string|boolean>} kick_array    Kick lane; each slot is an ABC token or false.
+ * @property {Array<Array<string|boolean>>} toms_array  Four tom lanes (T1–T4), index 0-based.
  * @property {boolean} showToms        Whether the tom lanes are displayed.
  * @property {boolean} showStickings   Whether the sticking lane is displayed.
  * @property {string} title            Groove title.
