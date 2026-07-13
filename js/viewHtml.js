@@ -40,7 +40,9 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
       i +
       ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' +
       i +
-      ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'sticking\'">R</div>\n\
+      ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'sticking\', ' +
+      i +
+      ')">R</div>\n\
 															<div class="sticking_left note_part"   id="sticking_left' +
       i +
       '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' +
