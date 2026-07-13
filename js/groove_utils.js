@@ -59,6 +59,7 @@ import {
   getBrowserInfo as _getBrowserInfo,
   is_touch_device as _is_touch_device,
 } from './browserInfo.js';
+import { createGrooveData } from './grooveData.js';
 import {
   getQueryVariableFromString as _getQueryVariableFromString,
   getGrooveDataFromUrlString as _urlParse,
@@ -162,73 +163,24 @@ function GrooveUtils() {
   root.repeatCallback = null; //triggered when a groove is going to be repeated
   root.tempoChangeCallback = null; //triggered when the tempo changes.  ARG1 is the new Tempo integer (needs to be very fast, it can get called a lot of times from the slider)
 
-  var class_empty_note_array = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ];
-
   root.visible_context_menu = false; // a single context menu can be visible at a time.
 
+  // grooveDataNew builds a fresh GrooveData. The canonical shape and defaults
+  // now live in grooveData.js (createGrooveData); this wrapper just threads
+  // through the instance-level flags. It is implemented as a constructor
+  // (assigning onto `this`) to preserve the exact historical behavior of both
+  // call styles: `new gu.grooveDataNew()` yields a populated GrooveData, while
+  // the legacy no-`new` call during construction assigns onto `root` and
+  // returns undefined (so root.myGrooveData stays empty until a groove loads).
   root.grooveDataNew = function () {
-    this.notesPerMeasure = 16;
-    this.timeDivision = 16;
-    this.numberOfMeasures = 1;
-    this.numBeats = 4; // TimeSigTop: Top part of Time Signture 3/4, 4/4, 5/4, 6/8, etc...
-    this.noteValue = 4; // TimeSigBottom: Bottom part of Time Sig   4 = quarter notes, 8 = 8th notes, 16ths, etc..
-    this.sticking_array = class_empty_note_array.slice(0); // copy by value
-    this.hh_array = class_empty_note_array.slice(0); // copy by value
-    this.snare_array = class_empty_note_array.slice(0); // copy by value
-    this.kick_array = class_empty_note_array.slice(0); // copy by value
-    // toms_array contains 4 toms  T1, T2, T3, T4 index starting at zero
-    this.toms_array = [
-      class_empty_note_array.slice(0),
-      class_empty_note_array.slice(0),
-      class_empty_note_array.slice(0),
-      class_empty_note_array.slice(0),
-    ];
-    this.showToms = false;
-    this.showStickings = false;
-    this.title = '';
-    this.author = '';
-    this.comments = '';
-    this.showLegend = false;
-    this.swingPercent = 0;
-    this.tempo = constant_DEFAULT_TEMPO;
-    this.kickStemsUp = true;
-    this.metronomeFrequency = 0; // 0, 4, 8, 16
-    this.debugMode = root.debugMode;
-    this.grooveDBAuthoring = root.grooveDBAuthoring;
-    this.viewMode = root.viewMode;
+    Object.assign(
+      this,
+      createGrooveData({
+        debugMode: root.debugMode,
+        grooveDBAuthoring: root.grooveDBAuthoring,
+        viewMode: root.viewMode,
+      })
+    );
   };
 
   root.myGrooveData = root.grooveDataNew();
@@ -539,7 +491,11 @@ function GrooveUtils() {
   };
 
   root.getGrooveDataFromUrlString = function (encodedURLData) {
-    return _urlParse(root, encodedURLData);
+    return _urlParse(encodedURLData, {
+      debugMode: root.debugMode,
+      grooveDBAuthoring: root.grooveDBAuthoring,
+      viewMode: root.viewMode,
+    });
   };
 
   // get a really long URL that encodes all of the notes and the rest of the state of the page.
@@ -547,7 +503,7 @@ function GrooveUtils() {
   //
 
   root.getUrlStringFromGrooveData = function (myGrooveData, url_destination) {
-    return _urlBuild(root, myGrooveData, url_destination);
+    return _urlBuild(myGrooveData, url_destination);
   };
 
   function setupHotKeys() {

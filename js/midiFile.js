@@ -459,6 +459,14 @@ export function MIDI_from_HH_Snare_Kick_Arrays(
   if (delay_for_next_note) midiTrack.addNoteOff(0, 60, delay_for_next_note - 1); // add a blank note for spacing
 } // end of function
 
+/**
+ * Build a base64 data: URL for the MIDI rendering of a groove.
+ *
+ * @param {Object} gu  The owning GrooveUtils instance (for note/tab helpers).
+ * @param {import('./grooveData.js').GrooveData} myGrooveData  The groove to render.
+ * @param {string} [MIDI_type]  Optional MIDI rendering variant.
+ * @returns {string}
+ */
 export function create_MIDIURLFromGrooveData(gu, myGrooveData, MIDI_type) {
   var midiFile = new Midi.File();
   var midiTrack = new Midi.Track();

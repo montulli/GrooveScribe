@@ -792,6 +792,14 @@ export function create_ABC_from_snare_HH_kick_arrays(
   }
 }
 
+/**
+ * Build the complete ABC-notation source for a groove.
+ *
+ * @param {Object} gu  The owning GrooveUtils instance (for note/tab helpers).
+ * @param {import('./grooveData.js').GrooveData} myGrooveData  The groove to render.
+ * @param {number} renderWidth  Target render width in pixels.
+ * @returns {string}
+ */
 export function createABCFromGrooveData(gu, myGrooveData, renderWidth) {
   var FullNoteStickingArray = scaleNoteArrayToFullSize(
     myGrooveData.sticking_array,

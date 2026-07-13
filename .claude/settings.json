@@ -1,5 +1,13 @@
 {
   "permissions": {
-    "allow": ["Bash(node -e ' *)", "Bash(xargs -I{} sed -n '1,{}p' js/groove_utils.js)"]
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(xargs -I{} sed -n '1,{}p' js/groove_utils.js)",
+      "Bash(node -e 'const fs=require\\(\"fs\"\\);let e=fs.readFileSync\\(\"eslint.config.js\",\"utf8\"\\);e=e.replace\\(\" \\\\x27js/noteArrays.js\\\\x27,\",\" \\\\x27js/noteArrays.js\\\\x27,\\\\n \\\\x27js/browserInfo.js\\\\x27,\"\\);fs.writeFileSync\\(\"eslint.config.js\",e\\);')",
+      "Bash(awk '/var class_empty_note_array = \\\\[/{f=1} f{print} /\\\\];/&&f{exit}' js/groove_utils.js)",
+      "Bash(awk '/root.grooveDataNew = function/{f=1} f{print NR\": \"$0} f&&/^  };/{exit}' js/groove_utils.js)",
+      "Bash(awk 'NR>=165 && NR<=205 {print NR\": \"$0}' js/groove_utils.js)",
+      "Bash(git stash *)"
+    ]
   }
 }

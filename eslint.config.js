@@ -93,6 +93,7 @@ export default [
       'js/musicMath.js',
       'js/noteArrays.js',
       'js/browserInfo.js',
+      'js/grooveData.js',
       'js/urlSerialization.js',
       'js/midiFile.js',
       'js/abcNotation.js',

@@ -1,8 +1,10 @@
 // URL <-> grooveData serialization (Step 2 extraction from groove_utils.js).
-// These take a GrooveUtils instance (gu) for the note/tab helper methods they
-// rely on; GrooveUtils delegates its getGrooveDataFromUrlString /
-// getUrlStringFromGrooveData methods here.
+// Pure module: it depends only on other pure modules (grooveData, musicMath,
+// noteArrays) — no GrooveUtils instance. GrooveUtils delegates its
+// getGrooveDataFromUrlString / getUrlStringFromGrooveData methods here, passing
+// its instance flags through the parse function's `config` argument.
 
+import { createGrooveData } from './grooveData.js';
 import { constant_DEFAULT_TEMPO, constant_MAX_MEASURES } from './constants.js';
 import { parseTimeSigString, calc_notes_per_measure } from './musicMath.js';
 import {
@@ -27,16 +29,24 @@ export function getQueryVariableFromString(variable, def_value, my_string) {
   return def_value;
 }
 
-export function getGrooveDataFromUrlString(gu, encodedURLData) {
+/**
+ * Parse an encoded groove URL (query string) into a {@link GrooveData}.
+ *
+ * @param {string} encodedURLData  The URL / query string to parse.
+ * @param {{debugMode?: (boolean|number), grooveDBAuthoring?: boolean, viewMode?: boolean}} [config]
+ *   Instance flags to seed the new GrooveData with (passed by GrooveUtils).
+ * @returns {import('./grooveData.js').GrooveData}
+ */
+export function getGrooveDataFromUrlString(encodedURLData, config = {}) {
   var Stickings_string;
   var HH_string;
   var Snare_string;
   var Kick_string;
-  var myGrooveData = new gu.grooveDataNew();
+  var myGrooveData = createGrooveData(config);
   var i;
 
   myGrooveData.debugMode = parseInt(
-    getQueryVariableFromString('Debug', gu.debugMode, encodedURLData),
+    getQueryVariableFromString('Debug', myGrooveData.debugMode, encodedURLData),
     10
   );
 
@@ -195,7 +205,14 @@ export function getGrooveDataFromUrlString(gu, encodedURLData) {
   return myGrooveData;
 }
 
-export function getUrlStringFromGrooveData(gu, myGrooveData, url_destination) {
+/**
+ * Serialize a {@link GrooveData} back into an encoded groove URL string.
+ *
+ * @param {import('./grooveData.js').GrooveData} myGrooveData  The groove to serialize.
+ * @param {string} [url_destination]  Optional base URL to prepend.
+ * @returns {string}
+ */
+export function getUrlStringFromGrooveData(myGrooveData, url_destination) {
   var fullURL = window.location.protocol + '//' + window.location.host + window.location.pathname;
 
   if (!url_destination) {
