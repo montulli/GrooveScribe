@@ -1417,19 +1417,6 @@ function GrooveWriter() {
 
   // 48th note triplet kick permutation
 
-  function fill_array_with_value_false(array_of_notes, number_of_notes) {
-    for (var i = 0; i < number_of_notes; i++) {
-      array_of_notes[i] = false;
-    }
-  }
-
-  // create a new instance of an array with all the values prefilled with false
-  function get_empty_note_array(number_of_notes) {
-    var newArray = [number_of_notes];
-    fill_array_with_value_false(newArray, number_of_notes);
-    return newArray;
-  }
-
   // create a new instance of an array with all the values prefilled with false
   // the array size is 32nd notes for the current time signature
   // 4/4 would be 32 notes
@@ -1442,7 +1429,7 @@ function GrooveWriter() {
     var num_notes =
       (class_num_beats_per_measure * notes_per_4_beats) / class_note_value_per_measure;
 
-    return get_empty_note_array(num_notes);
+    return _grid.get_empty_note_array(num_notes);
   }
 
   // snare permutation
@@ -1606,6 +1593,9 @@ function GrooveWriter() {
   //
   // (note: Only one measure, not all the notes on the page if multiple measures are present)
   // Return value is the number of notes.
+  // Read one measure of the clickable grid into the passed-in arrays. Thin
+  // wrapper: threads GrooveWriter's layout + row-visibility state into the
+  // extracted gridState reader.
   function get32NoteArrayFromClickableUI(
     Sticking_Array,
     HH_Array,
@@ -1614,34 +1604,21 @@ function GrooveWriter() {
     Toms_Array,
     startIndexForClickableUI
   ) {
-    var scaler = root.myGrooveUtils.getNoteScaler(
-      class_notes_per_measure,
-      class_num_beats_per_measure,
-      class_note_value_per_measure
-    ); // fill proportionally
-
-    // fill in the arrays from the clickable UI
-    for (var i = 0; i < class_notes_per_measure; i++) {
-      var array_index = i * scaler;
-
-      // only grab the stickings if they are visible
-      if (isStickingsVisible())
-        Sticking_Array[array_index] = get_sticking_state(i + startIndexForClickableUI, 'ABC');
-
-      HH_Array[array_index] = get_hh_state(i + startIndexForClickableUI, 'ABC');
-
-      if (isTomsVisible()) {
-        Toms_Array[0][array_index] = get_tom_state(i + startIndexForClickableUI, 1, 'ABC');
-        Toms_Array[3][array_index] = get_tom_state(i + startIndexForClickableUI, 4, 'ABC');
+    return _grid.get32NoteArrayFromClickableUI(
+      Sticking_Array,
+      HH_Array,
+      Snare_Array,
+      Kick_Array,
+      Toms_Array,
+      startIndexForClickableUI,
+      {
+        notesPerMeasure: class_notes_per_measure,
+        numBeatsPerMeasure: class_num_beats_per_measure,
+        noteValuePerMeasure: class_note_value_per_measure,
+        stickingsVisible: isStickingsVisible(),
+        tomsVisible: isTomsVisible(),
       }
-
-      Snare_Array[array_index] = get_snare_state(i + startIndexForClickableUI, 'ABC');
-
-      Kick_Array[array_index] = get_kick_state(i + startIndexForClickableUI, 'ABC');
-    }
-
-    var num_notes = Snare_Array.length;
-    return num_notes;
+    );
   }
 
   // each of the instruments can be muted.   Check the UI and zero out the array if the instrument is marked as muted
@@ -1654,17 +1631,15 @@ function GrooveWriter() {
     Toms_Array,
     measureIndex
   ) {
-    if (isInstrumentMuted('hh', measureIndex + 1))
-      fill_array_with_value_false(HH_Array, HH_Array.length);
-    if (isInstrumentMuted('snare', measureIndex + 1))
-      fill_array_with_value_false(Snare_Array, Snare_Array.length);
-    if (isInstrumentMuted('kick', measureIndex + 1))
-      fill_array_with_value_false(Kick_Array, Kick_Array.length);
-
-    for (var i = 0; i < Toms_Array.length; i++) {
-      if (isInstrumentMuted('tom' + (i + 1), measureIndex + 1))
-        fill_array_with_value_false(Toms_Array[i], Toms_Array[i].length);
-    }
+    return _grid.muteArrayFromClickableUI(
+      Sticking_Array,
+      HH_Array,
+      Snare_Array,
+      Kick_Array,
+      Toms_Array,
+      measureIndex,
+      isInstrumentMuted
+    );
   }
 
   function createMidiUrlFromClickableUI(MIDI_type) {

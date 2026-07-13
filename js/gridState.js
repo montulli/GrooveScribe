@@ -1,13 +1,16 @@
 // Clickable-grid note state (Step 4 extraction from groove_writer.js).
 //
 // Read side of the note grid: given a cell id, report whether a voice is on and
-// what articulation it holds (returned either as an ABC token or a CSS color).
-// These read the DOM via the ambient global `document` (browser / jsdom /
-// Playwright), exactly like the app's other DOM probes — no GrooveWriter state
-// is touched, so GrooveWriter delegates its own is_*_on / get_*_state helpers
-// here. The write side (set_*_state, which also plays sounds and refreshes) and
-// the higher-level grid readers stay in GrooveWriter.
+// what articulation it holds (returned either as an ABC token or a CSS color),
+// and read a whole measure of the grid into per-voice arrays. These read the
+// DOM via the ambient global `document` (browser / jsdom / Playwright), exactly
+// like the app's other DOM probes — no GrooveWriter state is touched, so
+// GrooveWriter delegates its own is_*_on / get_*_state / *ArrayFromClickableUI
+// helpers here. Per-call state (layout numbers, row visibility, mute lookup) is
+// passed in. The write side (set_*_state, which also plays sounds and refreshes)
+// stays in GrooveWriter.
 
+import { getNoteScaler } from './musicMath.js';
 import {
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
@@ -290,4 +293,80 @@ export function get_sticking_state(id, returnType) {
   }
 
   return false; // should never get here
+}
+
+function fill_array_with_value_false(array_of_notes, number_of_notes) {
+  for (var i = 0; i < number_of_notes; i++) {
+    array_of_notes[i] = false;
+  }
+}
+
+// create a new instance of an array with all the values prefilled with false
+export function get_empty_note_array(number_of_notes) {
+  var newArray = [number_of_notes];
+  fill_array_with_value_false(newArray, number_of_notes);
+  return newArray;
+}
+
+// Read one measure of the clickable UI into the passed-in per-voice arrays,
+// scaling the UI's notes proportionally into the full-size (32nd/48th) arrays.
+// `ctx` carries the layout numbers and row-visibility flags GrooveWriter owns.
+// Returns the number of notes.
+export function get32NoteArrayFromClickableUI(
+  Sticking_Array,
+  HH_Array,
+  Snare_Array,
+  Kick_Array,
+  Toms_Array,
+  startIndexForClickableUI,
+  ctx
+) {
+  var scaler = getNoteScaler(ctx.notesPerMeasure, ctx.numBeatsPerMeasure, ctx.noteValuePerMeasure); // fill proportionally
+
+  // fill in the arrays from the clickable UI
+  for (var i = 0; i < ctx.notesPerMeasure; i++) {
+    var array_index = i * scaler;
+
+    // only grab the stickings if they are visible
+    if (ctx.stickingsVisible)
+      Sticking_Array[array_index] = get_sticking_state(i + startIndexForClickableUI, 'ABC');
+
+    HH_Array[array_index] = get_hh_state(i + startIndexForClickableUI, 'ABC');
+
+    if (ctx.tomsVisible) {
+      Toms_Array[0][array_index] = get_tom_state(i + startIndexForClickableUI, 1, 'ABC');
+      Toms_Array[3][array_index] = get_tom_state(i + startIndexForClickableUI, 4, 'ABC');
+    }
+
+    Snare_Array[array_index] = get_snare_state(i + startIndexForClickableUI, 'ABC');
+
+    Kick_Array[array_index] = get_kick_state(i + startIndexForClickableUI, 'ABC');
+  }
+
+  var num_notes = Snare_Array.length;
+  return num_notes;
+}
+
+// Zero out any voice arrays whose instrument is muted for this measure.
+// `isInstrumentMuted(instrument, measureNumber)` is injected by GrooveWriter.
+export function muteArrayFromClickableUI(
+  Sticking_Array,
+  HH_Array,
+  Snare_Array,
+  Kick_Array,
+  Toms_Array,
+  measureIndex,
+  isInstrumentMuted
+) {
+  if (isInstrumentMuted('hh', measureIndex + 1))
+    fill_array_with_value_false(HH_Array, HH_Array.length);
+  if (isInstrumentMuted('snare', measureIndex + 1))
+    fill_array_with_value_false(Snare_Array, Snare_Array.length);
+  if (isInstrumentMuted('kick', measureIndex + 1))
+    fill_array_with_value_false(Kick_Array, Kick_Array.length);
+
+  for (var i = 0; i < Toms_Array.length; i++) {
+    if (isInstrumentMuted('tom' + (i + 1), measureIndex + 1))
+      fill_array_with_value_false(Toms_Array[i], Toms_Array[i].length);
+  }
 }
