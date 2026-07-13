@@ -30,7 +30,7 @@ test('GrooveEmbed.html renders a groove from the URL without errors', async ({ p
 
 test('GrooveMultiDisplay.html renders multiple grooves', async ({ page }) => {
   const errors = collectErrors(page);
-  await page.goto('/GrooveMultiDisplay.html');
+  await page.goto('/html_examples_and_tests/GrooveMultiDisplay.html');
   await page.waitForSelector('svg', { timeout: 15000 });
   // It embeds many grooves; expect more than one rendered.
   const count = await page.locator('svg').count();
@@ -42,7 +42,7 @@ test('grooveDBTest.html renders (GrooveDBFormatPutGrooveOnPage path)', async ({ 
   // Exercises GrooveDBFormatPutGrooveOnPage, which now uses DOM insertion instead
   // of document.write so it works under deferred ES-module loading.
   const errors = collectErrors(page);
-  await page.goto('/grooveDBTest.html');
+  await page.goto('/html_examples_and_tests/grooveDBTest.html');
   await page.waitForSelector('svg', { timeout: 15000 });
   expect(await page.locator('svg').count()).toBeGreaterThan(1);
   expect(errors, errors.join('\n')).toEqual([]);

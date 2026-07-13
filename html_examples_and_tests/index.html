@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Groove Scribe — Examples &amp; Test Pages</title>
+    <style>
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Helvetica,
+          Arial,
+          sans-serif;
+        max-width: 860px;
+        margin: 2rem auto;
+        padding: 0 1.25rem;
+        line-height: 1.5;
+        color: #222;
+      }
+      h1 {
+        margin-bottom: 0.25rem;
+      }
+      p.lead {
+        color: #666;
+        margin-top: 0;
+      }
+      h2 {
+        margin-top: 2rem;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 0.3rem;
+      }
+      ul {
+        list-style: none;
+        padding: 0;
+      }
+      li {
+        margin: 0.9rem 0;
+      }
+      a.page {
+        font-weight: 600;
+        font-size: 1.05rem;
+        text-decoration: none;
+        color: #1a5fb4;
+      }
+      a.page:hover {
+        text-decoration: underline;
+      }
+      .desc {
+        color: #555;
+        margin: 0.15rem 0 0;
+      }
+      .back {
+        display: inline-block;
+        margin-top: 1.5rem;
+        color: #1a5fb4;
+      }
+      code {
+        background: #f4f4f4;
+        padding: 0 0.25rem;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Groove Scribe — Examples &amp; Test Pages</h1>
+    <p class="lead">
+      Standalone example, demo, and test pages, moved out of the project root into this folder. The
+      main application lives at <a href="../index.html">../index.html</a>. Serve the project over
+      HTTP (<code>npm run serve</code>) rather than opening these via <code>file://</code>.
+    </p>
+
+    <h2>Examples &amp; demos</h2>
+    <ul>
+      <li>
+        <a class="page" href="GScribeMusicImageOnly.html">GScribeMusicImageOnly.html</a>
+        <p class="desc">Renders a groove as a standalone music-notation image, with no editor UI.</p>
+      </li>
+      <li>
+        <a class="page" href="GrooveMultiDisplay.html">GrooveMultiDisplay.html</a>
+        <p class="desc">
+          Demonstrates rendering several read-only <code>GrooveDisplay</code> instances on a single
+          page.
+        </p>
+      </li>
+      <li>
+        <a class="page" href="GrooveEmbedSingle.html">GrooveEmbedSingle.html</a>
+        <p class="desc">
+          A single-groove display variant (companion to the production
+          <code>../GrooveEmbed.html</code> embed page).
+        </p>
+      </li>
+      <li>
+        <a class="page" href="InterestingGrooves.html">InterestingGrooves.html</a>
+        <p class="desc">
+          A curated catalog of grooves (rock, shuffle, jazz, latin, …); each entry links into the
+          main editor with that groove loaded.
+        </p>
+      </li>
+      <li>
+        <a class="page" href="GrooveDBCreateGroove.html">GrooveDBCreateGroove.html</a>
+        <p class="desc">Authoring tool for building groove entries for the groove database.</p>
+      </li>
+    </ul>
+
+    <h2>Test pages</h2>
+    <ul>
+      <li>
+        <a class="page" href="TestAllTimeSigs.html">TestAllTimeSigs.html</a>
+        <p class="desc">
+          Writes out a hi-hat groove in every time signature for a chosen subdivision — a visual
+          check of time-signature handling.
+        </p>
+      </li>
+      <li>
+        <a class="page" href="WeirdTimeSigsTest.html">WeirdTimeSigsTest.html</a>
+        <p class="desc">Renders a battery of unusual / edge-case time signatures for inspection.</p>
+      </li>
+      <li>
+        <a class="page" href="GrooveEmbedTest.html">GrooveEmbedTest.html</a>
+        <p class="desc">
+          Embeds the production <code>../GrooveEmbed.html</code> in an iframe to verify embedded
+          rendering.
+        </p>
+      </li>
+      <li>
+        <a class="page" href="grooveDBTest.html">grooveDBTest.html</a>
+        <p class="desc">
+          Exercises the GrooveDB "put groove on page" formatting path
+          (<code>GrooveDBFormatPutGrooveOnPage</code>).
+        </p>
+      </li>
+      <li>
+        <a class="page" href="grooveDBTest%20-%20Single.html">grooveDBTest - Single.html</a>
+        <p class="desc">Single-groove variant of the GrooveDB formatting test.</p>
+      </li>
+    </ul>
+
+    <a class="back" href="../index.html">&larr; Back to Groove Scribe</a>
+  </body>
+</html>
