@@ -10,6 +10,8 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:update": "playwright test --update-snapshots",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -21,6 +23,7 @@
   "license": "GPL-2.0-or-later",
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.61.1",
     "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",

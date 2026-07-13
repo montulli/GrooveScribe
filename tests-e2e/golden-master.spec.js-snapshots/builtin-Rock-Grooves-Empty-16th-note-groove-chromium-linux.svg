@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" color="black" width="9.22in" height="0.95in" viewBox="0 0 664 69">
+<title>abc2svg - 6.</title><style type="text/css">
+.fill {fill: currentColor}
+.stroke {stroke: currentColor; fill: none; stroke-width: .7}
+.f1_1 {font:italic 14px serif}
+</style><defs>
+<path id="pclef" class="stroke" style="stroke-width:1.4" d="m-4 10h5.4v-20h-5.4v20"></path>
+<path id="r4" class="fill" d="m-1 -8.5
+	l3.6 5.1 -2.1 5.2 2.2 4.3
+	c-2.6 -2.3 -5.1 0 -2.4 2.6
+	-4.8 -3 -1.5 -6.9 1.4 -4.1
+	l-3.1 -4.5 1.9 -5.1 -1.5 -3.5"></path>
+</defs><g transform="scale(0.75)"><path class="stroke" d="m885.33 68.34v-24.00"></path>
+<path class="stroke" d="m882.33 68.34v-24.00"></path>
+<path class="stroke" d="m0.00 68.34
+h885.33m-885.33 -6h885.33m-885.33 -6h885.33m-885.33 -6h885.33m-885.33 -6h885.33"></path>
+<use x="12.00" y="56.34" xlink:href="#pclef"></use>
+<g style="font:bold 16px serif" transform="translate(30.50,68.34) scale(1.2,1)">
+	<text y="-12" text-anchor="middle">4</text>
+	<text text-anchor="middle">4</text>
+</g>
+<use x="48.50" y="56.34" xlink:href="#r4"></use>
+<use x="268.72" y="56.34" xlink:href="#r4"></use>
+<use x="488.94" y="56.34" xlink:href="#r4"></use>
+<use x="709.16" y="56.34" xlink:href="#r4"></use>
+</g></svg>

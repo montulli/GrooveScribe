@@ -11,3 +11,9 @@ node_modules/
 # Test / tooling artifacts
 coverage/
 .vitest/
+
+# Playwright (keep the committed *-snapshots/ baselines; ignore run artifacts)
+test-results/
+playwright-report/
+blob-report/
+.playwright/
