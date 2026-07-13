@@ -24,6 +24,27 @@ Readme for Groove Scribe
 - Deployment instructions
   Deploy the files to an HTTP server.
 
+### Running and testing locally
+
+Serve the app over HTTP — do **not** open `index.html` directly with a
+`file://` URL. The MIDI sound library fetches its soundfont with
+`XMLHttpRequest`, and browsers block that for `file://` pages (a CORS / null-origin
+restriction), so the sound will not load.
+
+Start a local server (requires Python 3, which ships with most systems):
+
+```bash
+npm run serve
+```
+
+Then open [http://localhost:8000/index.html](http://localhost:8000/index.html) in
+your browser (append any `?TimeSig=...` groove query string as usual). Stop the
+server with `Ctrl+C`.
+
+
+Any static file server works — `npx serve`, VS Code's "Live Server", etc. — the
+only requirement is HTTP rather than `file://`.
+
 ### Development
 
 The app itself needs no build step, but the repo ships tooling for tests and
