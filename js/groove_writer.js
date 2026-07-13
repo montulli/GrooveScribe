@@ -24,8 +24,8 @@
 // GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
 // Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
 // provided by the classic <script> tags loaded before this module.
+import { GrooveUtils } from './groove_utils.js';
 import {
-  GrooveUtils,
   constant_ABC_HH_Accent,
   constant_ABC_HH_Close,
   constant_ABC_HH_Cow_Bell,
@@ -76,7 +76,7 @@ import {
   constant_OUR_MIDI_TOM1_NORMAL,
   constant_OUR_MIDI_TOM4_NORMAL,
   constant_OUR_MIDI_VELOCITY_NORMAL,
-} from './groove_utils.js';
+} from './constants.js';
 
 // GrooveWriter class.   The only one in this file.
 

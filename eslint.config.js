@@ -89,6 +89,10 @@ export default [
   // sourceType to 'module'.
   {
     files: [
+      'js/constants.js',
+      'js/urlSerialization.js',
+      'js/midiFile.js',
+      'js/abcNotation.js',
       'js/groove_utils.js',
       'js/groove_writer.js',
       'js/grooves.js',
