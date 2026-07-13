@@ -4,13 +4,13 @@
 	<!--Copyright 2015-2020 Lou Montulli, Mike Johnston  GPL V2.0 Please See LICENSE.txt for more details -->
 
     <head>
-		<title>Groove Scribe</title>
+		<title>Groove Scribe — Create GrooveDB Groove</title>
 
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="mobile-web-app-capable" content="yes">
-		<link rel="icon" sizes="192x192" href="images/gscribe-icon-192.png">
-		<link rel="icon" sizes="96x96" href="images/gscribe-icon-96.png">
-		<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+		<link rel="icon" sizes="192x192" href="../images/gscribe-icon-192.png">
+		<link rel="icon" sizes="96x96" href="../images/gscribe-icon-96.png">
+		<link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
 
 		<!--meta property="og:image" content="https://mikeslessons.com/groove/images/GScribe_Logo_on_orange.png"> -->
 		<meta property="og:description" content="Groove Scribe allows drummers to easily create grooves, listen, share, print sheet music, and more. Use the Groove Scribe to create new grooves, figure out the groove to your favorite song, or write down the groove to your latest tune."/>
@@ -21,39 +21,39 @@
 		</script>
 		<meta property="og:image" content="https://mikeslessons.com/groove/images/GScribe_Logo_on_orange.png">
 
-		<link rel="stylesheet" type="text/css" href="font-awesome/4.7.0/css/font-awesome.min.css">
-		<link rel="stylesheet" type="text/css" href="css/share-button.min.css">
-	    <link rel="stylesheet" type="text/css" href="css/groove_writer_orange.css">
-		<link rel="stylesheet" type="text/css" href="css/groove_display_orange.css">
+		<link rel="stylesheet" type="text/css" href="../font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" type="text/css" href="../css/share-button.min.css">
+	    <link rel="stylesheet" type="text/css" href="../css/groove_writer_orange.css">
+		<link rel="stylesheet" type="text/css" href="../css/groove_display_orange.css">
 		<link href='https://fonts.googleapis.com/css?family=Lato:400,700,300' rel='stylesheet' type='text/css'>
 
 		<!--   Other peoples JS libraries    -->
-		<!-- <script src="./MIDI.js/js/MIDI/MIDI.JS.min.js" type="text/javascript"></script> -->
-		<script src="./MIDI.js/js/MIDI/AudioDetect.js" type="text/javascript"></script>
-		<script src="./MIDI.js/js/MIDI/LoadPlugin.js" type="text/javascript"></script>
-		<script src="./MIDI.js/js/MIDI/Plugin.js" type="text/javascript"></script>
-		<script src="./MIDI.js/js/MIDI/Player.js" type="text/javascript"></script>
-		<script src="./MIDI.js/inc/DOMLoader.XMLHttp.js" type="text/javascript"></script>
-		<script src="./MIDI.js/inc/jasmid/stream.js"></script>
-		<script src="./MIDI.js/inc/jasmid/midifile.js"></script>
-		<script src="./MIDI.js/inc/jasmid/replayer.js"></script>
-		<script src="./MIDI.js/inc/Base64.js"></script>
-		<script src="./MIDI.js/inc/base64binary.js"></script>
+		<!-- <script src="../MIDI.js/js/MIDI/MIDI.JS.min.js" type="text/javascript"></script> -->
+		<script src="../MIDI.js/js/MIDI/AudioDetect.js" type="text/javascript"></script>
+		<script src="../MIDI.js/js/MIDI/LoadPlugin.js" type="text/javascript"></script>
+		<script src="../MIDI.js/js/MIDI/Plugin.js" type="text/javascript"></script>
+		<script src="../MIDI.js/js/MIDI/Player.js" type="text/javascript"></script>
+		<script src="../MIDI.js/inc/DOMLoader.XMLHttp.js" type="text/javascript"></script>
+		<script src="../MIDI.js/inc/jasmid/stream.js"></script>
+		<script src="../MIDI.js/inc/jasmid/midifile.js"></script>
+		<script src="../MIDI.js/inc/jasmid/replayer.js"></script>
+		<script src="../MIDI.js/inc/Base64.js"></script>
+		<script src="../MIDI.js/inc/base64binary.js"></script>
 
 		<!-- script to render ABC to an SVG image -->
-		<script type="text/javascript" src="./js/abc2svg-1.js"></script>
+		<script type="text/javascript" src="../js/abc2svg-1.js"></script>
 
 		<!-- script to convert SVG to PNGs for download -->
-		<script type="text/javascript" src="./js/pablo.min.js"></script>
+		<script type="text/javascript" src="../js/pablo.min.js"></script>
 
 		<!-- script for sharing to social sites -->
-		<script src="js/share-button.min.js"></script>
+		<script src="../js/share-button.min.js"></script>
 
 
-		<!-- Minified version: <script src="./js/groove_writer.min.js" type="text/javascript"></script> -->
+		<!-- Minified version: <script src="../js/groove_writer.min.js" type="text/javascript"></script> -->
 
 		<!-- jsmidgen for generating a midi file -->
-		<script src="./js/jsmidgen.js" type="text/javascript"></script>
+		<script src="../js/jsmidgen.js" type="text/javascript"></script>
 		<!--   our custom JS is loaded as an ES module at the end of <body> (js/main.js).
 		       It creates window.myGrooveWriter, builds the dynamic DOM, and runs the
 		       page-load init. -->
@@ -65,7 +65,7 @@
 		<div class="nonPrintable">
 			<div id="LeftHandNav">
 				<span id="divisionButtonContainer">
-					<span id="logoInSubdivision" class="left-button-content"><img src="images/GScribe_Logo_lone_g.svg"></span>
+					<span id="logoInSubdivision" class="left-button-content"><img src="../images/GScribe_Logo_lone_g.svg"></span>
 					<span class="left-button edit-block" id="timeLabel" onclick="myGrooveWriter.timeSigPopupOpen();"><span class="left-button-content"><span><span id="timeSigLabel" class="buttonFraction"><sup>4</sup>/<sub>4</sub></span><span id="timeSubLabel">TIME</span></span></span></span>
 					<span class="left-button subdivision edit-block" id="subdivision_8ths"  onclick="myGrooveWriter.changeDivision(8);"><span class="left-button-content"><span><span class="buttonFraction"><sup>1</sup>/<sub>8</sub></span>NOTES</span></span></span>
 					<span class="left-button subdivision edit-block" id="subdivision_16ths" onclick="myGrooveWriter.changeDivision(16);"><span class="left-button-content"><span><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>NOTES</span></span></span>
@@ -83,7 +83,7 @@
 
 			</div>
 			<div id="TopNav" class="fullWidthEle">
-				<span id="logoTextUpperLeft"><img src="images/GScribe_Logo_word_stack.svg"></span>
+				<span id="logoTextUpperLeft"><img src="../images/GScribe_Logo_word_stack.svg"></span>
 				<span id="upperLeft">
 					<span id="metronomeContainer">
 						<span id="metronomeLabel">METRONOME:</span>
@@ -440,7 +440,70 @@
 
 
 		<!-- App entry point: ES module that boots the app and runs page-load init. -->
-		<script type="module" src="js/main.js"></script>
+		<!-- App entry: standalone GrooveDB "create groove" tool. Mirrors the main
+		     editor (index.html) but forces GrooveDB authoring mode on — the same
+		     view otherwise reached via index.html?GDB_Author=1. -->
+		<script type="module">
+			import { GrooveWriter } from '../js/groove_writer.js';
+			import { GrooveUtils } from '../js/groove_utils.js';
+			import { grooves } from '../js/grooves.js';
+
+			window.GrooveWriter = GrooveWriter;
+			window.GrooveUtils = GrooveUtils;
+			window.grooves = grooves;
+
+			const myGrooveWriter = new GrooveWriter();
+			window.myGrooveWriter = myGrooveWriter;
+			const utils = myGrooveWriter.myGrooveUtils;
+
+			// This page IS the GrooveDB authoring tool, so force authoring mode on
+			// regardless of the URL (equivalent to index.html?GDB_Author=1).
+			utils.grooveDBAuthoring = true;
+
+			function addStylesheet(href) {
+				const link = document.createElement('link');
+				link.rel = 'stylesheet';
+				link.type = 'text/css';
+				link.href = href;
+				document.head.appendChild(link);
+			}
+			addStylesheet('../css/grooveDB_authoring.css');
+			if (utils.debugMode) addStylesheet('../css/groove_debug.css');
+
+			function replaceSlot(id, htmlStr) {
+				const el = document.getElementById(id);
+				if (el) el.outerHTML = htmlStr;
+			}
+			function fillContainer(id, htmlStr) {
+				const el = document.getElementById(id);
+				if (el) el.innerHTML = htmlStr;
+			}
+
+			// Authoring mode shows no view/edit switch; only the touch-only
+			// advanced-edit toggle is injected (matches js/main.js).
+			if (utils.is_touch_device()) {
+				replaceSlot(
+					'advancedEditSlot',
+					'<span class="left-button edit-block" id="advancedEditAnchor" ' +
+						'onclick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">' +
+						'<span class="left-button-content">Advanced Edit</span></span>'
+				);
+			}
+
+			fillContainer('PermutationOptions', myGrooveWriter.HTMLforPermutationOptions());
+
+			let gridHTML = '';
+			for (let m = 1; m <= myGrooveWriter.numberOfMeasures(); m++) {
+				gridHTML += myGrooveWriter.HTMLforStaffContainer(m, (m - 1) * myGrooveWriter.notesPerMeasure());
+			}
+			fillContainer('measureContainer', gridHTML);
+
+			fillContainer('grooveListWrapper', grooves.getGroovesAsHTML());
+
+			window.addEventListener('load', function () {
+				myGrooveWriter.runsOnPageLoad();
+			});
+		</script>
 
 
 	</div>

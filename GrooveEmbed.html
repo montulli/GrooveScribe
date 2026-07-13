@@ -3,11 +3,11 @@
     <head>
 		<title>Embeded Groove</title>
 		
-		<script src="./js/groove_display.js"></script>
 		
     </head>
     <body>
-	<script>
+	<script type="module">
+		import { GrooveDisplay } from "./js/groove_display.js";
 		GrooveDisplay.AddGrooveDisplayToPage(location.search, true, true);
 	</script>
 	

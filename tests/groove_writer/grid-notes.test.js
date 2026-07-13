@@ -302,6 +302,23 @@ describe('GrooveWriter clickable grid: noteOnMouseEnter', () => {
     expect(gd.snare_array[7]).toBe('!accent!c');
     expect(gd.kick_array[8]).toBe('F');
   });
+
+  it('drives tom1/tom4 (as normal) when toms are shown', () => {
+    gw.showHideToms(true, true, true); // force show, don't re-render
+    gw.noteOnMouseEnter({ ctrlKey: true, altKey: false }, 'tom1', 3);
+    gw.noteOnMouseEnter({ ctrlKey: true, altKey: false }, 'tom4', 4);
+    const gd = gw.grooveDataFromClickableUI();
+    expect(gd.toms_array[0][3]).toBe('e'); // constant_ABC_T1_Normal
+    expect(gd.toms_array[3][4]).toBe('A'); // constant_ABC_T4_Normal
+  });
+
+  it('drives stickings (ctrl -> right, alt -> off) when stickings are shown', () => {
+    gw.stickingsShowHide(true, true, true); // force show, don't re-render
+    gw.noteOnMouseEnter({ ctrlKey: true, altKey: false }, 'sticking', 2);
+    expect(gw.grooveDataFromClickableUI().sticking_array[2]).toBe('"R"x'); // constant_ABC_STICK_R
+    gw.noteOnMouseEnter({ ctrlKey: false, altKey: true }, 'sticking', 2);
+    expect(gw.grooveDataFromClickableUI().sticking_array[2]).toBe('""x'); // constant_ABC_STICK_OFF
+  });
 });
 
 describe('GrooveWriter clickable grid: noteLabelClick / noteLabelPopupClick', () => {

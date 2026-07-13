@@ -431,7 +431,7 @@ describe('HTMLforPermutationOptions', () => {
 
   // permutationPopupClick's switch statement only recognizes "kick_16ths" and
   // "snare_16ths"; any other perm_type (including values referenced in
-  // GrooveDBCreateGroove.html like "snare_accent_16ths" and
+  // html_examples_and_tests/GrooveDBCreateGroove.html like "snare_accent_16ths" and
   // "snare_accented_and_diddled_16ths") falls through to `default`, which
   // unconditionally resets class_permutation_type to "none". So those two
   // menu entries are dead: clicking them cannot produce a non-none permutation

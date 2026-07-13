@@ -1,58 +1,19 @@
 import { vi } from 'vitest';
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 // Helpers for testing js/groove_writer.js (the GrooveWriter authoring UI).
 //
-// GrooveWriter is a global-scoped constructor (like GrooveUtils) that the
-// transform plugin re-exports. Its constructor does `new GrooveUtils()`, so the
-// real GrooveUtils must be present on globalThis before construction.
-//
-// IMPORTANT — cross-file globals: groove_writer.js references ~60 bare
-// identifiers (constant_ABC_*, constant_OUR_MIDI_*, constant_NUMBER_OF_TOMS, …)
-// that are declared as top-level `var`s in groove_utils.js. In the real app both
-// files load as classic <script>s sharing one window, so those are ambient
-// globals. Under Vitest's per-file ESM transform each file is its own module
-// scope, so groove_writer can't see them and any note-setting path throws
-// ReferenceError. installGrooveUtilsGlobals() reproduces the browser's shared
-// global scope by evaluating groove_utils.js at global scope (indirect eval, in
-// non-strict mode) so its top-level `var`s become globalThis properties -- with
-// the REAL production values, not hand-copied literals. groove_writer.js is
-// still `import`ed (so V8 coverage tracks it); only the shared constants come
-// from the eval.
-//
-// Because GrooveWriter keeps per-instance state in module/closure scope and the
-// ES module is cached, we vi.resetModules() per construction for isolation.
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const GROOVE_UTILS_SRC = path.resolve(__dirname, '../../js/groove_utils.js');
+// groove_writer.js is now an ES module that imports GrooveUtils and the shared
+// constants directly from groove_utils.js, so tests just import it — no global
+// shims needed. Because GrooveWriter keeps per-instance state in module/closure
+// scope and the ES module is cached, we vi.resetModules() per construction for
+// isolation.
 
 /**
- * Populate globalThis with groove_utils.js's top-level globals (constants +
- * GrooveUtils), reproducing the browser's shared classic-script scope.
- * @returns {object} the GrooveUtils constructor now available on globalThis.
- */
-function installGrooveUtilsGlobals() {
-  const src = fs.readFileSync(GROOVE_UTILS_SRC, 'utf8');
-  // Indirect eval runs `src` in the global scope; its non-strict top-level
-  // `var`/`function` declarations become properties of globalThis.
-  (0, eval)(src);
-  return globalThis.GrooveUtils;
-}
-
-/**
- * Construct a fresh GrooveWriter with the real GrooveUtils + shared constants
- * installed globally.
+ * Construct a fresh GrooveWriter.
  * @returns {Promise<object>} a `new GrooveWriter()` instance.
  */
 export async function newGrooveWriter() {
   vi.resetModules();
-  installGrooveUtilsGlobals();
-  // Import the module too, so GrooveUtils methods invoked by the writer are the
-  // coverage-tracked module instances rather than the eval'd copy.
-  const { GrooveUtils } = await import('../../js/groove_utils.js');
-  globalThis.GrooveUtils = GrooveUtils;
   const { GrooveWriter } = await import('../../js/groove_writer.js');
   return new GrooveWriter();
 }

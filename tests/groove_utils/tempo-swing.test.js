@@ -351,24 +351,24 @@ describe('GrooveUtils MIDI player HTML & base locations', () => {
   });
 
   describe('getGrooveUtilsBaseLocation / getMidiSoundFontLocation / getMidiImageLocation', () => {
-    // Under jsdom (loaded via ES module import, not a <script> tag),
-    // document.currentScript is null, so global_grooveUtilsScriptSrc stays
-    // "" and getGrooveUtilsBaseLocation() falls back to the hardcoded
-    // Google Drive host baked into the source.
-    const expectedBase =
-      'https://b125c4f8bf7d89726feec9ab8202d31e0c8d14d8.googledrive.com/host/' +
-      '0B2wxVWzVoWGYfnB5b3VTekxyYUowVjZ5YVE3UllLaVk5dVd4TzF4Q2ZaUXVsazhNSTdRM1E/';
-
-    it('getGrooveUtilsBaseLocation falls back to the hardcoded Google Drive host', () => {
-      expect(gu.getGrooveUtilsBaseLocation()).toBe(expectedBase);
+    // groove_utils.js self-locates via import.meta.url (the module-safe
+    // replacement for document.currentScript.src) and goes up two directories
+    // from js/groove_utils.js to the app root. Under the test loader that URL is
+    // a file:// path ending in the repo directory.
+    it('getGrooveUtilsBaseLocation derives the app root from the module URL', () => {
+      const base = gu.getGrooveUtilsBaseLocation();
+      expect(base.endsWith('/')).toBe(true);
+      expect(base.endsWith('GrooveScribe/')).toBe(true);
+      // No longer the dead hardcoded Google Drive fallback.
+      expect(base).not.toContain('googledrive.com');
     });
 
     it('getMidiSoundFontLocation appends "soundfont/" to the base location', () => {
-      expect(gu.getMidiSoundFontLocation()).toBe(expectedBase + 'soundfont/');
+      expect(gu.getMidiSoundFontLocation()).toBe(gu.getGrooveUtilsBaseLocation() + 'soundfont/');
     });
 
     it('getMidiImageLocation appends "images/" to the base location', () => {
-      expect(gu.getMidiImageLocation()).toBe(expectedBase + 'images/');
+      expect(gu.getMidiImageLocation()).toBe(gu.getGrooveUtilsBaseLocation() + 'images/');
     });
   });
 });

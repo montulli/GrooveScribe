@@ -1,20 +1,12 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { coverageGrooves } from '../tests/fixtures/coverage-grooves.js';
+import { grooves } from '../js/grooves.js';
 
 // The corpus of grooves the golden-master suite renders. It combines two sources:
 //   - the built-in groove library shipped in js/grooves.js (real musical content
-//     shown in the app's menu), loaded here by evaluating that classic-script file,
+//     shown in the app's menu), now imported directly (grooves.js is an ES module),
 //   - the coverage-grooves fixture (every articulation / division / time signature
 //     / swing / metronome / multi-measure combination) reused from the unit suite.
 // Every entry becomes an index.html?<query> URL that renders one groove.
-
-const here = path.dirname(fileURLToPath(import.meta.url));
-const groovesSrc = fs.readFileSync(path.resolve(here, '../js/grooves.js'), 'utf8');
-// grooves.js is a classic global script (`var grooves = {}` + IIFE). Evaluate it
-// and hand back the populated object.
-const grooves = new Function(`${groovesSrc}\n;return grooves;`)();
 
 const CATEGORIES = ['Rock_Grooves', 'Triplet_Grooves', 'World_Grooves', 'Foot_Ostinatos'];
 

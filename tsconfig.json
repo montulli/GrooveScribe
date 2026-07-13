@@ -12,6 +12,12 @@
     "skipLibCheck": true,
     "types": []
   },
-  "include": ["js/groove_utils.js", "js/groove_writer.js", "js/groove_display.js", "js/grooves.js"],
+  "include": [
+    "types/globals.d.ts",
+    "js/groove_utils.js",
+    "js/groove_writer.js",
+    "js/groove_display.js",
+    "js/grooves.js"
+  ],
   "exclude": ["node_modules"]
 }

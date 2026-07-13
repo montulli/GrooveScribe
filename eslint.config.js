@@ -85,6 +85,32 @@ export default [
     },
   },
 
+  // Application source files are now ES modules (import/export), so override
+  // sourceType to 'module'.
+  {
+    files: [
+      'js/constants.js',
+      'js/musicMath.js',
+      'js/noteArrays.js',
+      'js/browserInfo.js',
+      'js/grooveData.js',
+      'js/permutations.js',
+      'js/viewHtml.js',
+      'js/gridState.js',
+      'js/urlSerialization.js',
+      'js/midiFile.js',
+      'js/abcNotation.js',
+      'js/groove_utils.js',
+      'js/groove_writer.js',
+      'js/grooves.js',
+      'js/groove_display.js',
+      'js/main.js',
+    ],
+    languageOptions: {
+      sourceType: 'module',
+    },
+  },
+
   // Test suite + build config: modern ESM, Node + Vitest environment. Covers the
   // Vitest suite (tests/), the Playwright suite (tests-e2e/), and *.config.js.
   {

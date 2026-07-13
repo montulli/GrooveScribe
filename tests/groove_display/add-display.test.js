@@ -2,6 +2,12 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { loadGrooveDisplay } from '../helpers/loadDisplay.js';
 import { installMockGrooveUtils, uninstallMockGrooveUtils } from '../helpers/mockGrooveUtils.js';
 
+vi.mock('../../js/groove_utils.js', () => ({
+  get GrooveUtils() {
+    return globalThis.__mockGrooveUtilsCtor;
+  },
+}));
+
 // Coverage for the public embedding API: AddGrooveDisplayToElementId (renders a
 // groove from a URL definition into a given element) and AddGrooveDisplayToPage
 // (creates the element and defers rendering to window 'load').
