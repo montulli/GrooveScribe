@@ -92,15 +92,12 @@ export function getGrooveDataFromUrlString(encodedURLData, config = {}) {
 
   HH_string = getQueryVariableFromString('H', false, encodedURLData);
   if (!HH_string) {
-    getQueryVariableFromString('HH', false, encodedURLData);
-    if (!HH_string) {
-      HH_string = GetDefaultHHGroove(
-        myGrooveData.notesPerMeasure,
-        myGrooveData.numBeats,
-        myGrooveData.noteValue,
-        myGrooveData.numberOfMeasures
-      );
-    }
+    HH_string = GetDefaultHHGroove(
+      myGrooveData.notesPerMeasure,
+      myGrooveData.numBeats,
+      myGrooveData.noteValue,
+      myGrooveData.numberOfMeasures
+    );
   }
 
   Snare_string = getQueryVariableFromString('S', false, encodedURLData);
@@ -115,15 +112,12 @@ export function getGrooveDataFromUrlString(encodedURLData, config = {}) {
 
   Kick_string = getQueryVariableFromString('K', false, encodedURLData);
   if (!Kick_string) {
-    getQueryVariableFromString('B', false, encodedURLData);
-    if (!Kick_string) {
-      Kick_string = GetDefaultKickGroove(
-        myGrooveData.notesPerMeasure,
-        myGrooveData.numBeats,
-        myGrooveData.noteValue,
-        myGrooveData.numberOfMeasures
-      );
-    }
+    Kick_string = GetDefaultKickGroove(
+      myGrooveData.notesPerMeasure,
+      myGrooveData.numBeats,
+      myGrooveData.noteValue,
+      myGrooveData.numberOfMeasures
+    );
   }
 
   // Get the Toms

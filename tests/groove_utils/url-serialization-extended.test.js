@@ -369,18 +369,17 @@ describe('GrooveUtils URL serialization (extended)', () => {
     });
   });
 
-  describe('"HH" and "B" legacy alias params are accepted but silently discarded (bug)', () => {
-    // getGrooveDataFromUrlString calls getQueryVariableFromString("HH", ...)
-    // and getQueryVariableFromString("B", ...) but never assigns the result
-    // to HH_string/Kick_string, so these aliases have no effect and the
-    // default groove is used instead. This documents the current behavior.
-    it('ignores an "HH" param entirely, falling back to the default hi-hat groove', () => {
+  describe('only the modern "H" / "K" params are recognized (no "HH" / "B" aliases)', () => {
+    // The URL scheme uses the short names H (hi-hat) and K (kick). The long-form
+    // legacy aliases HH / B are not supported, so those param names are ignored
+    // and the voice falls through to its generated default groove.
+    it('does not recognize an "HH" param; falls back to the default hi-hat groove', () => {
       const gd = gu.getGrooveDataFromUrlString('?TimeSig=4/4&Div=16&HH=|o---------------|');
       const defaultGd = gu.getGrooveDataFromUrlString('?TimeSig=4/4&Div=16');
       expect(gd.hh_array).toEqual(defaultGd.hh_array);
     });
 
-    it('ignores a "B" param entirely, falling back to the default kick groove', () => {
+    it('does not recognize a "B" param; falls back to the default kick groove', () => {
       const gd = gu.getGrooveDataFromUrlString('?TimeSig=4/4&Div=16&B=|x---------------|');
       const defaultGd = gu.getGrooveDataFromUrlString('?TimeSig=4/4&Div=16');
       expect(gd.kick_array).toEqual(defaultGd.kick_array);
