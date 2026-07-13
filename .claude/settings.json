@@ -1,0 +1,5 @@
+{
+  "permissions": {
+    "allow": ["Bash(node -e ' *)", "Bash(xargs -I{} sed -n '1,{}p' js/groove_utils.js)"]
+  }
+}

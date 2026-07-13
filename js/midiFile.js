@@ -59,6 +59,7 @@ import {
   constant_OUR_MIDI_VELOCITY_GHOST,
   constant_OUR_MIDI_VELOCITY_NORMAL,
 } from './constants.js';
+import { isTripletDivisionFromNotesPerMeasure, scaleNoteArrayToFullSize } from './musicMath.js';
 
 export function MIDI_build_midi_url_count_in_track(gu, timeSigTop, timeSigBottom) {
   var midiFile = new Midi.File();
@@ -126,7 +127,7 @@ export function MIDI_from_HH_Snare_Kick_Arrays(
     midiTrack.addNoteOff(midi_channel, 60, 1); // add a blank note for spacing
   }
 
-  var isTriplets = gu.isTripletDivisionFromNotesPerMeasure(num_notes, timeSigTop, timeSigBottom);
+  var isTriplets = isTripletDivisionFromNotesPerMeasure(num_notes, timeSigTop, timeSigBottom);
   var offsetClickStartBeat = gu.getMetronomeOptionsOffsetClickStartRotation(isTriplets);
   var delay_for_next_note = 0;
 
@@ -470,21 +471,21 @@ export function create_MIDIURLFromGrooveData(gu, myGrooveData, MIDI_type) {
 
   // the midi converter expects all the arrays to be 32 or 48 notes long.
   // Expand them
-  var FullNoteHHArray = gu.scaleNoteArrayToFullSize(
+  var FullNoteHHArray = scaleNoteArrayToFullSize(
     myGrooveData.hh_array,
     myGrooveData.numberOfMeasures,
     myGrooveData.notesPerMeasure,
     myGrooveData.numBeats,
     myGrooveData.noteValue
   );
-  var FullNoteSnareArray = gu.scaleNoteArrayToFullSize(
+  var FullNoteSnareArray = scaleNoteArrayToFullSize(
     myGrooveData.snare_array,
     myGrooveData.numberOfMeasures,
     myGrooveData.notesPerMeasure,
     myGrooveData.numBeats,
     myGrooveData.noteValue
   );
-  var FullNoteKickArray = gu.scaleNoteArrayToFullSize(
+  var FullNoteKickArray = scaleNoteArrayToFullSize(
     myGrooveData.kick_array,
     myGrooveData.numberOfMeasures,
     myGrooveData.notesPerMeasure,
@@ -499,7 +500,7 @@ export function create_MIDIURLFromGrooveData(gu, myGrooveData, MIDI_type) {
     var FullNoteTomsArray = [];
     for (var i = 0; i < constant_NUMBER_OF_TOMS; i++) {
       var orig_measure_notes = myGrooveData.notesPerMeasure;
-      FullNoteTomsArray[i] = gu.scaleNoteArrayToFullSize(
+      FullNoteTomsArray[i] = scaleNoteArrayToFullSize(
         myGrooveData.toms_array[i].slice(
           orig_measure_notes * measureIndex,
           orig_measure_notes * (measureIndex + 1)

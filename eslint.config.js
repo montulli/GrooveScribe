@@ -90,6 +90,9 @@ export default [
   {
     files: [
       'js/constants.js',
+      'js/musicMath.js',
+      'js/noteArrays.js',
+      'js/browserInfo.js',
       'js/urlSerialization.js',
       'js/midiFile.js',
       'js/abcNotation.js',

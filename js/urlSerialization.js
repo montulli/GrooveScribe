@@ -4,6 +4,28 @@
 // getUrlStringFromGrooveData methods here.
 
 import { constant_DEFAULT_TEMPO, constant_MAX_MEASURES } from './constants.js';
+import { parseTimeSigString, calc_notes_per_measure } from './musicMath.js';
+import {
+  noteArraysFromURLData,
+  tabLineFromAbcNoteArray,
+  GetDefaultStickingsGroove,
+  GetDefaultHHGroove,
+  GetDefaultSnareGroove,
+  GetDefaultKickGroove,
+  GetDefaultTomGroove,
+} from './noteArrays.js';
+
+export function getQueryVariableFromString(variable, def_value, my_string) {
+  var query = my_string.substring(1);
+  var vars = query.split('&');
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split('=');
+    if (pair[0].toLowerCase() == variable.toLowerCase()) {
+      return pair[1];
+    }
+  }
+  return def_value;
+}
 
 export function getGrooveDataFromUrlString(gu, encodedURLData) {
   var Stickings_string;
@@ -14,33 +36,30 @@ export function getGrooveDataFromUrlString(gu, encodedURLData) {
   var i;
 
   myGrooveData.debugMode = parseInt(
-    gu.getQueryVariableFromString('Debug', gu.debugMode, encodedURLData),
+    getQueryVariableFromString('Debug', gu.debugMode, encodedURLData),
     10
   );
 
-  var timeSigArray = gu.parseTimeSigString(
-    gu.getQueryVariableFromString('TimeSig', '4/4', encodedURLData)
+  var timeSigArray = parseTimeSigString(
+    getQueryVariableFromString('TimeSig', '4/4', encodedURLData)
   );
   myGrooveData.numBeats = timeSigArray[0];
   myGrooveData.noteValue = timeSigArray[1];
 
-  myGrooveData.timeDivision = parseInt(
-    gu.getQueryVariableFromString('Div', 16, encodedURLData),
-    10
-  );
-  myGrooveData.notesPerMeasure = gu.calc_notes_per_measure(
+  myGrooveData.timeDivision = parseInt(getQueryVariableFromString('Div', 16, encodedURLData), 10);
+  myGrooveData.notesPerMeasure = calc_notes_per_measure(
     myGrooveData.timeDivision,
     myGrooveData.numBeats,
     myGrooveData.noteValue
   );
 
   myGrooveData.metronomeFrequency = parseInt(
-    gu.getQueryVariableFromString('MetronomeFreq', '0', encodedURLData),
+    getQueryVariableFromString('MetronomeFreq', '0', encodedURLData),
     10
   );
 
   myGrooveData.numberOfMeasures = parseInt(
-    gu.getQueryVariableFromString('measures', 1, encodedURLData),
+    getQueryVariableFromString('measures', 1, encodedURLData),
     10
   );
   if (myGrooveData.numberOfMeasures < 1 || isNaN(myGrooveData.numberOfMeasures))
@@ -48,9 +67,9 @@ export function getGrooveDataFromUrlString(gu, encodedURLData) {
   else if (myGrooveData.numberOfMeasures > constant_MAX_MEASURES)
     myGrooveData.numberOfMeasures = constant_MAX_MEASURES;
 
-  Stickings_string = gu.getQueryVariableFromString('Stickings', false, encodedURLData);
+  Stickings_string = getQueryVariableFromString('Stickings', false, encodedURLData);
   if (!Stickings_string) {
-    Stickings_string = gu.GetDefaultStickingsGroove(
+    Stickings_string = GetDefaultStickingsGroove(
       myGrooveData.notesPerMeasure,
       myGrooveData.numBeats,
       myGrooveData.noteValue,
@@ -61,11 +80,11 @@ export function getGrooveDataFromUrlString(gu, encodedURLData) {
     myGrooveData.showStickings = true;
   }
 
-  HH_string = gu.getQueryVariableFromString('H', false, encodedURLData);
+  HH_string = getQueryVariableFromString('H', false, encodedURLData);
   if (!HH_string) {
-    gu.getQueryVariableFromString('HH', false, encodedURLData);
+    getQueryVariableFromString('HH', false, encodedURLData);
     if (!HH_string) {
-      HH_string = gu.GetDefaultHHGroove(
+      HH_string = GetDefaultHHGroove(
         myGrooveData.notesPerMeasure,
         myGrooveData.numBeats,
         myGrooveData.noteValue,
@@ -74,9 +93,9 @@ export function getGrooveDataFromUrlString(gu, encodedURLData) {
     }
   }
 
-  Snare_string = gu.getQueryVariableFromString('S', false, encodedURLData);
+  Snare_string = getQueryVariableFromString('S', false, encodedURLData);
   if (!Snare_string) {
-    Snare_string = gu.GetDefaultSnareGroove(
+    Snare_string = GetDefaultSnareGroove(
       myGrooveData.notesPerMeasure,
       myGrooveData.numBeats,
       myGrooveData.noteValue,
@@ -84,11 +103,11 @@ export function getGrooveDataFromUrlString(gu, encodedURLData) {
     );
   }
 
-  Kick_string = gu.getQueryVariableFromString('K', false, encodedURLData);
+  Kick_string = getQueryVariableFromString('K', false, encodedURLData);
   if (!Kick_string) {
-    gu.getQueryVariableFromString('B', false, encodedURLData);
+    getQueryVariableFromString('B', false, encodedURLData);
     if (!Kick_string) {
-      Kick_string = gu.GetDefaultKickGroove(
+      Kick_string = GetDefaultKickGroove(
         myGrooveData.notesPerMeasure,
         myGrooveData.numBeats,
         myGrooveData.noteValue,
@@ -100,9 +119,9 @@ export function getGrooveDataFromUrlString(gu, encodedURLData) {
   // Get the Toms
   for (i = 0; i < 4; i++) {
     // toms are named T1, T2, T3, T4
-    var Tom_string = gu.getQueryVariableFromString('T' + (i + 1), false, encodedURLData);
+    var Tom_string = getQueryVariableFromString('T' + (i + 1), false, encodedURLData);
     if (!Tom_string) {
-      Tom_string = gu.GetDefaultTomGroove(
+      Tom_string = GetDefaultTomGroove(
         myGrooveData.notesPerMeasure,
         myGrooveData.numBeats,
         myGrooveData.noteValue,
@@ -113,7 +132,7 @@ export function getGrooveDataFromUrlString(gu, encodedURLData) {
     }
 
     /// the toms array index starts at zero (0) the first one is T1
-    myGrooveData.toms_array[i] = gu.noteArraysFromURLData(
+    myGrooveData.toms_array[i] = noteArraysFromURLData(
       'T' + (i + 1),
       Tom_string,
       myGrooveData.notesPerMeasure,
@@ -121,54 +140,51 @@ export function getGrooveDataFromUrlString(gu, encodedURLData) {
     );
   }
 
-  myGrooveData.sticking_array = gu.noteArraysFromURLData(
+  myGrooveData.sticking_array = noteArraysFromURLData(
     'Stickings',
     Stickings_string,
     myGrooveData.notesPerMeasure,
     myGrooveData.numberOfMeasures
   );
-  myGrooveData.hh_array = gu.noteArraysFromURLData(
+  myGrooveData.hh_array = noteArraysFromURLData(
     'H',
     HH_string,
     myGrooveData.notesPerMeasure,
     myGrooveData.numberOfMeasures
   );
-  myGrooveData.snare_array = gu.noteArraysFromURLData(
+  myGrooveData.snare_array = noteArraysFromURLData(
     'S',
     Snare_string,
     myGrooveData.notesPerMeasure,
     myGrooveData.numberOfMeasures
   );
-  myGrooveData.kick_array = gu.noteArraysFromURLData(
+  myGrooveData.kick_array = noteArraysFromURLData(
     'K',
     Kick_string,
     myGrooveData.notesPerMeasure,
     myGrooveData.numberOfMeasures
   );
 
-  myGrooveData.title = gu.getQueryVariableFromString('title', '', encodedURLData);
+  myGrooveData.title = getQueryVariableFromString('title', '', encodedURLData);
   myGrooveData.title = decodeURIComponent(myGrooveData.title);
   myGrooveData.title = myGrooveData.title.replace(/\+/g, ' ');
 
-  myGrooveData.author = gu.getQueryVariableFromString('author', '', encodedURLData);
+  myGrooveData.author = getQueryVariableFromString('author', '', encodedURLData);
   myGrooveData.author = decodeURIComponent(myGrooveData.author);
   myGrooveData.author = myGrooveData.author.replace(/\+/g, ' ');
 
-  myGrooveData.comments = gu.getQueryVariableFromString('comments', '', encodedURLData);
+  myGrooveData.comments = getQueryVariableFromString('comments', '', encodedURLData);
   myGrooveData.comments = decodeURIComponent(myGrooveData.comments);
   myGrooveData.comments = myGrooveData.comments.replace(/\+/g, ' ');
 
   myGrooveData.tempo = parseInt(
-    gu.getQueryVariableFromString('tempo', constant_DEFAULT_TEMPO, encodedURLData),
+    getQueryVariableFromString('tempo', constant_DEFAULT_TEMPO, encodedURLData),
     10
   );
   if (isNaN(myGrooveData.tempo) || myGrooveData.tempo < 20 || myGrooveData.tempo > 400)
     myGrooveData.tempo = constant_DEFAULT_TEMPO;
 
-  myGrooveData.swingPercent = parseInt(
-    gu.getQueryVariableFromString('swing', 0, encodedURLData),
-    10
-  );
+  myGrooveData.swingPercent = parseInt(getQueryVariableFromString('swing', 0, encodedURLData), 10);
   if (
     isNaN(myGrooveData.swingPercent) ||
     myGrooveData.swingPercent < 0 ||
@@ -231,7 +247,7 @@ export function getUrlStringFromGrooveData(gu, myGrooveData, url_destination) {
   var total_notes = myGrooveData.notesPerMeasure * myGrooveData.numberOfMeasures;
   var HH =
     '&H=|' +
-    gu.tabLineFromAbcNoteArray(
+    tabLineFromAbcNoteArray(
       'H',
       myGrooveData.hh_array,
       true,
@@ -241,7 +257,7 @@ export function getUrlStringFromGrooveData(gu, myGrooveData, url_destination) {
     );
   var Snare =
     '&S=|' +
-    gu.tabLineFromAbcNoteArray(
+    tabLineFromAbcNoteArray(
       'S',
       myGrooveData.snare_array,
       true,
@@ -251,7 +267,7 @@ export function getUrlStringFromGrooveData(gu, myGrooveData, url_destination) {
     );
   var Kick =
     '&K=|' +
-    gu.tabLineFromAbcNoteArray(
+    tabLineFromAbcNoteArray(
       'K',
       myGrooveData.kick_array,
       true,
@@ -266,7 +282,7 @@ export function getUrlStringFromGrooveData(gu, myGrooveData, url_destination) {
   if (myGrooveData.showToms) {
     var Tom1 =
       '&T1=|' +
-      gu.tabLineFromAbcNoteArray(
+      tabLineFromAbcNoteArray(
         'T1',
         myGrooveData.toms_array[0],
         true,
@@ -276,7 +292,7 @@ export function getUrlStringFromGrooveData(gu, myGrooveData, url_destination) {
       );
     var Tom4 =
       '&T4=|' +
-      gu.tabLineFromAbcNoteArray(
+      tabLineFromAbcNoteArray(
         'T4',
         myGrooveData.toms_array[3],
         true,
@@ -291,7 +307,7 @@ export function getUrlStringFromGrooveData(gu, myGrooveData, url_destination) {
   if (myGrooveData.showStickings) {
     var Stickings =
       '&Stickings=|' +
-      gu.tabLineFromAbcNoteArray(
+      tabLineFromAbcNoteArray(
         'stickings',
         myGrooveData.sticking_array,
         true,

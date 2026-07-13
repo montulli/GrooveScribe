@@ -4,6 +4,15 @@
 // helpers below are pure. GrooveUtils delegates its ABC methods here.
 
 import { constant_NUMBER_OF_TOMS } from './constants.js';
+import {
+  isTripletDivisionFromNotesPerMeasure,
+  notesPerMeasureInFullSizeArray,
+  scaleNoteArrayToFullSize,
+} from './musicMath.js';
+import {
+  create_note_mapping_array_for_highlighting,
+  convert_sticking_counts_to_actual_counts,
+} from './noteArrays.js';
 
 function moveAccentsOrOtherModifiersOutsideOfGroup(abcNoteStrings, modifier_to_look_for) {
   var found_modifier = false;
@@ -734,7 +743,7 @@ export function create_ABC_from_snare_HH_kick_arrays(
 ) {
   // convert sticking count symbol to the actual count
   // do this right before ABC output so it can't every get encoded into something that gets saved.
-  gu.convert_sticking_counts_to_actual_counts(
+  convert_sticking_counts_to_actual_counts(
     sticking_array,
     time_division,
     timeSigTop,
@@ -748,7 +757,7 @@ export function create_ABC_from_snare_HH_kick_arrays(
     numberOfMeasuresPerLine = 1;
   }
 
-  if (gu.isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom)) {
+  if (isTripletDivisionFromNotesPerMeasure(notes_per_measure, timeSigTop, timeSigBottom)) {
     return snare_HH_kick_ABC_for_triplets(
       sticking_array,
       HH_array,
@@ -784,28 +793,28 @@ export function create_ABC_from_snare_HH_kick_arrays(
 }
 
 export function createABCFromGrooveData(gu, myGrooveData, renderWidth) {
-  var FullNoteStickingArray = gu.scaleNoteArrayToFullSize(
+  var FullNoteStickingArray = scaleNoteArrayToFullSize(
     myGrooveData.sticking_array,
     myGrooveData.numberOfMeasures,
     myGrooveData.notesPerMeasure,
     myGrooveData.numBeats,
     myGrooveData.noteValue
   );
-  var FullNoteHHArray = gu.scaleNoteArrayToFullSize(
+  var FullNoteHHArray = scaleNoteArrayToFullSize(
     myGrooveData.hh_array,
     myGrooveData.numberOfMeasures,
     myGrooveData.notesPerMeasure,
     myGrooveData.numBeats,
     myGrooveData.noteValue
   );
-  var FullNoteSnareArray = gu.scaleNoteArrayToFullSize(
+  var FullNoteSnareArray = scaleNoteArrayToFullSize(
     myGrooveData.snare_array,
     myGrooveData.numberOfMeasures,
     myGrooveData.notesPerMeasure,
     myGrooveData.numBeats,
     myGrooveData.noteValue
   );
-  var FullNoteKickArray = gu.scaleNoteArrayToFullSize(
+  var FullNoteKickArray = scaleNoteArrayToFullSize(
     myGrooveData.kick_array,
     myGrooveData.numberOfMeasures,
     myGrooveData.notesPerMeasure,
@@ -815,7 +824,7 @@ export function createABCFromGrooveData(gu, myGrooveData, renderWidth) {
   var FullNoteTomsArray = [];
 
   for (var i = 0; i < constant_NUMBER_OF_TOMS; i++) {
-    FullNoteTomsArray[i] = gu.scaleNoteArrayToFullSize(
+    FullNoteTomsArray[i] = scaleNoteArrayToFullSize(
       myGrooveData.toms_array[i],
       myGrooveData.numberOfMeasures,
       myGrooveData.notesPerMeasure,
@@ -824,7 +833,7 @@ export function createABCFromGrooveData(gu, myGrooveData, renderWidth) {
     );
   }
 
-  var is_triplet_division = gu.isTripletDivisionFromNotesPerMeasure(
+  var is_triplet_division = isTripletDivisionFromNotesPerMeasure(
     myGrooveData.notesPerMeasure,
     myGrooveData.numBeats,
     myGrooveData.noteValue
@@ -852,7 +861,7 @@ export function createABCFromGrooveData(gu, myGrooveData, renderWidth) {
     '|\n',
     FullNoteHHArray.length,
     myGrooveData.timeDivision,
-    gu.notesPerMeasureInFullSizeArray(
+    notesPerMeasureInFullSizeArray(
       is_triplet_division,
       myGrooveData.numBeats,
       myGrooveData.noteValue
@@ -862,7 +871,7 @@ export function createABCFromGrooveData(gu, myGrooveData, renderWidth) {
     myGrooveData.noteValue
   );
 
-  gu.note_mapping_array = gu.create_note_mapping_array_for_highlighting(
+  gu.note_mapping_array = create_note_mapping_array_for_highlighting(
     FullNoteHHArray,
     FullNoteSnareArray,
     FullNoteKickArray,
