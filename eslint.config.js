@@ -85,6 +85,21 @@ export default [
     },
   },
 
+  // Application source files are now ES modules (import/export), so override
+  // sourceType to 'module'.
+  {
+    files: [
+      'js/groove_utils.js',
+      'js/groove_writer.js',
+      'js/grooves.js',
+      'js/groove_display.js',
+      'js/main.js',
+    ],
+    languageOptions: {
+      sourceType: 'module',
+    },
+  },
+
   // Test suite + build config: modern ESM, Node + Vitest environment. Covers the
   // Vitest suite (tests/), the Playwright suite (tests-e2e/), and *.config.js.
   {

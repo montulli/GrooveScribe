@@ -59,6 +59,12 @@ export function installMockGrooveUtils() {
     instances.push(this);
   }
 
+  // groove_display.js imports GrooveUtils as an ES module, so the mock is
+  // injected via `vi.mock('../../js/groove_utils.js', () => ({ get GrooveUtils()
+  // { return globalThis.__mockGrooveUtilsCtor; } }))` in each test file — the
+  // getter reads this so beforeEach can install a fresh mock per test.
+  globalThis.__mockGrooveUtilsCtor = GrooveUtils;
+  // Also kept on globalThis.GrooveUtils for any code still reading the global.
   globalThis.GrooveUtils = GrooveUtils;
 
   return {
@@ -73,4 +79,5 @@ export function installMockGrooveUtils() {
 
 export function uninstallMockGrooveUtils() {
   delete globalThis.GrooveUtils;
+  delete globalThis.__mockGrooveUtilsCtor;
 }

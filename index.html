@@ -54,23 +54,9 @@
 
 		<!-- jsmidgen for generating a midi file -->
 		<script src="./js/jsmidgen.js" type="text/javascript"></script>
-		<!--   our custom JS  -->
-		<script src="js/groove_writer.js"></script>
-		<script src="js/groove_utils.js"></script>
-		<script src="js/grooves.js"></script>
-
-		<script type="text/javascript">
-			/*jslint browser:true evil:true on:true */
-			/*global GrooveWriter, grooves */
-			// instantiate a global instance of the GrooveWriterClass.    This page only uses one
-			var myGrooveWriter = new GrooveWriter();
-			if (myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
-				document.write('<link rel="stylesheet" type="text/css" href="css/grooveDB_authoring.css">');
-			}
-			if (myGrooveWriter.myGrooveUtils.debugMode) {
-				document.write('<link rel="stylesheet" type="text/css" href="css/groove_debug.css">');
-			}
-		</script>
+		<!--   our custom JS is loaded as an ES module at the end of <body> (js/main.js).
+		       It creates window.myGrooveWriter, builds the dynamic DOM, and runs the
+		       page-load init. -->
 
     </head>
     <body>
@@ -88,17 +74,9 @@
 					<span class="left-button subdivision edit-block" id="subdivision_24ths" onclick="myGrooveWriter.changeDivision(24);"><span class="left-button-content"><span><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>TRIPLETS</span></span></span>
 					<span class="left-button subdivision edit-block" id="subdivision_48ths" onclick="myGrooveWriter.changeDivision(48);"><span class="left-button-content"><span>MIXED<br>Division</span></span></span>
 
-					<script>
-						if (!myGrooveWriter.myGrooveUtils.grooveDBAuthoring) {
-							document.write('<span class="left-button" onclick="myGrooveWriter.swapViewEditMode();"><span class="left-button-content"><span id="view-edit-switch" >Switch to EDIT mode</span></span></span>');
-						}
-					</script>
-
-					<script>
-						if (myGrooveWriter.myGrooveUtils.is_touch_device()) {
-							document.write('<span class="left-button edit-block" id="advancedEditAnchor" onclick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()"><span class="left-button-content">Advanced Edit</span></span>');
-						}
-					</script>
+					<!-- Populated by js/main.js after load (was document.write). -->
+					<span id="viewEditSwitchSlot"></span>
+					<span id="advancedEditSlot"></span>
 
 					<span class="left-button edit-block" id="undoButton" onclick="myGrooveWriter.undoCommand();"><span class="left-button-content"><i class="fa fa-undo"></i>&nbsp;&nbsp;Undo</span></span>
 				</span>
@@ -128,13 +106,8 @@
 		<div id="RightHandContent">
 			<div class="nonPrintable">
 
-				<div id="PermutationOptions">
-					<script type="text/javascript">
-							var genHTML = "";
-							genHTML += myGrooveWriter.HTMLforPermutationOptions();
-							document.write(genHTML);
-					</script>
-				</div>
+				<!-- Contents built by js/main.js (was document.write). -->
+				<div id="PermutationOptions"></div>
 			</div>
 
 			<div class="Printable">
@@ -159,17 +132,8 @@
 				</div>
 
 				<div id="musicalInput" class="fullWidthEle edit-block">
-					<div id="measureContainer">
-						<script type="text/javascript">
-              var genHTML = "";
-              var cur_measure;
-              for (cur_measure = 1; cur_measure <= myGrooveWriter.numberOfMeasures(); cur_measure++) {
-                genHTML += myGrooveWriter.HTMLforStaffContainer(cur_measure, (cur_measure - 1) * myGrooveWriter.notesPerMeasure());
-              }
-              document.write(genHTML);
-              //console.log(genHTML);
-						</script>
-					</div>
+					<!-- The clickable note grid is built by js/main.js (was document.write). -->
+					<div id="measureContainer"></div>
 				</div>
 
 
@@ -398,11 +362,8 @@
 				<li onclick='myGrooveWriter.MIDISaveAs();'><b>Download MIDI file</b></li>
 			</ul>
 		</div>
-		<div id="grooveListWrapper">
-			<script>
-				document.write(grooves.getGroovesAsHTML());
-			</script>
-		</div>
+		<!-- The grooves menu is built by js/main.js (was document.write). -->
+		<div id="grooveListWrapper"></div>
 
 		<!-- dialog for the TIME label, hidden by default -->
 		<div id="timeSigPopup">
@@ -478,12 +439,8 @@
 		</div>
 
 
-		<script>
-			// set up the page after it has fully loaded
-			window.onload = function () { 'use strict';
-				myGrooveWriter.runsOnPageLoad();   // Initialize the notes
-			};
-		</script>
+		<!-- App entry point: ES module that boots the app and runs page-load init. -->
+		<script type="module" src="js/main.js"></script>
 
 
 	</div>

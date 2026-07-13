@@ -24,7 +24,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with Groove Scribe.  If not, see <http://www.gnu.org/licenses/>.
 
-/*global GrooveUtils */
+// GrooveUtils comes from its ES module. The MIDI.js / abc2svg / jsmidgen
+// libraries and CSS are still injected at load time (below) so this file remains
+// a drop-in embed: a page only needs <script type="module" src="groove_display.js">.
+import { GrooveUtils } from './groove_utils.js';
 
 // GrooveDisplay class.   The only one in this file.
 // singleton
@@ -39,14 +42,14 @@ if (typeof GrooveDisplay === 'undefined') {
     // list of files already added
     root.filesadded = '';
 
+    // This module's own directory, used to resolve the relative asset paths
+    // below. As an ES module, import.meta.url is the module-safe way to locate
+    // ourselves (the old approach read the last <script> tag's src).
     root.getLocalScriptRoot = (function () {
-      var scripts = document.getElementsByTagName('script');
-      var index = scripts.length - 1;
-      var myScript = scripts[index];
-      var lastSlash = myScript.src.lastIndexOf('/');
-      myScript.rootSrc = myScript.src.slice(0, lastSlash + 1);
+      var url = import.meta.url;
+      var rootSrc = url.slice(0, url.lastIndexOf('/') + 1);
       return function () {
-        return myScript.rootSrc;
+        return rootSrc;
       };
     })();
 
@@ -102,8 +105,7 @@ if (typeof GrooveDisplay === 'undefined') {
     //	<!-- script to render ABC to an SVG image -->
     root.loadjscssfile('./abc2svg-1.js', 'js');
 
-    //	<!--   our custom JS  -->
-    root.loadjscssfile('./groove_utils.js', 'js');
+    // (groove_utils.js is imported as an ES module above, not injected.)
 
     // stylesheet
     root.loadjscssfile('https://fonts.googleapis.com/css?family=Lato:400,700,300', 'css');
@@ -246,9 +248,13 @@ if (typeof GrooveDisplay === 'undefined') {
     root.GrooveDBFormatPutGrooveOnPage = function (GrooveDBTabIn) {
       root.GrooveDisplayUniqueCounter++;
 
-      // add an html Element to hold the grooveDisplay
+      // add an html Element to hold the grooveDisplay. (Uses DOM insertion rather
+      // than document.write so it works when loaded as a deferred ES module —
+      // document.write after parsing would reopen/clear the document.)
       var HTMLElementID = 'GrooveDisplay' + root.GrooveDisplayUniqueCounter;
-      document.write('<span id="' + HTMLElementID + '"></span>');
+      var element = document.createElement('span');
+      element.id = HTMLElementID;
+      document.getElementsByTagName('body')[0].appendChild(element);
 
       window.addEventListener(
         'load',
@@ -359,3 +365,5 @@ if (typeof GrooveDisplay === 'undefined') {
     };
   })(); // end of class GrooveDisplay
 } // end if
+
+export { GrooveDisplay };

@@ -2,6 +2,12 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { loadGrooveDisplay } from '../helpers/loadDisplay.js';
 import { installMockGrooveUtils, uninstallMockGrooveUtils } from '../helpers/mockGrooveUtils.js';
 
+vi.mock('../../js/groove_utils.js', () => ({
+  get GrooveUtils() {
+    return globalThis.__mockGrooveUtilsCtor;
+  },
+}));
+
 // Coverage for the script/stylesheet loader plumbing in groove_display.js:
 // getLocalScriptRoot, loadjscssfile, checkloadjscssfile, and the load-time
 // dependency injection.
@@ -19,8 +25,10 @@ describe('GrooveDisplay asset loading', () => {
   });
 
   describe('getLocalScriptRoot', () => {
-    it('returns the directory of the seed <script> element', () => {
-      expect(GD.getLocalScriptRoot()).toBe('http://localhost/js/');
+    it("returns this module's own directory, derived from import.meta.url", () => {
+      const root = GD.getLocalScriptRoot();
+      expect(root.startsWith('file://')).toBe(true);
+      expect(root.endsWith('/js/')).toBe(true);
     });
   });
 
@@ -47,7 +55,7 @@ describe('GrooveDisplay asset loading', () => {
         (s) => s.getAttribute('src') && s.getAttribute('src').endsWith('relative.js')
       );
       expect(script).toBeTruthy();
-      expect(script.getAttribute('src')).toBe('http://localhost/js/./relative.js');
+      expect(script.getAttribute('src')).toBe(GD.getLocalScriptRoot() + './relative.js');
     });
 
     it('does not append anything for an unknown filetype', () => {
@@ -94,13 +102,15 @@ describe('GrooveDisplay asset loading', () => {
   });
 
   describe('load-time dependency injection', () => {
-    it('injects the MIDI, abc2svg and GrooveUtils scripts into the head', () => {
+    it('injects the MIDI, abc2svg and jsmidgen scripts into the head, but not groove_utils.js', () => {
       const srcs = Array.from(document.getElementsByTagName('script')).map((s) => s.src);
       const joined = srcs.join('\n');
       expect(joined).toContain('MIDI.js/js/MIDI/Player.js');
       expect(joined).toContain('abc2svg-1.js');
-      expect(joined).toContain('groove_utils.js');
       expect(joined).toContain('jsmidgen.js');
+      // groove_utils.js is now imported as an ES module, not injected via
+      // loadjscssfile.
+      expect(joined).not.toContain('groove_utils.js');
     });
 
     it('injects the stylesheet <link> tags into the head', () => {

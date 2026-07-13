@@ -13,23 +13,16 @@ npm run test:watch  # re-run on change (TDD loop)
 npm run coverage    # run once and print a coverage report (coverage/)
 ```
 
-## How the legacy code is loaded
+## How the code is loaded
 
-Groove Scribe ships as classic browser `<script>` files. Each declares its API
-as a top-level global (`function GrooveUtils() {}`, `var grooves = {}`, …) with
-**no module exports**, so the files cannot be `import`ed directly.
+All Groove Scribe source files (`groove_utils.js`, `groove_writer.js`,
+`grooves.js`, `groove_display.js`) are now real ES modules with native
+`import`/`export`, so tests import them directly — no build-time export shim.
+The app is bootstrapped by `js/main.js` (index.html) and inline
+`<script type="module">` blocks (embed pages), which import the modules and
+re-expose the public API on `window` for the inline HTML event handlers.
 
-To test them _without modifying the production source_, `vitest.config.js`
-installs a small transform plugin (`legacyGlobalExportsPlugin`) that appends a
-named `export` for each file's global **in memory as the file passes through
-Vitest's module pipeline**. Nothing on disk is changed. Because the code now
-flows through the normal transform path, two things work that otherwise would
-not:
-
-1. Tests can `import { GrooveUtils } from '.../js/groove_utils.js'`.
-2. V8 line coverage attributes execution to the real source lines.
-
-`tests/helpers/legacyLoader.js` wraps this behind convenience helpers
+`tests/helpers/legacyLoader.js` wraps imports behind convenience helpers
 (`newGrooveUtils()`, `loadGrooves()`).
 
 Tests run in a **jsdom** environment (see `vitest.config.js`) because the source
@@ -86,15 +79,19 @@ are never part of the deployed/minified app.
 
 `groove_display.js` is thin wiring over `GrooveUtils`, the MIDI player, and
 abc2svg. Its own logic is _which_ GrooveUtils methods it calls, with what
-arguments, and what HTML it emits -- not the rendering itself. So those suites
-replace the `GrooveUtils` global with a spy constructor
-(`helpers/mockGrooveUtils.js`) and assert the wiring, keeping the audio/SVG
-stack out of the tests. `GrooveUtils` has its own black-box suite under
-`groove_utils/`, so nothing is left untested by this split.
+arguments, and what HTML it emits -- not the rendering itself. It `import`s
+`GrooveUtils` as an ES module, so those suites replace it with a spy constructor
+via `vi.mock('../../js/groove_utils.js', () => ({ get GrooveUtils() { return
+globalThis.__mockGrooveUtilsCtor; } }))` — the getter lets `beforeEach`
+(`installMockGrooveUtils()` in `helpers/mockGrooveUtils.js`) install a fresh spy
+per test. This keeps the audio/SVG stack out of these tests; `GrooveUtils` has
+its own black-box suite under `groove_utils/`.
 
-Because `groove_display.js` is a module-scope singleton that runs load-time code
-(reads `<script>` tags, injects dependencies), `helpers/loadDisplay.js` resets
-the module and re-imports it per test for clean, deterministic state.
+`groove_display.js` self-injects its runtime dependencies at load time and
+self-locates via `import.meta.url`. `helpers/loadDisplay.js` calls
+`vi.resetModules()` and re-imports it per test for clean, deterministic state.
+The embed pages (`GrooveEmbed`, `GrooveMultiDisplay`, `grooveDBTest`) are
+exercised in the browser by `tests-e2e/embed.spec.js`.
 
 ### Testing the MIDI and playback layers (`groove_utils.js`)
 
@@ -125,15 +122,13 @@ detection, metronome click-offset, spacebar hot-keys) live in
 
 ### Testing the authoring UI (`groove_writer.js`)
 
-GrooveWriter is a global-scoped constructor that does `new GrooveUtils()` and is
-driven almost entirely through the DOM. Two things make it testable:
+GrooveWriter is a constructor that does `new GrooveUtils()` and is driven almost
+entirely through the DOM. Two things make it testable:
 
-- **Shared globals.** groove_writer.js references ~60 of groove_utils.js's
-  top-level `const`ants as ambient globals (they share one `window` in the real
-  app via classic `<script>` tags). Under the per-file ESM transform those are
-  module-scoped, so `helpers/loadGrooveWriter.js` `installGrooveUtilsGlobals()`
-  evaluates groove_utils.js at global scope (indirect eval) to reproduce the
-  browser's shared scope with the real values.
+- **Real imports.** `groove_writer.js` now imports `GrooveUtils` and the shared
+  constants directly from `groove_utils.js` (both ES modules), so
+  `helpers/loadGrooveWriter.js` `newGrooveWriter()` just imports and constructs
+  it — no global shims needed.
 - **DOM fixtures.** `buildGridDOM()` injects the writer's own generated note
   grid; `buildFullPageDOM()` adds the render target, metadata inputs, tempo/swing
   inputs, metronome buttons, subdivision buttons and permutation container that

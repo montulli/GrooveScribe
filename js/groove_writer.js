@@ -21,13 +21,65 @@
 //  You should have received a copy of the GNU General Public License
 //  along with Groove Scribe.  If not, see <http://www.gnu.org/licenses/>.
 
-/*global GrooveUtils */
-/*global constant_ABC_STICK_R, constant_ABC_STICK_L, constant_ABC_STICK_BOTH, constant_ABC_STICK_OFF, constant_ABC_STICK_COUNT, constant_ABC_HH_Ride, constant_ABC_HH_Ride_Bell, constant_ABC_HH_Cow_Bell, constant_ABC_HH_Crash, constant_ABC_HH_Stacker, constant_ABC_HH_Open, constant_ABC_HH_Close, constant_ABC_HH_Accent, constant_ABC_HH_Normal, constant_ABC_SN_Ghost, constant_ABC_SN_Accent, constant_ABC_SN_Normal, constant_ABC_SN_XStick, constant_ABC_SN_Buzz, constant_ABC_SN_Flam, constant_ABC_SN_Drag, constant_ABC_KI_SandK, constant_ABC_KI_Splash, constant_ABC_KI_Normal, constant_ABC_T1_Normal, constant_ABC_T4_Normal, constant_OUR_MIDI_VELOCITY_NORMAL, constant_OUR_MIDI_HIHAT_NORMAL, constant_OUR_MIDI_HIHAT_OPEN, constant_OUR_MIDI_HIHAT_ACCENT, constant_OUR_MIDI_HIHAT_CRASH, constant_OUR_MIDI_HIHAT_STACKER, constant_OUR_MIDI_HIHAT_RIDE, constant_OUR_MIDI_HIHAT_FOOT, constant_OUR_MIDI_SNARE_NORMAL, constant_OUR_MIDI_SNARE_ACCENT, constant_OUR_MIDI_SNARE_GHOST, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_XSTICK, constant_OUR_MIDI_SNARE_FLAM, constant_OUR_MIDI_KICK_NORMAL, constant_OUR_MIDI_TOM1_NORMAL, constant_OUR_MIDI_TOM4_NORMAL, constant_OUR_MIDI_TOM4_NORMAL */
-/*global constant_OUR_MIDI_SNARE_DRAG, constant_OUR_MIDI_SNARE_BUZZ, constant_ABC_HH_Metronome_Normal, constant_ABC_HH_Metronome_Accent, constant_OUR_MIDI_HIHAT_RIDE_BELL, constant_OUR_MIDI_HIHAT_COW_BELL, constant_OUR_MIDI_HIHAT_METRONOME_NORMAL, constant_OUR_MIDI_HIHAT_METRONOME_ACCENT */
+// GrooveUtils and the drum-notation / MIDI constants come from groove_utils.js.
+// Vendored libraries (Midi, MIDI, Pablo, ShareButton) remain window globals
+// provided by the classic <script> tags loaded before this module.
+import {
+  GrooveUtils,
+  constant_ABC_HH_Accent,
+  constant_ABC_HH_Close,
+  constant_ABC_HH_Cow_Bell,
+  constant_ABC_HH_Crash,
+  constant_ABC_HH_Metronome_Accent,
+  constant_ABC_HH_Metronome_Normal,
+  constant_ABC_HH_Normal,
+  constant_ABC_HH_Open,
+  constant_ABC_HH_Ride,
+  constant_ABC_HH_Ride_Bell,
+  constant_ABC_HH_Stacker,
+  constant_ABC_KI_Normal,
+  constant_ABC_KI_SandK,
+  constant_ABC_KI_Splash,
+  constant_ABC_SN_Accent,
+  constant_ABC_SN_Buzz,
+  constant_ABC_SN_Drag,
+  constant_ABC_SN_Flam,
+  constant_ABC_SN_Ghost,
+  constant_ABC_SN_Normal,
+  constant_ABC_SN_XStick,
+  constant_ABC_STICK_BOTH,
+  constant_ABC_STICK_COUNT,
+  constant_ABC_STICK_L,
+  constant_ABC_STICK_OFF,
+  constant_ABC_STICK_R,
+  constant_ABC_T1_Normal,
+  constant_ABC_T4_Normal,
+  constant_OUR_MIDI_HIHAT_ACCENT,
+  constant_OUR_MIDI_HIHAT_COW_BELL,
+  constant_OUR_MIDI_HIHAT_CRASH,
+  constant_OUR_MIDI_HIHAT_FOOT,
+  constant_OUR_MIDI_HIHAT_METRONOME_ACCENT,
+  constant_OUR_MIDI_HIHAT_METRONOME_NORMAL,
+  constant_OUR_MIDI_HIHAT_NORMAL,
+  constant_OUR_MIDI_HIHAT_OPEN,
+  constant_OUR_MIDI_HIHAT_RIDE,
+  constant_OUR_MIDI_HIHAT_RIDE_BELL,
+  constant_OUR_MIDI_HIHAT_STACKER,
+  constant_OUR_MIDI_KICK_NORMAL,
+  constant_OUR_MIDI_SNARE_ACCENT,
+  constant_OUR_MIDI_SNARE_BUZZ,
+  constant_OUR_MIDI_SNARE_DRAG,
+  constant_OUR_MIDI_SNARE_FLAM,
+  constant_OUR_MIDI_SNARE_GHOST,
+  constant_OUR_MIDI_SNARE_NORMAL,
+  constant_OUR_MIDI_SNARE_XSTICK,
+  constant_OUR_MIDI_TOM1_NORMAL,
+  constant_OUR_MIDI_TOM4_NORMAL,
+  constant_OUR_MIDI_VELOCITY_NORMAL,
+} from './groove_utils.js';
 
 // GrooveWriter class.   The only one in this file.
 
-// eslint-disable-next-line no-unused-vars -- constructed via `new GrooveWriter()` from index.html / GrooveDBCreateGroove.html, not referenced within this file
 function GrooveWriter() {
   'use strict';
 
@@ -5746,3 +5798,5 @@ function GrooveWriter() {
     return newHTML;
   };
 } // end of class
+
+export { GrooveWriter };

@@ -2,6 +2,12 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { loadGrooveDisplay } from '../helpers/loadDisplay.js';
 import { installMockGrooveUtils, uninstallMockGrooveUtils } from '../helpers/mockGrooveUtils.js';
 
+vi.mock('../../js/groove_utils.js', () => ({
+  get GrooveUtils() {
+    return globalThis.__mockGrooveUtilsCtor;
+  },
+}));
+
 // Coverage for GrooveDBFormatPutGrooveInHTMLElement and GrooveDBFormatPutGrooveOnPage.
 // These take the GrooveDB "tab" object, assemble a grooveData via GrooveUtils,
 // render sheet music, and wire the MIDI player. We drive them with a mock
@@ -169,13 +175,9 @@ describe('GrooveDBFormatPutGrooveOnPage', () => {
     vi.restoreAllMocks();
   });
 
-  it('writes a placeholder span and renders it once the window load event fires', () => {
-    // Make document.write actually insert the span so the deferred layout has a
-    // real target to populate (jsdom would otherwise reopen the document).
-    const writeSpy = vi.spyOn(document, 'write').mockImplementation((html) => {
-      document.body.insertAdjacentHTML('beforeend', html);
-    });
-
+  it('appends a placeholder span and renders it once the window load event fires', () => {
+    // GrooveDBFormatPutGrooveOnPage appends a <span> to the body via DOM
+    // insertion (module-safe; no document.write).
     GD.GrooveDBFormatPutGrooveOnPage({
       snareAccentTab: 'S',
       snareOtherTab: '-',
@@ -185,7 +187,6 @@ describe('GrooveDBFormatPutGrooveOnPage', () => {
       measures: 1,
     });
 
-    expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('<span id="GrooveDisplay'));
     const span = document.querySelector('span[id^="GrooveDisplay"]');
     expect(span).toBeTruthy();
 

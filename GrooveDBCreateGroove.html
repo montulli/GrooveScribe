@@ -49,17 +49,8 @@
 		<!-- script for sharing to social sites -->
 		<script src="js/share-button.min.js"></script>
 		
-		<!--   our custom JS  -->
-		<script src="js/groove_writer.js"></script>
-		<script src="js/groove_utils.js"></script>
-		<script src="js/baseGrooves.js"></script>
-		
-		
-		<script>
-			// instantiate a global instance of the GrooveWriterClass.    This page only uses one
-			myGrooveWriter = new GrooveWriter();
-		</script>
-		
+		<!--   our custom JS is loaded as an ES module at the end of <body>. -->
+
 		<link href='https://fonts.googleapis.com/css?family=Lato:400,700,300' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" type="text/css" href="font-awesome/4.3.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="css/share-button.min.css">
@@ -82,11 +73,7 @@
 					<span class="subdivision" id="24ths" onClick="myGrooveWriter.changeDivision(24)"><div><span class="buttonFraction"><sup>1</sup>/<sub>16</sub></span>TRIPLETS</div></span>
 				</span>
 				
-				<script>
-					if(myGrooveWriter.is_touch_device()) {
-						document.write('<div id="advancedEditAnchor" onClick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">Advanced Edit</div>');
-					}
-				</script>
+				<span id="advancedEditSlot"></span>
 			</div>
 			<div id="TopNav">	
 				<span id="upperLeft">
@@ -109,23 +96,9 @@
 			<span class="nonPrintable">
 				<div id="midiPlayer"><!-- space for the midiplayer to be attached by the javascript --></div>
 				<div id="musicalInput">
-					<span id="measureContainer">
-						<script>
-							var genHTML = "";
-							for(var cur_measure=1; cur_measure <= myGrooveWriter.numberOfMeasures(); cur_measure++) {
-								genHTML += myGrooveWriter.HTMLforStaffContainer(cur_measure, (cur_measure-1) * myGrooveWriter.notesPerMeasure());
-							}
-							document.write(genHTML);
-						</script>
-					</span>
+					<span id="measureContainer"></span>
 				</div>
-				<div id="PermutationOptions">
-					<script>
-							var genHTML = "";
-							genHTML += myGrooveWriter.HTMLforPermutationOptions();
-							document.write(genHTML);
-					</script>
-				</div>
+				<div id="PermutationOptions"></div>
 				<div id="NotationLine">
 					<span id='NotationLabel'>Notation</span>
 					<span id='KeyButton'><input type="checkbox" class="hiddenCheckbox" id="showLegend" onClick="myGrooveWriter.refresh_ABC()"><label id="LegendLabel" for="showLegend"><i class="fa fa-key"></i></label></span>
@@ -283,11 +256,7 @@
 				<li onClick='myGrooveWriter.helpMenuPopupClick("about")'>About</li>
 			</ul>
 		</div>	
-		<div id="grooveListWrapper">
-			<script>
-				document.write(grooves.getGroovesAsHTML());
-			</script>
-		</div>	
+		<div id="grooveListWrapper"></div>
 		
 		
 		<!-- this is used by the share/save button, and is hidden by default -->
@@ -306,11 +275,38 @@
 		</div>
 			
 		
-		<script>
-			// set up the page after it has fully loaded
-			window.onload = function () {
-				myGrooveWriter.runsOnPageLoad();   // Initialize the notes
-			};
+		<!-- App entry: ES module that boots the GrooveDB authoring view. -->
+		<script type="module">
+			import { GrooveWriter } from './js/groove_writer.js';
+			import { GrooveUtils } from './js/groove_utils.js';
+			import { grooves } from './js/grooves.js';
+			window.GrooveWriter = GrooveWriter;
+			window.GrooveUtils = GrooveUtils;
+			window.grooves = grooves;
+			const gw = new GrooveWriter();
+			window.myGrooveWriter = gw;
+
+			if (gw.myGrooveUtils.is_touch_device()) {
+				const slot = document.getElementById('advancedEditSlot');
+				if (slot)
+					slot.outerHTML =
+						'<div id="advancedEditAnchor" onclick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">Advanced Edit</div>';
+			}
+
+			let gridHTML = '';
+			for (let m = 1; m <= gw.numberOfMeasures(); m++) {
+				gridHTML += gw.HTMLforStaffContainer(m, (m - 1) * gw.notesPerMeasure());
+			}
+			const mc = document.getElementById('measureContainer');
+			if (mc) mc.innerHTML = gridHTML;
+			const po = document.getElementById('PermutationOptions');
+			if (po) po.innerHTML = gw.HTMLforPermutationOptions();
+			const gl = document.getElementById('grooveListWrapper');
+			if (gl) gl.innerHTML = grooves.getGroovesAsHTML();
+
+			window.addEventListener('load', function () {
+				gw.runsOnPageLoad();
+			});
 		</script>
 			
 	</div>	

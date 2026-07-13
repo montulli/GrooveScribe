@@ -3,7 +3,6 @@
     <head>
 		<title>Test all 16th note combinations</title>
 		
-		<script src="./js/groove_display.js"></script>
 		
     </head>
     <body id='body' onload="onLoadScript();">
@@ -16,8 +15,9 @@
 				<option name='' value='32'>32th notes
 			</select>
 		</h2>
-<script>
-	
+<script type="module">
+	import { GrooveDisplay } from "./js/groove_display.js";
+
 	window.GrooveDisplayUniqueCounter = 1;
 
 	function AddEveryTimeSig(division) {

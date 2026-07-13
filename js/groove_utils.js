@@ -28,8 +28,10 @@
 // this file's own GrooveUtils global below).
 
 var global_num_GrooveUtilsCreated = 0;
-var global_grooveUtilsScriptSrc = '';
-if (document.currentScript) global_grooveUtilsScriptSrc = document.currentScript.src;
+// This module's own URL, used by getGrooveUtilsBaseLocation() to locate sibling
+// assets (soundfont/, images/). As an ES module, document.currentScript is null,
+// so import.meta.url is the module-safe equivalent of the old currentScript.src.
+var global_grooveUtilsScriptSrc = import.meta.url;
 var global_midiInitialized = false;
 
 // global constants
@@ -3945,3 +3947,60 @@ function GrooveUtils() {
     root.swingEnabled(root.doesDivisionSupportSwing(division));
   };
 } // end of class
+
+// ES module exports: the GrooveUtils constructor plus the constants that other
+// modules (groove_writer) consume. Vendored globals (Abc, MIDI, Midi) remain
+// window globals provided by the classic <script> libraries.
+export {
+  GrooveUtils,
+  constant_ABC_HH_Accent,
+  constant_ABC_HH_Close,
+  constant_ABC_HH_Cow_Bell,
+  constant_ABC_HH_Crash,
+  constant_ABC_HH_Metronome_Accent,
+  constant_ABC_HH_Metronome_Normal,
+  constant_ABC_HH_Normal,
+  constant_ABC_HH_Open,
+  constant_ABC_HH_Ride,
+  constant_ABC_HH_Ride_Bell,
+  constant_ABC_HH_Stacker,
+  constant_ABC_KI_Normal,
+  constant_ABC_KI_SandK,
+  constant_ABC_KI_Splash,
+  constant_ABC_SN_Accent,
+  constant_ABC_SN_Buzz,
+  constant_ABC_SN_Drag,
+  constant_ABC_SN_Flam,
+  constant_ABC_SN_Ghost,
+  constant_ABC_SN_Normal,
+  constant_ABC_SN_XStick,
+  constant_ABC_STICK_BOTH,
+  constant_ABC_STICK_COUNT,
+  constant_ABC_STICK_L,
+  constant_ABC_STICK_OFF,
+  constant_ABC_STICK_R,
+  constant_ABC_T1_Normal,
+  constant_ABC_T4_Normal,
+  constant_OUR_MIDI_HIHAT_ACCENT,
+  constant_OUR_MIDI_HIHAT_COW_BELL,
+  constant_OUR_MIDI_HIHAT_CRASH,
+  constant_OUR_MIDI_HIHAT_FOOT,
+  constant_OUR_MIDI_HIHAT_METRONOME_ACCENT,
+  constant_OUR_MIDI_HIHAT_METRONOME_NORMAL,
+  constant_OUR_MIDI_HIHAT_NORMAL,
+  constant_OUR_MIDI_HIHAT_OPEN,
+  constant_OUR_MIDI_HIHAT_RIDE,
+  constant_OUR_MIDI_HIHAT_RIDE_BELL,
+  constant_OUR_MIDI_HIHAT_STACKER,
+  constant_OUR_MIDI_KICK_NORMAL,
+  constant_OUR_MIDI_SNARE_ACCENT,
+  constant_OUR_MIDI_SNARE_BUZZ,
+  constant_OUR_MIDI_SNARE_DRAG,
+  constant_OUR_MIDI_SNARE_FLAM,
+  constant_OUR_MIDI_SNARE_GHOST,
+  constant_OUR_MIDI_SNARE_NORMAL,
+  constant_OUR_MIDI_SNARE_XSTICK,
+  constant_OUR_MIDI_TOM1_NORMAL,
+  constant_OUR_MIDI_TOM4_NORMAL,
+  constant_OUR_MIDI_VELOCITY_NORMAL,
+};
