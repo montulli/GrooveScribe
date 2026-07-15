@@ -69,8 +69,9 @@ npx cap add android && npx cap sync android && npx cap open android
 npx cap add ios && npx cap sync ios && npx cap open ios
 ```
 
-Note: Capacitor 6 is used because the repo targets Node 18; the CI runners use
-Node 20. (Capacitor 7 requires Node 20 everywhere.)
+Note: the repo pins **Node 22** (see [`.nvmrc`](.nvmrc)), which the CI runners
+also use. Capacitor 6 is used here; Capacitor 7 also works on Node 20+, so you
+can upgrade later if you want its newer features.
 
 ## Known follow-ups (verify/fix on first on-device run)
 

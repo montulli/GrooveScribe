@@ -36,7 +36,18 @@
       "Bash(command -v fnm)",
       "Bash(fnm list *)",
       "Read(//usr/local/n/versions/**)",
-      "Bash(bash -lc 'command -v nvm >/dev/null 2>&1 && nvm ls 2>/dev/null | grep -iE \"v20|v22\" || echo \"nvm not loaded in login shell\"')"
+      "Bash(bash -lc 'command -v nvm >/dev/null 2>&1 && nvm ls 2>/dev/null | grep -iE \"v20|v22\" || echo \"nvm not loaded in login shell\"')",
+      "Bash(git symbolic-ref *)",
+      "Bash(git ls-remote *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(node /tmp/bw_test.mjs)",
+      "Bash(echo \"exit: $? \\(expect 1\\)\")",
+      "Bash(gh pr *)",
+      "Bash(gh api *)",
+      "Bash(git checkout *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ],
     "additionalDirectories": [
       "/tmp/claude-1000/-home-montulli-GrooveScribe/c72288af-8deb-4c4d-aec0-002c903037d5/scratchpad"
