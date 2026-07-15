@@ -26,7 +26,26 @@
       "Bash(sed -n '/toggles tom1 and tom4/,/^  }\\);/p' tests/groove_writer/grid-notes.test.js)",
       "Bash(sed -n '/rotates sticking state/,/^  }\\);/p' tests/groove_writer/grid-notes.test.js)",
       "Bash(awk '/groove_writer\\\\.js/{f=1} f')",
-      "Bash(git ls-tree *)"
+      "Bash(git ls-tree *)",
+      "Bash(npx cap *)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.scripts,null,2\\)\\); console.log\\('--- deps ---'\\); console.log\\(JSON.stringify\\({dependencies:p.dependencies, devDeps_cap:Object.fromEntries\\(Object.entries\\(p.devDependencies||{}\\).filter\\(\\([k]\\)=>k.includes\\('capacitor'\\)\\)\\)},null,2\\)\\);\")",
+      "Bash(npm ls *)",
+      "Bash(python3 -c \"import yaml,sys; yaml.safe_load\\(open\\('.github/workflows/mobile-build.yml'\\)\\); print\\('workflow YAML valid ✅'\\)\")",
+      "Bash([ -s \"$HOME/.nvm/nvm.sh\" ])",
+      "Read(//home/montulli/.nvm/versions/node/**)",
+      "Bash(command -v fnm)",
+      "Bash(fnm list *)",
+      "Read(//usr/local/n/versions/**)",
+      "Bash(bash -lc 'command -v nvm >/dev/null 2>&1 && nvm ls 2>/dev/null | grep -iE \"v20|v22\" || echo \"nvm not loaded in login shell\"')",
+      "Bash(git symbolic-ref *)",
+      "Bash(git ls-remote *)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(node /tmp/bw_test.mjs)",
+      "Bash(echo \"exit: $? \\(expect 1\\)\")",
+      "Bash(gh pr *)",
+      "Bash(gh api *)",
+      "Bash(git checkout *)",
+      "Bash(git add *)"
     ],
     "additionalDirectories": [
       "/tmp/claude-1000/-home-montulli-GrooveScribe/c72288af-8deb-4c4d-aec0-002c903037d5/scratchpad"

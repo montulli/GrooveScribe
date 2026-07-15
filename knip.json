@@ -10,5 +10,5 @@
     "js/share-button.min.js",
     "js/*.min.js"
   ],
-  "ignoreDependencies": []
+  "ignoreDependencies": ["@capacitor/core", "@capacitor/android", "@capacitor/ios"]
 }

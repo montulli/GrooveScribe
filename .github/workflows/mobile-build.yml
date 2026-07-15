@@ -1,0 +1,109 @@
+name: Mobile build (Capacitor)
+
+# Builds the Android and iOS apps from the web app via Capacitor.
+#
+# The native projects are NOT committed — each run assembles the web bundle
+# (npm run build:www), generates the native project with `npx cap add`, and
+# builds it. Android builds on a Linux runner; iOS requires a macOS runner
+# (Apple toolchain only runs on macOS).
+#
+# Trigger manually from the Actions tab ("Run workflow"), or by pushing a
+# v* tag. macOS runner minutes are billed at a higher rate, so this is not
+# run on every push by default.
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  android:
+    name: Android (APK)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Assemble web bundle
+        run: npm run build:www
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      # ubuntu-latest ships with the Android SDK (ANDROID_HOME preset).
+      - name: Add & sync Android platform
+        run: |
+          npx cap add android
+          npx cap sync android
+
+      - name: Build debug APK
+        run: |
+          cd android
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --no-daemon
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: groovescribe-android-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+
+  ios:
+    name: iOS (unsigned)
+    runs-on: macos-14 # Apple Silicon runner with Xcode + CocoaPods preinstalled
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Assemble web bundle
+        run: npm run build:www
+
+      # `cap add ios` runs `pod install` automatically (CocoaPods is preinstalled).
+      - name: Add & sync iOS platform
+        run: |
+          npx cap add ios
+          npx cap sync ios
+
+      # Unsigned build for the simulator — proves the app compiles without needing
+      # an Apple Developer account. A signed, installable .ipa for a device or the
+      # App Store additionally requires signing certs/provisioning profiles wired
+      # in as encrypted secrets (see MOBILE.md).
+      - name: Build (unsigned, simulator)
+        run: |
+          xcodebuild \
+            -workspace ios/App/App.xcworkspace \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath ios/build \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Package the .app
+        run: |
+          cd ios/build/Build/Products/Debug-iphonesimulator
+          zip -ry "$GITHUB_WORKSPACE/GrooveScribe-ios-simulator.app.zip" App.app
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: groovescribe-ios-simulator-app
+          path: GrooveScribe-ios-simulator.app.zip
+          if-no-files-found: error
