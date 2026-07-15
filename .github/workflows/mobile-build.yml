@@ -22,9 +22,9 @@ jobs:
     name: Android (APK)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -35,7 +35,7 @@ jobs:
       - name: Assemble web bundle
         run: npm run build:www
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
@@ -52,7 +52,7 @@ jobs:
           chmod +x ./gradlew
           ./gradlew assembleDebug --no-daemon
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: groovescribe-android-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
@@ -62,9 +62,9 @@ jobs:
     name: iOS (unsigned)
     runs-on: macos-14 # Apple Silicon runner with Xcode + CocoaPods preinstalled
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -102,7 +102,7 @@ jobs:
           cd ios/build/Build/Products/Debug-iphonesimulator
           zip -ry "$GITHUB_WORKSPACE/GrooveScribe-ios-simulator.app.zip" App.app
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: groovescribe-ios-simulator-app
           path: GrooveScribe-ios-simulator.app.zip
