@@ -45,9 +45,7 @@
       "Bash(gh pr *)",
       "Bash(gh api *)",
       "Bash(git checkout *)",
-      "Bash(git add *)",
-      "Bash(git commit *)",
-      "Bash(git push *)"
+      "Bash(git add *)"
     ],
     "additionalDirectories": [
       "/tmp/claude-1000/-home-montulli-GrooveScribe/c72288af-8deb-4c4d-aec0-002c903037d5/scratchpad"
