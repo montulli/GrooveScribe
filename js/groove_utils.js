@@ -116,6 +116,7 @@ var global_midiInitialized = false;
 var global_current_midi_start_time = 0;
 var global_last_midi_update_time = 0;
 var global_total_midi_play_time_msecs = 0;
+var global_last_total_text_write = 0; // when the "Total Play Time" text was last rewritten
 var global_total_midi_notes = 0;
 var global_total_midi_repeats = 0;
 
@@ -910,6 +911,8 @@ function GrooveUtils() {
 
   // set note to -1 to unhighlight all notes
   root.highlightNoteInABCSVGByIndex = function (noteToHighlight) {
+    // several MIDI events (hi-hat + kick + metronome...) land on the same written note
+    if (noteToHighlight === root.abcNoteNumCurrentlyHighlighted) return;
     root.clearHighlightNoteInABCSVG();
 
     var myElements = document.querySelectorAll(
@@ -1000,6 +1003,11 @@ function GrooveUtils() {
     };
     this.doesMidiDataNeedRefresh = function (root) {
       return root.midiEventCallbacks.noteHasChangedSinceLastDataLoad;
+    };
+    // true if the MIDI data is going to be rebuilt when this pass ends (e.g. the tempo is stepping
+    // up), so the player must not queue the next pass ahead of time. Override as needed.
+    this.loopWillReload = function (root) {
+      return false;
     };
     this.pauseEvent = function (root) {
       var icon = document.getElementById('midiPlayImage' + root.grooveUtilsUniqueIndex);
@@ -1114,6 +1122,7 @@ function GrooveUtils() {
   root.pauseMIDI_playback = function () {
     if (root.isMIDIPaused === false) {
       root.isMIDIPaused = true;
+      visualGeneration++;
       root.midiEventCallbacks.pauseEvent(root.midiEventCallbacks.classRoot);
       MIDI.Player.pause();
       root.midiEventCallbacks.notePlaying(root.midiEventCallbacks.classRoot, 'clear', -1);
@@ -1149,6 +1158,7 @@ function GrooveUtils() {
   root.stopMIDI_playback = function () {
     if (MIDI.Player.playing || root.isMIDIPaused) {
       root.isMIDIPaused = false;
+      visualGeneration++;
       MIDI.Player.stop();
       root.midiEventCallbacks.stopEvent(root.midiEventCallbacks.classRoot);
       root.midiEventCallbacks.notePlaying(root.midiEventCallbacks.classRoot, 'clear', -1);
@@ -1216,6 +1226,15 @@ function GrooveUtils() {
         ) {
           MIDI.Player.unmuteController = unmute(MIDI.Player.ctx);
         }
+        // Let the player queue the next loop pass ahead of time (keeps repeats on the beat when the
+        // page is busy) -- but not when the MIDI is about to be rebuilt at the end of this pass
+        MIDI.Player.canScheduleLoopAhead = function () {
+          return (
+            !root.midiEventCallbacks.doesMidiDataNeedRefresh(root.midiEventCallbacks.classRoot) &&
+            !root.getMetronomeOffsetClickStartIsRotating() &&
+            !root.midiEventCallbacks.loopWillReload(root.midiEventCallbacks.classRoot)
+          );
+        };
         root.midiEventCallbacks.midiInitialized(root.midiEventCallbacks.classRoot);
       },
     });
@@ -1237,6 +1256,12 @@ function GrooveUtils() {
         global_last_midi_update_time = global_current_midi_start_time;
       var delta_time_diff = new Date(time_now - global_last_midi_update_time);
       global_total_midi_play_time_msecs += delta_time_diff.getTime();
+    }
+    // The totals are kept up to date on every call, but the text is only rewritten about once a
+    // second and only when it changed: this runs for every note, and each write forced a layout.
+    var nowMs = time_now.getTime();
+    if (TotalPlayTime && nowMs - global_last_total_text_write >= 1000) {
+      global_last_total_text_write = nowMs;
       var totalTime = new Date(global_total_midi_play_time_msecs);
       var time_string = '';
       if (totalTime.getUTCHours() > 0)
@@ -1246,7 +1271,7 @@ function GrooveUtils() {
         ':' +
         (totalTime.getSeconds() < 10 ? '0' : '') +
         totalTime.getSeconds();
-      TotalPlayTime.innerHTML =
+      var total_text =
         'Total Play Time: <span class="totalTimeNum">' +
         time_string +
         '</span> notes: <span class="totalTimeNum">' +
@@ -1254,6 +1279,10 @@ function GrooveUtils() {
         '</span> repetitions: <span class="totalTimeNum">' +
         global_total_midi_repeats +
         '</span>';
+      if (total_text !== TotalPlayTime.getAttribute('data-text')) {
+        TotalPlayTime.setAttribute('data-text', total_text);
+        TotalPlayTime.innerHTML = total_text;
+      }
     }
 
     global_last_midi_update_time = time_now;
@@ -1272,8 +1301,34 @@ function GrooveUtils() {
       totalTime.getSeconds();
 
     var MidiPlayTime = document.getElementById('MIDIPlayTime' + root.grooveUtilsUniqueIndex);
-    if (MidiPlayTime) MidiPlayTime.innerHTML = time_string;
+    // only touch the DOM when the text changes (it changes once a second, not once per note)
+    if (MidiPlayTime && MidiPlayTime.innerHTML !== time_string)
+      MidiPlayTime.innerHTML = time_string;
   };
+
+  // How long after the audio clock a sound is actually heard: the audio context's own buffering plus
+  // the device's output latency (0 where the browser does not report them).
+  function outputLatencyMs() {
+    var ctx = MIDI.Player && MIDI.Player.ctx;
+    if (!ctx) return 0;
+    var seconds = (ctx.baseLatency || 0) + (ctx.outputLatency || 0);
+    return Math.min(500, seconds * 1000);
+  }
+
+  // Run fn (a visual update) when the note being played is audible. Bumping visualGeneration
+  // (stop / pause) drops any updates still waiting, so nothing lights up after playback stopped.
+  var visualGeneration = 0;
+  function showWhenHeard(fn) {
+    var delay = outputLatencyMs();
+    if (delay < 8) {
+      fn();
+      return;
+    }
+    var generation = visualGeneration;
+    window.setTimeout(function () {
+      if (generation === visualGeneration) fn();
+    }, delay);
+  }
 
   //var class_midi_note_num = 0;  // global, but only used in this function
   // This is the function that the 3rd party midi library calls to give us events.
@@ -1323,6 +1378,7 @@ function GrooveUtils() {
         }
       } else {
         // not repeating, so stopping
+        visualGeneration++;
         MIDI.Player.stop();
         root.midiEventCallbacks.percentProgress(root.midiEventCallbacks.classRoot, 100);
         root.midiEventCallbacks.stopEvent(root.midiEventCallbacks.classRoot);
@@ -1375,15 +1431,19 @@ function GrooveUtils() {
       }
       if (note_type) {
         global_total_midi_notes++;
-        root.midiEventCallbacks.notePlaying(
-          root.midiEventCallbacks.classRoot,
-          note_type,
-          percentComplete
-        );
-        root.highlightNoteInABCSVGFromPercentComplete(percentComplete);
-        if (root.noteCallback) {
-          root.noteCallback(note_type);
-        }
+        // the sound reaches the speaker outputLatency after the audio clock says so (tens of ms on
+        // a phone, hundreds over Bluetooth), so show the note when it can actually be heard
+        showWhenHeard(function () {
+          root.midiEventCallbacks.notePlaying(
+            root.midiEventCallbacks.classRoot,
+            note_type,
+            percentComplete
+          );
+          root.highlightNoteInABCSVGFromPercentComplete(percentComplete);
+          if (root.noteCallback) {
+            root.noteCallback(note_type);
+          }
+        });
       }
     }
 
