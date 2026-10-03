@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LRRecords Drummer — GrooveScribe</title>
+  <link rel="stylesheet" href="css/lr-brand.css" />
+  <meta name="robots" content="noindex,nofollow" />
+</head>
+<body>
+  <header class="lr-header">
+    <div class="lr-header-inner">
+      <img class="lr-logo" src="assets/lrrecords-logo.svg" alt="LRRecords Drummer logo" />
+      <div class="lr-title">
+        <h1>LRRecords Drummer</h1>
+        <p class="lr-sub">Sheet music creation, groove practice & tutor tools</p>
+      </div>
+      <nav class="lr-actions">
+        <a class="btn" href="https://lrrecords.com.au/drumming-tutor" target="_blank" rel="noopener">Course page</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="lr-main">
+    <!--
+      By default this wrapper loads the GrooveScribe app from the repo root.
+      If you copy the original app into lr-brand/app/ then set src="./app/index.html"
+      If you want the branded page to embed the site at the site root, use src="../index.html"
+    -->
+    <iframe id="groovescribe-frame" src="../index.html" title="GrooveScribe app" frameborder="0" allowfullscreen></iframe>
+  </main>
+
+  <footer class="lr-footer">
+    <small>© LRRecords — drumming tutor resources</small>
+  </footer>
+
+  <script>
+    // Keep the iframe tall enough to fill viewport minus header/footer.
+    function resizeIframe() {
+      var header = document.querySelector('.lr-header');
+      var footer = document.querySelector('.lr-footer');
+      var frame = document.getElementById('groovescribe-frame');
+      var vh = window.innerHeight;
+      var used = (header ? header.offsetHeight : 0) + (footer ? footer.offsetHeight : 0);
+      frame.style.height = Math.max(400, (vh - used)) + 'px';
+    }
+    window.addEventListener('resize', resizeIframe);
+    window.addEventListener('load', resizeIframe);
+  </script>
+</body>
+</html>
