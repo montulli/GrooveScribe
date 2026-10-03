@@ -17,7 +17,39 @@ import {
   constant_ABC_KI_Splash,
 } from './constants.js';
 
-export function get_permutation_pre_ABC(section) {
+// Sections that print together under one heading (e.g. "Singles" = sections 1-4).
+// Section 0 (ostinato) and 15 (quads) stand alone and already carry their own heading/closing bar.
+const PERMUTATION_GROUPS = [
+  { title: 'Singles', first: 1, last: 4 },
+  { title: 'Doubles', first: 5, last: 8 },
+  { title: 'Down/Up Beats', first: 9, last: 10 },
+  { title: 'Triples', first: 11, last: 14 },
+];
+
+// For a displayed section, decide whether it is the first / last *displayed* section of its
+// group. isActive(section) says whether a section is currently displayed. When the user
+// unticks the first sub-option the heading must move to the next displayed section, and when
+// they untick the last one the group must still be closed with a bar line.
+export function get_permutation_display_flags(section, isActive) {
+  const group = PERMUTATION_GROUPS.find((g) => section >= g.first && section <= g.last);
+  if (!group) return { showTitle: false, isLast: false };
+
+  let showTitle = true;
+  let isLast = true;
+  for (let i = group.first; i < section; i++) if (isActive(i)) showTitle = false;
+  for (let i = section + 1; i <= group.last; i++) if (isActive(i)) isLast = false;
+  return { showTitle, isLast };
+}
+
+export function get_permutation_pre_ABC(section, showTitle) {
+  const abc = pre_ABC_for_section(section);
+  if (!showTitle || abc.startsWith('T: ')) return abc;
+
+  const group = PERMUTATION_GROUPS.find((g) => section >= g.first && section <= g.last);
+  return group ? 'T: \nP: ' + group.title + '\n' + abc : abc;
+}
+
+function pre_ABC_for_section(section) {
   var abc = '';
 
   switch (section) {
@@ -77,7 +109,8 @@ export function get_permutation_pre_ABC(section) {
   return abc;
 }
 
-export function get_permutation_post_ABC(section, usingTriplets) {
+export function get_permutation_post_ABC(section, usingTriplets, isLast) {
+  if (isLast) return '|\n';
   var abc = '';
 
   switch (section) {
