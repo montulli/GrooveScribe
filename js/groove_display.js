@@ -102,6 +102,8 @@ if (typeof GrooveDisplay === 'undefined') {
     root.loadjscssfile('../MIDI.js/inc/base64binary.js', 'js');
     //	<!-- jsmidgen -->
     root.loadjscssfile('./jsmidgen.js', 'js');
+    //	<!-- iOS: allow Web Audio to play through the silent switch -->
+    root.loadjscssfile('./unmute.js', 'js');
     //	<!-- script to render ABC to an SVG image -->
     root.loadjscssfile('./abc2svg-1.js', 'js');
 

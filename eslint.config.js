@@ -53,6 +53,7 @@ export default [
       'js/pablo.js',
       'js/pablo.min.js',
       'js/jsmidgen.js',
+      'js/unmute.js',
       'js/share-button.min.js',
       'js/*.min.js',
     ],
@@ -79,6 +80,7 @@ export default [
         Share: 'readonly',
         ShareButton: 'readonly',
         Pablo: 'readonly',
+        unmute: 'readonly',
       },
     },
     rules: {
