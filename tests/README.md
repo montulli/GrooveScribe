@@ -40,6 +40,8 @@ tests/
 │   ├── legacyLoader.test.js       # smoke tests for the loader + environment
 │   ├── mockGrooveUtils.js         # spy stand-in for the GrooveUtils global
 │   └── loadDisplay.js             # fresh-module loader for groove_display.js
+├── browserInfo.test.js           # is_mobile_phone (phone vs tablet vs desktop)
+├── hamburgerMenu.test.js         # Groove Setup dialog: staged choices, Done / Cancel, backdrop rule
 ├── groove_utils/                  # tests for js/groove_utils.js (the core engine)
 │   ├── time-signatures.test.js    # division / time-signature math
 │   ├── note-arrays.test.js        # tab-string <-> note-array conversions
@@ -58,7 +60,7 @@ tests/
 │   ├── grid-notes.test.js         # note clicks, context menu, grid read, clear/mute
 │   ├── measures-toms-stickings.test.js # add/remove measure, toms & stickings, refresh
 │   ├── html-generation.test.js    # HTMLforStaffContainer, permutation-options HTML
-│   ├── menus-popups.test.js       # anchor/menu/popup handlers
+│   ├── menus-popups.test.js       # menu-group / popup handlers, metronome options, time signature
 │   ├── url-export.test.js         # share-URL, clipboard, MIDI/PNG/SVG/ABC export, loadNewGroove
 │   ├── view-and-lifecycle.test.js # view toggle, hot-keys, displayNewSVG, runsOnPageLoad
 │   └── note-engine-and-permutations.test.js # loadNewGroove sweep, permutations, playback highlight
@@ -165,3 +167,22 @@ files for "bug" / "quirk".
   — a failing test here means "something changed," which is exactly the point.
 - Keep tests black-box: exercise the public methods on a `GrooveUtils` instance
   rather than reaching into internals.
+
+## End-to-end tests (`tests-e2e/`)
+
+Playwright runs the real app in Chromium (`npm run test:e2e`).
+
+| File                    | Covers                                                                                                                                            |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `golden-master.spec.js` | Rendered SVG + generated MIDI for a groove corpus. Byte-identical MIDI proves a refactor changed nothing functional.                              |
+| `functional.spec.js`    | Editing flows through the hamburger menu: clear, undo/redo, subdivision, time signature, toms, share, export, playback.                           |
+| `ui.spec.js`            | The menu's structure and alignment, the Groove Setup and Auto Speed Up dialogs, metronome options, top bar, phone behavior, About and Help pages. |
+| `smoke.spec.js`         | Pages load without console errors; core controls exist; two screenshot baselines.                                                                 |
+| `embed.spec.js`         | The embed pages render.                                                                                                                           |
+
+`helpers.js` has `openMenu`, `openGroup`, `chooseFromGroup` and `openGrooveSetup`: almost every action
+now lives in the hamburger menu, so tests go through them rather than clicking items directly.
+
+The SVG snapshots depend on the page width (the sheet music is drawn to fit it), so a layout change
+that alters the width re-baselines them (`npm run test:e2e -- --update-snapshots`). Check the MIDI
+snapshots did not change when you do.

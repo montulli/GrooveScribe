@@ -1,63 +1,124 @@
-<style>
-body {
-	margin: 30px 30px 30px 30px;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>About GrooveScribe</title>
+	<link rel="icon" sizes="96x96" href="images/gscribe-icon-96.png">
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" type="text/css" href="css/gscribe_info.css">
+</head>
+<body>
 
-</style>
+<header>
+	<span class="tile"><img src="images/GScribe_Logo_lone_g.svg" alt=""></span>
+	<img class="word" src="images/GScribe_Logo_word_stack.svg" alt="GrooveScribe">
+	<span class="title">About</span>
+	<a class="open" href="index.html">Open GrooveScribe</a>
+</header>
 
-<h1>About the Groove Scribe</h2>
+<main>
+	<h1>About GrooveScribe</h1>
+	<p class="lead">Create, practice and share drum grooves.</p>
 
-The Groove Scribe was built to help drummers create, practice and share grooves.
-	<ul>
-    <li>A simple interface allows easy groove creation that automatically creates printable sheet music for printing and sharing.
-    <li>Midi playback with tempo and a metronome makes it easy to hear and practice difficult grooves.
-    <li>Sharing is simple with a URL and the recipient can view the groove in any web browser.  
-	</ul>
-	
-<p>
-<b>How it works:</b> 
-<p>
-The Groove Scribe is written in HTML and Javascript and runs entirely in the browser.   
-<a href="http://abcnotation.com/">ABC Notation</a> is used to create the printable sheet music.
-When notes are changed on the screen, new ABC Notation is generated which creates the sheet music.
-To play the music, Groove Scribe generates a <a href="http://en.wikipedia.org/wiki/MIDI">MIDI</a> file and plays it using the 
-browser audio interface.   The soundfont used by the midi player uses custom drum samples from <A Href="http://mikeslessons.com/">Mike Johnston's</a> kits.
-<p>
-All of the icons and images used by and created by the Groove Scribe are SVG or fonts so the interface scales to any resolution with no scaling artifacts.
-Try zooming in on the page to check it out.
-<p>
-<b>How it swings:</b>
-<p>
-The swing slider controls the amount of "swing" that is added to the playback.   
-It does not effect the printable sheet music.   To generate swing, a delay is added to the upbeat notes in the measure.  
-The upbeat notes are the "a" and the "e" in a 16th note groove. (1e&a), and are the "&" notes in a 8th note groove.  (1&2&3&4&).    
-During MIDI generation, the program extends the duration of the downbeat notes and shortens the duration of the upbeat notes.
-The percentage of the swing controls the percentage of the note duration that the upbeat is delayed. 
-(NewDelay = NormalDelay + (NormalDelay * SwingPercentage)
+	<section>
+		<h2>What it's for</h2>
+		<p>GrooveScribe was built to help drummers create, practice and share grooves.</p>
+		<ul>
+			<li>A simple interface allows easy groove creation that automatically creates printable sheet music for printing and sharing.</li>
+			<li>MIDI playback with tempo and a metronome makes it easy to hear and practice difficult grooves.</li>
+			<li>Sharing is simple with a URL, and the recipient can view the groove in any web browser.</li>
+		</ul>
+	</section>
 
+	<section>
+		<h2>How it works</h2>
+		<p>
+			GrooveScribe is written in HTML and JavaScript and runs entirely in the browser.
+			<a href="http://abcnotation.com/">ABC Notation</a> is used to create the printable sheet music.
+			When notes are changed on the screen, new ABC Notation is generated, which creates the sheet music.
+		</p>
+		<p>
+			To play the music, GrooveScribe generates a <a href="http://en.wikipedia.org/wiki/MIDI">MIDI</a> file
+			and plays it using the browser audio interface. The soundfont used by the MIDI player uses custom drum
+			samples from <a href="http://mikeslessons.com/">Mike Johnston's</a> kits.
+		</p>
+		<p>
+			All of the icons and images used by and created for GrooveScribe are SVG or fonts, so the interface
+			scales to any resolution with no scaling artifacts. Try zooming in on the page to check it out.
+		</p>
+	</section>
 
-<h3>People: </h3>
-<ul>
-<li><A Href="http://www.montulli.org/lou/">Lou Montulli</a> -- The programmer.
-<li><A Href="http://mikeslessons.com/">Mike Johnston</a> -- The inspiration for this app.  Major feature and design collaborator.     
-<li><A Href="http://www.bradfilip.com/">Brad Filip</a> -- Graphic design.
-</ul>
+	<section>
+		<h2>How it swings</h2>
+		<p>
+			The swing slider controls the amount of "swing" that is added to the playback.
+			It does not affect the printable sheet music. To generate swing, a delay is added to the upbeat notes in the measure.
+			The upbeat notes are the "a" and the "e" in a 16th note groove
+			(<span class="note-pattern">1 e &amp; a</span>), and are the "&amp;" notes in an 8th note groove
+			(<span class="note-pattern">1 &amp; 2 &amp; 3 &amp; 4 &amp;</span>).
+		</p>
+		<p>
+			During MIDI generation, the program extends the duration of the downbeat notes and shortens the duration
+			of the upbeat notes. The swing percentage controls the percentage of the note duration that the upbeat is delayed:
+		</p>
+		<code class="formula">NewDelay = NormalDelay + (NormalDelay * SwingPercentage)</code>
+	</section>
 
-<h3>Open Source release</h3>
-<ul>
-<li>Groove Scribe is open source and is licensed under the <a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GPL v2.0</a>.  
- The source code is available at <a href="https://github.com/montulli/GrooveScribe">GitHub</a>.
-</ul>
+	<section class="people">
+		<h2>People</h2>
+		<ul>
+			<li><a href="http://www.montulli.org/lou/">Lou Montulli</a> <span>&mdash; the programmer.</span></li>
+			<li><a href="http://mikeslessons.com/">Mike Johnston</a> <span>&mdash; the inspiration for this app. Major feature and design collaborator.</span></li>
+			<li><a href="http://www.bradfilip.com/">Brad Filip</a> <span>&mdash; graphic design.</span></li>
+		</ul>
+	</section>
 
-<p>
-<b>The following packages or technologies are used in this project:</b>
-<ul>
-	<li>abc2svg.js: <a href="http://moinejf.free.fr/js/">http://moinejf.free.fr/js/</a>  Amazing product.  Groove Scribe could not exist without it.  Thank you Jef!
-	<li>Midi.js: <a href="http://mudcu.be/midi-js/">http://mudcu.be/midi-js/</a>
-	<li>Share this: <a href="https://github.com/carrot/share-button">https://github.com/carrot/share-button</a>
-	<li>Abc Notation: <a href="http://abcnotation.com/">http://abcnotation.com/</a>
-	<li>jsmidgen: <a href="https://github.com/dingram/jsmidgen">https://github.com/dingram/jsmidgen</a>
-	<li>Font Awesome: <a href="http://fortawesome.github.io/Font-Awesome/">http://fortawesome.github.io/Font-Awesome/</a>
-	<li>Google Firebase URL Shortener: <a href="https://firebase.google.com/">https://firebase.google.com/</a>
-	<li>HTML5: Mozilla.org, W3C.org, Google.com, et al.  <a href="http://en.wikipedia.org/wiki/HTML5">http://en.wikipedia.org/wiki/HTML5</a>
-</ul>
+	<section>
+		<h2>Open source</h2>
+		<p>
+			GrooveScribe is open source and is licensed under the
+			<a href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html">GPL v2.0</a>.
+			The source code is available at <a href="https://github.com/montulli/GrooveScribe">GitHub</a>.
+		</p>
+	</section>
+
+	<section>
+		<h2>Built with</h2>
+		<p class="credit">
+			GrooveScribe is plain HTML, CSS and JavaScript (native ES modules, no build step). These
+			open source libraries and resources are included in it:
+		</p>
+
+		<h3>Notation and music</h3>
+		<ul>
+			<li><a href="https://github.com/moinejf/abc2svg">abc2svg</a> 1.3.2 <span class="credit">&mdash; turns ABC Notation into the sheet music. GrooveScribe could not exist without it. Thank you Jef!</span></li>
+			<li><a href="http://abcnotation.com/">ABC Notation</a> <span class="credit">&mdash; the text format the sheet music is described in.</span></li>
+			<li><a href="https://github.com/dingram/jsmidgen">jsmidgen</a> <span class="credit">&mdash; creates the MIDI files.</span></li>
+			<li><a href="https://github.com/mudcube/MIDI.js">MIDI.js</a> 0.3.2 <span class="credit">&mdash; plays them with Web Audio, together with <a href="https://github.com/gasman/jasmid">jasmid</a> for reading MIDI files.</span></li>
+			<li><a href="https://github.com/swevans/unmute">unmute</a> <span class="credit">&mdash; lets playback through the iPhone and iPad silent switch.</span></li>
+			<li><a href="http://mikeslessons.com/">Mike Johnston's</a> drum kits <span class="credit">&mdash; the custom samples behind the soundfont.</span></li>
+		</ul>
+
+		<h3>Interface</h3>
+		<ul>
+			<li><a href="https://fontawesome.com/v4/">Font Awesome</a> 4.7 <span class="credit">&mdash; icons.</span></li>
+			<li><a href="https://fonts.google.com/specimen/Lato">Lato</a> <span class="credit">&mdash; typeface, served by Google Fonts.</span></li>
+			<li><a href="https://github.com/carrot/share-button">Share Button</a> <span class="credit">&mdash; sharing to social sites.</span></li>
+			<li><a href="https://github.com/premasagar/pablo">Pablo</a> <span class="credit">&mdash; converts the sheet music SVG to PNG for download.</span></li>
+		</ul>
+
+		<h3>Mobile apps</h3>
+		<ul>
+			<li><a href="https://capacitorjs.com/">Capacitor</a> <span class="credit">&mdash; packages GrooveScribe as Android and iOS apps.</span></li>
+		</ul>
+
+		<h3>Development</h3>
+		<ul>
+			<li><a href="https://vitest.dev/">Vitest</a>, <a href="https://playwright.dev/">Playwright</a>, <a href="https://eslint.org/">ESLint</a>, <a href="https://prettier.io/">Prettier</a> and <a href="https://www.typescriptlang.org/">TypeScript</a> <span class="credit">&mdash; tests, linting, formatting and type checking.</span></li>
+		</ul>
+	</section>
+</main>
+
+</body>
+</html>

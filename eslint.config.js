@@ -101,6 +101,7 @@ export default [
       'js/browserInfo.js',
       'js/grooveData.js',
       'js/permutations.js',
+      'js/hamburgerMenu.js',
       'js/viewHtml.js',
       'js/gridState.js',
       'js/urlSerialization.js',

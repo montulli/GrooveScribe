@@ -56,7 +56,7 @@ describe('GrooveWriter view & lifecycle', () => {
       expect(gw.myGrooveUtils.viewMode).toBe(true);
     });
 
-    it('first call flips to edit mode: shows .edit-block, relabels the button to "Switch to VIEW mode"', async () => {
+    it('first call flips to edit mode: shows .edit-block, relabels the button to "View mode"', async () => {
       const gw = await newGrooveWriter();
       document.body.innerHTML = '<span id="view-edit-switch"></span><div class="edit-block"></div>';
       gw.updateCurrentURL = vi.fn();
@@ -64,11 +64,11 @@ describe('GrooveWriter view & lifecycle', () => {
       gw.swapViewEditMode(true);
 
       expect(gw.myGrooveUtils.viewMode).toBe(false);
-      expect(document.getElementById('view-edit-switch').innerHTML).toBe('Switch to VIEW mode');
+      expect(document.getElementById('view-edit-switch').innerHTML).toBe('View mode');
       expect(document.querySelector('.edit-block').style.display).toBe('block');
     });
 
-    it('second call flips back to view mode: hides .edit-block, relabels the button to "Switch to EDIT mode"', async () => {
+    it('second call flips back to view mode: hides .edit-block, relabels the button to "Edit mode"', async () => {
       const gw = await newGrooveWriter();
       document.body.innerHTML = '<span id="view-edit-switch"></span><div class="edit-block"></div>';
       gw.updateCurrentURL = vi.fn();
@@ -77,7 +77,7 @@ describe('GrooveWriter view & lifecycle', () => {
       gw.swapViewEditMode(true);
 
       expect(gw.myGrooveUtils.viewMode).toBe(true);
-      expect(document.getElementById('view-edit-switch').innerHTML).toBe('Switch to EDIT mode');
+      expect(document.getElementById('view-edit-switch').innerHTML).toBe('Edit mode');
       expect(document.querySelector('.edit-block').style.display).toBe('none');
     });
 
@@ -162,7 +162,7 @@ describe('GrooveWriter view & lifecycle', () => {
   describe('show_MetronomeAutoSpeedupConfiguration / close_MetronomeAutoSpeedupConfiguration', () => {
     function buildPopupFixture() {
       document.body.innerHTML =
-        '<div id="metronomeAutoSpeedupConfiguration" style="display:none"></div>' +
+        '<div id="metronomeAutoSpeedupConfiguration" class="navModal"></div>' +
         '<span id="metronomeAutoSpeedupTempoIncreaseAmountOutput"></span>' +
         '<input id="metronomeAutoSpeedupTempoIncreaseAmount" value="5">' +
         '<span id="metronomeAutoSpeedupTempoIncreaseIntervalOutput"></span>' +
@@ -177,9 +177,9 @@ describe('GrooveWriter view & lifecycle', () => {
 
       gw.show_MetronomeAutoSpeedupConfiguration();
 
-      expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe(
-        'block'
-      );
+      expect(
+        document.getElementById('metronomeAutoSpeedupConfiguration').classList.contains('open')
+      ).toBe(true);
       expect(
         document.getElementById('metronomeAutoSpeedupTempoIncreaseAmountOutput').innerHTML
       ).toBe('7');
@@ -192,15 +192,15 @@ describe('GrooveWriter view & lifecycle', () => {
       const gw = await newGrooveWriter();
       buildPopupFixture();
       gw.show_MetronomeAutoSpeedupConfiguration();
-      expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe(
-        'block'
-      );
+      expect(
+        document.getElementById('metronomeAutoSpeedupConfiguration').classList.contains('open')
+      ).toBe(true);
 
       gw.close_MetronomeAutoSpeedupConfiguration();
 
-      expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe(
-        'none'
-      );
+      expect(
+        document.getElementById('metronomeAutoSpeedupConfiguration').classList.contains('open')
+      ).toBe(false);
     });
 
     it('close_MetronomeAutoSpeedupConfiguration does not throw when the popup element is absent', async () => {

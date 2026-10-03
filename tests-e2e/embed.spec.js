@@ -47,3 +47,32 @@ test('grooveDBTest.html renders (GrooveDBFormatPutGrooveOnPage path)', async ({ 
   expect(await page.locator('svg').count()).toBeGreaterThan(1);
   expect(errors, errors.join('\n')).toEqual([]);
 });
+
+test('GrooveDBCreateGroove.html (the standalone GrooveDB authoring tool) works with the menu UI', async ({
+  page,
+}) => {
+  // This page is a copy of index.html with ../ paths and its own bootstrap, so it breaks
+  // silently whenever index.html / main.js change. Drive the parts it shares with the editor.
+  const errors = collectErrors(page);
+  await page.goto('/html_examples_and_tests/GrooveDBCreateGroove.html');
+  await page.waitForSelector('#svgTarget svg', { timeout: 15000 });
+
+  // authoring mode: the GrooveDB text block is shown, there is no view/edit switch
+  await expect(page.locator('#GrooveDB_MetaData')).toBeVisible();
+  await expect(page.locator('#viewEditButton')).toHaveCount(0);
+
+  // the hamburger menu and the Groove Setup dialog work
+  await page.click('#hamburgerButton');
+  await expect(page.locator('#hamburgerMenu')).toBeVisible();
+  await page.click('#grooveSetupItem');
+  await expect(page.locator('#grooveSetupModal')).toBeVisible();
+  await page.selectOption('#timeSigPopupTimeSigTop', '3');
+  await page.click('#grooveSetupModalDone');
+  await expect(page.locator('#timeSigLabel')).toHaveText('3/4');
+
+  // editing updates the GrooveDB source text
+  await page.click('#hi-hat0');
+  expect(await page.inputValue('#GrooveDB_source')).toContain('TimeSig=3/4');
+
+  expect(errors, errors.join('\n')).toEqual([]);
+});
