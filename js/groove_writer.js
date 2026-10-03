@@ -2419,6 +2419,8 @@ function GrooveWriter() {
 
     diverr.innerHTML = svg_return.error_html;
     svgTarget.innerHTML = svg_return.svg;
+    // the old notes are gone, so nothing in the new SVG is highlighted yet (the next note re-lights it)
+    root.myGrooveUtils.abcNoteNumCurrentlyHighlighted = -1;
   };
 
   // Render an SVG that is good for download.
@@ -2853,6 +2855,10 @@ function GrooveWriter() {
       root.updateGrooveDBSource();
     };
 
+    root.myGrooveUtils.midiEventCallbacks.loopWillReload = function () {
+      return class_metronome_auto_speed_up_active; // the tempo steps up (and the MIDI is rebuilt) every pass
+    };
+
     root.myGrooveUtils.midiEventCallbacks.notePlaying = function (
       myroot,
       note_type,
@@ -2874,7 +2880,20 @@ function GrooveWriter() {
       root.myGrooveUtils.doesDivisionSupportSwing(class_notes_per_measure)
     );
 
-    window.onresize = root.refresh_ABC;
+    // The sheet music is drawn to fit the page WIDTH, so only a width change needs a redraw. Phones
+    // fire resize whenever the address bar shows or hides (height only) and during rotation; each
+    // redraw took 40-70ms and stalled playback, so ignore height-only changes and wait for resizing
+    // to settle.
+    var lastRenderedWidth = window.innerWidth;
+    var resizeTimer = null;
+    window.onresize = function () {
+      if (window.innerWidth === lastRenderedWidth) return;
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(function () {
+        lastRenderedWidth = window.innerWidth;
+        root.refresh_ABC();
+      }, 150);
+    };
 
     root.browserInfo = root.myGrooveUtils.getBrowserInfo();
     if (root.browserInfo.browser == 'MSIE' && root.browserInfo.version < 10) {

@@ -18,7 +18,7 @@ build step). A groove is encoded in the URL, rendered to sheet music as SVG
 | Command                | Expectation                                                                                                                                                                             |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `npm test`             | Vitest unit suite — **722 pass**                                                                                                                                                        |
-| `npm run test:e2e`     | Playwright golden-master + UI flows — **114 pass**. Byte-identical SVG+MIDI snapshots; this is the real proof that a refactor changed nothing functional. Finishes in <5 min by design. |
+| `npm run test:e2e`     | Playwright golden-master + UI flows — **124 pass**. Byte-identical SVG+MIDI snapshots; this is the real proof that a refactor changed nothing functional. Finishes in <5 min by design. |
 | `npm run lint`         | ESLint — **0 errors** (~82 SonarJS _warnings_ are an accepted refactor backlog, not failures)                                                                                           |
 | `npm run typecheck`    | `tsc --noEmit` checkJs via JSDoc — ~296 known errors baseline; changes should be typecheck-**neutral**                                                                                  |
 | `npm run knip`         | no unused exports/files                                                                                                                                                                 |
@@ -100,6 +100,11 @@ Entry/support: `main.js` (index.html bootstrap, wires `window.myGrooveWriter` et
   paint a cell, the `gridState` readers compare its color against the shared
   `constant_*_on_color_rgb` values in `constants.js` (setters paint the hex form; the browser
   normalizes it to rgb on readback).
+- **`MIDI.js/js/MIDI/Player.js` is vendored but carries a GrooveScribe patch** (marked "GrooveScribe patch" in
+  the file): the next loop pass is scheduled on the audio clock ~250ms before the current one ends, and each
+  fired note removes its own entry from the event queue (not `shift()`). Without them a late timer on a busy
+  phone shifted every repeat and left a note that Stop could not silence. `tests-e2e/playback.spec.js` guards
+  both; re-apply the patch if MIDI.js is ever updated.
 - Vendored globals (don't redefine): `Midi`, `MIDI`, `Abc`, `Share`, `ShareButton`, `Pablo`.
 
 ## Refactor status (strangler-fig, ES-module migration)
