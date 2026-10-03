@@ -9,5 +9,10 @@ declare var MIDI: any;
 declare var Midi: any;
 declare var Abc: any;
 declare var Pablo: any;
+declare function unmute(
+  context: any,
+  allowBackgroundPlayback?: boolean,
+  forceIOSBehavior?: boolean
+): { dispose(): void };
 declare var Share: any;
 declare var ShareButton: any;
