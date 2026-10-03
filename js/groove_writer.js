@@ -1392,11 +1392,11 @@ function GrooveWriter() {
   // --- Permutation engine (extracted to permutations.js) ---------------------
   // Thin wrappers preserving the original in-file API: they inject the current
   // usingTriplets() flag and delegate to the pure module functions.
-  function get_permutation_pre_ABC(section) {
-    return _perm.get_permutation_pre_ABC(section);
+  function get_permutation_pre_ABC(section, showTitle) {
+    return _perm.get_permutation_pre_ABC(section, showTitle);
   }
-  function get_permutation_post_ABC(section) {
-    return _perm.get_permutation_post_ABC(section, usingTriplets());
+  function get_permutation_post_ABC(section, isLast) {
+    return _perm.get_permutation_post_ABC(section, usingTriplets(), isLast);
   }
   function get_kick16th_permutation_array(section) {
     return _perm.get_kick16th_permutation_array(section, usingTriplets());
@@ -2214,9 +2214,10 @@ function GrooveWriter() {
             Kick_Array = _perm.filter_kick_array_for_permutation(Kick_Array);
             new_kick_array = _perm.merge_kick_arrays(new_kick_array, Kick_Array);
 
-            post_abc = get_permutation_post_ABC(i);
+            var flags = _perm.get_permutation_display_flags(i, shouldDisplayPermutationForSection);
+            post_abc = get_permutation_post_ABC(i, flags.isLast);
 
-            fullABC += get_permutation_pre_ABC(i);
+            fullABC += get_permutation_pre_ABC(i, flags.showTitle);
             fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(
               Sticking_Array,
               HH_Array,
@@ -2276,9 +2277,10 @@ function GrooveWriter() {
               new_snare_array = get_snare_accent_permutation_array(i);
             else new_snare_array = get_snare_permutation_array(i);
 
-            post_abc = get_permutation_post_ABC(i);
+            flags = _perm.get_permutation_display_flags(i, shouldDisplayPermutationForSection);
+            post_abc = get_permutation_post_ABC(i, flags.isLast);
 
-            fullABC += get_permutation_pre_ABC(i);
+            fullABC += get_permutation_pre_ABC(i, flags.showTitle);
             fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(
               Sticking_Array,
               HH_Array,
