@@ -59,7 +59,7 @@ URL query string  ──parse──►  grooveData  ──►  ABC notation ─�
 - `gridState.js` — the clickable-grid **read** layer: per-cell note state and whole-measure array readers (reads the DOM). The note **setters** remain in `groove_writer.js`.
 - `grooves.js` — the built-in groove library.
 
-Third-party libraries are vendored under `js/` (abc2svg, jsmidgen, pablo, share-button) and `MIDI.js/` (MIDI playback + soundfonts); these are not linted or edited.
+Third-party libraries are vendored under `js/` (abc2svg, jsmidgen, pablo, share-button, unmute) and `MIDI.js/` (MIDI playback + soundfonts); these are not linted or edited.
 
 ## Repository layout (HTML)
 

@@ -10,6 +10,7 @@
 import { GrooveWriter } from './groove_writer.js';
 import { GrooveUtils } from './groove_utils.js';
 import { grooves } from './grooves.js';
+import { initHamburgerMenu } from './hamburgerMenu.js';
 
 // Inline HTML handlers (onclick="myGrooveWriter.…") and other consumers still
 // reference these as globals, so expose them on window.
@@ -51,16 +52,15 @@ function fillContainer(id, html) {
 if (!utils.grooveDBAuthoring) {
   replaceSlot(
     'viewEditSwitchSlot',
-    '<span class="left-button" onclick="myGrooveWriter.swapViewEditMode();">' +
-      '<span class="left-button-content"><span id="view-edit-switch">Switch to EDIT mode</span></span></span>'
+    '<span id="viewEditButton" onclick="myGrooveWriter.swapViewEditMode();">' +
+      '<span id="view-edit-switch">Edit mode</span></span>'
   );
 }
 if (utils.is_touch_device()) {
   replaceSlot(
     'advancedEditSlot',
-    '<span class="left-button edit-block" id="advancedEditAnchor" ' +
-      'onclick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">' +
-      '<span class="left-button-content">Advanced Edit</span></span>'
+    '<li class="edit-block" id="advancedEditAnchor" ' +
+      'onclick="event.preventDefault(); myGrooveWriter.toggleAdvancedEdit()">Advanced Edit</li>'
   );
 }
 
@@ -77,6 +77,8 @@ fillContainer('grooveListWrapper', grooves.getGroovesAsHTML());
 
 // Initialize the notes/player once the page has fully loaded (matches the
 // original window.onload handler).
+initHamburgerMenu();
+
 window.addEventListener('load', function () {
   myGrooveWriter.runsOnPageLoad();
 });

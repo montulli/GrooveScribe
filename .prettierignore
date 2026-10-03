@@ -3,11 +3,17 @@ node_modules/
 coverage/
 package-lock.json
 
+# Capacitor build output (assembled/generated; not source)
+www/
+android/
+ios/
+
 # Vendored third-party libraries (not ours to format)
 js/abc2svg-1.js
 js/pablo.js
 js/pablo.min.js
 js/jsmidgen.js
+js/unmute.js
 js/share-button.min.js
 js/*.min.js
 css/share-button.min.css

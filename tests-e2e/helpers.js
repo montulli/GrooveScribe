@@ -38,3 +38,35 @@ export function grooveData(page) {
     };
   });
 }
+
+// ---- hamburger menu ---------------------------------------------------------
+// Almost every action lives in the hamburger menu (top right). Items are not
+// visible until it is open, so tests go through these helpers.
+
+// Open the hamburger menu (no-op if it is already open).
+export async function openMenu(page) {
+  const open = await page.evaluate(() =>
+    document.getElementById('hamburgerMenu').classList.contains('open')
+  );
+  if (!open) await page.click('#hamburgerButton');
+}
+
+// Open one of the menu's cascading groups (editAnchor, displayAnchor,
+// shareExportAnchor, permutationAnchor, groovesAnchor, helpAnchor).
+export async function openGroup(page, anchorId) {
+  await openMenu(page);
+  await page.click('#' + anchorId);
+}
+
+// Open a group and click one of the items in its submenu.
+export async function chooseFromGroup(page, anchorId, itemId) {
+  await openGroup(page, anchorId);
+  await page.click('#' + itemId);
+}
+
+// Open the Groove Setup dialog from the menu.
+export async function openGrooveSetup(page) {
+  await openMenu(page);
+  await page.click('#grooveSetupItem');
+  await page.waitForSelector('#grooveSetupModal.open');
+}

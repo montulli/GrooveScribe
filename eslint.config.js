@@ -44,11 +44,16 @@ export default [
       'soundfont/**',
       'cordova/**',
       'font-awesome/**',
+      // Capacitor build output (assembled from source / generated natively).
+      'www/**',
+      'android/**',
+      'ios/**',
       // Vendored third-party libraries — not ours to lint.
       'js/abc2svg-1.js',
       'js/pablo.js',
       'js/pablo.min.js',
       'js/jsmidgen.js',
+      'js/unmute.js',
       'js/share-button.min.js',
       'js/*.min.js',
     ],
@@ -75,6 +80,7 @@ export default [
         Share: 'readonly',
         ShareButton: 'readonly',
         Pablo: 'readonly',
+        unmute: 'readonly',
       },
     },
     rules: {
@@ -95,6 +101,7 @@ export default [
       'js/browserInfo.js',
       'js/grooveData.js',
       'js/permutations.js',
+      'js/hamburgerMenu.js',
       'js/viewHtml.js',
       'js/gridState.js',
       'js/urlSerialization.js',
@@ -141,6 +148,16 @@ export default [
       // / legacyLoader.js), and fixtures use http:// URLs as inert test data.
       'sonarjs/code-eval': 'off',
       'sonarjs/no-clear-text-protocols': 'off',
+    },
+  },
+
+  // Node build scripts (ES modules run by Node, e.g. the Capacitor web-dir builder).
+  {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: { ...globals.node },
     },
   },
 

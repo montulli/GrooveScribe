@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 // are owned by a different suite and are intentionally out of scope here.
 //
 // --- Why the two shims below exist -----------------------------------------
-// A few of these handlers (permutationPopupClick, timeSigPopupClose('ok'),
+// A few of these handlers (permutationPopupClick, applyTimeSignature(),
 // changeDivision) cascade into the sheet-music render pipeline
 // (updateSheetMusic -> generate_ABC -> renderABCtoSVG). That pipeline reads two
 // kinds of "bare globals":
@@ -84,6 +84,7 @@ function buildMenuFixtures() {
 
     <span id="permutationAnchor"></span>
     <ul id="permutationContextMenu" class="list"></ul>
+    <ul id="permutationDisabledContextMenu" class="list"><li>disabled</li></ul>
     <div id="PermutationOptions"></div>
 
     <span id="groovesAnchor"></span>
@@ -92,13 +93,14 @@ function buildMenuFixtures() {
     <span id="helpAnchor"></span>
     <ul id="helpContextMenu" class="list"></ul>
 
-    <span id="stickingsButton"></span>
-    <ul id="stickingsContextMenu" class="list"></ul>
+    <span id="editAnchor"></span>
+    <ul id="editContextMenu" class="list"></ul>
+    <span id="displayAnchor"></span>
+    <ul id="displayContextMenu" class="list"></ul>
+    <span id="shareExportAnchor"></span>
+    <ul id="shareExportContextMenu" class="list"></ul>
 
-    <span id="downloadButton"></span>
-    <ul id="downloadContextMenu" class="list"></ul>
-
-    <div id="timeSigPopup">
+    <div id="grooveSetupDropdowns">
       <select id="timeSigPopupTimeSigTop">
         <option value="2">2</option>
         <option value="3">3</option>
@@ -157,16 +159,17 @@ describe('anchor openers', () => {
     expect(menu.style.display).toBe('block');
   });
 
-  it('permutationAnchorClick is a no-op outside 4/4 time (guard clause)', () => {
+  it('permutationAnchorClick shows only the "disabled" notice outside 4/4 time', () => {
     buildGridDOM(gw, 1);
     buildRenderPipelineFixtures();
     document.getElementById('timeSigPopupTimeSigTop').value = '3';
     document.getElementById('timeSigPopupTimeSigBottom').value = '4';
-    gw.timeSigPopupClose('ok'); // now in 3/4 time; permutations only work in 4/4
+    gw.applyTimeSignature(); // now in 3/4 time; permutations only work in 4/4
 
     const menu = document.getElementById('permutationContextMenu');
     gw.permutationAnchorClick({});
     expect(menu.style.display).toBe(''); // never shown
+    expect(document.getElementById('permutationDisabledContextMenu').style.display).toBe('block');
   });
 
   it('groovesAnchorClick shows the grooves list', () => {
@@ -181,17 +184,17 @@ describe('anchor openers', () => {
     expect(menu.style.display).toBe('block');
   });
 
-  it('stickingsAnchorClick shows the stickings context menu', () => {
-    const menu = document.getElementById('stickingsContextMenu');
-    // the handler reads event.clientX/clientY to position the menu
-    gw.stickingsAnchorClick({ clientX: 100, clientY: 100 });
-    expect(menu.style.display).toBe('block');
+  it.each([
+    ['editContextMenu', 'editAnchor'],
+    ['displayContextMenu', 'displayAnchor'],
+    ['shareExportContextMenu', 'shareExportAnchor'],
+  ])('menuGroupClick(%s) shows that submenu', (menuId, itemId) => {
+    gw.menuGroupClick(menuId, itemId);
+    expect(document.getElementById(menuId).style.display).toBe('block');
   });
 
-  it('DownloadAnchorClick shows the download context menu', () => {
-    const menu = document.getElementById('downloadContextMenu');
-    gw.DownloadAnchorClick({ clientX: 100, clientY: 100 });
-    expect(menu.style.display).toBe('block');
+  it('menuGroupClick with an unknown menu does nothing and does not throw', () => {
+    expect(() => gw.menuGroupClick('noSuchMenu', 'editAnchor')).not.toThrow();
   });
 });
 
@@ -223,34 +226,75 @@ describe('metronome options menu', () => {
 
   it('metronomeOptionsMenuPopupClick("SpeedUp") shows the auto-speedup configuration and checks the menu item', () => {
     gw.metronomeOptionsMenuPopupClick('SpeedUp');
-    expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe(
-      'block'
-    );
+    expect(
+      document.getElementById('metronomeAutoSpeedupConfiguration').classList.contains('open')
+    ).toBe(true);
     expect(document.getElementById('metronomeOptionsContextMenuSpeedUp').className).toContain(
       'menuChecked'
     );
     expect(document.getElementById('metronomeOptionsAnchor').className).toContain('selected');
   });
 
+  it('Cancel on the auto-speedup dialog restores the settings and turns Auto speed up back off', () => {
+    const amount = document.getElementById('metronomeAutoSpeedupTempoIncreaseAmount');
+    const interval = document.getElementById('metronomeAutoSpeedupTempoIncreaseInterval');
+    const popup = document.getElementById('metronomeAutoSpeedupConfiguration');
+    const item = document.getElementById('metronomeOptionsContextMenuSpeedUp');
+    const anchor = document.getElementById('metronomeOptionsAnchor');
+
+    gw.metronomeOptionsMenuPopupClick('SpeedUp'); // opens the dialog, turning it on
+    amount.value = '40';
+    interval.value = '9';
+    gw.close_MetronomeAutoSpeedupConfiguration('cancel');
+
+    expect(popup.classList.contains('open')).toBe(false);
+    expect(amount.value).toBe('5');
+    expect(interval.value).toBe('4');
+    expect(document.getElementById('metronomeAutoSpeedupTempoIncreaseAmountOutput').innerHTML).toBe(
+      '5'
+    );
+    expect(item.className).not.toContain('menuChecked');
+    expect(anchor.className).not.toContain('selected');
+  });
+
+  it('Done on the auto-speedup dialog keeps the settings and leaves Auto speed up on', () => {
+    const amount = document.getElementById('metronomeAutoSpeedupTempoIncreaseAmount');
+    gw.metronomeOptionsMenuPopupClick('SpeedUp');
+    amount.value = '40';
+    gw.close_MetronomeAutoSpeedupConfiguration('ok');
+
+    expect(amount.value).toBe('40');
+    expect(document.getElementById('metronomeOptionsContextMenuSpeedUp').className).toContain(
+      'menuChecked'
+    );
+  });
+
   it('metronomeOptionsMenuPopupClick("SpeedUp") turns back off without reshowing the configurator', () => {
     gw.metronomeOptionsMenuPopupClick('SpeedUp');
-    document.getElementById('metronomeAutoSpeedupConfiguration').style.display = 'none'; // simulate user closing it
+    document.getElementById('metronomeAutoSpeedupConfiguration').classList.remove('open'); // simulate user closing it
     gw.metronomeOptionsMenuPopupClick('SpeedUp');
     expect(document.getElementById('metronomeOptionsContextMenuSpeedUp').className).not.toContain(
       'menuChecked'
     );
     // turning off does not re-open the popup
-    expect(document.getElementById('metronomeAutoSpeedupConfiguration').style.display).toBe('none');
+    expect(
+      document.getElementById('metronomeAutoSpeedupConfiguration').classList.contains('open')
+    ).toBe(false);
   });
 
-  // BUG: root.myGrooveUtils.setMetronomeCountIn is never defined anywhere in
-  // groove_utils.js (verified by grep across the source), yet
-  // metronomeOptionsMenuPopupClick("CountIn") unconditionally calls it. Clicking
-  // "Count it in" in the real app throws a TypeError instead of toggling the
-  // count-in feature. This is a genuine product bug, not a test-harness artifact.
-  it('metronomeOptionsMenuPopupClick("CountIn") throws because setMetronomeCountIn does not exist (documented bug)', () => {
-    expect(gw.myGrooveUtils.setMetronomeCountIn).toBeUndefined();
-    expect(() => gw.metronomeOptionsMenuPopupClick('CountIn')).toThrow(TypeError);
+  // The count-in state lives in GrooveWriter (it is read when playback starts); this used to throw
+  // because the handler also called a setMetronomeCountIn that GrooveUtils never had.
+  it('metronomeOptionsMenuPopupClick("CountIn") toggles the checkmark and the Options button highlight', () => {
+    const item = document.getElementById('metronomeOptionsContextMenuCountIn');
+    const anchor = document.getElementById('metronomeOptionsAnchor');
+
+    expect(() => gw.metronomeOptionsMenuPopupClick('CountIn')).not.toThrow();
+    expect(item.className).toContain('menuChecked');
+    expect(anchor.className).toContain('selected');
+
+    gw.metronomeOptionsMenuPopupClick('CountIn');
+    expect(item.className).not.toContain('menuChecked');
+    expect(anchor.className).not.toContain('selected');
   });
 
   it('metronomeOptionsMenuPopupClick("OffTheOne") opens the non-triplet offset submenu by default', () => {
@@ -443,46 +487,19 @@ describe('help menu', () => {
     openSpy.mockRestore();
   });
 
-  it('helpMenuPopupClick("undo"/"redo") delegate to undoCommand/redoCommand', () => {
-    gw.undoCommand = vi.fn();
-    gw.redoCommand = vi.fn();
-
-    gw.helpMenuPopupClick('undo');
-    gw.helpMenuPopupClick('redo');
-
-    expect(gw.undoCommand).toHaveBeenCalledTimes(1);
-    expect(gw.redoCommand).toHaveBeenCalledTimes(1);
-  });
-
   it('helpMenuPopupClick with an unrecognized type logs and does not throw', () => {
     expect(() => gw.helpMenuPopupClick('bogus')).not.toThrow();
   });
 });
 
-describe('time signature popup', () => {
-  it('timeSigPopupOpen shows the popup', () => {
-    const popup = document.getElementById('timeSigPopup');
-    expect(popup.style.display).toBe('');
-    gw.timeSigPopupOpen();
-    expect(popup.style.display).toBe('block');
-  });
-
-  it('timeSigPopupClose("cancel") hides the popup without changing the time signature', () => {
-    gw.timeSigPopupOpen();
-    gw.timeSigPopupClose('cancel');
-    expect(document.getElementById('timeSigPopup').style.display).toBe('none');
-    // label reflects the still-default 4/4 (setTimeSigLabel reads the same class vars)
-    gw.setTimeSigLabel();
-    expect(document.getElementById('timeSigLabel').innerHTML).toBe('<sup>4</sup>/<sub>4</sub>');
-  });
-
-  it('timeSigPopupClose("ok") applies the new time signature, relayouts, and updates the label', () => {
+describe('time signature', () => {
+  it('applyTimeSignature applies the time signature chosen in the dropdowns, relayouts, and updates the label', () => {
     buildGridDOM(gw, 1);
     buildRenderPipelineFixtures();
     document.getElementById('timeSigPopupTimeSigTop').value = '3';
     document.getElementById('timeSigPopupTimeSigBottom').value = '4';
 
-    gw.timeSigPopupClose('ok');
+    gw.applyTimeSignature();
 
     // changeDivisionWithNotes() calls root.setTimeSigLabel() as part of the relayout.
     expect(document.getElementById('timeSigLabel').innerHTML).toBe('<sup>3</sup>/<sub>4</sub>');
@@ -515,7 +532,7 @@ describe('time signature popup', () => {
     document.getElementById('timeSigPopupTimeSigTop').value = '6';
     document.getElementById('timeSigPopupTimeSigBottom').value = '8';
 
-    gw.timeSigPopupClose('ok'); // 6/8 time; changeDivisionWithNotes calls setTimeDivisionSelectionOnOrOff internally
+    gw.applyTimeSignature(); // 6/8 time; changeDivisionWithNotes calls setTimeDivisionSelectionOnOrOff internally
 
     expect(document.getElementById('subdivision_12ths').className).toContain('disabled');
     expect(document.getElementById('subdivision_24ths').className).toContain('disabled');

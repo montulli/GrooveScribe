@@ -21,7 +21,7 @@ body {
   background-color: #393939;
   //background-color: #ddd;
   width: 100%;
-  min-width: 800px;
+  min-width: 320px;
   /* to embed, add your header height here.  Replace 0px with your header height */
   //height: 100%;
   font:
@@ -43,18 +43,6 @@ body {
 .nonPrintable {
   display: block;
 }
-#LeftHandNav {
-  width: 70px;
-  height: 100%;
-  position: fixed;
-  /position: absolute;
-  #top: 111px;
-  top: 0px;
-  left: 0px;
-  border-right: 2px solid #000;
-  background: #393939;
-  z-index: 999;
-}
 #TopNav {
   position: fixed;
   /position: relative;
@@ -62,8 +50,7 @@ body {
   top: 0px;
   left: 0px;
   z-index: 998;
-  width: calc(100% - 72px);
-  margin-left: 72px;
+  width: 100%;
   height: 48px; /* total 48 */
   border-bottom: 1px solid #000;
   background: var(--header-bg-color);
@@ -73,13 +60,13 @@ body {
 #midiPlayer {
   /* more #midiPlayer css in groove_display.css */
   background: #000;
-  width: calc(100% - 72px);
+  width: 100%;
   height: 48px;
   position: fixed;
   #top: 160px;
   top: 49px;
   /position: relative;
-  left: 72px;
+  left: 0px;
   z-index: 999;
   border-bottom: 1px solid #000;
 }
@@ -87,9 +74,9 @@ body {
   position: relative;
   #top: 209px;
   top: 98px;
-  left: 72px;
+  left: 0px;
   height: calc(100% - 98px);
-  width: calc(100% - 72px);
+  width: 100%;
   overflow-y: auto;
 }
 #logoTextUpperLeft {
@@ -113,9 +100,6 @@ body {
   white-space: nowrap;
   vertical-align: top;
 }
-
-#divisionButtonContainer {
-}
 #metronomeContainer {
 }
 #metronomeLabel {
@@ -126,8 +110,7 @@ body {
   text-align: center;
   color: #eef;
 }
-.metronomeButton,
-.rightButtons {
+.metronomeButton {
   padding: 2px;
   cursor: pointer;
   display: inline-block;
@@ -141,14 +124,8 @@ body {
   height: 20px;
   transition: all 0.1s ease-in-out;
 }
-.rightButtons {
-  margin: 0px 6px;
-}
 .metronomeButton:hover,
-.rightButtons:hover,
-.metronomeButton.selected:hover,
-.rightButtons.selected:hover,
-.rightButtons.buttonSelected:hover {
+.metronomeButton.selected:hover {
   /color: #3b5166;
   font-weight: 700;
   transform: scale(1.05);
@@ -157,93 +134,23 @@ body {
   width: 75px;
 }
 .metronomeButton.buttonSelected,
-.metronomeButton.selected,
-.rightButtons.buttonSelected {
+.metronomeButton.selected {
   /* is a button and is selected */
   color: #fff;
   font-weight: 700;
   /background: #68c2ff;
 }
-
-#logoInSubdivision {
-  background-color: #000;
-}
-#logoInSubdivision img {
-  height: 40px;
-}
-.left-button {
-  display: block;
-  color: #999999;
-  cursor: pointer;
-}
-.left-button-content {
-  display: block;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: bold;
-  height: 48px;
-  border-bottom: 1px solid #000;
-  text-align: center;
-  vertical-align: middle;
-  display: -webkit-flex;
-  display: flex;
-  align-items: center;
-  -webkit-align-items: center;
-  justify-content: center;
-  -webkit-justify-content: center;
-  transition: all 0.1s ease-in-out;
-}
-#timeLabel {
-  height: 48px; /* Override from above */
-}
-#timeSigLabel {
-  color: #62c04c;
-  font-size: 20px;
-  margin-bottom: -5px;
-}
-#timeSubLabel {
-  color: #62c04c;
-  font-size: 12px;
-}
-.left-button.disabled,
-.left-button.disabled:hover {
-  color: #000;
-  background-color: #393939;
-}
-.left-button.buttonSelected,
-.left-button.buttonSelected:hover {
-  /* is subdivision and is selected */
-  background: #2484c0;
-  color: #fff;
-  cursor: auto;
-  transform: scale(1.1);
-}
-.myButton:hover,
-.left-button:hover {
+.myButton:hover {
   border-top-color: #28597a;
   background: #555555;
   color: #ccc;
   transform: scale(1.05);
 }
-.myButton:active,
-.left-button:active {
+.myButton:active {
   border-top-color: #1b435e;
   background: #1b435e;
 }
-.buttonFraction {
-  /* The number above "triplet" in the .subdivision 1/4, 1/8, etc */
-  display: block;
-  font-size: 18px;
-}
-#advancedEditAnchor.buttonSelected {
-  background: #009ffa;
-  color: #fff;
-  font-size: 14px;
-}
 .buttonText {
-}
-#undoButton {
-  font-size: 14px;
 }
 #NotationLine {
   height: 35px;
@@ -259,12 +166,6 @@ body {
   font-weight: bold;
   text-align: center;
   padding-left: 62px;
-}
-#KeyButton {
-  float: right;
-  padding-right: 5px;
-  font-size: 18px;
-  text-align: right;
 }
 #hiddenDescription {
   display: none;
@@ -901,19 +802,6 @@ body {
   /* height: auto; */
 }
 
-#sheetMusicTextFields {
-  border-top: 1px solid #999;
-  padding: 8px 0px;
-  text-align: center;
-  display: -webkit-flex;
-  display: flex;
-  justify-content: space-around;
-  -webkit-justify-content: space-around;
-  background-color: #ddd;
-}
-.sheetMusicTextField {
-  margin: 0px 10px;
-}
 .sheetMusicInputField {
 }
 /* Context Menu */
@@ -1007,9 +895,7 @@ hr {
   font-family: monospace;
   font-size: 14px;
 }
-#fullURLPopup,
-#metronomeAutoSpeedupConfiguration,
-#timeSigPopup {
+#fullURLPopup {
   /visibility: hidden;
   display: none;
   position: absolute;
@@ -1022,23 +908,6 @@ hr {
   border: solid 2px #999;
   border-radius: 5px;
 }
-#timeSigPopup {
-  font-size: 24px;
-}
-#timeSigPopupBeta {
-  text-align: center;
-  margin-top: 8px;
-  margin-bottom: 30px;
-  color: #cc0000;
-}
-#timeSigPopupTitle {
-  text-align: center;
-  margin-top: 8px;
-  margin-bottom: 30px;
-}
-#timeSigPopupOptions {
-  text-align: center;
-}
 #timeSigPopupTimeSigTop,
 #timeSigPopupTimeSigBottom {
   font-size: 24px;
@@ -1048,32 +917,6 @@ hr {
   vertical-align: top;
   padding-left: 20px;
   width: 80px;
-}
-#timeSigPopupSlash {
-  font-size: 24px;
-  margin: 0px 10px;
-}
-#timeSigPopupCancel {
-  font-size: 16px;
-  font-weight: 500;
-  background: #fff;
-  color: #ccc;
-  border: 0px;
-  border-radius: 5px;
-  padding: 5px 10px;
-}
-#timeSigPopupOK {
-  font-size: 16px;
-  font-weight: 500;
-  background: var(--highlight-color);
-  color: #fff;
-  border: 0px;
-  border-radius: 5px;
-  padding: 5px 10px;
-}
-#timeSigPopupButtons {
-  margin-top: 30px;
-  text-align: center;
 }
 #fullURLPopupCloseButton {
   font-size: 100%;
@@ -1145,75 +988,6 @@ hr {
   background: var(--highlight-color) !important;
   color: #fff !important;
 }
-.metronomeAutoSpeedupInputRow {
-  vertical-align: text-bottom;
-}
-#metronomeAutoSpeedupConfigurationSliders {
-  width: 370px;
-  margin: 0px auto;
-}
-#metronomeAutoSpeedupTempoIncreaseAmount,
-#metronomeAutoSpeedupTempoIncreaseInterval {
-  background: var(--highlight-color);
-  width: 365px;
-}
-#metronomeAutoSpeedupOutputText {
-  font-size: 25px;
-  text-align: center;
-}
-#metronomeAutoSpeedupTempoIncreaseAmountOutput,
-#metronomeAutoSpeedupTempoIncreaseIntervalOutput {
-  color: var(--highlight-color);
-  font-weight: 700;
-}
-#metronomeAutoSpeedupConfigurationAmountLable,
-#metronomeAutoSpeedupConfigurationIntervalLable {
-  font-size: 12px;
-}
-#metronomeAutoSpeedupConfigurationKeepIncreasing {
-  font-size: 12px;
-  color: var(--highlight-color);
-  text-align: center;
-  vertical-align: middle;
-  margin-bottom: 10px;
-}
-#metronomeAutoSpeedupCloseButtonDiv {
-  text-align: center;
-  margin-top: 15px;
-}
-#metronomeAutoSpeedupConfigurationCloseButton {
-  font-size: 16px;
-  font-weight: 500;
-  background: var(--highlight-color);
-  color: #fff;
-  border: 0px;
-  border-radius: 5px;
-  padding: 5px 10px;
-}
-#showHideSecondMeasureButton {
-}
-#stickingsButton {
-}
-#stickingsButton:before {
-  font-family: FontAwesome;
-  font-size: 2em;
-  letter-spacing: -3px;
-  content: '\f065';
-  line-height: 32px;
-}
-#stickingsButton.ClickToHide:before {
-  font-family: FontAwesome;
-  font-size: 2em;
-  letter-spacing: -3px;
-  content: '\f066';
-  line-height: 32px;
-}
-#printButton {
-}
-#downloadButton {
-}
-#shareSaveButton {
-}
 .centeringSpace {
   /margin-right: 5%;
   /margin-left: 5%;
@@ -1255,62 +1029,12 @@ input[type='checkbox']:not(:checked) + label {
   content: '\f00c';
   letter-spacing: 5px;
 } /* checked icon */
-.hiddenCheckbox {
-  /* checkbox for the key (legend) */
-  visibility: hidden;
-}
-#LegendLabel {
-  border: 1px solid #ccc;
-  padding: 3px 7px 5px 7px;
-  border-radius: 7px;
-  background: #ccc;
-  margin-right: 8px;
-}
 #GrooveDB_source {
   width: calc(100% - 6px);
   height: 280px;
 }
-#bottomButtonRow {
-  padding: 20px 0px;
-  background: #393939;
-  text-align: center;
-  color: #888888;
-  display: -webkit-flex;
-  display: flex;
-  justify-content: space-around;
-  -webkit-justify-content: space-around;
-}
-.pageBottomButton {
-  display: inline-block;
-  margin: 0px 20px;
-}
-.pageBottomButton:hover {
-  cursor: pointer;
-  color: #fff;
-}
-.bottomButtonIcon {
-  display: block;
-}
-.bottomButtonLabel {
-  margin-top: 2px;
-  display: block;
-}
 .edit-block {
   display: none;
-}
-/*  3 circles make up the tom icon.  Position them */
-#icon-tom1 {
-  font-size: 16px;
-  margin-top: 16px;
-}
-#icon-tom2 {
-  font-size: 14px;
-  margin-left: -5px;
-  vertical-align: top;
-}
-#icon-tom3 {
-  font-size: 20px;
-  margin-top: 11px;
 }
 @media print {
   /* keep at bottom so it overrides the styles above */

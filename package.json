@@ -18,10 +18,15 @@
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
     "knip": "knip",
-    "check": "npm run lint && npm run typecheck && npm run format:check && npm run test"
+    "check": "npm run lint && npm run typecheck && npm run format:check && npm run test",
+    "build:www": "node scripts/build-www.mjs",
+    "cap:sync": "npm run build:www && cap sync"
   },
   "license": "GPL-2.0-or-later",
   "devDependencies": {
+    "@capacitor/android": "6.2.1",
+    "@capacitor/cli": "6.2.1",
+    "@capacitor/ios": "6.2.1",
     "@eslint/js": "^9.39.5",
     "@playwright/test": "^1.61.1",
     "@vitest/coverage-v8": "^3.2.4",
@@ -34,5 +39,8 @@
     "prettier": "^3.9.5",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@capacitor/core": "6.2.1"
   }
 }

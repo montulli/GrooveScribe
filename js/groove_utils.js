@@ -58,6 +58,7 @@ import {
 import {
   getBrowserInfo as _getBrowserInfo,
   is_touch_device as _is_touch_device,
+  is_mobile_phone as _is_mobile_phone,
 } from './browserInfo.js';
 import { createGrooveData } from './grooveData.js';
 import {
@@ -163,7 +164,9 @@ function GrooveUtils() {
   root.repeatCallback = null; //triggered when a groove is going to be repeated
   root.tempoChangeCallback = null; //triggered when the tempo changes.  ARG1 is the new Tempo integer (needs to be very fast, it can get called a lot of times from the slider)
 
-  root.visible_context_menu = false; // a single context menu can be visible at a time.
+  root.visible_context_menu = false; // a single context menu can be visible at a time...
+  /** @type {HTMLElement | false} */
+  root.visible_context_menu_parent = false; // ...plus the parent it cascaded from, if any
 
   // grooveDataNew builds a fresh GrooveData. The canonical shape and defaults
   // now live in grooveData.js (createGrooveData); this wrapper just threads
@@ -203,6 +206,11 @@ function GrooveUtils() {
     return _is_touch_device();
   };
 
+  // is the browser running on a phone (touch device with a phone user agent or screen size)
+  root.is_mobile_phone = function () {
+    return _is_mobile_phone();
+  };
+
   // the notes per measure is calculated from the note division and the time signature
   // in 4/4 time the division is the division (as well as any time signature x/x)
   // in 4/8 the num notes is half as many, etc
@@ -218,9 +226,16 @@ function GrooveUtils() {
     }
   };
 
-  root.showContextMenu = function (contextMenu) {
-    // if there is another context menu open, close it
-    if (root.visible_context_menu) {
+  // parentMenu is optional: pass the currently visible menu to open contextMenu as a cascading
+  // submenu. The parent then stays up beside it, and both close together.
+  root.showContextMenu = function (contextMenu, parentMenu) {
+    if (parentMenu && parentMenu === root.visible_context_menu) {
+      // the click that chose the parent's item is still bubbling to document.onclick, which would
+      // close the new menu right away; clear it (the timeout below puts it back)
+      document.onclick = null;
+      root.visible_context_menu_parent = parentMenu;
+    } else if (root.visible_context_menu) {
+      // if there is another context menu open, close it
       root.hideContextMenu(root.visible_context_menu);
     }
 
@@ -234,13 +249,34 @@ function GrooveUtils() {
         document.documentElement.clientHeight - contextMenu.clientHeight + 'px';
     }
 
-    // use a timeout to setup the onClick handler.
-    // otherwise the click that opened the menu will close it
-    // right away.  :(
+    armDocumentClickToCloseContextMenu();
+  };
+
+  // use a timeout to setup the onClick handler.
+  // otherwise the click that opened the menu will close it
+  // right away.  :(
+  function armDocumentClickToCloseContextMenu() {
     setTimeout(function () {
       document.onclick = root.documentOnClickHanderCloseContextMenu;
       document.body.style.cursor = 'pointer'; // make document.onclick work on iPad
     }, 100);
+  }
+
+  // Close just the cascaded submenu, leaving the menu it cascaded from open (and now the one a
+  // click outside will close). Returns false if there was no cascaded submenu to close.
+  root.hideCascadedContextMenu = function () {
+    var parentMenu = root.visible_context_menu_parent;
+    if (!parentMenu || !root.visible_context_menu) return false;
+
+    root.visible_context_menu.style.display = 'none';
+    root.visible_context_menu = parentMenu;
+    root.visible_context_menu_parent = false;
+
+    // the click that got us here is still bubbling to document.onclick, which would close the
+    // parent too; clear it (re-armed below)
+    document.onclick = null;
+    armDocumentClickToCloseContextMenu();
+    return true;
   };
 
   root.hideContextMenu = function (contextMenu) {
@@ -249,6 +285,10 @@ function GrooveUtils() {
 
     if (contextMenu) {
       contextMenu.style.display = 'none';
+    }
+    if (root.visible_context_menu_parent) {
+      root.visible_context_menu_parent.style.display = 'none';
+      root.visible_context_menu_parent = false;
     }
     root.visible_context_menu = false;
   };
@@ -1165,6 +1205,17 @@ function GrooveUtils() {
       instruments: ['gunshot'],
       callback: function () {
         MIDI.programChange(9, 127); // use "Gunshot" instrument because I don't know how to create new ones
+        // iOS: keep a silent media track playing so Web Audio uses the media channel
+        // (audible with the silent switch on) and auto-resume the context on interaction.
+        // No-op if unmute.js isn't loaded or there's no Web Audio context (audiotag fallback).
+        if (
+          typeof unmute === 'function' &&
+          MIDI.Player &&
+          MIDI.Player.ctx &&
+          !MIDI.Player.unmuteController
+        ) {
+          MIDI.Player.unmuteController = unmute(MIDI.Player.ctx);
+        }
         root.midiEventCallbacks.midiInitialized(root.midiEventCallbacks.classRoot);
       },
     });

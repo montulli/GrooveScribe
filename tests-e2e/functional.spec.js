@@ -1,6 +1,13 @@
 import { test, expect } from './fixtures.js';
 import { grooveUrl } from './corpus.js';
-import { loadGroove, getSvg, grooveData } from './helpers.js';
+import {
+  loadGroove,
+  getSvg,
+  grooveData,
+  openGroup,
+  chooseFromGroup,
+  openGrooveSetup,
+} from './helpers.js';
 
 // Functional end-to-end flows: drive the real UI and assert observable results.
 // These cover the wiring the jsdom unit tests can only approximate — real clicks,
@@ -25,37 +32,63 @@ test.describe('grid editing', () => {
     expect(await getSvg(page)).toContain('<svg');
   });
 
-  test('clearAllNotes empties the grid', async ({ page }) => {
+  test('Edit > Clear all empties the grid', async ({ page }) => {
     await page.click('#hi-hat0');
     await page.click('#snare4');
     expect((await grooveData(page)).hhOn).toBeGreaterThan(0);
-    await page.evaluate(() => window.myGrooveWriter.clearAllNotes());
+    await chooseFromGroup(page, 'editAnchor', 'clearAllNotesButton');
     const gd = await grooveData(page);
     expect(gd.hhOn).toBe(0);
     expect(gd.snareOn).toBe(0);
   });
 
-  test('undo reverts an edit and redo re-applies it', async ({ page }) => {
+  test('Edit > Undo reverts an edit and Edit > Redo re-applies it', async ({ page }) => {
     await page.click('#hi-hat0');
     expect((await grooveData(page)).hhOn).toBe(1);
-    // force: the undo button is visually overlapped by the division-button
-    // container at this viewport; we still want to fire its click handler.
-    await page.click('#undoButton', { force: true });
+    await chooseFromGroup(page, 'editAnchor', 'undoButton');
     expect((await grooveData(page)).hhOn).toBe(0);
-    await page.evaluate(() => window.myGrooveWriter.redoCommand());
+    await chooseFromGroup(page, 'editAnchor', 'redoButton');
+    expect((await grooveData(page)).hhOn).toBe(1);
+  });
+
+  test('Ctrl-Z and Ctrl-Y undo and redo', async ({ page }) => {
+    await page.click('#hi-hat0');
+    expect((await grooveData(page)).hhOn).toBe(1);
+    await page.keyboard.press('Control+z');
+    expect((await grooveData(page)).hhOn).toBe(0);
+    await page.keyboard.press('Control+y');
     expect((await grooveData(page)).hhOn).toBe(1);
   });
 });
 
 test.describe('division & structure', () => {
-  test('changing the subdivision updates notes-per-measure', async ({ page }) => {
+  test('changing the subdivision in Groove Setup updates notes-per-measure', async ({ page }) => {
     expect((await grooveData(page)).notesPerMeasure).toBe(16);
-    await page.click('#subdivision_8ths');
+
+    await openGrooveSetup(page);
+    await page.selectOption('#subdivisionSelect', '8');
+    await page.click('#grooveSetupModalDone');
     expect((await grooveData(page)).notesPerMeasure).toBe(8);
-    await page.click('#subdivision_12ths');
+
+    await openGrooveSetup(page);
+    await page.selectOption('#subdivisionSelect', '12');
+    await page.click('#grooveSetupModalDone');
     const gd = await grooveData(page);
     expect(gd.notesPerMeasure).toBe(12);
     expect(gd.timeDivision).toBe(12);
+  });
+
+  test('changing the time signature in Groove Setup applies on Done', async ({ page }) => {
+    await openGrooveSetup(page);
+    await page.selectOption('#timeSigPopupTimeSigTop', '3');
+    // staged only: nothing has changed yet
+    expect(Number((await grooveData(page)).numBeats)).toBe(4);
+    await page.click('#grooveSetupModalDone');
+    const gd = await grooveData(page);
+    // (the time signature comes from the dropdowns as strings)
+    expect(Number(gd.numBeats)).toBe(3);
+    expect(Number(gd.noteValue)).toBe(4);
+    await expect(page.locator('#timeSigLabel')).toHaveText('3/4');
   });
 
   test('adding and removing a measure changes the measure count', async ({ page }) => {
@@ -66,9 +99,9 @@ test.describe('division & structure', () => {
     expect((await grooveData(page)).numberOfMeasures).toBe(1);
   });
 
-  test('toggling toms flips showToms and keeps the sheet rendering', async ({ page }) => {
+  test('Display > Show toms flips showToms and keeps the sheet rendering', async ({ page }) => {
     const before = (await grooveData(page)).showToms;
-    await page.click('#showHideTomsButton');
+    await chooseFromGroup(page, 'displayAnchor', 'showHideTomsButton');
     expect((await grooveData(page)).showToms).toBe(!before);
     expect(await getSvg(page)).toContain('<svg');
   });
@@ -76,17 +109,17 @@ test.describe('division & structure', () => {
 
 test.describe('menus & popups', () => {
   test('grooves menu opens', async ({ page }) => {
-    await page.click('#groovesAnchor');
+    await openGroup(page, 'groovesAnchor');
     await expect(page.locator('#grooveListWrapper')).toBeVisible();
   });
 
   test('help menu opens', async ({ page }) => {
-    await page.click('#helpAnchor');
+    await openGroup(page, 'helpAnchor');
     await expect(page.locator('#helpContextMenu')).toBeVisible();
   });
 
-  test('share-URL popup shows the current groove URL', async ({ page }) => {
-    await page.evaluate(() => window.myGrooveWriter.show_FullURLPopup());
+  test('Share & Export > Share link shows the current groove URL', async ({ page }) => {
+    await chooseFromGroup(page, 'shareExportAnchor', 'shareSaveButton');
     await expect(page.locator('#fullURLPopup')).toBeVisible();
     const shared = await page.inputValue('#fullURLPopupTextField');
     expect(shared).toContain('TimeSig=4/4');
@@ -110,10 +143,17 @@ test.describe('playback', () => {
 });
 
 test.describe('export', () => {
-  test('the ABC source is generated and the download menu opens', async ({ page }) => {
+  test('the ABC source is generated and the Share & Export menu lists the exports', async ({
+    page,
+  }) => {
     const abc = await page.inputValue('#ABCsource');
     expect(abc).toContain('X:');
-    await page.click('#downloadButton');
-    await expect(page.locator('#downloadContextMenu')).toBeVisible();
+    await openGroup(page, 'shareExportAnchor');
+    await expect(page.locator('#shareExportContextMenu')).toBeVisible();
+    for (const id of ['#shareSaveButton', '#printButton', '#downloadSVGButton']) {
+      await expect(page.locator(id)).toBeVisible();
+    }
+    await expect(page.locator('#downloadPNGButton')).toBeVisible();
+    await expect(page.locator('#downloadMIDIButton')).toBeVisible();
   });
 });

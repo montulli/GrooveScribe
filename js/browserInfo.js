@@ -61,3 +61,20 @@ export function is_touch_device() {
     /** @type {any} */ (navigator).msMaxTouchPoints > 0
   );
 }
+
+// Is this a phone (as opposed to a desktop, laptop or tablet)? Used to start with Advanced Edit on.
+// A phone is a touch device that either says so in its user agent (iPhone / iPod / Android
+// "Mobile" / Windows Phone -- Android tablets and iPads omit those) or has a phone-sized screen.
+export function is_mobile_phone() {
+  if (!is_touch_device()) return false;
+
+  var ua = navigator.userAgent || '';
+  if (/iPhone|iPod|Android.*Mobile|Windows Phone|IEMobile|BlackBerry|Opera Mini/i.test(ua)) {
+    return true;
+  }
+
+  // everything else, e.g. a phone asking for the desktop site: judge by the physical screen size
+  // (min of both sides, so rotating the phone does not change the answer)
+  var shortSide = Math.min(window.screen.width, window.screen.height);
+  return shortSide > 0 && shortSide < 500;
+}

@@ -655,20 +655,6 @@ function GrooveWriter() {
     }
   }
 
-  function getTagPosition(tag) {
-    var xVal = 0,
-      yVal = 0;
-    while (tag) {
-      xVal += tag.offsetLeft - tag.scrollLeft + tag.clientLeft;
-      yVal += tag.offsetTop - tag.scrollTop + tag.clientTop;
-      tag = tag.offsetParent;
-    }
-    return {
-      x: xVal,
-      y: yVal,
-    };
-  }
-
   // called every time the tempo changes, which can be a lot of times due to the range slider
   // update the main URL with the tempo, but only do it every third of a second at the most
   var global_tempoChangeCallbackTimeout = null;
@@ -741,28 +727,57 @@ function GrooveWriter() {
       var anchorPoint = document.getElementById('metronomeOptionsAnchor');
 
       if (anchorPoint) {
-        var anchorPos = getTagPosition(anchorPoint);
-        contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + 'px';
-        contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + 'px';
+        var anchorRect = anchorPoint.getBoundingClientRect();
+        contextMenu.style.top = anchorRect.bottom + 'px';
+        contextMenu.style.left =
+          Math.max(4, anchorRect.right - measureContextMenuWidth(contextMenu)) + 'px';
       }
 
       root.myGrooveUtils.showContextMenu(contextMenu);
     }
   };
 
+  // a popup is display:none until shown, so briefly show it (invisibly) to read its real width
+  function measureContextMenuWidth(contextMenu) {
+    contextMenu.style.visibility = 'hidden';
+    contextMenu.style.display = 'block';
+    var width = contextMenu.offsetWidth;
+    contextMenu.style.display = '';
+    contextMenu.style.visibility = '';
+    return width;
+  }
+
+  // These items are cascading submenus of the hamburger menu: the popup opens beside the open
+  // menu panel, level with the item that was chosen. (The popups are position: fixed, so this
+  // uses viewport coordinates.) Falls back to dropping down from the item when the item is not
+  // inside an open hamburger menu.
+  function positionMenuBesideItem(contextMenu, itemId) {
+    var item = document.getElementById(itemId);
+    var panel = document.getElementById('hamburgerMenu');
+    if (!item) return;
+
+    var itemRect = item.getBoundingClientRect();
+    if (panel && panel.classList.contains('open')) {
+      var menuWidth = measureContextMenuWidth(contextMenu);
+
+      contextMenu.style.top = itemRect.top + 'px';
+      contextMenu.style.left = Math.max(4, panel.getBoundingClientRect().left - menuWidth) + 'px';
+    } else {
+      contextMenu.style.top = itemRect.bottom + 'px';
+      contextMenu.style.left = itemRect.right - 150 + 'px';
+    }
+  }
+
   // the user has clicked on the permutation menu
   root.permutationAnchorClick = function (event) {
-    if (class_num_beats_per_measure != 4 || class_note_value_per_measure != 4) return; // permutations disabled except in 4/4 time
-
-    var contextMenu = document.getElementById('permutationContextMenu');
+    // permutations are disabled except in 4/4 time: the submenu then just says so
+    var permutationsAvailable =
+      class_num_beats_per_measure == 4 && class_note_value_per_measure == 4;
+    var contextMenu = document.getElementById(
+      permutationsAvailable ? 'permutationContextMenu' : 'permutationDisabledContextMenu'
+    );
     if (contextMenu) {
-      var anchorPoint = document.getElementById('permutationAnchor');
-
-      if (anchorPoint) {
-        var anchorPos = getTagPosition(anchorPoint);
-        contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + 'px';
-        contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + 'px';
-      }
+      positionMenuBesideItem(contextMenu, 'permutationAnchor');
       root.myGrooveUtils.showContextMenu(contextMenu);
     }
   };
@@ -771,13 +786,7 @@ function GrooveWriter() {
   root.groovesAnchorClick = function (event) {
     var contextMenu = document.getElementById('grooveListWrapper');
     if (contextMenu) {
-      var anchorPoint = document.getElementById('groovesAnchor');
-
-      if (anchorPoint) {
-        var anchorPos = getTagPosition(anchorPoint);
-        contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + 'px';
-        contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 283 + 'px';
-      }
+      positionMenuBesideItem(contextMenu, 'groovesAnchor');
       root.myGrooveUtils.showContextMenu(contextMenu);
     }
   };
@@ -786,47 +795,17 @@ function GrooveWriter() {
   root.helpAnchorClick = function (event) {
     var contextMenu = document.getElementById('helpContextMenu');
     if (contextMenu) {
-      var anchorPoint = document.getElementById('helpAnchor');
-
-      if (anchorPoint) {
-        var anchorPos = getTagPosition(anchorPoint);
-        contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + 'px';
-        contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + 'px';
-      }
+      positionMenuBesideItem(contextMenu, 'helpAnchor');
       root.myGrooveUtils.showContextMenu(contextMenu);
     }
   };
 
-  // the user has clicked on the stickings menu (at bottom)
-  root.stickingsAnchorClick = function (event) {
-    var contextMenu = document.getElementById('stickingsContextMenu');
+  // the user has clicked on one of the hamburger menu's groups (Edit, Display, Share & Export):
+  // open its submenu beside the panel, level with the item
+  root.menuGroupClick = function (menuId, itemId) {
+    var contextMenu = document.getElementById(menuId);
     if (contextMenu) {
-      var anchorPoint = document.getElementById('stickingsButton');
-
-      if (anchorPoint) {
-        if (!event) event = window.event;
-        if (event.clientX || event.clientY) {
-          contextMenu.style.top = event.clientY - 100 + 'px';
-          contextMenu.style.left = event.clientX - 150 + 'px';
-        }
-      }
-      root.myGrooveUtils.showContextMenu(contextMenu);
-    }
-  };
-
-  // the user has clicked on the download menu (at bottom)
-  root.DownloadAnchorClick = function (event) {
-    var contextMenu = document.getElementById('downloadContextMenu');
-    if (contextMenu) {
-      var anchorPoint = document.getElementById('downloadButton');
-
-      if (anchorPoint) {
-        if (!event) event = window.event;
-        if (event.clientX || event.clientY) {
-          contextMenu.style.top = event.clientY - 150 + 'px';
-          contextMenu.style.left = event.clientX - 150 + 'px';
-        }
-      }
+      positionMenuBesideItem(contextMenu, itemId);
       root.myGrooveUtils.showContextMenu(contextMenu);
     }
   };
@@ -836,6 +815,7 @@ function GrooveWriter() {
     if (
       root.myGrooveUtils.getMetronomeSolo() ||
       class_metronome_auto_speed_up_active ||
+      class_metronome_count_in_active ||
       root.myGrooveUtils.getMetronomeOffsetClickStart() != '1'
     ) {
       // make menu look active
@@ -890,7 +870,6 @@ function GrooveWriter() {
             'menuChecked',
             false
           );
-          root.myGrooveUtils.setMetronomeCountIn(false);
         } else {
           class_metronome_count_in_active = true;
           addOrRemoveKeywordFromClassById(
@@ -898,7 +877,6 @@ function GrooveWriter() {
             'menuChecked',
             true
           );
-          root.myGrooveUtils.setMetronomeCountIn(true);
         }
         break;
 
@@ -911,15 +889,37 @@ function GrooveWriter() {
             'metronomeOptionsOffsetClickForTripletsContextMenu'
           );
         else contextMenu = document.getElementById('metronomeOptionsOffsetClickContextMenu');
+        // choosing "Offset click" again while its submenu is up just closes the submenu
+        if (
+          contextMenu &&
+          contextMenu.style.display === 'block' &&
+          root.myGrooveUtils.hideCascadedContextMenu()
+        ) {
+          break;
+        }
         if (contextMenu) {
           var anchorPoint = document.getElementById('metronomeOptionsContextMenuOffTheOne');
+          var parentMenu = document.getElementById('metronomeOptionsContextMenu');
 
-          if (anchorPoint) {
-            var anchorPos = getTagPosition(anchorPoint);
-            contextMenu.style.top = anchorPos.y + anchorPoint.offsetHeight + 'px';
-            contextMenu.style.left = anchorPos.x + anchorPoint.offsetWidth - 150 + 'px';
+          if (anchorPoint && parentMenu) {
+            // cascade: the options menu stays up and the submenu opens beside it, level with the
+            // chosen item -- to its left, else to its right. If neither side has room (a phone)
+            // it goes directly below, so the options menu is never covered up.
+            var parentRect = parentMenu.getBoundingClientRect();
+            var childWidth = measureContextMenuWidth(contextMenu);
+
+            if (parentRect.left >= childWidth + 4) {
+              contextMenu.style.left = parentRect.left - childWidth + 'px';
+              contextMenu.style.top = anchorPoint.getBoundingClientRect().top + 'px';
+            } else if (parentRect.right + childWidth + 4 <= document.documentElement.clientWidth) {
+              contextMenu.style.left = parentRect.right + 'px';
+              contextMenu.style.top = anchorPoint.getBoundingClientRect().top + 'px';
+            } else {
+              contextMenu.style.left = Math.max(4, parentRect.left) + 'px';
+              contextMenu.style.top = parentRect.bottom + 'px';
+            }
           }
-          root.myGrooveUtils.showContextMenu(contextMenu);
+          root.myGrooveUtils.showContextMenu(contextMenu, parentMenu);
         }
         break;
 
@@ -1053,14 +1053,6 @@ function GrooveWriter() {
       case 'about':
         win = window.open('./gscribe_about.html', '_blank');
         win.focus();
-        break;
-
-      case 'undo':
-        root.undoCommand();
-        break;
-
-      case 'redo':
-        root.redoCommand();
         break;
 
       default:
@@ -1392,11 +1384,11 @@ function GrooveWriter() {
   // --- Permutation engine (extracted to permutations.js) ---------------------
   // Thin wrappers preserving the original in-file API: they inject the current
   // usingTriplets() flag and delegate to the pure module functions.
-  function get_permutation_pre_ABC(section) {
-    return _perm.get_permutation_pre_ABC(section);
+  function get_permutation_pre_ABC(section, showTitle) {
+    return _perm.get_permutation_pre_ABC(section, showTitle);
   }
-  function get_permutation_post_ABC(section) {
-    return _perm.get_permutation_post_ABC(section, usingTriplets());
+  function get_permutation_post_ABC(section, isLast) {
+    return _perm.get_permutation_post_ABC(section, usingTriplets(), isLast);
   }
   function get_kick16th_permutation_array(section) {
     return _perm.get_kick16th_permutation_array(section, usingTriplets());
@@ -2214,9 +2206,10 @@ function GrooveWriter() {
             Kick_Array = _perm.filter_kick_array_for_permutation(Kick_Array);
             new_kick_array = _perm.merge_kick_arrays(new_kick_array, Kick_Array);
 
-            post_abc = get_permutation_post_ABC(i);
+            var flags = _perm.get_permutation_display_flags(i, shouldDisplayPermutationForSection);
+            post_abc = get_permutation_post_ABC(i, flags.isLast);
 
-            fullABC += get_permutation_pre_ABC(i);
+            fullABC += get_permutation_pre_ABC(i, flags.showTitle);
             fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(
               Sticking_Array,
               HH_Array,
@@ -2276,9 +2269,10 @@ function GrooveWriter() {
               new_snare_array = get_snare_accent_permutation_array(i);
             else new_snare_array = get_snare_permutation_array(i);
 
-            post_abc = get_permutation_post_ABC(i);
+            flags = _perm.get_permutation_display_flags(i, shouldDisplayPermutationForSection);
+            post_abc = get_permutation_post_ABC(i, flags.isLast);
 
-            fullABC += get_permutation_pre_ABC(i);
+            fullABC += get_permutation_pre_ABC(i, flags.showTitle);
             fullABC += root.myGrooveUtils.create_ABC_from_snare_HH_kick_arrays(
               Sticking_Array,
               HH_Array,
@@ -2619,8 +2613,10 @@ function GrooveWriter() {
     return newStateIsOn;
   }
 
+  // returns true if the elements are now visible (false if hidden)
   function showHideCSS_ClassVisibility(className, force, showElseHide) {
     var myElements = document.querySelectorAll(className);
+    var nowVisible = force ? !!showElseHide : false;
     for (var i = 0; i < myElements.length; i++) {
       var stickings = myElements[i];
 
@@ -2631,8 +2627,10 @@ function GrooveWriter() {
         // no-force means to swap on each call
         if (stickings.style.visibility == 'visible') stickings.style.visibility = 'hidden';
         else stickings.style.visibility = 'visible';
+        nowVisible = stickings.style.visibility == 'visible';
       }
     }
+    return nowVisible;
   }
 
   // clear all the notes on all measures
@@ -2694,6 +2692,15 @@ function GrooveWriter() {
   };
 
   // if stickings are shown, hide them and vice versa
+  // Display > Show / Hide legend: flips the hidden #showLegend checkbox (the state the ABC builder
+  // reads), swaps the menu row's label, and redraws the music
+  root.toggleLegend = function () {
+    var checkbox = /** @type {HTMLInputElement} */ (document.getElementById('showLegend'));
+    checkbox.checked = !checkbox.checked;
+    addOrRemoveKeywordFromClassById('legendButton', 'ClickToHide', checkbox.checked);
+    root.refresh_ABC();
+  };
+
   root.stickingsShowHideToggle = function () {
     var stickingsAreCurrentlyShown = isStickingsVisible();
     root.stickingsShowHide(true, !stickingsAreCurrentlyShown, false);
@@ -2789,14 +2796,14 @@ function GrooveWriter() {
     if (root.myGrooveUtils.viewMode) {
       showHideCSS_ClassDisplay('.edit-block', true, true, 'block'); // show
 
-      if (view_edit_button) view_edit_button.innerHTML = 'Switch to VIEW mode';
+      if (view_edit_button) view_edit_button.innerHTML = 'View mode';
       root.myGrooveUtils.viewMode = false;
 
       if (!dontUpdateURL) root.updateCurrentURL();
     } else {
       showHideCSS_ClassDisplay('.edit-block', true, false, 'block'); // hide
 
-      if (view_edit_button) view_edit_button.innerHTML = 'Switch to EDIT mode';
+      if (view_edit_button) view_edit_button.innerHTML = 'Edit mode';
       root.myGrooveUtils.viewMode = true;
       if (!dontUpdateURL) root.updateCurrentURL();
     }
@@ -2815,7 +2822,7 @@ function GrooveWriter() {
       root.swapViewEditMode(true);
 
     // set the background and text color of the current subdivision
-    selectButton(document.getElementById('subdivision_' + class_notes_per_measure + 'ths'));
+    selectButton(document.getElementById('subdivision_' + class_time_division + 'ths'));
 
     // add html for the midi player
     root.myGrooveUtils.AddMidiPlayerToPage('midiPlayer', class_time_division);
@@ -2913,6 +2920,12 @@ function GrooveWriter() {
       setTimeout(function () {
         window.scrollTo(0, 1);
       }, 1000);
+    }
+
+    // On a phone, start with Advanced Edit on (tap a note for its menu, rather than a plain tap
+    // toggling it)
+    if (root.myGrooveUtils.is_mobile_phone() && !class_advancedEditIsOn) {
+      root.toggleAdvancedEdit();
     }
 
     // get updates when the tempo changes
@@ -3291,29 +3304,66 @@ function GrooveWriter() {
     return root.myGrooveUtils.getUrlStringFromGrooveData(myGrooveData, url_destination);
   }
 
+  // The settings are read straight from the dialog's inputs whenever a playback finishes, so
+  // Cancel needs to know what they were when the dialog opened.
+  var class_autoSpeedupSettingsOnOpen = null;
+  var autoSpeedupRangeIds = [
+    ['metronomeAutoSpeedupTempoIncreaseAmount', 'metronomeAutoSpeedupTempoIncreaseAmountOutput'],
+    [
+      'metronomeAutoSpeedupTempoIncreaseInterval',
+      'metronomeAutoSpeedupTempoIncreaseIntervalOutput',
+    ],
+  ];
+
+  function syncAutoSpeedupOutputLabels() {
+    autoSpeedupRangeIds.forEach(function (ids) {
+      var input = /** @type {HTMLInputElement | null} */ (document.getElementById(ids[0]));
+      var output = document.getElementById(ids[1]);
+      if (input && output) output.innerHTML = input.value;
+    });
+  }
+
   root.show_MetronomeAutoSpeedupConfiguration = function () {
     var popup = document.getElementById('metronomeAutoSpeedupConfiguration');
 
+    // remember the settings so Cancel can put them back
+    class_autoSpeedupSettingsOnOpen = {};
+    autoSpeedupRangeIds.concat([['metronomeAutoSpeedUpKeepGoingForever']]).forEach(function (ids) {
+      var input = /** @type {HTMLInputElement | null} */ (document.getElementById(ids[0]));
+      if (input) {
+        class_autoSpeedupSettingsOnOpen[ids[0]] =
+          input.type == 'checkbox' ? input.checked : input.value;
+      }
+    });
+
     if (popup) {
-      popup.style.display = 'block';
+      popup.classList.add('open');
     }
 
-    document.getElementById('metronomeAutoSpeedupTempoIncreaseAmountOutput').innerHTML =
-      document.getElementById('metronomeAutoSpeedupTempoIncreaseAmount').value;
-    document.getElementById('metronomeAutoSpeedupTempoIncreaseIntervalOutput').innerHTML =
-      document.getElementById('metronomeAutoSpeedupTempoIncreaseInterval').value;
+    syncAutoSpeedupOutputLabels();
   };
 
+  // type 'ok' keeps the settings. type 'cancel' puts the settings back the way they were and turns
+  // Auto speed up off again: the dialog only opens when it is being turned on.
   root.close_MetronomeAutoSpeedupConfiguration = function (type) {
     var popup = document.getElementById('metronomeAutoSpeedupConfiguration');
 
-    if (popup) popup.style.display = 'none';
-  };
+    if (popup) popup.classList.remove('open');
 
-  root.timeSigPopupOpen = function (type) {
-    var popup = document.getElementById('timeSigPopup');
+    if (type == 'cancel') {
+      var saved = class_autoSpeedupSettingsOnOpen || {};
+      Object.keys(saved).forEach(function (id) {
+        var input = /** @type {HTMLInputElement | null} */ (document.getElementById(id));
+        if (!input) return;
+        if (input.type == 'checkbox') input.checked = saved[id];
+        else input.value = saved[id];
+      });
+      syncAutoSpeedupOutputLabels();
 
-    if (popup) popup.style.display = 'block';
+      class_metronome_auto_speed_up_active = false;
+      addOrRemoveKeywordFromClassById('metronomeOptionsContextMenuSpeedUp', 'menuChecked', false);
+      root.metronomeOptionsMenuSetSelectedState();
+    }
   };
 
   // turns on or off triplet 1/4 and 1/8 note selection based on the current time sig setting
@@ -3351,34 +3401,44 @@ function GrooveWriter() {
       '</sub>';
   };
 
-  root.timeSigPopupClose = function (type, callback) {
-    var popup = document.getElementById('timeSigPopup');
+  // Is this subdivision usable in this time signature? (Mirrors the two guards in changeDivision,
+  // which alert and bail out; this is for callers that want to decide quietly.)
+  root.divisionFitsTimeSignature = function (division, timeSigTop, timeSigBottom) {
+    if (((division * timeSigTop) / timeSigBottom) % 1 != 0) return false; // e.g. 1/8 notes in 9/16
+    if (root.myGrooveUtils.isTripletDivision(division) && timeSigBottom != 4) return false;
+    return true;
+  };
+  var divisionFitsTimeSignature = root.divisionFitsTimeSignature;
 
-    if (popup) popup.style.display = 'none';
+  // Apply the time signature chosen in the Groove Setup dialog's two dropdowns, and optionally a
+  // new subdivision at the same time, in a single relayout (so one Undo reverts the whole Done).
+  // A requested subdivision that does not fit the new time signature is ignored; if the current
+  // one no longer fits (triplets outside x/4), 1/16 notes are used. callback, if given, runs after.
+  root.applyTimeSignature = function (newDivision, callback) {
+    var newTimeSigTop = document.getElementById('timeSigPopupTimeSigTop').value;
+    var newTimeSigBottom = document.getElementById('timeSigPopupTimeSigBottom').value;
 
-    // ignore type "cancel"
-    if (type == 'ok') {
-      var newTimeSigTop = document.getElementById('timeSigPopupTimeSigTop').value;
-      var newTimeSigBottom = document.getElementById('timeSigPopupTimeSigBottom').value;
-
-      if (usingTriplets() && newTimeSigBottom != 4) {
-        root.changeDivision(16); // switch to a non triplet division since they are not supported in this time signature
-      }
-
-      class_num_beats_per_measure = newTimeSigTop;
-      class_note_value_per_measure = newTimeSigBottom;
-      var new_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure(
-        class_time_division,
-        class_num_beats_per_measure,
-        class_note_value_per_measure
-      );
-      // If new_notes_per_measure is greater it will cause the changeDivision code to error
-      // as it tries to read the notes from the UI.   Setting it lower will allow the code to truncate
-      // the groove properly to something smaller rather than interpolating the groove into something weird
-      if (new_notes_per_measure < class_notes_per_measure)
-        class_notes_per_measure = new_notes_per_measure;
-      root.changeDivision(class_time_division); // use this function because it will relayout everything
+    var division = class_time_division;
+    if (newDivision && divisionFitsTimeSignature(newDivision, newTimeSigTop, newTimeSigBottom)) {
+      division = newDivision;
+    } else if (!divisionFitsTimeSignature(division, newTimeSigTop, newTimeSigBottom)) {
+      division = 16; // triplets are not supported outside x/4 time
     }
+
+    class_num_beats_per_measure = newTimeSigTop;
+    class_note_value_per_measure = newTimeSigBottom;
+    var new_notes_per_measure = root.myGrooveUtils.calc_notes_per_measure(
+      division,
+      class_num_beats_per_measure,
+      class_note_value_per_measure
+    );
+    // If new_notes_per_measure is greater it will cause the changeDivision code to error
+    // as it tries to read the notes from the UI.   Setting it lower will allow the code to truncate
+    // the groove properly to something smaller rather than interpolating the groove into something weird
+    if (new_notes_per_measure < class_notes_per_measure)
+      class_notes_per_measure = new_notes_per_measure;
+    root.changeDivision(division); // use this function because it will relayout everything
+
     if (callback) {
       callback();
     }
