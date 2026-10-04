@@ -1,5 +1,5 @@
 // Top-bar hamburger menu and its dialogs (Groove Setup, Auto Speed Up). All the markup lives in
-// index.html and the layout in css/groove_writer_nav.css; this file only wires open/close
+// index.html and the layout in css/nav.css; this file only wires open/close
 // behavior and mirrors GrooveWriter state into the Groove Setup dialog.
 //
 // groove_writer.js still tracks the current subdivision as a `buttonSelected` class on the

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html unused_manifest="gscribe.manifest">
+<html lang="en">
 	<!-- HTML for the Groove Writer part of the Groove Scribe HTML application -->
 	<!--Copyright 2015-2020 Lou Montulli, Mike Johnston  GPL V2.0 Please See LICENSE.txt for more details -->
 
@@ -24,9 +24,10 @@
 
 		<link rel="stylesheet" type="text/css" href="../font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="../css/share-button.min.css">
-	    <link rel="stylesheet" type="text/css" href="../css/groove_writer_orange.css">
-		<link rel="stylesheet" type="text/css" href="../css/groove_display_orange.css">
-		<link rel="stylesheet" type="text/css" href="../css/groove_writer_nav.css">
+		<link rel="stylesheet" type="text/css" href="../css/theme.css">
+	    <link rel="stylesheet" type="text/css" href="../css/editor.css">
+		<link rel="stylesheet" type="text/css" href="../css/player.css">
+		<link rel="stylesheet" type="text/css" href="../css/nav.css">
 		<link href='https://fonts.googleapis.com/css?family=Lato:400,700,300' rel='stylesheet' type='text/css'>
 
 		<!--   Other peoples JS libraries    -->
@@ -174,7 +175,7 @@
 
 		<!-- context menu that will pop up over notes in advaced edit mode or right click -->
 		<div class="noteContextMenu">
-			<ul id="metronomeOptionsContextMenu" class="list">
+			<ul id="metronomeOptionsContextMenu" class="list navMenu">
 				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuSolo"      onclick='myGrooveWriter.metronomeOptionsMenuPopupClick("Solo");'  title="Just hear the metronome." >Metronome only</li>
 				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuSpeedUp"   onclick='myGrooveWriter.metronomeOptionsMenuPopupClick("SpeedUp");' title="Increase the tempo automatically" >Auto speed up</li>
 				<li class="metronomeOptionsContextMenuItem" id="metronomeOptionsContextMenuCountIn"   onclick='myGrooveWriter.metronomeOptionsMenuPopupClick("CountIn");' title="One measure of metronome count in at the start" >Count it in</li>
@@ -185,7 +186,7 @@
 			</ul>
 		</div>
 		<div class="noteContextMenu">
-			<ul id="metronomeOptionsOffsetClickContextMenu" class="list">
+			<ul id="metronomeOptionsOffsetClickContextMenu" class="list navMenu">
 				<li class="metronomeOptionsOffsetClickContextMenuItem menuChecked" id="metronomeOptionsOffsetClickContextMenuOnThe1"   onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("1");'>Start on "<b>1</b>"</li>
 				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheE"   onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("E");'>Start on "<b>E</b>"</li>
 				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheAND" onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("AND");'>Start on "<b>&amp;</b>"</li>
@@ -194,7 +195,7 @@
 			</ul>
 		</div>
 		<div class="noteContextMenu">
-			<ul id="metronomeOptionsOffsetClickForTripletsContextMenu" class="list">
+			<ul id="metronomeOptionsOffsetClickForTripletsContextMenu" class="list navMenu">
 				<li class="metronomeOptionsOffsetClickContextMenuItem menuChecked" id="metronomeOptionsOffsetClickContextMenuOnThe1Triplet"  onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("1");'>Start on "<b>1</b>"</li>
 				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheTI" onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("TI");'>Start on "<b>&amp;</b>"</li>
 				<li class="metronomeOptionsOffsetClickContextMenuItem" id="metronomeOptionsOffsetClickContextMenuOnTheTA" onclick='myGrooveWriter.metronomeOptionsMenuOffsetClickPopupClick("TA");'>Start on "<b>A</b>"</li>
@@ -314,25 +315,25 @@
 			</ul>
 		</div>
 		<div class="noteContextMenu">
-			<ul id="permutationContextMenu" class="list">
+			<ul id="permutationContextMenu" class="list navMenu">
 				<li onclick='myGrooveWriter.permutationPopupClick("none");'><b>None</b></li>
 				<li onclick='myGrooveWriter.permutationPopupClick("kick_16ths");'><b>Kick</b> Permutation</li>
 				<li onclick='myGrooveWriter.permutationPopupClick("snare_16ths");'><b>Snare</b> Permutation</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
-			<ul id="permutationDisabledContextMenu" class="list">
+			<ul id="permutationDisabledContextMenu" class="list navMenu">
 				<li class="menuInfo">Permutations disabled if not in 4/4 time</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
-			<ul id="helpContextMenu" class="list">
+			<ul id="helpContextMenu" class="list navMenu">
 				<li onclick='myGrooveWriter.helpMenuPopupClick("help");'>Help</li>
 				<li onclick='myGrooveWriter.helpMenuPopupClick("about");'>About</li>
 			</ul>
 		</div>
 		<div class="noteContextMenu">
-			<ul id="editContextMenu" class="list">
+			<ul id="editContextMenu" class="list navMenu">
 				<li id="undoButton" onclick="myGrooveWriter.undoCommand();">Undo <span class="menuHint">Ctrl-Z</span></li>
 				<li id="redoButton" onclick="myGrooveWriter.redoCommand();">Redo <span class="menuHint">Ctrl-Y</span></li>
 				<li id="clearAllNotesButton" onclick="event.preventDefault(); myGrooveWriter.clearAllNotes();">Clear all</li>
@@ -341,7 +342,7 @@
 			</ul>
 		</div>
 		<div class="noteContextMenu">
-			<ul id="displayContextMenu" class="list">
+			<ul id="displayContextMenu" class="list navMenu">
 				<li class="edit-block" id="showHideTomsButton" onclick="event.preventDefault(); myGrooveWriter.showHideToms(false, false);"><span class="stateShowLabel">Show toms</span><span class="stateHideLabel">Hide toms</span></li>
 				<li class="grooveDB_hidden" id="stickingsButton" onclick="myGrooveWriter.stickingsShowHideToggle();"><span class="stateShowLabel">Show stickings</span><span class="stateHideLabel">Hide stickings</span></li>
 				<!-- #showLegend is the (hidden) checkbox that holds the state; groove_writer.js reads it when it builds the ABC -->
@@ -350,7 +351,7 @@
 			</ul>
 		</div>
 		<div class="noteContextMenu">
-			<ul id="shareExportContextMenu" class="list">
+			<ul id="shareExportContextMenu" class="list navMenu">
 				<li id="shareSaveButton" onclick="event.preventDefault(); myGrooveWriter.show_FullURLPopup();">Share link</li>
 				<li id="printButton" onclick="myGrooveWriter.printMusic();">Print</li>
 				<li id="downloadSVGButton" onclick="myGrooveWriter.SVGSaveAs();">Download SVG images</li>
@@ -359,7 +360,7 @@
 			</ul>
 		</div>
 		<!-- The grooves menu is built by js/main.js (was document.write). -->
-		<div id="grooveListWrapper"></div>
+		<div id="grooveListWrapper" class="navMenu"></div>
 
 		<!-- "Groove setup" dialog (opened from the hamburger menu), hidden by default: title, author, comment,
 		     time signature and subdivision. Choices are staged and only applied by Done (Cancel discards

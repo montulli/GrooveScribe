@@ -1,13 +1,8 @@
-/* this is for debugging layout issues - puts a red border around everything */
-/* body * { border: 1px solid red; }		 */
-DEBUG {
-  border: 1px solid red;
-}
 body {
   /* Use GrooveWriter instead of body for easy embedding */
   margin: 0px;
   height: 100vh;
-  background-color: #393939;
+  background-color: var(--gray-22);
 }
 #GrooveWriter {
   /* tag surrounds entire app */
@@ -18,12 +13,10 @@ body {
 		 * Usually set the height to 100vh - (the height of the top nav)
 		 */
   position: relative;
-  background-color: #393939;
-  //background-color: #ddd;
+  background-color: var(--gray-22);
   width: 100%;
   min-width: 320px;
   /* to embed, add your header height here.  Replace 0px with your header height */
-  //height: 100%;
   font:
     100%/normal 'Lato',
     Calibri,
@@ -32,47 +25,20 @@ body {
 .fullWidthEle {
   max-width: 1478px; /* 1550 - 72 */
 }
-.warnings {
-  font-family: monospace;
-  display: none;
-}
 
-.Printable {
-  display: block;
-}
-.nonPrintable {
-  display: block;
-}
-#TopNav {
-  position: fixed;
-  /position: relative;
-  #top: 111px;
-  top: 0px;
-  left: 0px;
-  z-index: 998;
-  width: 100%;
-  height: 48px; /* total 48 */
-  border-bottom: 1px solid #000;
-  background: var(--header-bg-color);
-  background: linear-gradient(to right, var(--header-bg-start-color), var(--header-bg-end-color));
-  display: block;
-}
 #midiPlayer {
-  /* more #midiPlayer css in groove_display.css */
-  background: #000;
+  /* more #midiPlayer css in player.css */
+  background: var(--black);
   width: 100%;
   height: 48px;
   position: fixed;
-  #top: 160px;
   top: 49px;
-  /position: relative;
   left: 0px;
   z-index: 999;
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid var(--black);
 }
 #RightHandContent {
   position: relative;
-  #top: 209px;
   top: 98px;
   left: 0px;
   height: calc(100% - 98px);
@@ -86,20 +52,7 @@ body {
 #logoTextUpperLeft img {
   height: 30px;
 }
-#upperLeft {
-  margin-top: 12px;
-  display: inline-block;
-  white-space: nowrap;
-  vertical-align: top;
-}
-#upperRight {
-  margin-top: 12px;
-  display: inline-block;
-  float: right;
-  margin-right: 10px;
-  white-space: nowrap;
-  vertical-align: top;
-}
+
 #metronomeContainer {
 }
 #metronomeLabel {
@@ -108,74 +61,50 @@ body {
   font-weight: 500;
   margin: 0px 5px 0px 10px;
   text-align: center;
-  color: #eef;
+  color: var(--white-blue);
 }
 .metronomeButton {
   padding: 2px;
   cursor: pointer;
   display: inline-block;
-  /background: #0071ad;
-  color: #eee;
-  border: 0px solid #00b;
+  color: var(--gray-93);
+  border: 0px solid var(--navy-bright);
   text-align: center;
   border-radius: 20px;
-  /width: 50px;
   margin: 0px 1px;
   height: 20px;
   transition: all 0.1s ease-in-out;
 }
 .metronomeButton:hover,
 .metronomeButton.selected:hover {
-  /color: #3b5166;
   font-weight: 700;
   transform: scale(1.05);
-}
-.metronomeButton.options {
-  width: 75px;
 }
 .metronomeButton.buttonSelected,
 .metronomeButton.selected {
   /* is a button and is selected */
-  color: #fff;
+  color: var(--white);
   font-weight: 700;
-  /background: #68c2ff;
 }
 .myButton:hover {
-  border-top-color: #28597a;
-  background: #555555;
-  color: #ccc;
+  border-top-color: var(--blue-dark);
+  background: var(--gray-33);
+  color: var(--gray-80);
   transform: scale(1.05);
 }
 .myButton:active {
-  border-top-color: #1b435e;
-  background: #1b435e;
-}
-.buttonText {
-}
-#NotationLine {
-  height: 35px;
-  text-align: center;
-  padding-top: 13px;
-  border-bottom: 1px solid #aaa;
-  background-color: #ddd;
-}
-#NotationLabel {
-  display: inline-block;
-  margin: auto;
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-  padding-left: 62px;
+  border-top-color: var(--blue-darker);
+  background: var(--blue-darker);
 }
 #hiddenDescription {
   display: none;
 }
 #musicalInput {
   width: 100%;
-  background: #fff;
+  background: var(--white);
   overflow-x: auto;
   overflow-y: hidden;
-  border-bottom: 1px solid #aaa;
+  border-bottom: 1px solid var(--gray-67);
   text-align: center;
   white-space: nowrap;
 }
@@ -195,21 +124,15 @@ body {
   margin-right: auto;
 }
 .staff-container {
-  /margin-left: 2px;
-  /margin-top: 2px;
   margin-right: -3px;
   margin-bottom: 0px;
   display: inline-block;
-  background: #ffffff;
+  background: var(--white);
   text-align: left;
   white-space: nowrap;
 }
 .notes-row-container {
   display: inline-block;
-}
-.heading1 {
-  font-size: 30px;
-  font-weight: bold;
 }
 .line-labels {
   display: inline-block;
@@ -221,8 +144,8 @@ body {
 .stickings-label {
   display: none;
   height: 25px;
-  background: #f7f1cf;
-  color: #000;
+  background: var(--cream);
+  color: var(--black);
   padding-top: 9px;
   padding-left: 1px;
   font-size: 12px;
@@ -277,7 +200,6 @@ body {
 }
 .music-line-container {
   display: inline-block;
-  /top: 30px;
   z-index: 3;
   display: table-cell;
 }
@@ -289,13 +211,12 @@ body {
 .stickings-container {
   display: none;
   height: 32px;
-  background: #f7f1cf;
+  background: var(--cream);
   border: 1px solid transparent;
   margin-top: 0px;
   white-space: nowrap;
   -moz-user-select: none;
   -webkit-user-select: none;
-  -ms-user-select: none;
 }
 .background-highlight-container {
   position: absolute;
@@ -309,7 +230,6 @@ body {
   border: 1px solid transparent;
   -moz-user-select: none;
   -webkit-user-select: none;
-  -ms-user-select: none;
 }
 #tom1-container {
   height: 28px;
@@ -317,7 +237,6 @@ body {
   border: 1px solid transparent;
   -moz-user-select: none;
   -webkit-user-select: none;
-  -ms-user-select: none;
   visibility: hidden;
 }
 .snare-container {
@@ -326,7 +245,6 @@ body {
   white-space: nowrap;
   -moz-user-select: none;
   -webkit-user-select: none;
-  -ms-user-select: none;
 }
 #tom4-container {
   height: 28px;
@@ -334,7 +252,6 @@ body {
   border: 1px solid transparent;
   -moz-user-select: none;
   -webkit-user-select: none;
-  -ms-user-select: none;
   visibility: hidden;
 }
 .kick-container {
@@ -343,42 +260,41 @@ body {
   white-space: nowrap;
   -moz-user-select: none;
   -webkit-user-select: none;
-  -ms-user-select: none;
 }
 .staff-line-1 {
   position: absolute;
   top: 42px;
   width: 100%;
   height: 0px;
-  border-top: 3px solid #cacaca;
+  border-top: 3px solid var(--gray-79);
 }
 .staff-line-2 {
   position: absolute;
   top: 72px;
   width: 100%;
   height: 0px;
-  border-top: 3px solid #cacaca;
+  border-top: 3px solid var(--gray-79);
 }
 .staff-line-3 {
   position: absolute;
   top: 103px;
   width: 100%;
   height: 0px;
-  border-top: 3px solid #cacaca;
+  border-top: 3px solid var(--gray-79);
 }
 .staff-line-4 {
   position: absolute;
   top: 132px;
   width: 100%;
   height: 0px;
-  border-top: 3px solid #cacaca;
+  border-top: 3px solid var(--gray-79);
 }
 .staff-line-5 {
   position: absolute;
   top: 163px;
   width: 100%;
   height: 0px;
-  border-top: 3px solid #cacaca;
+  border-top: 3px solid var(--gray-79);
 }
 .sticking {
   display: inline-block;
@@ -444,7 +360,7 @@ body {
   top: 0px;
   left: 6px;
   font-size: 24px;
-  color: #cccccc;
+  color: var(--gray-80);
   cursor: pointer;
 }
 .sticking_left {
@@ -452,7 +368,7 @@ body {
   top: 0px;
   left: 6px;
   font-size: 24px;
-  color: #cccccc;
+  color: var(--gray-80);
   cursor: pointer;
 }
 .sticking_both {
@@ -532,7 +448,7 @@ body {
   top: 15px;
   left: 5px;
   font-size: 24px;
-  color: #cccccc;
+  color: var(--gray-80);
   cursor: pointer;
 }
 .hh_open {
@@ -595,9 +511,9 @@ body {
   width: 90%;
   height: 20px;
   width: 20px;
-  background: #fff;
+  background: var(--white);
   border: 2px solid;
-  border-color: #999;
+  border-color: var(--gray-60);
   border-radius: 30px;
   cursor: pointer;
 }
@@ -624,9 +540,9 @@ body {
   line-height: 20px;
   height: 22px;
   width: 22px;
-  background: #fff;
+  background: var(--white);
   border: 2px solid;
-  border-color: #999;
+  border-color: var(--gray-60);
   border-radius: 30px;
   cursor: pointer;
 }
@@ -677,8 +593,8 @@ body {
   left: 2px;
   height: 22px;
   width: 22px;
-  background: #fff;
-  border: 2px solid #999;
+  background: var(--white);
+  border: 2px solid var(--gray-60);
   border-radius: 40px 40px 40px 40px;
   cursor: pointer;
 }
@@ -728,21 +644,13 @@ body {
 }
 .closeMeasureButton:hover,
 #addMeasureButton:hover {
-  color: #000;
-}
-#permutationAnchor {
-  color: #555;
-}
-#permutationAnchor.enabled {
-  color: #eee;
+  color: var(--black);
 }
 #PermutationOptions.displayed {
   padding: 3px 0px 0px 10px;
-  //margin-bottom: -20px;
-  background-color: #ddd;
+  background-color: var(--gray-87);
 }
 #PermutationOptionsHeader {
-  /margin-left: 22px;
   font-size: 18px;
   font-weight: bold;
 }
@@ -752,34 +660,19 @@ body {
 }
 .PermutationOptionGroup {
   display: table-row;
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid var(--gray-60);
 }
 .PermutationOptionGroup:last-child {
-  border-bottom: 0px solid #999;
+  border-bottom: 0px solid var(--gray-60);
 }
 .PermutationOption {
   height: 20px;
   display: table-cell;
   padding-right: 15px;
-  /border-top: 1px solid #999;
-  /border-bottom: 1px solid #999;
 }
 .PermutationSubOption {
   display: table-cell;
   padding-right: 15px;
-  /border-top: 1px solid #999;
-  /border-bottom: 1px solid #999;
-}
-#permutationType {
-  margin-top: 10px;
-}
-#noteInstructions {
-  font-size: 120%;
-  font-weight: bold;
-  margin-top: 14px;
-  margin-left: 25px;
-}
-#exportMidi {
 }
 #showHideABC {
   display: none;
@@ -788,13 +681,14 @@ body {
   display: none;
 }
 #sheetMusicDiv {
-  background: #fff;
-}
-.svgTarget {
-  background: #fff;
+  background: var(--white);
 }
 
-/* override the normal 100% width that is in groove_display for editing */
+.svgTarget {
+  background: var(--white);
+}
+
+/* override the normal 100% width that is in player.css for editing */
 #RightHandContent .svgTarget svg {
   margin-left: 5%;
   margin-right: 5%;
@@ -806,14 +700,6 @@ body {
 }
 /* Context Menu */
 .noteContextMenu {
-}
-#permutationContextMenu,
-#helpContextMenu,
-#metronomeOptionsContextMenu,
-#metronomeOptionsOffsetClickContextMenu {
-  position: fixed;
-  top: 0px;
-  right: 0px;
 }
 .metronomeOptionsContextMenuItem:before,
 .metronomeOptionsOffsetClickContextMenuItem:before {
@@ -836,95 +722,43 @@ body {
   margin: 0;
   padding: 0px;
   list-style: none;
-  background: #eeeeee;
-  color: #000;
-  border: 1px solid #393939;
+  background: var(--gray-93);
+  color: var(--black);
+  border: 1px solid var(--gray-22);
   list-style: none;
 }
 .noteContextMenu > ul.list li {
   padding: 10px;
-  border-bottom: solid 1px #393939;
+  border-bottom: solid 1px var(--gray-22);
   text-decoration: none;
 }
 .noteContextMenu > ul.list li:hover,
 ul.list a:hover {
-  background: #cccccc;
+  background: var(--gray-80);
 }
 .noteContextMenu > ul.list li:last-child {
   border: none;
 }
-#grooveListWrapper {
-  display: none;
-  position: fixed;
-  z-index: 999;
-  top: 0px;
-  right: 0px;
-  width: 300px;
-  height: 300px;
-  overflow: auto;
-  background: #eeeeee;
-  border: 1px solid #393939;
-}
-.grooveListUL {
-  margin: 0;
-  padding: 0px;
-  list-style: none;
-  background: #eeeeee;
-  color: #000;
-}
-.grooveListHeaderLI {
-  padding: 15px;
-  background: var(--highlight-color);
-  font-size: 18px;
-  font-weight: bold;
-}
-.grooveListLI {
-  padding: 10px;
-  padding-left: 15px;
-  border-bottom: solid 1px #393939;
-}
-.grooveListLI:hover {
-  background: #cccccc;
-}
-hr {
-  width: 795px;
-  margin-left: 0px;
-}
-
-#ABCSource {
-  font-family: monospace;
-  font-size: 14px;
-}
 #fullURLPopup {
-  /visibility: hidden;
   display: none;
   position: absolute;
   left: 300px;
   top: 250px;
   z-index: 999;
-  background-color: #fff;
+  background-color: var(--white);
   width: 400px;
   padding: 10px;
-  border: solid 2px #999;
+  border: solid 2px var(--gray-60);
   border-radius: 5px;
 }
-#timeSigPopupTimeSigTop,
-#timeSigPopupTimeSigBottom {
-  font-size: 24px;
-  font-weight: 500;
-  color: #666;
-  background-color: #eee;
-  vertical-align: top;
-  padding-left: 20px;
-  width: 80px;
-}
+
 #fullURLPopupCloseButton {
   font-size: 100%;
   float: right;
   cursor: pointer;
 }
 #fullURLPopupCloseButton:hover {
-  color: #444;
+  color: var(--gray-27);
 }
 #fullURLPopupTitle {
   font-size: 18px;
@@ -942,12 +776,10 @@ hr {
   text-align: center;
 }
 #fullURLPopupCheckboxes {
-  display: -webkit-flex;
   display: flex;
   width: 300px;
   margin: 10px auto;
   justify-content: space-around;
-  -webkit-justify-content: space-around;
 }
 .fullURLPopupCheckboxLabel {
   font-size: 12px;
@@ -962,7 +794,7 @@ hr {
 #fullURLPopupTextField {
   width: 350px;
   padding: 8px;
-  background: #ffe9b7;
+  background: var(--cream-orange);
   border: 0px;
   border-radius: 5px;
   text-align: center;
@@ -971,7 +803,7 @@ hr {
   font-size: 16px;
   font-family: Lato, sans-serif;
   font-weight: 700;
-  color: #000;
+  color: var(--black);
   border: 0px;
   border-radius: 5px;
   padding: 5px 10px;
@@ -986,22 +818,15 @@ hr {
 }
 .sharer-0 label {
   background: var(--highlight-color) !important;
-  color: #fff !important;
-}
-.centeringSpace {
-  /margin-right: 5%;
-  /margin-left: 5%;
-}
-button {
-  cursor: pointer;
+  color: var(--white) !important;
 }
 
 input[type='checkbox']:checked + label {
-  color: #000;
+  color: var(--black);
   cursor: pointer;
 }
 input[type='checkbox']:not(:checked) + label {
-  color: #888;
+  color: var(--gray-53);
   cursor: pointer;
 }
 #totalPlayTime {
@@ -1013,7 +838,7 @@ input[type='checkbox']:not(:checked) + label {
   color: var(--highlight-color);
 }
 .totalTimeNum {
-  color: #eee;
+  color: var(--gray-93);
 }
 .myCheckbox {
   display: none;
@@ -1038,7 +863,7 @@ input[type='checkbox']:not(:checked) + label {
 }
 @media print {
   /* keep at bottom so it overrides the styles above */
-  /* there is another definition in groove_display.css that adds more rules */
+  /* there is another definition in player.css that adds more rules */
   #GrooveWriter {
     min-width: 10px;
   }
@@ -1056,4 +881,9 @@ input[type='checkbox']:not(:checked) + label {
     margin: 0px 0px !important;
     width: 100% !important;
   }
+}
+
+#GrooveDB_MetaData,
+#debugDisplayArea {
+  background-color: var(--gray-87);
 }

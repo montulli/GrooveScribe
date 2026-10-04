@@ -11,5 +11,10 @@
     "js/share-button.min.js",
     "js/*.min.js"
   ],
-  "ignoreDependencies": ["@capacitor/core", "@capacitor/android", "@capacitor/ios"]
+  "ignoreDependencies": [
+    "@capacitor/core",
+    "@capacitor/android",
+    "@capacitor/ios",
+    "@capacitor/screen-orientation"
+  ]
 }

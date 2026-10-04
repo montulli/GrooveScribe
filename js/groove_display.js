@@ -111,8 +111,9 @@ if (typeof GrooveDisplay === 'undefined') {
 
     // stylesheet
     root.loadjscssfile('https://fonts.googleapis.com/css?family=Lato:400,700,300', 'css');
-    root.loadjscssfile('../font-awesome/4.3.0/css/font-awesome.min.css', 'css');
-    root.loadjscssfile('../css/groove_display.css', 'css');
+    root.loadjscssfile('../font-awesome/4.7.0/css/font-awesome.min.css', 'css');
+    root.loadjscssfile('../css/theme.css', 'css'); // the colours every stylesheet uses
+    root.loadjscssfile('../css/player.css', 'css');
 
     root.GrooveDisplayUniqueCounter = 1;
 

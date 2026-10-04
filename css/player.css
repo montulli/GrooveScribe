@@ -1,0 +1,404 @@
+/* The MIDI player (play / tempo / swing / time) and the sheet-music display. Used by the editor
+ * (index.html, where the player is the bar under the top bar, #midiPlayer) and by the embed pages
+ * (groove_display.js). Colours come from the --player-* variables in theme.css: light for embeds,
+ * dark inside #midiPlayer. The "editor" section at the end holds the few size and layout differences. */
+
+/* ---- sheet music ---- */
+.warnings {
+  font-family: monospace;
+  display: none;
+}
+.Printable {
+  display: block;
+}
+.nonPrintable {
+  display: block;
+}
+.svgTarget {
+  width: 100%;
+}
+.svgTarget svg {
+  width: 100%;
+  height: calc(100%); /* hack, should really be auto, but that causes old webkit to go nuts */
+}
+.abcr {
+  /* rectangles enclosing notes in ABC SVG */
+  fill: transparent;
+  fill-opactity: 0.25;
+}
+.abcr.highlighted {
+  fill: var(--note-highlight) !important;
+  fill-opacity: var(--note-highlight-opacity);
+}
+button {
+  cursor: pointer;
+}
+
+/* ---- the player ---- */
+.playerControl {
+  display: inline-block;
+  background-color: var(--player-bg);
+  width: 100%; /* expand to the surounding element */
+  font-family: 'Lato', sans-serif;
+  white-space: nowrap;
+  border-radius: 5px;
+}
+.playerControl.large {
+  display: block;
+  width: 100%;
+  min-width: 450px;
+  border: 1px solid var(--player-border);
+  padding-left: 0px;
+  margin: 0px 0px 0px 0px;
+}
+.playerControl.small {
+  width: 90px;
+  border: 1px solid var(--player-border);
+  padding-left: 0px;
+}
+.playerControlsRow {
+  display: flex;
+  padding-left: 6px;
+  flex-flow: flex-start;
+  flex-wrap: nowrap;
+}
+.playerControlsRow.large,
+.playerControlsRow.small {
+  padding-left: 0px;
+}
+.midiPlayImage,
+.midiRepeatImage,
+.midiGSLogo,
+.midiExpandImage {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  flex: none;
+  margin: 4px 0px 4px 0px;
+  border: 0px solid var(--black);
+  color: var(--player-icon);
+  font-size: 20px;
+  font-family: FontAwesome;
+  text-align: center;
+  line-height: 40px;
+  vertical-align: middle;
+  border-radius: 50%;
+}
+.midiPlayImage,
+.midiRepeatImage {
+  background: var(--player-button-bg);
+  color: var(--player-button-text);
+  margin: 4px 4px 4px 4px;
+}
+.midiPlayImage:hover,
+.midiRepeatImage:hover {
+  color: var(--white);
+  background: var(--player-button-bg-hover);
+}
+.midiExpandImage {
+  font-size: 26px;
+  transition: all 0.6s ease-in-out;
+}
+.midiExpandImage.small:hover {
+  color: var(--player-expand-hover);
+  transform: scale(1.4);
+}
+.midiExpandImage.large:hover {
+  color: var(--player-expand-hover);
+  transform: scale(0.8);
+}
+.midiPlayImage.Stopped::before,
+.midiPlayImage.Paused::before {
+  letter-spacing: -3px;
+  font-family: 'FontAwesome';
+  content: '\f04b';
+}
+.midiPlayImage.Playing::before {
+  font-family: 'FontAwesome';
+  content: '\f04c';
+}
+.midiExpandImage.small::before {
+  font-family: 'FontAwesome';
+  letter-spacing: -3px;
+  content: '\f065';
+}
+.midiExpandImage.large::before {
+  font-family: 'FontAwesome';
+  letter-spacing: -3px;
+  content: '\f066';
+}
+.midiGSLogo {
+  padding-top: 6px;
+  width: 20px;
+  height: 30px;
+}
+.midiMetronomeImage {
+  margin-top: 9px;
+  width: 30px;
+  height: 30px;
+}
+.midiMetronomeImage path {
+  fill: var(--player-icon);
+}
+.midiMetronomeImage:hover path {
+  fill: var(--player-icon);
+}
+.midiMetronomeMenu.selected .midiMetronomeImage path {
+  fill: var(--blue-cyan);
+}
+.tempoAndProgress {
+  padding-top: 2px;
+  width: 100%;
+  height: 46px;
+  flex: 1;
+}
+.tempoAndProgress.small,
+.midiGSLogo.small,
+.midiMetronomeMenu.small {
+  display: none;
+}
+.tempoRow,
+.swingRow {
+  display: flex;
+  height: 22px;
+  flex-flow: flex-start;
+  flex-wrap: nowrap;
+}
+.tempoTextField {
+  margin: 2px 6px 0 6px;
+  color: var(--player-label);
+  background-color: var(--player-bg);
+  border: none;
+  width: 30px;
+  text-align: center;
+  font-size: 16px;
+  padding: 0;
+  height: 18px;
+}
+.tempoInput,
+.swingInput {
+  background-color: none;
+  padding: 0px;
+  margin-top: 4px;
+  margin-right: 2%;
+  color: var(--player-label);
+  width: 90%;
+  flex: 1;
+}
+.tempoLabel,
+.swingLabel {
+  text-align: right;
+  padding-top: 0px;
+  font-size: 16px;
+  width: 60px;
+  color: var(--player-label);
+}
+.tempoOutput,
+.swingOutput {
+  display: inline-block;
+  text-align: left;
+  padding-top: 0px;
+  font-size: 16px;
+  color: var(--player-value);
+  padding-left: 8px;
+  width: 34px;
+  flex: none;
+}
+.MIDIPlayTime {
+  display: inline-block;
+  width: 100px;
+  color: var(--player-value);
+  font-size: 30px;
+  margin-left: 6px;
+  padding-top: 4px;
+  text-align: left;
+  line-height: 40px;
+  flex: none;
+}
+.MIDIPlayTime.small {
+  display: none;
+}
+
+/* ---- the sliders ---- */
+input[type='range'] {
+  -webkit-appearance: none;
+  width: 100%;
+  background-color: var(--player-slider-bg);
+}
+input[type='range']:before {
+  /* set this color for the runnable-track left of the thumb color */
+  color: var(--player-track-before);
+}
+input[type='range']:after {
+  /* set this color for the runnable-track right of the thumb color */
+  color: var(--player-track-after);
+}
+input[type='range']:focus {
+  outline: none;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8.4px;
+  cursor: pointer;
+  background: var(--player-track);
+  border-radius: 6px;
+  border: 0px solid var(--gray-00);
+}
+input[type='range']::-webkit-slider-thumb {
+  border: 1px solid var(--player-thumb-border);
+  height: 18px;
+  width: 18px;
+  border-radius: 20px;
+  background: var(--player-thumb);
+  cursor: pointer;
+  -webkit-appearance: none;
+  margin-top: -6px;
+}
+input[type='range']:focus::-webkit-slider-runnable-track {
+  background: var(--player-track-focus);
+}
+input[type='range']::-moz-range-track {
+  width: 100%;
+  height: 8.4px;
+  cursor: pointer;
+  background: var(--player-track);
+  border-radius: 6px;
+  border: 0px solid var(--gray-00);
+}
+input[type='range']::-moz-range-thumb {
+  border: 1px solid var(--player-thumb-border);
+  height: 18px;
+  width: 18px;
+  border-radius: 20px;
+  background: var(--player-thumb);
+  cursor: pointer;
+}
+input[type='range']:active::-moz-range-thumb {
+  background: var(--player-thumb-active);
+}
+input[type='range']:active::-webkit-slider-thumb {
+  background: var(--player-thumb-active);
+}
+
+/* ---- the editor's player bar (#midiPlayer): sizes and layout that differ from the embeds ---- */
+#midiPlayer .playerControl {
+  border-radius: 0;
+}
+#midiPlayer .playerControlsRow {
+  display: block;
+  height: 48px;
+}
+#midiPlayer .midiPlayImage,
+#midiPlayer .midiRepeatImage,
+#midiPlayer .midiExpandImage {
+  display: inline-block;
+  vertical-align: top;
+}
+#midiPlayer .midiPlayImage::before {
+  color: var(--red);
+  content: '\f05e';
+}
+#midiPlayer .midiPlayImage.Stopped::before,
+#midiPlayer .midiPlayImage.Paused::before {
+  color: var(--white);
+  content: '\f04b';
+}
+#midiPlayer .midiPlayImage.Playing::before {
+  color: var(--white);
+  content: '\f04c';
+}
+#midiPlayer .tempoAndProgress {
+  display: inline-block;
+  width: calc(100% - 190px);
+  padding-top: 0;
+  vertical-align: top;
+}
+#midiPlayer .tempoRow,
+#midiPlayer .swingRow {
+  height: 24px;
+  vertical-align: top;
+}
+#midiPlayer .tempoTextField {
+  margin-top: 1px;
+}
+#midiPlayer .tempoLabel,
+#midiPlayer .swingLabel {
+  vertical-align: top;
+  flex: none;
+}
+#midiPlayer .swingOutput {
+  vertical-align: top;
+}
+#midiPlayer .MIDIPlayTime {
+  width: 130px;
+  vertical-align: top;
+}
+
+/* the bar's BPM and Swing sliders: bright, high contrast, the same height as their row. The filled /
+ * unfilled track colours are read from the ::before / ::after `color` by updateRangeSlider() in
+ * groove_utils.js, which paints the track gradient, so the track itself is only given a size and outline. */
+#midiPlayer input[type='range'] {
+  border-radius: 8px;
+}
+#midiPlayer .tempoInput,
+#midiPlayer .swingInput {
+  box-sizing: border-box;
+  height: 24px; /* the same for both: the full height of their row */
+  margin: 0 10px 0 0;
+  padding: 0;
+  background: transparent;
+  color: var(--player-input-text);
+  vertical-align: top;
+  width: 100%;
+  cursor: pointer;
+}
+#midiPlayer input[type='range']::-webkit-slider-runnable-track {
+  height: 8px;
+  border: 1px solid var(--black);
+  border-radius: 5px;
+}
+#midiPlayer input[type='range']::-webkit-slider-thumb {
+  width: 20px;
+  height: 20px;
+  margin-top: -7px; /* centres the thumb on the track */
+  border: 3px solid var(--player-thumb-border);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px var(--shadow-60);
+}
+#midiPlayer input[type='range'].touch::-webkit-slider-thumb {
+  width: 22px;
+  height: 22px;
+  margin-top: -8px;
+}
+#midiPlayer input[type='range']::-moz-range-track {
+  height: 8px;
+  border: 1px solid var(--black);
+  border-radius: 5px;
+}
+#midiPlayer input[type='range']::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 3px solid var(--player-thumb-border);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px var(--shadow-60);
+}
+
+@media print {
+  /* keep at bottom so it overrides the styles above */
+  body {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+  }
+  div.newpage {
+    page-break-before: always;
+  }
+  div.nobrk {
+    page-break-inside: avoid;
+  }
+
+  .nonPrintable {
+    display: none !important;
+  }
+}

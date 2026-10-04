@@ -1,0 +1,158 @@
+/* GrooveScribe colour theme -- the ONE place colours are defined.
+ *
+ * Every stylesheet (editor.css, player.css, nav.css, info.css) takes its colours from the variables below; none of them
+ * contains a colour value of its own. Load this file before them (index.html, the About and Help pages,
+ * the GrooveDB page, and groove_display.js for the embed pages do). tests/theme.test.js checks both.
+ *
+ * To restyle the app:
+ *   - change the values in "1. Palette" to re-colour everything that uses them, or
+ *   - repoint a name in "2. Roles" to change just that role (e.g. only the page background).
+ *
+ * NOT covered here (they are colours painted by JavaScript, not CSS): the on/off colours of the note grid
+ * in js/constants.js and js/groove_writer.js, the note-playing highlight in js/groove_writer.js, and the
+ * logo SVG in js/groove_utils.js. The grid colours are compared against what the browser reports, so
+ * change them together with the matching palette values below.
+ */
+:root {
+  /* ---------------------------------------------------------------- 1. Palette */
+
+  /* neutrals: --gray-N is N% lightness (95 = near white, 12 = near black) */
+  --white: #ffffff;
+  --black: #000000;
+  --gray-95: #f0f0f0;
+  --gray-93: #eeeeee;
+  --gray-87: #dddddd;
+  --gray-84: #d5d5d5;
+  --gray-82: #d0d0d0;
+  --gray-80: #cccccc;
+  --gray-79: #cacaca;
+  --gray-76: #c1c1c1;
+  --gray-71: #b5b5b5;
+  --gray-67: #aaaaaa;
+  --gray-60: #999999;
+  --gray-53: #888888;
+  --gray-47: #777777;
+  --gray-40: #666666;
+  --gray-33: #555555;
+  --gray-29: #4a4a4a;
+  --gray-27: #444444;
+  --gray-22: #393939;
+  --gray-17: #2b2b2b;
+  --gray-13: #222222;
+  --gray-12: #1f1f1f;
+  --gray-00: #010101;
+  /* greys with a blue cast (the embedded player's buttons) */
+  --slate-67: #a6a6b0;
+  --slate-55: #878795;
+  --white-blue: #eeeeff;
+
+  /* blues */
+  --blue: #2484c0; /* the accent colour */
+  --blue-light: #68c2ff;
+  --blue-sky: #66c0fe;
+  --blue-cyan: #1aa3d6;
+  --blue-deep: #0071ad;
+  --blue-dark: #28597a;
+  --blue-darker: #1b435e;
+  --blue-slate: #3b5166;
+  --blue-link: #6cb6e6;
+  --navy: #000099;
+  --navy-bright: #0000bb;
+
+  /* header teals */
+  --teal-dark: #243640;
+  --teal-mid: #2a404d;
+  --teal-darker: #1c2b33;
+
+  /* greens, reds, warm tints */
+  --green: #62c04c;
+  --green-light: #8fe07a;
+  --red: #dd4444;
+  --red-dark: #990000;
+  --cream: #f7f1cf;
+  --cream-orange: #ffe9b7;
+  --mint: #bdebdd;
+
+  /* translucent overlays */
+  --shadow-35: rgba(0, 0, 0, 0.35);
+  --shadow-50: rgba(0, 0, 0, 0.5);
+  --shadow-60: rgba(0, 0, 0, 0.6);
+  --scrim-65: rgba(0, 0, 0, 0.65);
+  --wash-15: rgba(255, 255, 255, 0.15);
+
+  /* ---------------------------------------------------------------- 2. Roles */
+
+  /* the editor (editor.css) */
+  --header-bg-color: var(--teal-dark);
+  --header-bg-start-color: var(--teal-mid);
+  --header-bg-end-color: var(--teal-darker);
+  --bpm-bg-color: var(--gray-13);
+  --side-bg-color: var(--gray-22);
+  --bottom-bg-color: var(--gray-22);
+  --side-highlight-bg-color: var(--blue);
+  --note-overlay-bg-color: var(--mint);
+  --highlight-color: var(--blue);
+  --highlight-color-on-white: var(--blue);
+  --muted-text-color: var(--gray-76);
+
+  /* the MIDI player and the sheet-music highlight (player.css): light by default, as in the embed
+   * pages; the editor's player bar (#midiPlayer) is dark (see below) */
+  --player-bg: var(--gray-95);
+  --player-border: var(--gray-84);
+  --player-icon: var(--slate-55);
+  --player-label: var(--slate-55);
+  --player-value: var(--gray-60);
+  --player-button-bg: var(--slate-55);
+  --player-button-text: var(--white);
+  --player-button-bg-hover: var(--slate-55);
+  --player-expand-hover: var(--slate-55);
+  --player-input-text: var(--slate-55);
+  --player-slider-bg: var(--gray-95);
+  --player-track: var(--slate-55);
+  --player-track-focus: var(--slate-55);
+  --player-track-before: var(--slate-67);
+  --player-track-after: var(--slate-55);
+  --player-thumb: var(--gray-93);
+  --player-thumb-border: var(--gray-40);
+  --player-thumb-active: var(--white);
+  --note-highlight: var(--red-dark);
+  --note-highlight-opacity: 0.25;
+
+  /* the About and Help pages (info.css) */
+  --page-bg: var(--gray-22);
+  --card-bg: var(--gray-17);
+  --card-border: var(--black);
+  --header-start: var(--teal-mid);
+  --header-end: var(--teal-darker);
+  --text: var(--gray-87);
+  --text-strong: var(--white);
+  --text-dim: var(--gray-60);
+  --link: var(--blue-link);
+}
+
+/* the editor's player bar is dark and uses the accent colour */
+#midiPlayer {
+  --player-bg: var(--gray-13);
+  --player-border: var(--navy);
+  --player-icon: var(--gray-80);
+  --player-label: var(--muted-text-color);
+  --player-value: var(--muted-text-color);
+  --player-button-bg: var(--gray-40);
+  --player-button-text: var(--gray-80);
+  --player-button-bg-hover: var(--gray-47);
+  --player-expand-hover: var(--blue-light);
+  --player-input-text: var(--blue-sky);
+  --player-slider-bg: var(--gray-53);
+  --player-track: var(--gray-27);
+  --player-track-focus: var(--gray-40);
+  --player-track-before: var(--blue);
+  --player-track-after: var(--gray-71);
+  --player-thumb: var(--green);
+  --player-thumb-border: var(--white);
+  --player-thumb-active: var(--green-light);
+}
+/* ...and so is the sheet-music highlight inside the editor */
+#GrooveWriter {
+  --note-highlight: var(--highlight-color);
+  --note-highlight-opacity: 0.2;
+}

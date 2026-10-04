@@ -1,18 +1,5 @@
 /* Shared by gscribe_about.html and gscribe_help.html. Same palette as the app
- * (css/groove_writer_orange.css, css/groove_writer_nav.css). */
-:root {
-  --page-bg: #393939;
-  --card-bg: #2b2b2b;
-  --card-border: #000;
-  --header-start: #2a404d;
-  --header-end: #1c2b33;
-  --text: #ddd;
-  --text-strong: #fff;
-  --text-dim: #999;
-  --green: #62c04c;
-  --blue: #2484c0;
-  --link: #6cb6e6;
-}
+ * (css/editor.css, css/nav.css). */
 * {
   box-sizing: border-box;
 }
@@ -32,7 +19,7 @@ header {
   align-items: center;
   height: 49px;
   background: linear-gradient(to right, var(--header-start), var(--header-end));
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid var(--black);
 }
 header .tile {
   display: flex;
@@ -40,7 +27,7 @@ header .tile {
   justify-content: center;
   width: 48px;
   height: 48px;
-  background: #000;
+  background: var(--black);
 }
 header .tile img {
   display: block;
@@ -62,17 +49,17 @@ header .title {
 header .open {
   margin: 0 12px 0 auto;
   padding: 6px 14px;
-  color: #eee;
+  color: var(--gray-93);
   font-size: 12px;
   font-weight: 700;
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
-  border: 1px solid #eee;
+  border: 1px solid var(--gray-93);
   border-radius: 17px;
 }
 header .open:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--wash-15);
 }
 
 main {
@@ -99,7 +86,7 @@ section {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 8px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 3px 10px var(--shadow-35);
 }
 h3 {
   margin: 18px 0 8px;
@@ -146,7 +133,7 @@ a:hover {
     15px/1.5 Menlo,
     Consolas,
     monospace;
-  background: #1f1f1f;
+  background: var(--gray-12);
   border-left: 3px solid var(--blue);
   border-radius: 4px;
   overflow-x: auto;
@@ -189,14 +176,14 @@ a:hover {
 .toc a {
   display: block;
   padding: 5px 13px;
-  color: #eee;
+  color: var(--gray-93);
   font-size: 14px;
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 16px;
 }
 .toc a:hover {
-  background: #444;
+  background: var(--gray-27);
   text-decoration: none;
 }
 section[id] {
@@ -216,8 +203,8 @@ kbd {
     Consolas,
     monospace;
   text-align: center;
-  background: #1f1f1f;
-  border: 1px solid #555;
+  background: var(--gray-12);
+  border: 1px solid var(--gray-33);
   border-bottom-width: 2px;
   border-radius: 4px;
 }
@@ -231,7 +218,7 @@ td {
   padding: 8px 10px;
   text-align: left;
   vertical-align: top;
-  border-bottom: 1px solid #000;
+  border-bottom: 1px solid var(--black);
 }
 th {
   color: var(--text-dim);
@@ -239,7 +226,7 @@ th {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  border-bottom: 1px solid #555;
+  border-bottom: 1px solid var(--gray-33);
 }
 tr:last-child td {
   border-bottom: 0;
@@ -254,7 +241,7 @@ td:first-child {
 .tip {
   margin: 12px 0 0;
   padding: 10px 14px;
-  background: #1f1f1f;
+  background: var(--gray-12);
   border-left: 3px solid var(--green);
   border-radius: 4px;
 }

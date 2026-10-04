@@ -116,7 +116,7 @@ describe('GrooveDisplay asset loading', () => {
     it('injects the stylesheet <link> tags into the head', () => {
       const hrefs = Array.from(document.getElementsByTagName('link')).map((l) => l.href);
       const joined = hrefs.join('\n');
-      expect(joined).toContain('groove_display.css');
+      expect(joined).toContain('player.css');
       expect(joined).toContain('font-awesome');
     });
   });
