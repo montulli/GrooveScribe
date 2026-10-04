@@ -48,13 +48,19 @@ test('grooveDBTest.html renders (GrooveDBFormatPutGrooveOnPage path)', async ({ 
   expect(errors, errors.join('\n')).toEqual([]);
 });
 
-test('GrooveDBCreateGroove.html (the standalone GrooveDB authoring tool) works with the menu UI', async ({
+test('GrooveDBCreateGroove.html redirects to the GrooveDB authoring mode of the editor', async ({
   page,
 }) => {
-  // This page is a copy of index.html with ../ paths and its own bootstrap, so it breaks
-  // silently whenever index.html / main.js change. Drive the parts it shares with the editor.
-  const errors = collectErrors(page);
   await page.goto('/html_examples_and_tests/GrooveDBCreateGroove.html');
+  await page.waitForURL(/\/index\.html\?GDB_Author=1/);
+  await expect(page.locator('#GrooveDB_MetaData')).toBeVisible();
+});
+
+test('index.html?GDB_Author=1 (the GrooveDB authoring tool) works with the menu UI', async ({
+  page,
+}) => {
+  const errors = collectErrors(page);
+  await page.goto('/index.html?GDB_Author=1');
   await page.waitForSelector('#svgTarget svg', { timeout: 15000 });
 
   // authoring mode: the GrooveDB text block is shown, there is no view/edit switch

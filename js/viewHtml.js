@@ -6,6 +6,45 @@
 // context object / arguments, so GrooveWriter (which owns that state) delegates
 // its HTMLforStaffContainer / HTMLforPermutationOptions methods here.
 
+// Exact-string attribute/spacing helpers shared by the staff rows below.
+function noteClickAttrs(type, index) {
+  return (
+    'onClick="myGrooveWriter.noteLeftClick(event, \'' +
+    type +
+    "', " +
+    index +
+    ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'' +
+    type +
+    "', " +
+    index +
+    ')"'
+  );
+}
+
+function noteMouseEnterAttr(type, index) {
+  return 'onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'' + type + "', " + index + ')"';
+}
+
+function labelClickAttrs(type, measure) {
+  return (
+    'onClick="myGrooveWriter.noteLabelClick(event, \'' +
+    type +
+    "', " +
+    measure +
+    ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'' +
+    type +
+    "', " +
+    measure +
+    ')"'
+  );
+}
+
+// The spacer element between note groups (not after the last note of a measure).
+function groupGap(i, indexStartForNotes, ctx, spacerHtml) {
+  const betweenGroups = (i - (indexStartForNotes - 1)) % ctx.noteGrouping === 0;
+  return betweenGroups && i < ctx.notesPerMeasure + indexStartForNotes - 1 ? spacerHtml : '';
+}
+
 export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
   var newHTML =
     '\
@@ -14,11 +53,9 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
     '">\
 							<div class="stickings-row-container">\
 								<div class="line-labels">\
-									<div class="stickings-label" onClick="myGrooveWriter.noteLabelClick(event, \'stickings\', ' +
-    baseindex +
-    ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'stickings\', ' +
-    baseindex +
-    ')">STICKINGS</div>\
+									<div class="stickings-label" ' +
+    labelClickAttrs('stickings', baseindex) +
+    '>STICKINGS</div>\
 								</div>\
 								<div class="music-line-container">\n\
 									\
@@ -28,7 +65,8 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
     '\
 										<div class="stickings-container">\
 											<div class="opening_note_space"> </div>';
-  for (var i = indexStartForNotes; i < ctx.notesPerMeasure + indexStartForNotes; i++) {
+  var i;
+  for (i = indexStartForNotes; i < ctx.notesPerMeasure + indexStartForNotes; i++) {
     newHTML +=
       '\
 														<div id="sticking' +
@@ -36,44 +74,36 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
       '" class="sticking">\n\
 															<div class="sticking_right note_part"  id="sticking_right' +
       i +
-      '"  onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' +
-      i +
-      ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' +
-      i +
-      ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'sticking\', ' +
-      i +
-      ')">R</div>\n\
+      '"  ' +
+      noteClickAttrs('sticking', i) +
+      ' ' +
+      noteMouseEnterAttr('sticking', i) +
+      '>R</div>\n\
 															<div class="sticking_left note_part"   id="sticking_left' +
       i +
-      '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' +
-      i +
-      ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' +
-      i +
-      ')">L</div>\n\
+      '"   ' +
+      noteClickAttrs('sticking', i) +
+      '>L</div>\n\
 															<div class="sticking_both note_part"   id="sticking_both' +
       i +
-      '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' +
-      i +
-      ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' +
-      i +
-      ')">R/L</div>\n\
+      '"   ' +
+      noteClickAttrs('sticking', i) +
+      '>R/L</div>\n\
 															<div class="sticking_count note_part"   id="sticking_count' +
       i +
-      '"   onClick="myGrooveWriter.noteLeftClick(event, \'sticking\', ' +
-      i +
-      ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'sticking\', ' +
-      i +
-      ')">C</div>\n\
+      '"   ' +
+      noteClickAttrs('sticking', i) +
+      '>C</div>\n\
 														</div>\n\
 													';
 
     // add space between notes, exept on the last note
-    if (
-      (i - (indexStartForNotes - 1)) % ctx.noteGrouping === 0 &&
-      i < ctx.notesPerMeasure + indexStartForNotes - 1
-    ) {
-      newHTML += '<div class="space_between_note_groups"> </div>\n';
-    }
+    newHTML += groupGap(
+      i,
+      indexStartForNotes,
+      ctx,
+      '<div class="space_between_note_groups"> </div>\n'
+    );
   }
   newHTML += '<div class="end_note_space"></div>\n</div>\n';
 
@@ -87,31 +117,21 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
     '\
 							<span class="notes-row-container">\
 								<div class="line-labels">\
-									<div class="hh-label" onClick="myGrooveWriter.noteLabelClick(event, \'hh\', ' +
-    baseindex +
-    ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'hh\', ' +
-    baseindex +
-    ')">Hi-hat</div>\
-									<div class="tom-label" id="tom1-label" onClick="myGrooveWriter.noteLabelClick(event, \'tom1\', ' +
-    baseindex +
-    ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'tom1\', ' +
-    baseindex +
-    ')">Tom</div>\
-									<div class="snare-label" onClick="myGrooveWriter.noteLabelClick(event, \'snare\', ' +
-    baseindex +
-    ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'snare\', ' +
-    baseindex +
-    ')">Snare</div>\
-									<div class="tom-label" id="tom4-label" onClick="myGrooveWriter.noteLabelClick(event, \'tom4\', ' +
-    baseindex +
-    ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'tom4\', ' +
-    baseindex +
-    ')">Tom</div>\
-									<div class="kick-label" onClick="myGrooveWriter.noteLabelClick(event, \'kick\', ' +
-    baseindex +
-    ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteLabelClick(event, \'kick\', ' +
-    baseindex +
-    ')">Kick</div>\
+									<div class="hh-label" ' +
+    labelClickAttrs('hh', baseindex) +
+    '>Hi-hat</div>\
+									<div class="tom-label" id="tom1-label" ' +
+    labelClickAttrs('tom1', baseindex) +
+    '>Tom</div>\
+									<div class="snare-label" ' +
+    labelClickAttrs('snare', baseindex) +
+    '>Snare</div>\
+									<div class="tom-label" id="tom4-label" ' +
+    labelClickAttrs('tom4', baseindex) +
+    '>Tom</div>\
+									<div class="kick-label" ' +
+    labelClickAttrs('kick', baseindex) +
+    '>Kick</div>\
 								</div>\
 								<div class="music-line-container">\
 									\
@@ -134,12 +154,12 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
       '" class="bg-highlight" >\
 												</div>\n';
 
-    if (
-      (i - (indexStartForNotes - 1)) % ctx.noteGrouping === 0 &&
-      i < ctx.notesPerMeasure + indexStartForNotes - 1
-    ) {
-      newHTML += '<div class="space_between_note_groups"> </div> \n';
-    }
+    newHTML += groupGap(
+      i,
+      indexStartForNotes,
+      ctx,
+      '<div class="space_between_note_groups"> </div> \n'
+    );
   }
   newHTML += '<div class="end_note_space"></div>\n</div>\n';
 
@@ -153,13 +173,11 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
       '\
 														<div id="hi-hat' +
       i +
-      '" class="hi-hat" onClick="myGrooveWriter.noteLeftClick(event, \'hh\', ' +
-      i +
-      ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'hh\', ' +
-      i +
-      ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'hh\', ' +
-      i +
-      ')">\
+      '" class="hi-hat" ' +
+      noteClickAttrs('hh', i) +
+      ' ' +
+      noteMouseEnterAttr('hh', i) +
+      '>\
 															<div class="hh_crash note_part"  id="hh_crash' +
       i +
       '"><i class="fa fa-asterisk"></i></div>\
@@ -196,12 +214,12 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
 														</div>\n\
 													';
 
-    if (
-      (i - (indexStartForNotes - 1)) % ctx.noteGrouping === 0 &&
-      i < ctx.notesPerMeasure + indexStartForNotes - 1
-    ) {
-      newHTML += '<div class="space_between_note_groups"> </div> \n';
-    }
+    newHTML += groupGap(
+      i,
+      indexStartForNotes,
+      ctx,
+      '<div class="space_between_note_groups"> </div> \n'
+    );
   }
   newHTML +=
     '<div class="unmuteHHButton" id="unmutehhButton' +
@@ -221,25 +239,23 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
       '\
 						<div id="tom1-' +
       i +
-      '" class="tom" onClick="myGrooveWriter.noteLeftClick(event, \'tom1\', ' +
-      i +
-      ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'tom1\', ' +
-      i +
-      ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'tom1\', ' +
-      i +
-      ')">\
+      '" class="tom" ' +
+      noteClickAttrs('tom1', i) +
+      ' ' +
+      noteMouseEnterAttr('tom1', i) +
+      '>\
 							<div class="tom_circle note_part"  id="tom_circle1-' +
       i +
       '"></div>\
 						</div>\n\
 						';
 
-    if (
-      (i - (indexStartForNotes - 1)) % ctx.noteGrouping === 0 &&
-      i < ctx.notesPerMeasure + indexStartForNotes - 1
-    ) {
-      newHTML += '<div class="space_between_note_groups"> </div> \n';
-    }
+    newHTML += groupGap(
+      i,
+      indexStartForNotes,
+      ctx,
+      '<div class="space_between_note_groups"> </div> \n'
+    );
   }
   newHTML +=
     '<span class="unmuteTom1Button" id="unmutetom1Button' +
@@ -259,13 +275,11 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
       '' +
       '<div id="snare' +
       i +
-      '" class="snare" onClick="myGrooveWriter.noteLeftClick(event, \'snare\', ' +
-      i +
-      ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'snare\', ' +
-      i +
-      ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'snare\', ' +
-      i +
-      ')">' +
+      '" class="snare" ' +
+      noteClickAttrs('snare', i) +
+      ' ' +
+      noteMouseEnterAttr('snare', i) +
+      '>' +
       '<div class="snare_ghost note_part"  id="snare_ghost' +
       i +
       '">(<i class="fa fa-circle dot_in_snare_ghost_note"></i>)</div>' +
@@ -329,12 +343,12 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
       '</div>' +
       '</div> \n';
 
-    if (
-      (i - (indexStartForNotes - 1)) % ctx.noteGrouping === 0 &&
-      i < ctx.notesPerMeasure + indexStartForNotes - 1
-    ) {
-      newHTML += '<div class="space_between_note_groups"> </div> ';
-    }
+    newHTML += groupGap(
+      i,
+      indexStartForNotes,
+      ctx,
+      '<div class="space_between_note_groups"> </div> '
+    );
   }
   newHTML +=
     '<span class="unmuteSnareButton" id="unmutesnareButton' +
@@ -354,25 +368,23 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
       '\
 						<div id="tom4-' +
       i +
-      '" class="tom" onClick="myGrooveWriter.noteLeftClick(event, \'tom4\', ' +
-      i +
-      ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'tom4\', ' +
-      i +
-      ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'tom4\', ' +
-      i +
-      ')">\
+      '" class="tom" ' +
+      noteClickAttrs('tom4', i) +
+      ' ' +
+      noteMouseEnterAttr('tom4', i) +
+      '>\
 							<div class="tom_circle note_part"  id="tom_circle4-' +
       i +
       '"></div>\
 						</div>\n\
 						';
 
-    if (
-      (i - (indexStartForNotes - 1)) % ctx.noteGrouping === 0 &&
-      i < ctx.notesPerMeasure + indexStartForNotes - 1
-    ) {
-      newHTML += '<div class="space_between_note_groups"> </div> \n';
-    }
+    newHTML += groupGap(
+      i,
+      indexStartForNotes,
+      ctx,
+      '<div class="space_between_note_groups"> </div> \n'
+    );
   }
   newHTML +=
     '<span class="unmuteTom4Button" id="unmutetom4Button' +
@@ -392,13 +404,11 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
       '\
 														<div id="kick' +
       j +
-      '" class="kick" onClick="myGrooveWriter.noteLeftClick(event, \'kick\', ' +
-      j +
-      ')" oncontextmenu="event.preventDefault(); myGrooveWriter.noteRightClick(event, \'kick\', ' +
-      j +
-      ')" onmouseenter="myGrooveWriter.noteOnMouseEnter(event, \'kick\', ' +
-      j +
-      ')">\
+      '" class="kick" ' +
+      noteClickAttrs('kick', j) +
+      ' ' +
+      noteMouseEnterAttr('kick', j) +
+      '>\
 														<div class="kick_splash note_part" id="kick_splash' +
       j +
       '"><i class="fa fa-times"></i></div>\
@@ -408,12 +418,12 @@ export function buildStaffContainerHTML(baseindex, indexStartForNotes, ctx) {
 														</div> \n\
 													';
 
-    if (
-      (j - (indexStartForNotes - 1)) % ctx.noteGrouping === 0 &&
-      j < ctx.notesPerMeasure + indexStartForNotes - 1
-    ) {
-      newHTML += '<div class="space_between_note_groups"> </div> ';
-    }
+    newHTML += groupGap(
+      j,
+      indexStartForNotes,
+      ctx,
+      '<div class="space_between_note_groups"> </div> '
+    );
   }
   newHTML +=
     '<span class="unmuteKickButton" id="unmutekickButton' +
@@ -583,4 +593,138 @@ export function buildPermutationOptionsHTML(permutationType, usingTriplets) {
 
   newHTML += '</span>\n';
   return newHTML;
+}
+
+// Context menus that pop up over the note grid (right-click / Advanced Edit) and over
+// the row labels. Each entry is [action, label HTML] or [action, label HTML, <li> id];
+// the instrument table in groove_writer.js decides what an action does.
+const NOTE_MENUS = {
+  sticking: [
+    ['off', 'Off'],
+    ['right', '<b>R</b>ight'],
+    ['left', '<b>L</b>eft'],
+    ['both', '<b>R/L</b>'],
+    ['count', 'Count'],
+  ],
+  hh: [
+    ['off', 'Off'],
+    ['normal', 'Hi-hat normal'],
+    ['open', 'Hi-hat open'],
+    ['accent', 'Hi-hat accent'],
+    ['crash', 'Crash'],
+    ['ride', 'Ride'],
+    ['ride_bell', 'Ride Bell'],
+    ['cow_bell', 'Cow Bell'],
+    ['stacker', 'Stacker'],
+    ['metronome_normal', 'Click'],
+    ['metronome_accent', 'Click - accent'],
+  ],
+  tom1: [
+    ['off', 'Off'],
+    ['normal', 'Tom Normal'],
+  ],
+  tom4: [
+    ['off', 'Off'],
+    ['normal', 'Tom Normal'],
+  ],
+  snare: [
+    ['off', 'Off'],
+    ['normal', 'Snare Normal'],
+    ['accent', 'Snare Accent'],
+    ['ghost', 'Ghost Note'],
+    ['xstick', 'Cross Stick'],
+    ['buzz', 'Buzz Stroke'],
+    ['flam', 'Flam'],
+  ],
+  kick: [
+    ['off', 'Off'],
+    ['normal', 'Kick Normal'],
+    ['splash', 'Hi-hat foot'],
+    ['kick_and_splash', 'Kick &amp; Hi-hat foot'],
+  ],
+};
+
+const NOTE_LABEL_MENUS = {
+  stickings: [
+    ['all_off', 'all <b>Off</b>'],
+    ['alternate', 'alternate <b>R</b>/<b>L</b>'],
+    ['all_right', 'all <b>R</b>s'],
+    ['all_left', 'all <b>L</b>s'],
+    ['all_count', '<b>C</b>ounts'],
+    ['cancel', 'cancel'],
+  ],
+  hh: [
+    ['all_off', 'all Hi-hats <b>Off</b>'],
+    ['all_on', 'all Hi-hats <b>On</b>'],
+    ['downbeats', 'downbeats'],
+    ['upbeats', 'upbeats'],
+    ['mute', 'mute HH sound', 'mute_hh_menu_item'],
+    ['cancel', 'cancel'],
+  ],
+  tom1: [
+    ['all_off', 'all Toms <b>Off</b>'],
+    ['all_on', 'all Toms <b>On</b>'],
+    ['mute', 'mute tom sound', 'mute_tom1_menu_item'],
+    ['cancel', 'cancel'],
+  ],
+  tom4: [
+    ['all_off', 'all Toms <b>Off</b>'],
+    ['all_on', 'all Toms <b>On</b>'],
+    ['mute', 'mute tom sound', 'mute_tom4_menu_item'],
+    ['cancel', 'cancel'],
+  ],
+  snare: [
+    ['all_off', 'all Snares <b>Off</b>'],
+    ['all_on', 'all <b>Accented</b>'],
+    ['all_on_normal', 'all <b>Normal</b>'],
+    ['all_on_ghost', 'all <b>Ghosts</b>'],
+    ['mute', 'mute snare sound', 'mute_snare_menu_item'],
+    ['cancel', 'cancel'],
+  ],
+  kick: [
+    ['all_off', 'all Kicks <b>Off</b>'],
+    ['all_on', 'all Kicks <b>On</b>'],
+    ['hh_foot_nums_on', "HH foot #'s <b>On</b>"],
+    ['hh_foot_ands_on', "HH foot &'s <b>On</b>"],
+    ['mute', 'mute kick sound', 'mute_kick_menu_item'],
+    ['cancel', 'cancel'],
+  ],
+};
+
+function buildMenuHTML(menuId, popupFn, instrument, items) {
+  const lis = items.map(([action, label, id]) => {
+    const idAttr = id ? " id='" + id + "'" : '';
+    return (
+      '\t\t\t\t<li' +
+      idAttr +
+      " onclick='myGrooveWriter." +
+      popupFn +
+      '("' +
+      instrument +
+      '", "' +
+      action +
+      '");\'>' +
+      label +
+      '</li>\n'
+    );
+  });
+  return (
+    '\t\t<div class="noteContextMenu">\n\t\t\t<ul id="' +
+    menuId +
+    '" class="list">\n' +
+    lis.join('') +
+    '\t\t\t</ul>\n\t\t</div>\n'
+  );
+}
+
+// The note and row-label context menus for every drum line (filled into index.html).
+export function buildNoteMenusHTML() {
+  let html = '';
+  for (const [type, items] of Object.entries(NOTE_MENUS)) {
+    html += buildMenuHTML(type + 'ContextMenu', 'notePopupClick', type, items);
+  }
+  for (const [type, items] of Object.entries(NOTE_LABEL_MENUS)) {
+    html += buildMenuHTML(type + 'LabelContextMenu', 'noteLabelPopupClick', type, items);
+  }
+  return html;
 }

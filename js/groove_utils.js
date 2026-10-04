@@ -344,9 +344,10 @@ function GrooveUtils() {
   root.getMetronomeOptionsOffsetClickStartRotation = function (isTriplets) {
     if (root.getMetronomeOffsetClickStartIsRotating()) {
       // constrain the rotation
-      if (isTriplets && root.metronomeOffsetClickStartRotation > 2)
-        root.metronomeOffsetClickStartRotation = 0;
-      else if (root.metronomeOffsetClickStartRotation > 3)
+      if (
+        (isTriplets && root.metronomeOffsetClickStartRotation > 2) ||
+        root.metronomeOffsetClickStartRotation > 3
+      )
         root.metronomeOffsetClickStartRotation = 0;
 
       switch (root.metronomeOffsetClickStartRotation) {
@@ -368,7 +369,8 @@ function GrooveUtils() {
 
   root.resetMetronomeOptionsOffsetClickStartRotation = function (value) {
     // start with last in the rotation so the next rotation brings it to '1'
-    return (root.metronomeOffsetClickStartRotation = 0);
+    root.metronomeOffsetClickStartRotation = 0;
+    return root.metronomeOffsetClickStartRotation;
   };
 
   // build a string that looks like this
@@ -548,24 +550,7 @@ function GrooveUtils() {
   };
 
   function setupHotKeys() {
-    // isCtrl is reassigned by the onkeyup/onkeydown handlers below (used to be
-    // read by now-commented-out CTRL-S code); removing the declaration would
-    // make those handler assignments implicit globals, which throw under
-    // 'use strict'.
-    // eslint-disable-next-line no-unused-vars
-    var isCtrl = false;
-    document.onkeyup = function (e) {
-      if (e.which == 17) isCtrl = false;
-    };
-
     document.onkeydown = function (e) {
-      if (e.which == 17) isCtrl = true;
-      /*
-			if(e.which == 83 && isCtrl == true) {
-			alert('CTRL-S pressed');
-			return false;
-			}
-			 */
       // only accept the event if it not going to an INPUT field
       // otherwise we can't use spacebar in text fields :(
       if (
@@ -1111,7 +1096,8 @@ function GrooveUtils() {
   root.loadMIDIFromURL = function (midiURL) {
     MIDI.Player.timeWarp = 1; // speed the song is played back
     MIDI.Player.BPM = root.getTempo();
-    MIDI.Player.loadFile(midiURL, midiLoaderCallback());
+    midiLoaderCallback(); // registers our listener; it returns nothing
+    MIDI.Player.loadFile(midiURL, undefined);
   };
 
   root.MIDISaveAs = function (midiURL) {
@@ -1591,9 +1577,7 @@ function GrooveUtils() {
   };
 
   root.doesDivisionSupportSwing = function (division) {
-    if (root.isTripletDivision(division) || division == 4) return false;
-
-    return true;
+    return !(root.isTripletDivision(division) || division == 4);
   };
 
   root.setSwingSlider = function (newSetting) {

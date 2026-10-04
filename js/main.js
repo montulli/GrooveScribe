@@ -10,6 +10,7 @@
 import { GrooveWriter } from './groove_writer.js';
 import { GrooveUtils } from './groove_utils.js';
 import { grooves } from './grooves.js';
+import { buildNoteMenusHTML } from './viewHtml.js';
 import { initHamburgerMenu } from './hamburgerMenu.js';
 import { initScreenOrientation } from './screenOrientation.js';
 
@@ -66,6 +67,7 @@ if (utils.is_touch_device()) {
 }
 
 // Dynamic content regions previously built with document.write.
+fillContainer('noteMenusSlot', buildNoteMenusHTML());
 fillContainer('PermutationOptions', myGrooveWriter.HTMLforPermutationOptions());
 
 let gridHTML = '';

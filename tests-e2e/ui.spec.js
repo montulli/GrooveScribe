@@ -529,7 +529,7 @@ test.describe('info pages', () => {
   test('every help contents link points at a section on the page', async ({ page }) => {
     await page.goto('/gscribe_help.html');
     const hrefs = await page.$$eval('.toc a', (links) => links.map((a) => a.getAttribute('href')));
-    expect(hrefs.length).toBe(12);
+    expect(hrefs).toHaveLength(12);
     for (const href of hrefs) {
       await expect(page.locator(href), href).toHaveCount(1);
     }

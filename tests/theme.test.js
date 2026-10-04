@@ -15,12 +15,20 @@ const STYLESHEETS = ['editor.css', 'player.css', 'nav.css', 'info.css'].map(
   (name) => `css/${name}`
 );
 
-const COLOUR_LITERAL =
-  /#[0-9a-fA-F]{3,8}\b(?=\s*[;,)}\n])|\brgba?\(|\bhsla?\(|(?<![\w#-])(?:white|black|red|blue|green|yellow|orange|gray|grey|purple|pink|brown|cyan|magenta|silver|navy|teal)(?![\w-])/;
+const COLOUR_NAMES =
+  'white|black|red|blue|green|yellow|orange|gray|grey|purple|pink|brown|cyan|magenta|silver|navy|teal';
+const COLOUR_LITERAL = new RegExp(
+  [
+    '#[0-9a-fA-F]{3,8}\\b(?=\\s*[;,)}\\n])', // hex value
+    '\\brgba?\\(',
+    '\\bhsla?\\(',
+    `(?<![\\w#-])(?:${COLOUR_NAMES})(?![\\w-])`, // named colour
+  ].join('|')
+);
 
 describe('colours live in css/theme.css', () => {
   const theme = stripComments(read('css/theme.css'));
-  const defined = new Set([...theme.matchAll(/^\s*(--[\w-]+)\s*:/gm)].map((m) => m[1]));
+  const defined = new Set([...theme.matchAll(/^[ \t]*(--[\w-]+)[ \t]*:/gm)].map((m) => m[1]));
 
   it('defines a good number of variables', () => {
     expect(defined.size).toBeGreaterThan(40);
@@ -44,10 +52,10 @@ describe('colours live in css/theme.css', () => {
   }
 
   it('palette variables hold real colours (or numbers), and roles point at palette entries', () => {
-    const lines = theme.split('\n').filter((l) => /^\s*--[\w-]+\s*:/.test(l));
+    const lines = theme.split('\n').filter((l) => /^[ \t]*--[\w-]+[ \t]*:/.test(l));
     for (const line of lines) {
-      const value = line.split(':').slice(1).join(':').replace(/;.*$/, '').trim();
-      const isColour = /^(#[0-9a-fA-F]{3,8}|rgba?\([^)]*\))$/.test(value);
+      const value = line.split(':').slice(1).join(':').split(';')[0].trim();
+      const isColour = /^(#[0-9a-fA-F]{3,8}|rgba?\([^)]{0,80}\))$/.test(value);
       const isRole = /^var\(--[\w-]+\)$/.test(value);
       const isNumber = /^[\d.]+$/.test(value); // e.g. an opacity
       expect(isColour || isRole || isNumber, `unexpected value in theme.css: ${line.trim()}`).toBe(

@@ -22,6 +22,7 @@ function readRotationAllowed() {
   try {
     return window.localStorage.getItem(STORAGE_KEY) === '1';
   } catch (e) {
+    console.debug('screen rotation preference not readable', e);
     return false;
   }
 }
@@ -30,6 +31,7 @@ function saveRotationAllowed(allowed) {
     window.localStorage.setItem(STORAGE_KEY, allowed ? '1' : '0');
   } catch (e) {
     // not remembered: the next launch just starts locked to landscape again
+    console.debug('screen rotation preference not saved', e);
   }
 }
 

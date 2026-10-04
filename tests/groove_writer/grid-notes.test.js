@@ -1,83 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { newGrooveWriter, buildGridDOM } from '../helpers/loadGrooveWriter.js';
-
-// groove_writer.js is written assuming classic <script> global-scope sharing
-// with groove_utils.js: it has a top-of-file `/*global ... */` comment listing
-// bare identifiers (constant_ABC_*, constant_OUR_MIDI_*) that it expects to
-// find on the page's shared global scope because, in the real app, both files
-// are plain <script> tags whose top-level `var`s all land on `window`.
-//
-// Vitest's transform plugin (see vitest.config.js) turns each legacy file into
-// its own real ES module so it can be `import`ed -- but that means groove_writer.js
-// no longer shares scope with groove_utils.js: its module-level `var`s (the
-// note-on/off color constants, which groove_writer.js *does* redeclare locally)
-// resolve fine, but the ABC-notation and MIDI-note-number constants that only
-// groove_utils.js declares are simply undefined here, and any code path that
-// reads them throws a ReferenceError. We shim them onto globalThis with the
-// literal values copied from groove_utils.js so the note-state getters/setters
-// (which are otherwise being tested faithfully, unmodified) can run.
-function shimCrossModuleConstants() {
-  globalThis.constant_ABC_STICK_R = '"R"x';
-  globalThis.constant_ABC_STICK_L = '"L"x';
-  globalThis.constant_ABC_STICK_BOTH = '"R/L"x';
-  globalThis.constant_ABC_STICK_COUNT = '"count"x';
-  globalThis.constant_ABC_STICK_OFF = '""x';
-  globalThis.constant_ABC_HH_Ride = "^A'";
-  globalThis.constant_ABC_HH_Ride_Bell = "^B'";
-  globalThis.constant_ABC_HH_Cow_Bell = "^D'";
-  globalThis.constant_ABC_HH_Crash = "^c'";
-  globalThis.constant_ABC_HH_Stacker = "^d'";
-  globalThis.constant_ABC_HH_Metronome_Normal = "^e'";
-  globalThis.constant_ABC_HH_Metronome_Accent = "^f'";
-  globalThis.constant_ABC_HH_Open = '!open!^g';
-  globalThis.constant_ABC_HH_Close = '!plus!^g';
-  globalThis.constant_ABC_HH_Accent = '!accent!^g';
-  globalThis.constant_ABC_HH_Normal = '^g';
-  globalThis.constant_ABC_SN_Ghost = '!(.!!).!c';
-  globalThis.constant_ABC_SN_Accent = '!accent!c';
-  globalThis.constant_ABC_SN_Normal = 'c';
-  globalThis.constant_ABC_SN_XStick = '^c';
-  globalThis.constant_ABC_SN_Buzz = '!///!c';
-  globalThis.constant_ABC_SN_Flam = '!accent!{/c}c';
-  globalThis.constant_ABC_SN_Drag = '{/cc}c';
-  globalThis.constant_ABC_KI_SandK = '[F^d,]';
-  globalThis.constant_ABC_KI_Splash = '^d,';
-  globalThis.constant_ABC_KI_Normal = 'F';
-  globalThis.constant_ABC_T1_Normal = 'e';
-  globalThis.constant_ABC_T2_Normal = 'd';
-  globalThis.constant_ABC_T3_Normal = 'B';
-  globalThis.constant_ABC_T4_Normal = 'A';
-  globalThis.constant_NUMBER_OF_TOMS = 4;
-  globalThis.constant_ABC_OFF = false;
-  globalThis.constant_OUR_MIDI_VELOCITY_NORMAL = 85;
-  globalThis.constant_OUR_MIDI_VELOCITY_ACCENT = 120;
-  globalThis.constant_OUR_MIDI_VELOCITY_GHOST = 50;
-  globalThis.constant_OUR_MIDI_METRONOME_1 = 76;
-  globalThis.constant_OUR_MIDI_METRONOME_NORMAL = 77;
-  globalThis.constant_OUR_MIDI_HIHAT_NORMAL = 42;
-  globalThis.constant_OUR_MIDI_HIHAT_OPEN = 46;
-  globalThis.constant_OUR_MIDI_HIHAT_ACCENT = 108;
-  globalThis.constant_OUR_MIDI_HIHAT_CRASH = 49;
-  globalThis.constant_OUR_MIDI_HIHAT_STACKER = 52;
-  globalThis.constant_OUR_MIDI_HIHAT_METRONOME_NORMAL = 77;
-  globalThis.constant_OUR_MIDI_HIHAT_METRONOME_ACCENT = 76;
-  globalThis.constant_OUR_MIDI_HIHAT_RIDE = 51;
-  globalThis.constant_OUR_MIDI_HIHAT_RIDE_BELL = 53;
-  globalThis.constant_OUR_MIDI_HIHAT_COW_BELL = 105;
-  globalThis.constant_OUR_MIDI_HIHAT_FOOT = 44;
-  globalThis.constant_OUR_MIDI_SNARE_NORMAL = 38;
-  globalThis.constant_OUR_MIDI_SNARE_ACCENT = 22;
-  globalThis.constant_OUR_MIDI_SNARE_GHOST = 21;
-  globalThis.constant_OUR_MIDI_SNARE_XSTICK = 37;
-  globalThis.constant_OUR_MIDI_SNARE_BUZZ = 104;
-  globalThis.constant_OUR_MIDI_SNARE_FLAM = 107;
-  globalThis.constant_OUR_MIDI_SNARE_DRAG = 103;
-  globalThis.constant_OUR_MIDI_KICK_NORMAL = 35;
-  globalThis.constant_OUR_MIDI_TOM1_NORMAL = 48;
-  globalThis.constant_OUR_MIDI_TOM2_NORMAL = 47;
-  globalThis.constant_OUR_MIDI_TOM3_NORMAL = 45;
-  globalThis.constant_OUR_MIDI_TOM4_NORMAL = 43;
-}
+import {
+  newGrooveWriter,
+  buildGridDOM,
+  shimCrossModuleConstants,
+} from '../helpers/loadGrooveWriter.js';
 
 // noteLeftClick/noteOnMouseEnter always pass make_sound=true, which calls
 // play_single_note_for_note_setting() -> MIDI.WebAudio.noteOn(...). The

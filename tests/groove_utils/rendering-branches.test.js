@@ -106,7 +106,7 @@ describe('groove_utils rendering & environment branches', () => {
   describe('setupHotKeys', () => {
     it('wires and dispatches the document key handlers', () => {
       // midiInitialized touches the play-image element and then calls
-      // setupHotKeys(), which installs document.onkeydown / onkeyup.
+      // setupHotKeys(), which installs document.onkeydown.
       const img = document.createElement('div');
       img.id = 'midiPlayImage' + gu.grooveUtilsUniqueIndex;
       document.body.appendChild(img);
@@ -119,11 +119,9 @@ describe('groove_utils rendering & environment branches', () => {
 
       expect(() => gu.midiEventCallbacks.midiInitialized(gu)).not.toThrow();
       expect(typeof document.onkeydown).toBe('function');
-      expect(typeof document.onkeyup).toBe('function');
 
-      // Fire each recognized key: ctrl up/down, spacebar in the document body
+      // Fire each recognized key: ctrl, spacebar in the document body
       // (plays), spacebar inside a text input (ignored), and the media keys.
-      document.onkeyup({ which: 17 });
       document.onkeydown({ which: 17 });
       document.onkeydown({ which: 32, target: { type: '', tagName: 'BODY' } });
       document.onkeydown({ which: 32, target: { type: 'text', tagName: 'INPUT' } });

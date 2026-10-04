@@ -26,11 +26,8 @@ export function calc_notes_per_measure(division, time_sig_top, time_sig_bottom) 
 }
 
 export function isTripletDivision(division) {
-  if (division % 12 === 0)
-    // we only support 12 & 24 & 48  1/8th, 1/16, & 1/32 note triplets
-    return true;
-
-  return false;
+  // we only support 12 & 24 & 48  1/8th, 1/16, & 1/32 note triplets
+  return division % 12 === 0;
 }
 
 export function isTripletDivisionFromNotesPerMeasure(notesPerMeasure, timeSigTop, timeSigBottom) {

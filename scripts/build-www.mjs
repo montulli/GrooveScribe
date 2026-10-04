@@ -40,8 +40,15 @@ if (missing.length > 0) {
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 
+// soundfont/NewDrumSamples holds the source WAV/MP3/OGG recordings (~8 MB) the
+// soundfont was built from; the app only loads the generated gunshot-*.js files.
+const EXCLUDE = [join(repoRoot, 'soundfont', 'NewDrumSamples')];
+
 for (const item of ITEMS) {
-  cpSync(join(repoRoot, item), join(OUT, item), { recursive: true });
+  cpSync(join(repoRoot, item), join(OUT, item), {
+    recursive: true,
+    filter: (src) => !EXCLUDE.includes(src),
+  });
 }
 
 console.log(`Assembled www/ with ${ITEMS.length} runtime items.`);

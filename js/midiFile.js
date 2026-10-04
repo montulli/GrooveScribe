@@ -169,7 +169,7 @@ export function MIDI_from_HH_Snare_Kick_Arrays(
     if (metronome_frequency > 0) {
       var quarterNoteFrequency = isTriplets ? 12 : 8;
       var eighthNoteFrequency = isTriplets ? 6 : 4;
-      var sixteenthNoteFrequency = isTriplets ? 2 : 2;
+      var sixteenthNoteFrequency = 2;
 
       var metronome_specific_index = i;
       switch (offsetClickStartBeat) {

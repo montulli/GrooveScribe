@@ -32,6 +32,8 @@ import { GrooveUtils } from './groove_utils.js';
 // GrooveDisplay class.   The only one in this file.
 // singleton
 if (typeof GrooveDisplay === 'undefined') {
+  // singleton declared inside the guard on purpose; it is exported below
+  // eslint-disable-next-line sonarjs/block-scoped-var
   var GrooveDisplay = {};
 
   (function () {
