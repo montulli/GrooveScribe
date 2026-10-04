@@ -1,0 +1,889 @@
+body {
+  /* Use GrooveWriter instead of body for easy embedding */
+  margin: 0px;
+  height: 100vh;
+  background-color: var(--gray-22);
+}
+#GrooveWriter {
+  /* tag surrounds entire app */
+  /* Use the following CSS to move the app down so a nav bar can be inserted above */
+  /* width and height can also be set here to fit within a page */
+  /* carefully set the height since a vertical scroll bar will be added to the right hand
+		 * content when the height of the content is more than the height specified here.
+		 * Usually set the height to 100vh - (the height of the top nav)
+		 */
+  position: relative;
+  background-color: var(--gray-22);
+  width: 100%;
+  min-width: 320px;
+  /* to embed, add your header height here.  Replace 0px with your header height */
+  font:
+    100%/normal 'Lato',
+    Calibri,
+    sans-serif;
+}
+.fullWidthEle {
+  max-width: 1478px; /* 1550 - 72 */
+}
+
+#midiPlayer {
+  /* more #midiPlayer css in player.css */
+  background: var(--black);
+  width: 100%;
+  height: 48px;
+  position: fixed;
+  top: 49px;
+  left: 0px;
+  z-index: 999;
+  border-bottom: 1px solid var(--black);
+}
+#RightHandContent {
+  position: relative;
+  top: 98px;
+  left: 0px;
+  height: calc(100% - 98px);
+  width: 100%;
+  overflow-y: auto;
+}
+#logoTextUpperLeft {
+  padding: 9px 10px 6px 5px;
+  display: inline-block;
+}
+#logoTextUpperLeft img {
+  height: 30px;
+}
+
+#metronomeContainer {
+}
+#metronomeLabel {
+  display: inline-block;
+  height: 20px;
+  font-weight: 500;
+  margin: 0px 5px 0px 10px;
+  text-align: center;
+  color: var(--white-blue);
+}
+.metronomeButton {
+  padding: 2px;
+  cursor: pointer;
+  display: inline-block;
+  color: var(--gray-93);
+  border: 0px solid var(--navy-bright);
+  text-align: center;
+  border-radius: 20px;
+  margin: 0px 1px;
+  height: 20px;
+  transition: all 0.1s ease-in-out;
+}
+.metronomeButton:hover,
+.metronomeButton.selected:hover {
+  font-weight: 700;
+  transform: scale(1.05);
+}
+.metronomeButton.buttonSelected,
+.metronomeButton.selected {
+  /* is a button and is selected */
+  color: var(--white);
+  font-weight: 700;
+}
+.myButton:hover {
+  border-top-color: var(--blue-dark);
+  background: var(--gray-33);
+  color: var(--gray-80);
+  transform: scale(1.05);
+}
+.myButton:active {
+  border-top-color: var(--blue-darker);
+  background: var(--blue-darker);
+}
+#hiddenDescription {
+  display: none;
+}
+#musicalInput {
+  width: 100%;
+  background: var(--white);
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-bottom: 1px solid var(--gray-67);
+  text-align: center;
+  white-space: nowrap;
+}
+@media only screen and (orientation: portrait) {
+  #musicalInput {
+    white-space: normal;
+    /* wrap down on portait mode displays,
+			 *	don't wrap in landscape mode
+			 */
+  }
+}
+#musicalInput.expanded {
+  max-width: 5000px !important;
+}
+#measureContainer {
+  margin-left: auto;
+  margin-right: auto;
+}
+.staff-container {
+  margin-right: -3px;
+  margin-bottom: 0px;
+  display: inline-block;
+  background: var(--white);
+  text-align: left;
+  white-space: nowrap;
+}
+.notes-row-container {
+  display: inline-block;
+}
+.line-labels {
+  display: inline-block;
+  vertical-align: top;
+  width: 80px;
+  font-size: 20px;
+  display: table-cell;
+}
+.stickings-label {
+  display: none;
+  height: 25px;
+  background: var(--cream);
+  color: var(--black);
+  padding-top: 9px;
+  padding-left: 1px;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+}
+.hh-label {
+  display: block;
+  white-space: nowrap;
+  margin-top: 16px;
+  margin-left: 8px;
+  cursor: pointer;
+  text-align: center;
+}
+#tom1-label {
+  display: block;
+  white-space: nowrap;
+  margin-top: 5px;
+  margin-left: 8px;
+  cursor: pointer;
+  text-align: center;
+  visibility: hidden;
+}
+.snare-label {
+  margin-top: 5px;
+  margin-left: 8px;
+  cursor: pointer;
+  text-align: center;
+}
+#tom4-label {
+  display: block;
+  white-space: nowrap;
+  margin-top: 5px;
+  margin-left: 8px;
+  cursor: pointer;
+  text-align: center;
+  visibility: hidden;
+}
+.kick-label {
+  margin-top: 5px;
+  margin-left: 8px;
+  cursor: pointer;
+  text-align: center;
+}
+.stickings-label:hover {
+  color: var(--highlight-color);
+}
+.hh-label:hover,
+.snare-label:hover,
+.kick-label:hover {
+  color: var(--highlight-color);
+}
+.music-line-container {
+  display: inline-block;
+  z-index: 3;
+  display: table-cell;
+}
+.notes-container {
+  font-family: Times New Roman; /* parens around snare ghost note, R for Ride */
+  position: relative;
+  z-index: 4;
+}
+.stickings-container {
+  display: none;
+  height: 32px;
+  background: var(--cream);
+  border: 1px solid transparent;
+  margin-top: 0px;
+  white-space: nowrap;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+.background-highlight-container {
+  position: absolute;
+  height: 190px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.hi-hat-container {
+  height: 42px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+#tom1-container {
+  height: 28px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  visibility: hidden;
+}
+.snare-container {
+  border: 1px solid transparent;
+  height: 28px;
+  white-space: nowrap;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+#tom4-container {
+  height: 28px;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  visibility: hidden;
+}
+.kick-container {
+  border: 1px solid transparent;
+  height: 56px;
+  white-space: nowrap;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+.staff-line-1 {
+  position: absolute;
+  top: 42px;
+  width: 100%;
+  height: 0px;
+  border-top: 3px solid var(--gray-79);
+}
+.staff-line-2 {
+  position: absolute;
+  top: 72px;
+  width: 100%;
+  height: 0px;
+  border-top: 3px solid var(--gray-79);
+}
+.staff-line-3 {
+  position: absolute;
+  top: 103px;
+  width: 100%;
+  height: 0px;
+  border-top: 3px solid var(--gray-79);
+}
+.staff-line-4 {
+  position: absolute;
+  top: 132px;
+  width: 100%;
+  height: 0px;
+  border-top: 3px solid var(--gray-79);
+}
+.staff-line-5 {
+  position: absolute;
+  top: 163px;
+  width: 100%;
+  height: 0px;
+  border-top: 3px solid var(--gray-79);
+}
+.sticking {
+  display: inline-block;
+  position: relative;
+  border: 1px solid;
+  border-color: transparent;
+  width: 29px;
+  height: 100%;
+  margin-right: 2px;
+  margin-left: 2px;
+  margin-bottom: 0;
+}
+.bg-highlight {
+  display: inline-block;
+  width: 35px;
+  height: 192px;
+}
+.hi-hat {
+  display: inline-block;
+  position: relative;
+  border: 1px solid;
+  border-color: transparent;
+  width: 29px;
+  height: 100%;
+  margin-right: 2px;
+  margin-left: 2px;
+}
+.tom {
+  display: inline-block;
+  position: relative;
+  border: 1px solid;
+  border-color: transparent;
+  width: 29px;
+  height: 100%;
+  margin-right: 2px;
+  margin-left: 2px;
+}
+.snare {
+  display: inline-block;
+  position: relative;
+  border: 1px solid;
+  border-color: transparent;
+  width: 29px;
+  height: 100%;
+  margin-right: 2px;
+  margin-left: 2px;
+}
+.kick {
+  display: inline-block;
+  position: relative;
+  border: 1px solid;
+  border-color: transparent;
+  width: 29px;
+  height: 100%;
+  margin-right: 2px;
+  margin-left: 2px;
+}
+.note_part {
+  /* all the following note segments also share class .note_part */
+}
+.sticking_right {
+  position: absolute;
+  top: 0px;
+  left: 6px;
+  font-size: 24px;
+  color: var(--gray-80);
+  cursor: pointer;
+}
+.sticking_left {
+  position: absolute;
+  top: 0px;
+  left: 6px;
+  font-size: 24px;
+  color: var(--gray-80);
+  cursor: pointer;
+}
+.sticking_both {
+  position: absolute;
+  top: 5px;
+  left: 0px;
+  font-size: 18px;
+  color: transparent;
+  cursor: pointer;
+}
+.sticking_count {
+  position: absolute;
+  top: 0px;
+  left: 6px;
+  font-size: 24px;
+  color: transparent;
+  cursor: pointer;
+}
+.hh_crash {
+  position: absolute;
+  top: 19px;
+  left: 5px;
+  font-size: 20px;
+  color: transparent;
+  cursor: pointer;
+}
+.hh_ride {
+  position: absolute;
+  top: 18px;
+  left: 6px;
+  font-size: 20px;
+  color: transparent;
+  cursor: pointer;
+}
+.hh_ride_bell {
+  position: absolute;
+  top: 18px;
+  left: 6px;
+  font-size: 20px;
+  color: transparent;
+  cursor: pointer;
+}
+.hh_cow_bell {
+  position: absolute;
+  top: 18px;
+  left: 6px;
+  font-size: 20px;
+  color: transparent;
+  cursor: pointer;
+}
+.hh_stacker {
+  position: absolute;
+  top: 17px;
+  left: 5px;
+  font-size: 20px;
+  color: transparent;
+  cursor: pointer;
+}
+.hh_metronome_normal {
+  position: absolute;
+  top: 17px;
+  left: 5px;
+  font-size: 20px;
+  color: transparent;
+  cursor: pointer;
+}
+.hh_metronome_accent {
+  position: absolute;
+  top: 17px;
+  left: 5px;
+  font-size: 20px;
+  color: transparent;
+  cursor: pointer;
+}
+.hh_cross {
+  position: absolute;
+  top: 15px;
+  left: 5px;
+  font-size: 24px;
+  color: var(--gray-80);
+  cursor: pointer;
+}
+.hh_open {
+  position: absolute;
+  top: 3px;
+  left: 9px;
+  font-size: 13px;
+  color: transparent;
+}
+.hh_close {
+  position: absolute;
+  top: 3px;
+  left: 9px;
+  font-size: 13px;
+  color: transparent;
+  float: left;
+}
+.hh_accent {
+  position: absolute;
+  top: 0px;
+  left: 11px;
+  font-size: 20px;
+  color: transparent;
+  float: left;
+}
+.unmuteHHButton,
+.unmuteSnareButton,
+.unmuteKickButton,
+.unmuteTom1Button,
+.unmuteTom4Button {
+  display: inline-block;
+  display: none;
+  position: relative;
+  border: 1px solid;
+  border-color: transparent;
+  vertical-align: top;
+  width: 29px;
+  height: 100%;
+  margin-right: 2px;
+  margin-left: 2px;
+  cursor: pointer;
+}
+.unmuteHHButton:hover,
+.unmuteSnareButton:hover,
+.unmuteKickButton:hover,
+.unmuteTom1Button:hover,
+.unmuteTom4Button:hover {
+  opacity: 0.6;
+}
+.unmuteHHStack {
+  margin-top: 9px;
+}
+.unmuteStack {
+  margin-top: -3px;
+}
+.tom_circle {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  width: 90%;
+  height: 20px;
+  width: 20px;
+  background: var(--white);
+  border: 2px solid;
+  border-color: var(--gray-60);
+  border-radius: 30px;
+  cursor: pointer;
+}
+.dot_in_snare_ghost_note {
+  font-size: 14px;
+  position: relative;
+  top: -1px;
+  left: 0px;
+}
+.snare_ghost {
+  position: absolute;
+  top: -4px;
+  left: 1px;
+  font-size: 26px;
+  line-height: 30px;
+  color: transparent;
+  cursor: pointer;
+}
+.snare_circle {
+  position: absolute;
+  top: 0px;
+  left: 2px;
+  width: 90%;
+  line-height: 20px;
+  height: 22px;
+  width: 22px;
+  background: var(--white);
+  border: 2px solid;
+  border-color: var(--gray-60);
+  border-radius: 30px;
+  cursor: pointer;
+}
+.snare_accent {
+  position: absolute;
+  top: 5px;
+  left: 11px;
+  line-height: 15px;
+  font-size: 15px;
+  color: transparent;
+  cursor: pointer;
+}
+.snare_xstick {
+  position: absolute;
+  top: -5px;
+  left: 3px;
+  font-size: 30px;
+  color: transparent;
+  cursor: pointer;
+}
+.snare_buzz {
+  position: absolute;
+  top: 0px;
+  left: 3px;
+  font-size: 22px;
+  color: transparent;
+  cursor: pointer;
+}
+.snare_flam {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  font-size: 25px;
+  color: transparent;
+  cursor: pointer;
+}
+.snare_drag {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  font-size: 25px;
+  color: transparent;
+  cursor: pointer;
+}
+.kick_circle {
+  position: absolute;
+  top: 0px;
+  left: 2px;
+  height: 22px;
+  width: 22px;
+  background: var(--white);
+  border: 2px solid var(--gray-60);
+  border-radius: 40px 40px 40px 40px;
+  cursor: pointer;
+}
+
+.kick_splash {
+  position: absolute;
+  top: 24px;
+  left: 3px;
+  font-size: 30px;
+  color: transparent;
+  cursor: pointer;
+}
+.opening_note_space {
+  display: inline-block;
+  width: 1px;
+  height: 1px;
+  background: transparent;
+}
+.end_note_space {
+  display: inline-block;
+  width: 1px;
+  height: 1px;
+  background: transparent;
+}
+.space_between_note_groups {
+  display: inline-block;
+  width: 20px;
+  height: 1px;
+  background: transparent;
+}
+#addMeasureButton {
+  vertical-align: top;
+  display: inline-block;
+  color: var(--highlight-color-on-white);
+  cursor: pointer;
+  font-size: 40px;
+  padding-top: 2px;
+  margin-top: 73px;
+}
+
+.closeMeasureButton {
+  vertical-align: top;
+  display: inline-block;
+  margin-top: 3px;
+  cursor: pointer;
+  color: var(--highlight-color-on-white);
+}
+.closeMeasureButton:hover,
+#addMeasureButton:hover {
+  color: var(--black);
+}
+#PermutationOptions.displayed {
+  padding: 3px 0px 0px 10px;
+  background-color: var(--gray-87);
+}
+#PermutationOptionsHeader {
+  font-size: 18px;
+  font-weight: bold;
+}
+.PermutationOptionWrapper {
+  display: table;
+  border-collapse: collapse;
+}
+.PermutationOptionGroup {
+  display: table-row;
+  border-bottom: 1px solid var(--gray-60);
+}
+.PermutationOptionGroup:last-child {
+  border-bottom: 0px solid var(--gray-60);
+}
+.PermutationOption {
+  height: 20px;
+  display: table-cell;
+  padding-right: 15px;
+}
+.PermutationSubOption {
+  display: table-cell;
+  padding-right: 15px;
+}
+#showHideABC {
+  display: none;
+}
+#ABC_Results {
+  display: none;
+}
+#sheetMusicDiv {
+  background: var(--white);
+}
+
+.svgTarget {
+  background: var(--white);
+}
+
+/* override the normal 100% width that is in player.css for editing */
+#RightHandContent .svgTarget svg {
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 90%;
+  /* height: auto; */
+}
+
+.sheetMusicInputField {
+}
+/* Context Menu */
+.noteContextMenu {
+}
+.metronomeOptionsContextMenuItem:before,
+.metronomeOptionsOffsetClickContextMenuItem:before {
+  font-family: FontAwesome;
+  content: '\00a0'; /* blank space */
+  letter-spacing: 17px;
+} /* unchecked icon */
+.menuChecked:before {
+  font-family: FontAwesome;
+  content: '\f00c';
+  letter-spacing: 5px;
+} /* checked icon */
+.noteContextMenu > ul.list {
+  display: none;
+  position: fixed;
+  left: 30px;
+  top: -30px;
+  z-index: 999;
+  width: 150px;
+  margin: 0;
+  padding: 0px;
+  list-style: none;
+  background: var(--gray-93);
+  color: var(--black);
+  border: 1px solid var(--gray-22);
+  list-style: none;
+}
+.noteContextMenu > ul.list li {
+  padding: 10px;
+  border-bottom: solid 1px var(--gray-22);
+  text-decoration: none;
+}
+.noteContextMenu > ul.list li:hover,
+ul.list a:hover {
+  background: var(--gray-80);
+}
+.noteContextMenu > ul.list li:last-child {
+  border: none;
+}
+#fullURLPopup {
+  display: none;
+  position: absolute;
+  left: 300px;
+  top: 250px;
+  z-index: 999;
+  background-color: var(--white);
+  width: 400px;
+  padding: 10px;
+  border: solid 2px var(--gray-60);
+  border-radius: 5px;
+}
+
+#fullURLPopupCloseButton {
+  font-size: 100%;
+  float: right;
+  cursor: pointer;
+}
+#fullURLPopupCloseButton:hover {
+  color: var(--gray-27);
+}
+#fullURLPopupTitle {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+#fullURLPopupSubTitle {
+  color: var(--highlight-color);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+#fullURLPopupSubSubTitle {
+  font-size: 12px;
+  text-align: center;
+}
+#fullURLPopupCheckboxes {
+  display: flex;
+  width: 300px;
+  margin: 10px auto;
+  justify-content: space-around;
+}
+.fullURLPopupCheckboxLabel {
+  font-size: 12px;
+}
+.fullURLPopupCheckboxLabel input[type='checkbox'] {
+  vertical-align: middle;
+}
+#fullURLPopupTextFieldContainer {
+  margin: 0px auto;
+  width: 366px;
+}
+#fullURLPopupTextField {
+  width: 350px;
+  padding: 8px;
+  background: var(--cream-orange);
+  border: 0px;
+  border-radius: 5px;
+  text-align: center;
+}
+#fullURLPopupCopyButton {
+  font-size: 16px;
+  font-family: Lato, sans-serif;
+  font-weight: 700;
+  color: var(--black);
+  border: 0px;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+#shareButtonContainer {
+  text-align: center;
+}
+#shareButton {
+}
+.sharer-0::before {
+  top: 7px;
+}
+.sharer-0 label {
+  background: var(--highlight-color) !important;
+  color: var(--white) !important;
+}
+
+input[type='checkbox']:checked + label {
+  color: var(--black);
+  cursor: pointer;
+}
+input[type='checkbox']:not(:checked) + label {
+  color: var(--gray-53);
+  cursor: pointer;
+}
+#totalPlayTime {
+  z-index: 999;
+  position: fixed;
+  bottom: 3px;
+  right: 3px;
+  margin-right: 20px;
+  color: var(--highlight-color);
+}
+.totalTimeNum {
+  color: var(--gray-93);
+}
+.myCheckbox {
+  display: none;
+} /* to hide the checkbox itself */
+.myCheckbox + label:before {
+  font-family: FontAwesome;
+  display: inline-block;
+  /* content: "\f096";  /* uncheck box */
+  content: '\00a0'; /* blank space */
+  letter-spacing: 17px;
+} /* unchecked icon */
+.myCheckbox:checked + label:before {
+  content: '\f00c';
+  letter-spacing: 5px;
+} /* checked icon */
+#GrooveDB_source {
+  width: calc(100% - 6px);
+  height: 280px;
+}
+.edit-block {
+  display: none;
+}
+@media print {
+  /* keep at bottom so it overrides the styles above */
+  /* there is another definition in player.css that adds more rules */
+  #GrooveWriter {
+    min-width: 10px;
+  }
+
+  #RightHandContent {
+    margin-left: 0px;
+    padding-top: 0px;
+    top: 0px;
+    left: 0px;
+    overflow-y: visible;
+    width: 100% !important;
+  }
+
+  .svgTarget svg {
+    margin: 0px 0px !important;
+    width: 100% !important;
+  }
+}
+
+#GrooveDB_MetaData,
+#debugDisplayArea {
+  background-color: var(--gray-87);
+}

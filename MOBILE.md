@@ -53,8 +53,8 @@ Android APK. Shipping to stores / real iOS devices additionally needs:
 - [`scripts/build-www.mjs`](scripts/build-www.mjs) — assembles `www/` (the
   Capacitor web-dir) from the runtime files only: `index.html`, the app-wired
   pages, and `js/ css/ MIDI.js/ soundfont/ images/ font-awesome/`. It excludes
-  `node_modules`, the test suites, and the `html_examples_and_tests/` pages. The
-  full bundle is ~16 MB (mostly soundfonts).
+  `node_modules`, the test suites, the `html_examples_and_tests/` pages and the
+  `soundfont/NewDrumSamples/` source recordings. The bundle is ~3 MB.
 
 ## Building locally (optional)
 
@@ -72,6 +72,20 @@ npx cap add ios && npx cap sync ios && npx cap open ios
 Note: the repo pins **Node 22** (see [`.nvmrc`](.nvmrc)), which the CI runners
 also use. Capacitor 6 is used here; Capacitor 7 also works on Node 20+, so you
 can upgrade later if you want its newer features.
+
+## Screen orientation
+
+The native apps **start locked to landscape** (the UI is much better there on a phone). In the app,
+**Display ▸ Allow rotation** lets the screen follow the device again, and **Display ▸ Lock to
+landscape** locks it back; the choice is remembered between launches. The row only appears in the native
+apps, not on the web.
+
+It uses [`@capacitor/screen-orientation`](https://capacitorjs.com/docs/apis/screen-orientation) (a
+dependency in `package.json`, picked up by `cap sync` in CI). There is no bundler, so
+[`js/screenOrientation.js`](js/screenOrientation.js) asks Capacitor's bridge for the plugin by name.
+Nothing needs changing in the generated Android / iOS projects: Android's default activity already
+handles rotation without restarting (so playback continues), and the default iOS template allows every
+orientation, which the plugin then locks and unlocks at runtime.
 
 ## Known follow-ups (verify/fix on first on-device run)
 

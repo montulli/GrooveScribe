@@ -50,7 +50,6 @@ export default [
       'ios/**',
       // Vendored third-party libraries — not ours to lint.
       'js/abc2svg-1.js',
-      'js/pablo.js',
       'js/pablo.min.js',
       'js/jsmidgen.js',
       'js/unmute.js',
@@ -102,6 +101,7 @@ export default [
       'js/grooveData.js',
       'js/permutations.js',
       'js/hamburgerMenu.js',
+      'js/screenOrientation.js',
       'js/viewHtml.js',
       'js/gridState.js',
       'js/urlSerialization.js',
@@ -148,6 +148,9 @@ export default [
       // / legacyLoader.js), and fixtures use http:// URLs as inert test data.
       'sonarjs/code-eval': 'off',
       'sonarjs/no-clear-text-protocols': 'off',
+      // The golden helpers (expectGolden) and Playwright's expect.poll assert for real, but
+      // the rule cannot see through them.
+      'sonarjs/assertions-in-tests': 'off',
     },
   },
 

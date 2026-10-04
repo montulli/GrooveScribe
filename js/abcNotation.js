@@ -157,7 +157,7 @@ function count_active_notes_in_arrays(array_of_arrays, start_index, how_far_to_m
     for (var which_array = 0; which_array < array_of_arrays.length; which_array++) {
       if (array_of_arrays[which_array][i] !== false) {
         num_active_notes++;
-        which_array = array_of_arrays.length; // exit this inner for loop immediately
+        break; // exit this inner for loop immediately
       }
     }
   }
@@ -234,7 +234,7 @@ function snare_HH_kick_ABC_for_triplets(
       } else if (0 == count_active_notes_in_arrays(all_drum_array_of_array, i + 1, 11)) {
         // code duplicated from below
         // clear any invalid stickings since they will mess up the formatting greatly
-        for (var si = i + 1; si < i + 12; si++) sticking_array[si] = false;
+        for (let si = i + 1; si < i + 12; si++) sticking_array[si] = false;
         stickings_voice_string += getABCforRest([sticking_array], i, 8, scaler, true);
         stickings_voice_string += getABCforNote([sticking_array], i, 8, scaler);
 
@@ -259,7 +259,7 @@ function snare_HH_kick_ABC_for_triplets(
         for (var eighth_index = i; eighth_index <= i + 6; eighth_index += 6) {
           // code duplicated from below
           // clear any invalid stickings since they will mess up the formatting greatly
-          for (si = eighth_index + 1; si < eighth_index + 6; si++) sticking_array[si] = false;
+          for (let si = eighth_index + 1; si < eighth_index + 6; si++) sticking_array[si] = false;
           stickings_voice_string += getABCforRest([sticking_array], eighth_index, 4, scaler, true);
           stickings_voice_string += getABCforNote([sticking_array], eighth_index, 4, scaler);
 
@@ -311,7 +311,7 @@ function snare_HH_kick_ABC_for_triplets(
         for (eighth_index = i; eighth_index <= i + 9; eighth_index += 3) {
           // code duplicated from below
           // clear any invalid stickings since they will mess up the formatting greatly
-          for (si = eighth_index + 1; si < eighth_index + 3; si++) sticking_array[si] = false;
+          for (let si = eighth_index + 1; si < eighth_index + 3; si++) sticking_array[si] = false;
           stickings_voice_string += getABCforRest([sticking_array], eighth_index, 2, scaler, true);
           stickings_voice_string += getABCforNote([sticking_array], eighth_index, 2, scaler);
 
@@ -371,7 +371,7 @@ function snare_HH_kick_ABC_for_triplets(
             ) {
               can_fake_sixes = false;
             }
-            if (can_fake_threes == false && can_fake_sixes == false) break; // skip the rest, since we have an answer already
+            if (!can_fake_threes && !can_fake_sixes) break; // skip the rest, since we have an answer already
           }
 
           // reset

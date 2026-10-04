@@ -1,0 +1,341 @@
+{
+ "stickingContextMenu": [
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"sticking\",\"off\");",
+   "text": "Off"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"sticking\",\"right\");",
+   "text": "Right"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"sticking\",\"left\");",
+   "text": "Left"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"sticking\",\"both\");",
+   "text": "R/L"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"sticking\",\"count\");",
+   "text": "Count"
+  }
+ ],
+ "hhContextMenu": [
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"hh\",\"off\");",
+   "text": "Off"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"hh\",\"normal\");",
+   "text": "Hi-hat normal"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"hh\",\"open\");",
+   "text": "Hi-hat open"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"hh\",\"accent\");",
+   "text": "Hi-hat accent"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"hh\",\"crash\");",
+   "text": "Crash"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"hh\",\"ride\");",
+   "text": "Ride"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"hh\",\"ride_bell\");",
+   "text": "Ride Bell"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"hh\",\"cow_bell\");",
+   "text": "Cow Bell"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"hh\",\"stacker\");",
+   "text": "Stacker"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"hh\",\"metronome_normal\");",
+   "text": "Click"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"hh\",\"metronome_accent\");",
+   "text": "Click - accent"
+  }
+ ],
+ "tom1ContextMenu": [
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"tom1\",\"off\");",
+   "text": "Off"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"tom1\",\"normal\");",
+   "text": "Tom Normal"
+  }
+ ],
+ "tom4ContextMenu": [
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"tom4\",\"off\");",
+   "text": "Off"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"tom4\",\"normal\");",
+   "text": "Tom Normal"
+  }
+ ],
+ "snareContextMenu": [
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"snare\",\"off\");",
+   "text": "Off"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"snare\",\"normal\");",
+   "text": "Snare Normal"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"snare\",\"accent\");",
+   "text": "Snare Accent"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"snare\",\"ghost\");",
+   "text": "Ghost Note"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"snare\",\"xstick\");",
+   "text": "Cross Stick"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"snare\",\"buzz\");",
+   "text": "Buzz Stroke"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"snare\",\"flam\");",
+   "text": "Flam"
+  }
+ ],
+ "kickContextMenu": [
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"kick\",\"off\");",
+   "text": "Off"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"kick\",\"normal\");",
+   "text": "Kick Normal"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"kick\",\"splash\");",
+   "text": "Hi-hat foot"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.notePopupClick(\"kick\",\"kick_and_splash\");",
+   "text": "Kick & Hi-hat foot"
+  }
+ ],
+ "stickingsLabelContextMenu": [
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"stickings\",\"all_off\");",
+   "text": "all Off"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"stickings\",\"alternate\");",
+   "text": "alternate R/L"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"stickings\",\"all_right\");",
+   "text": "all Rs"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"stickings\",\"all_left\");",
+   "text": "all Ls"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"stickings\",\"all_count\");",
+   "text": "Counts"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"stickings\",\"cancel\");",
+   "text": "cancel"
+  }
+ ],
+ "hhLabelContextMenu": [
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"hh\",\"all_off\");",
+   "text": "all Hi-hats Off"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"hh\",\"all_on\");",
+   "text": "all Hi-hats On"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"hh\",\"downbeats\");",
+   "text": "downbeats"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"hh\",\"upbeats\");",
+   "text": "upbeats"
+  },
+  {
+   "id": "mute_hh_menu_item",
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"hh\",\"mute\");",
+   "text": "mute HH sound"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"hh\",\"cancel\");",
+   "text": "cancel"
+  }
+ ],
+ "tom1LabelContextMenu": [
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"tom1\",\"all_off\");",
+   "text": "all Toms Off"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"tom1\",\"all_on\");",
+   "text": "all Toms On"
+  },
+  {
+   "id": "mute_tom1_menu_item",
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"tom1\",\"mute\");",
+   "text": "mute tom sound"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"tom1\",\"cancel\");",
+   "text": "cancel"
+  }
+ ],
+ "tom4LabelContextMenu": [
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"tom4\",\"all_off\");",
+   "text": "all Toms Off"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"tom4\",\"all_on\");",
+   "text": "all Toms On"
+  },
+  {
+   "id": "mute_tom4_menu_item",
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"tom4\",\"mute\");",
+   "text": "mute tom sound"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"tom4\",\"cancel\");",
+   "text": "cancel"
+  }
+ ],
+ "snareLabelContextMenu": [
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"snare\",\"all_off\");",
+   "text": "all Snares Off"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"snare\",\"all_on\");",
+   "text": "all Accented"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"snare\",\"all_on_normal\");",
+   "text": "all Normal"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"snare\",\"all_on_ghost\");",
+   "text": "all Ghosts"
+  },
+  {
+   "id": "mute_snare_menu_item",
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"snare\",\"mute\");",
+   "text": "mute snare sound"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"snare\",\"cancel\");",
+   "text": "cancel"
+  }
+ ],
+ "kickLabelContextMenu": [
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"kick\",\"all_off\");",
+   "text": "all Kicks Off"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"kick\",\"all_on\");",
+   "text": "all Kicks On"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"kick\",\"hh_foot_nums_on\");",
+   "text": "HH foot #'s On"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"kick\",\"hh_foot_ands_on\");",
+   "text": "HH foot &'s On"
+  },
+  {
+   "id": "mute_kick_menu_item",
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"kick\",\"mute\");",
+   "text": "mute kick sound"
+  },
+  {
+   "id": null,
+   "onclick": "myGrooveWriter.noteLabelPopupClick(\"kick\",\"cancel\");",
+   "text": "cancel"
+  }
+ ]
+}

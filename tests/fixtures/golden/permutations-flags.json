@@ -1,0 +1,310 @@
+{
+  "hashes": {
+    "0": "47db6869095d79bc5687622921de23e033ee3c6a47b16271975f213d1abc7831",
+    "1": "edbb4880d3ffe4d09d6d1b415696db04e252b7db5516890de42280c1383163aa",
+    "2": "6a55da3772c9fb8220c6ba0db825a2b6b664893ff2231e17fe63627f1b8c9041",
+    "3": "2360124d9098b5e72a9adc665d747a37a303037bce440b4161f96ca936a959fe",
+    "4": "a8a75d883acd9fc9989ae99036d966c66c5a92cacf6f6ab79ecdd7514d3bb033",
+    "5": "c8725d19be71bb71fbf0a1ac32cb34bcc8bf6c298daf9e25a4a49606781d5df4",
+    "6": "9829b396a4f9c7f1246bb9edd320b7a7ca37296e75d79d9c228c8b03c5e261d7",
+    "7": "5bb49bce7e9505b342b3762f14e2d43a2dea341dfdd373304a7f5792f09d0085",
+    "8": "00467bb096ccbec60d7510a1bea50912ed74a9ef00b28f020a4cc2f5d7f841c6",
+    "9": "f5d014c971e64e4d9923bfdb67bc2a5f71f58b171f347060e8bb70dca0894d44",
+    "10": "6a46c801bdcbb151470bb3aa0758d82ee4b32f6593ffd3ae12d6780c82fa1ae2",
+    "11": "7a9c323e2dc85eb09cb9d8c514cc9080deb15c3598d68bb3480a69f5f573a9bc",
+    "12": "36bbd193f80a3da0ff862b11ba64edb91da9a0eaa64fa1c38b467e4a88d907d2",
+    "13": "28eeadfe009e2f6b242277c0c2d518aa2db918686c676148084d40e860a8b674",
+    "14": "b9f35e67cb02b9346b9eab2f21848e9fa05494623f252d1654422a2479e07d26",
+    "15": "47db6869095d79bc5687622921de23e033ee3c6a47b16271975f213d1abc7831"
+  },
+  "samples": {
+    "0": [
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": false,
+        "isLast": false
+      }
+    ],
+    "1": [
+      {
+        "showTitle": true,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": true,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": false
+      }
+    ],
+    "2": [
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": true,
+        "isLast": false
+      },
+      {
+        "showTitle": false,
+        "isLast": false
+      }
+    ],
+    "3": [
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": false,
+        "isLast": true
+      }
+    ],
+    "4": [
+      {
+        "showTitle": false,
+        "isLast": true
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": false,
+        "isLast": true
+      },
+      {
+        "showTitle": false,
+        "isLast": true
+      }
+    ],
+    "5": [
+      {
+        "showTitle": true,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": true,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": false
+      }
+    ],
+    "6": [
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": true,
+        "isLast": false
+      },
+      {
+        "showTitle": false,
+        "isLast": false
+      }
+    ],
+    "7": [
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": false,
+        "isLast": true
+      }
+    ],
+    "8": [
+      {
+        "showTitle": false,
+        "isLast": true
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": false,
+        "isLast": true
+      },
+      {
+        "showTitle": false,
+        "isLast": true
+      }
+    ],
+    "9": [
+      {
+        "showTitle": true,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": true,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      }
+    ],
+    "10": [
+      {
+        "showTitle": false,
+        "isLast": true
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": false,
+        "isLast": true
+      }
+    ],
+    "11": [
+      {
+        "showTitle": true,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": true,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": false
+      }
+    ],
+    "12": [
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": true,
+        "isLast": false
+      },
+      {
+        "showTitle": false,
+        "isLast": false
+      }
+    ],
+    "13": [
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": false,
+        "isLast": true
+      }
+    ],
+    "14": [
+      {
+        "showTitle": false,
+        "isLast": true
+      },
+      {
+        "showTitle": true,
+        "isLast": true
+      },
+      {
+        "showTitle": false,
+        "isLast": true
+      },
+      {
+        "showTitle": false,
+        "isLast": true
+      }
+    ],
+    "15": [
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": false,
+        "isLast": false
+      },
+      {
+        "showTitle": false,
+        "isLast": false
+      }
+    ]
+  }
+}

@@ -10,7 +10,6 @@ ios/
 
 # Vendored third-party libraries (not ours to format)
 js/abc2svg-1.js
-js/pablo.js
 js/pablo.min.js
 js/jsmidgen.js
 js/unmute.js
@@ -30,3 +29,4 @@ tests/**/__snapshots__/
 # formatting changes can't be verified as behavior-preserving), and several
 # files contain pre-existing markup errors Prettier cannot parse.
 *.html
+tests/fixtures/golden/

@@ -152,9 +152,7 @@ function GrooveWriter() {
 
   // is the division a triplet groove?   12, 24, or 48 notes
   function usingTriplets() {
-    if (root.myGrooveUtils.isTripletDivision(class_time_division)) return true;
-
-    return false;
+    return root.myGrooveUtils.isTripletDivision(class_time_division);
   }
 
   function addOrRemoveKeywordFromClass(tag_class, keyword, addElseRemove) {
@@ -553,6 +551,54 @@ function GrooveWriter() {
 
     set_sticking_state(id, new_state, true);
   }
+
+  // One row per drum line, so the click / menu / URL handlers need no per-instrument
+  // switches. `set` writes a cell, `isOn`/`onState` drive the left-click toggle and
+  // the ctrl-hover "on" gesture (stickings rotate instead, so they have no isOn).
+  // `labelKey` names the row-label menu and `urlKey` the URL query parameter.
+  var INSTRUMENTS = {
+    sticking: {
+      labelKey: 'stickings',
+      urlKey: 'Stickings',
+      set: set_sticking_state,
+      onState: 'right',
+    },
+    hh: { labelKey: 'hh', urlKey: 'H', set: set_hh_state, isOn: is_hh_on, onState: 'normal' },
+    tom1: {
+      labelKey: 'tom1',
+      urlKey: 'T1',
+      set: set_tom1_state,
+      isOn: (id) => is_tom_on(id, 1),
+      onState: 'normal',
+    },
+    tom4: {
+      labelKey: 'tom4',
+      urlKey: 'T4',
+      set: set_tom4_state,
+      isOn: (id) => is_tom_on(id, 4),
+      onState: 'normal',
+    },
+    snare: {
+      labelKey: 'snare',
+      urlKey: 'S',
+      set: set_snare_state,
+      isOn: is_snare_on,
+      onState: 'accent',
+    },
+    kick: {
+      labelKey: 'kick',
+      urlKey: 'K',
+      set: set_kick_state,
+      isOn: is_kick_on,
+      onState: 'normal',
+    },
+  };
+  var INSTRUMENTS_BY_LABEL = {};
+  var INSTRUMENTS_BY_URL_KEY = {};
+  Object.values(INSTRUMENTS).forEach(function (info) {
+    INSTRUMENTS_BY_LABEL[info.labelKey] = info;
+    INSTRUMENTS_BY_URL_KEY[info.urlKey] = info;
+  });
 
   // highlight the note, this is used to play along with the midi track
   // only one note for each instrument can be highlighted at a time
@@ -1037,8 +1083,7 @@ function GrooveWriter() {
     // find unmuteHHButton1  or unmuteSnareButton2
     var buttonName = 'unmute' + instrument + 'Button' + measure;
     var button = document.getElementById(buttonName);
-    if (button && button.style.display == 'inline-block') return true;
-    else return false;
+    return Boolean(button) && button.style.display == 'inline-block';
   }
 
   root.helpMenuPopupClick = function (help_type) {
@@ -1081,28 +1126,11 @@ function GrooveWriter() {
     // Yes, I agree this sucks
     class_measure_for_note_label_click = measure;
 
-    switch (instrument) {
-      case 'stickings':
-        contextMenu = document.getElementById('stickingsLabelContextMenu');
-        break;
-      case 'hh':
-        contextMenu = document.getElementById('hhLabelContextMenu');
-        break;
-      case 'tom1':
-        contextMenu = document.getElementById('tom1LabelContextMenu');
-        break;
-      case 'tom4':
-        contextMenu = document.getElementById('tom4LabelContextMenu');
-        break;
-      case 'snare':
-        contextMenu = document.getElementById('snareLabelContextMenu');
-        break;
-      case 'kick':
-        contextMenu = document.getElementById('kickLabelContextMenu');
-        break;
-      default:
-        console.log('bad case in noteLabelClick: ' + instrument);
-        break;
+    var labelInfo = INSTRUMENTS_BY_LABEL[instrument];
+    if (labelInfo) {
+      contextMenu = document.getElementById(instrument + 'LabelContextMenu');
+    } else {
+      console.log('bad case in noteLabelClick: ' + instrument);
     }
 
     if (contextMenu) {
@@ -1117,32 +1145,21 @@ function GrooveWriter() {
     return false;
   };
 
-  root.noteLabelPopupClick = function (instrument, action) {
-    var setFunction = false;
+  // Keep a note's kick as it is and add or remove the hi-hat foot (splash) on it.
+  function kickStateWithHHFoot(id, hhFootOn) {
+    var cur_state = get_kick_state(id, 'ABC');
+    var kick_is_on = cur_state == constant_ABC_KI_SandK || cur_state == constant_ABC_KI_Normal;
+    if (hhFootOn) return kick_is_on ? 'kick_and_splash' : 'splash';
+    return kick_is_on ? 'normal' : 'off';
+  }
 
-    switch (instrument) {
-      case 'stickings':
-        setFunction = set_sticking_state;
-        break;
-      case 'hh':
-        setFunction = set_hh_state;
-        break;
-      case 'tom1':
-        setFunction = set_tom1_state;
-        break;
-      case 'tom4':
-        setFunction = set_tom4_state;
-        break;
-      case 'snare':
-        setFunction = set_snare_state;
-        break;
-      case 'kick':
-        setFunction = set_kick_state;
-        break;
-      default:
-        console.log('bad case in noteLabelPopupClick');
-        return false;
+  root.noteLabelPopupClick = function (instrument, action) {
+    var labelInfo = INSTRUMENTS_BY_LABEL[instrument];
+    if (!labelInfo) {
+      console.log('bad case in noteLabelPopupClick');
+      return false;
     }
+    var setFunction = labelInfo.set;
 
     if (action == 'mute') {
       root.muteInstrument(instrument, class_measure_for_note_label_click, true);
@@ -1186,38 +1203,13 @@ function GrooveWriter() {
         set_snare_state(i, 'ghost', i == startIndex);
       } else if (instrument == 'kick' && action == 'hh_foot_nums_on') {
         var num_notes_per_count = class_time_division / class_note_value_per_measure;
-        var cur_state = get_kick_state(i, 'ABC');
-        var kick_is_on = false;
-        if (cur_state == constant_ABC_KI_SandK || cur_state == constant_ABC_KI_Normal)
-          kick_is_on = true;
-        set_kick_state(
-          i,
-          i % num_notes_per_count === 0
-            ? kick_is_on
-              ? 'kick_and_splash'
-              : 'splash'
-            : kick_is_on
-              ? 'normal'
-              : 'off',
-          i == startIndex
-        );
+        set_kick_state(i, kickStateWithHHFoot(i, i % num_notes_per_count === 0), i == startIndex);
       } else if (instrument == 'kick' && action == 'hh_foot_ands_on') {
-        num_notes_per_count = class_time_division / class_note_value_per_measure;
-        cur_state = get_kick_state(i, 'ABC');
-        kick_is_on = false;
-        if (cur_state == constant_ABC_KI_SandK || cur_state == constant_ABC_KI_Normal)
-          kick_is_on = true;
-
+        var notes_per_count = class_time_division / class_note_value_per_measure;
         set_kick_state(
           i,
-          i % num_notes_per_count === num_notes_per_count / 2
-            ? kick_is_on
-              ? 'kick_and_splash'
-              : 'splash'
-            : kick_is_on
-              ? 'normal'
-              : 'off',
-          i == startIndex + num_notes_per_count / 2
+          kickStateWithHHFoot(i, i % notes_per_count === notes_per_count / 2),
+          i == startIndex + notes_per_count / 2
         );
       } else if (action == 'all_on') {
         setFunction(i, 'normal', i == startIndex);
@@ -1241,28 +1233,10 @@ function GrooveWriter() {
     class_which_index_last_clicked = id;
     var contextMenu;
 
-    switch (type) {
-      case 'sticking':
-        contextMenu = document.getElementById('stickingContextMenu');
-        break;
-      case 'hh':
-        contextMenu = document.getElementById('hhContextMenu');
-        break;
-      case 'tom1':
-        contextMenu = document.getElementById('tom1ContextMenu');
-        break;
-      case 'tom4':
-        contextMenu = document.getElementById('tom4ContextMenu');
-        break;
-      case 'snare':
-        contextMenu = document.getElementById('snareContextMenu');
-        break;
-      case 'kick':
-        contextMenu = document.getElementById('kickContextMenu');
-        break;
-      default:
-        console.log('Bad case in handleNotePopup');
-        break;
+    if (INSTRUMENTS[type]) {
+      contextMenu = document.getElementById(type + 'ContextMenu');
+    } else {
+      console.log('Bad case in handleNotePopup');
     }
 
     if (contextMenu) {
@@ -1285,28 +1259,13 @@ function GrooveWriter() {
       root.noteRightClick(event, type, id);
     } else {
       // this is a non advanced edit left click
-      switch (type) {
-        case 'hh':
-          set_hh_state(id, is_hh_on(id) ? 'off' : 'normal', true);
-          break;
-        case 'snare':
-          set_snare_state(id, is_snare_on(id) ? 'off' : 'accent', true);
-          break;
-        case 'tom1':
-          set_tom_state(id, 1, is_tom_on(id, 1) ? 'off' : 'normal', true);
-          break;
-        case 'tom4':
-          set_tom_state(id, 4, is_tom_on(id, 4) ? 'off' : 'normal', true);
-          break;
-        case 'kick':
-          set_kick_state(id, is_kick_on(id) ? 'off' : 'normal', true);
-          break;
-        case 'sticking':
-          sticking_rotate_state(id);
-          break;
-        default:
-          console.log('Bad case in noteLeftClick: ' + type);
-          break;
+      var info = INSTRUMENTS[type];
+      if (type == 'sticking') {
+        sticking_rotate_state(id);
+      } else if (info) {
+        info.set(id, info.isOn(id) ? 'off' : info.onState, true);
+      } else {
+        console.log('Bad case in noteLeftClick: ' + type);
       }
 
       updateSheetMusic();
@@ -1316,28 +1275,10 @@ function GrooveWriter() {
   root.notePopupClick = function (type, new_setting) {
     var id = class_which_index_last_clicked;
 
-    switch (type) {
-      case 'sticking':
-        set_sticking_state(id, new_setting, true);
-        break;
-      case 'hh':
-        set_hh_state(id, new_setting, true);
-        break;
-      case 'tom1':
-        set_tom1_state(id, new_setting, true);
-        break;
-      case 'tom4':
-        set_tom4_state(id, new_setting, true);
-        break;
-      case 'snare':
-        set_snare_state(id, new_setting, true);
-        break;
-      case 'kick':
-        set_kick_state(id, new_setting, true);
-        break;
-      default:
-        console.log('Bad case in contextMenuClick');
-        break;
+    if (INSTRUMENTS[type]) {
+      INSTRUMENTS[type].set(id, new_setting, true);
+    } else {
+      console.log('Bad case in contextMenuClick');
     }
 
     updateSheetMusic();
@@ -1352,28 +1293,11 @@ function GrooveWriter() {
     if (event.altKey) action = 'off';
 
     if (action) {
-      switch (instrument) {
-        case 'hh':
-          set_hh_state(id, action == 'off' ? 'off' : 'normal', true);
-          break;
-        case 'snare':
-          set_snare_state(id, action == 'off' ? 'off' : 'accent', true);
-          break;
-        case 'kick':
-          set_kick_state(id, action == 'off' ? 'off' : 'normal', true);
-          break;
-        case 'tom1':
-          set_tom_state(id, 1, action == 'off' ? 'off' : 'normal', true);
-          break;
-        case 'tom4':
-          set_tom_state(id, 4, action == 'off' ? 'off' : 'normal', true);
-          break;
-        case 'sticking':
-          set_sticking_state(id, action == 'off' ? 'off' : 'right', true);
-          break;
-        default:
-          console.log('Bad case in noteOnMouseEnter');
-          break;
+      var info = INSTRUMENTS[instrument];
+      if (info) {
+        info.set(id, action == 'off' ? 'off' : info.onState, true);
+      } else {
+        console.log('Bad case in noteOnMouseEnter');
       }
       updateSheetMusic(); // update music
     }
@@ -1861,7 +1785,9 @@ function GrooveWriter() {
     myGrooveData.metronomeFrequency = root.getMetronomeFrequency();
     myGrooveData.kickStemsUp = true;
 
-    for (var i = 0; i < class_number_of_measures; i++) {
+    // (the loop that used to wrap this reused its counter below, so it only ever ran once)
+    if (class_number_of_measures > 0) {
+      var i;
       var total_notes = class_notes_per_measure * class_number_of_measures;
       myGrooveData.sticking_array = [];
       myGrooveData.hh_array = [];
@@ -2127,7 +2053,7 @@ function GrooveWriter() {
     try {
       window.history.replaceState(null, newTitle, newURL);
     } catch (err) {
-      /* empty */
+      console.debug('history.replaceState not available', err);
     }
 
     if (root.myGrooveUtils.debugMode) {
@@ -2152,8 +2078,8 @@ function GrooveWriter() {
       get_empty_note_array_in_32nds(),
       get_empty_note_array_in_32nds(),
     ];
-    var numSections = get_numSectionsFor_permutation_array();
-    var i, new_snare_array, post_abc;
+    var numSections;
+    var i, new_snare_array, post_abc, flags;
     var num_notes = get32NoteArrayFromClickableUI(
       Sticking_Array,
       HH_Array,
@@ -2206,7 +2132,7 @@ function GrooveWriter() {
             Kick_Array = _perm.filter_kick_array_for_permutation(Kick_Array);
             new_kick_array = _perm.merge_kick_arrays(new_kick_array, Kick_Array);
 
-            var flags = _perm.get_permutation_display_flags(i, shouldDisplayPermutationForSection);
+            flags = _perm.get_permutation_display_flags(i, shouldDisplayPermutationForSection);
             post_abc = get_permutation_post_ABC(i, flags.isLast);
 
             fullABC += get_permutation_pre_ABC(i, flags.showTitle);
@@ -3058,25 +2984,13 @@ function GrooveWriter() {
   function setNotesFromURLData(drumType, noteString, numberOfMeasures) {
     var setFunction;
 
-    if (drumType == 'Stickings') {
-      setFunction = set_sticking_state;
-    } else if (drumType == 'H') {
-      setFunction = set_hh_state;
-    } else if (drumType == 'T1') {
-      setFunction = set_tom1_state;
-    } else if (drumType == 'T4') {
-      setFunction = set_tom4_state;
-    } else if (drumType == 'S') {
-      setFunction = set_snare_state;
-    } else if (drumType == 'K') {
-      setFunction = set_kick_state;
-    }
+    if (INSTRUMENTS_BY_URL_KEY[drumType]) setFunction = INSTRUMENTS_BY_URL_KEY[drumType].set;
 
     // decode the %7C url encoding types
     noteString = decodeURIComponent(noteString);
 
     // ignore ":" and "|" by removing them
-    var notes = noteString.replace(/:|\|/g, '');
+    var notes = noteString.replace(/[:|]/g, '');
 
     // multiple measures of "how_many_notes"
     var notesOnScreen = class_notes_per_measure * numberOfMeasures;
@@ -3198,19 +3112,7 @@ function GrooveWriter() {
       displayScaler = Math.ceil(notesOnScreen / abcArray.length);
     }
 
-    if (drumType == 'Stickings') {
-      setFunction = set_sticking_state;
-    } else if (drumType == 'H') {
-      setFunction = set_hh_state;
-    } else if (drumType == 'T1') {
-      setFunction = set_tom1_state;
-    } else if (drumType == 'T4') {
-      setFunction = set_tom4_state;
-    } else if (drumType == 'S') {
-      setFunction = set_snare_state;
-    } else if (drumType == 'K') {
-      setFunction = set_kick_state;
-    }
+    if (INSTRUMENTS_BY_URL_KEY[drumType]) setFunction = INSTRUMENTS_BY_URL_KEY[drumType].set;
 
     //  DisplayIndex is the index into the notes on the HTML page  starts at 1/32\n%%flatbeams
     var displayIndex = 0;
@@ -3492,6 +3394,8 @@ function GrooveWriter() {
   root.show_FullURLPopup = function () {
     document.getElementById('fullURLPopup');
 
+    // the ShareButton API is constructor-driven: it builds its UI as a side effect
+    // eslint-disable-next-line sonarjs/constructor-for-side-effects
     new ShareButton({
       ui: {
         flyout: 'bottom center', // change the flyout direction of the shares. chose from `top left`, `top center`, `top right`, `bottom left`, `bottom right`, `bottom center`, `middle left`, or `middle right` [Default: `top center`]

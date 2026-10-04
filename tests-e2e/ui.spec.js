@@ -504,10 +504,32 @@ test.describe('info pages', () => {
     });
   }
 
+  for (const file of ['/gscribe_help.html', '/gscribe_about.html']) {
+    test(`${file}: "Open GrooveScribe" opens a fully styled editor`, async ({ page }) => {
+      const missing = [];
+      page.on('response', (r) => {
+        if (r.url().includes('/css/') && r.status() >= 400) missing.push(r.url());
+      });
+      await page.goto(file);
+      await page.click('a.open');
+      await page.waitForSelector('#svgTarget svg');
+      expect(missing, 'stylesheets that failed to load').toEqual([]);
+      // the top bar gradient and the player bar both come from the stylesheets
+      const styles = await page.evaluate(() => ({
+        header: getComputedStyle(document.getElementById('TopNav')).backgroundImage,
+        player: getComputedStyle(document.querySelector('.playerControl')).backgroundColor,
+        bpm: getComputedStyle(document.querySelector('.tempoRow')).display,
+      }));
+      expect(styles.header).toContain('linear-gradient');
+      expect(styles.player).toBe('rgb(34, 34, 34)');
+      expect(styles.bpm).toBe('flex');
+    });
+  }
+
   test('every help contents link points at a section on the page', async ({ page }) => {
     await page.goto('/gscribe_help.html');
     const hrefs = await page.$$eval('.toc a', (links) => links.map((a) => a.getAttribute('href')));
-    expect(hrefs.length).toBe(12);
+    expect(hrefs).toHaveLength(12);
     for (const href of hrefs) {
       await expect(page.locator(href), href).toHaveCount(1);
     }
@@ -530,5 +552,61 @@ test.describe('info pages', () => {
     ]);
     await popup.waitForLoadState();
     expect(popup.url()).toContain('gscribe_help.html');
+  });
+});
+
+test.describe('native app screen rotation', () => {
+  // the row holds both labels; only one is visible
+  const rowLabel = (page) =>
+    page.evaluate(() => document.getElementById('screenRotationButton').innerText.trim());
+
+  test('the rotation row is hidden on the web', async ({ page }) => {
+    await openGroup(page, 'displayAnchor');
+    await expect(page.locator('#screenRotationButton')).toBeHidden();
+  });
+
+  test.describe('inside a native app', () => {
+    // Capacitor's bridge is injected into the WebView by the native app; stand in for it
+    test.beforeEach(async ({ page }) => {
+      await page.addInitScript(() => {
+        const calls = (window.__orientationCalls = []);
+        window.Capacitor = {
+          isNativePlatform: () => true,
+          registerPlugin: () => ({
+            lock: (options) => calls.push(['lock', options.orientation]),
+            unlock: () => calls.push(['unlock']),
+          }),
+        };
+      });
+      await page.reload();
+      await page.waitForSelector('#svgTarget svg');
+    });
+
+    test('starts locked to landscape and offers to allow rotation', async ({ page }) => {
+      expect(await page.evaluate(() => window.__orientationCalls)).toEqual([['lock', 'landscape']]);
+      await openGroup(page, 'displayAnchor');
+      await expect(page.locator('#screenRotationButton')).toBeVisible();
+      expect(await rowLabel(page)).toBe('Allow rotation');
+    });
+
+    test('Allow rotation unlocks, and the row then offers to lock again', async ({ page }) => {
+      await chooseFromGroup(page, 'displayAnchor', 'screenRotationButton');
+      expect((await page.evaluate(() => window.__orientationCalls)).at(-1)).toEqual(['unlock']);
+
+      await openGroup(page, 'displayAnchor');
+      expect(await rowLabel(page)).toBe('Lock to landscape');
+      await page.click('#screenRotationButton');
+      expect((await page.evaluate(() => window.__orientationCalls)).at(-1)).toEqual([
+        'lock',
+        'landscape',
+      ]);
+    });
+
+    test('the choice is remembered on the next launch', async ({ page }) => {
+      await chooseFromGroup(page, 'displayAnchor', 'screenRotationButton');
+      await page.reload();
+      await page.waitForSelector('#svgTarget svg');
+      expect(await page.evaluate(() => window.__orientationCalls)).toEqual([['unlock']]);
+    });
   });
 });

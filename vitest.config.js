@@ -18,7 +18,6 @@ export default defineConfig({
       include: ['js/**/*.js'],
       exclude: [
         'js/abc2svg-1.js',
-        'js/pablo.js',
         'js/pablo.min.js',
         'js/jsmidgen.js',
         'js/share-button.min.js',

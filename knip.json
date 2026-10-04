@@ -4,12 +4,16 @@
   "project": ["js/**/*.js", "tests/**/*.js", "tests-e2e/**/*.js"],
   "ignore": [
     "js/abc2svg-1.js",
-    "js/pablo.js",
     "js/pablo.min.js",
     "js/jsmidgen.js",
     "js/unmute.js",
     "js/share-button.min.js",
     "js/*.min.js"
   ],
-  "ignoreDependencies": ["@capacitor/core", "@capacitor/android", "@capacitor/ios"]
+  "ignoreDependencies": [
+    "@capacitor/core",
+    "@capacitor/android",
+    "@capacitor/ios",
+    "@capacitor/screen-orientation"
+  ]
 }

@@ -1,0 +1,560 @@
+/* Top bar, hamburger menu and the "Time & Subdivision" dialog (index.html).
+ * Loaded after editor.css and player.css. Behavior: js/hamburgerMenu.js. */
+
+/* ---- top bar: [logo] [metronome ............ View/Edit  ☰] ---- */
+#TopNav {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 998;
+  width: 100%;
+  height: 49px; /* 48px + its 1px bottom border; the player bar sits at top: 49px */
+  border-bottom: 1px solid var(--black);
+  background: linear-gradient(to right, var(--header-bg-start-color), var(--header-bg-end-color));
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 6px;
+}
+#upperLeft {
+  margin-top: 0;
+  display: inline-block;
+  white-space: nowrap;
+  vertical-align: top;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+#upperRight {
+  margin-top: 12px;
+  display: flex;
+  float: none;
+  margin-right: 10px;
+  white-space: nowrap;
+  vertical-align: top;
+  margin: 0;
+  align-items: center;
+  flex: 0 0 auto;
+}
+#viewEditButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 84px;
+  height: 34px;
+  margin-right: 6px;
+  padding: 0 6px;
+  border: 1px solid var(--gray-93);
+  border-radius: 17px;
+  color: var(--gray-93);
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 1.1;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+#viewEditButton:hover {
+  background: var(--wash-15);
+}
+#hamburgerButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--white);
+  cursor: pointer;
+}
+/* below ~660px the full-size top bar no longer fits (the metronome row runs into View/Edit) */
+@media screen and (max-width: 660px) {
+  #logoTextUpperLeft,
+  #metronomeLabel {
+    display: none;
+  }
+  #upperLeft {
+    font-size: 12px;
+  }
+  #viewEditButton {
+    width: 70px;
+    font-size: 9px;
+  }
+  #metronomeContainer .metronomeButton {
+    margin: 0;
+    padding: 2px 3px;
+  }
+}
+
+/* ---- hamburger menu panel ---- */
+#hamburgerMenu {
+  display: none;
+  position: fixed;
+  top: 49px;
+  right: 0;
+  z-index: 1100;
+  width: 250px;
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  background: var(--gray-17);
+  border: 1px solid var(--black);
+  box-shadow: -2px 4px 12px var(--shadow-50);
+}
+#hamburgerMenu.open {
+  display: flex;
+  flex-direction: column;
+}
+/* display is deliberately not set on .menuItem: the edit-block / grooveDB_hidden rules hide
+ * items by display, and as flex items they are blockified anyway. */
+.menuItem {
+  box-sizing: border-box;
+  min-height: 48px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--black);
+  color: var(--gray-87);
+  font-size: 16px;
+  line-height: 48px;
+  cursor: pointer;
+}
+.menuItem:hover,
+.menuItem:active {
+  background: var(--gray-27);
+  color: var(--white);
+}
+.menuIcon {
+  display: inline-block;
+  width: 32px;
+  white-space: nowrap;
+  text-align: left;
+}
+.menuLabel {
+  display: inline-block;
+}
+.menuValue {
+  float: right;
+  color: var(--green);
+}
+#timeSigLabel {
+  font-size: 16px;
+}
+/* permutations are only available in 4/4 (groove_writer.js toggles .enabled) */
+#permutationAnchor {
+  color: var(--gray-47);
+}
+#permutationAnchor.enabled,
+#permutationAnchor.buttonSelected {
+  color: var(--gray-93);
+}
+/* Advanced Edit is on: a green check on the right instead of a highlighted row */
+#advancedEditAnchor.buttonSelected:after {
+  float: right;
+  font-family: FontAwesome;
+  content: '\f00c';
+  color: var(--green);
+}
+
+/* ---- dialogs (.navModal): Groove Setup, Auto Speed Up ---- */
+.navModal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  align-items: center;
+  justify-content: center;
+  background: var(--scrim-65);
+}
+.navModal.open {
+  display: flex;
+}
+.navModalCard {
+  box-sizing: border-box;
+  width: min(420px, calc(100vw - 24px));
+  padding: 12px;
+  background: var(--gray-22);
+  border: 2px solid var(--black);
+  border-radius: 8px;
+  color: var(--gray-93);
+  max-height: calc(100dvh - 16px); /* the visible height, excluding a phone browser's address bar */
+  overflow-y: auto;
+}
+.navModalTitle {
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+}
+.navModalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.navModalLabel {
+  font-size: 15px;
+}
+.navModalControl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.navModal select {
+  height: 36px;
+  padding: 0 8px;
+  font-size: 16px;
+  color: var(--gray-13);
+  background: var(--gray-93);
+  border: 1px solid var(--gray-60);
+  border-radius: 4px;
+}
+#timeSigPopupTimeSigTop,
+#timeSigPopupTimeSigBottom {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--gray-40);
+  background-color: var(--gray-93);
+  vertical-align: top;
+  padding-left: 8px;
+  width: 64px;
+}
+#subdivisionSelect {
+  min-width: 150px;
+}
+.navModalDone {
+  display: block;
+  width: 100%;
+  height: 44px;
+  margin-top: 4px;
+  font-size: 16px;
+  color: var(--white);
+  background: var(--blue);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#view-edit-switch {
+  white-space: normal;
+}
+
+/* cascading items: caret on the right, pointing at the side the submenu opens */
+.menuCascade:after {
+  float: right;
+  font-family: FontAwesome;
+  content: '\f0d9';
+  color: var(--gray-60);
+}
+/* keep the time signature (sup/sub) from stretching its row taller than the others */
+#timeSigLabel sup,
+#timeSigLabel sub {
+  line-height: 0;
+}
+
+/* ---- popup menus: same look as the hamburger panel ----
+ * Every popup that the hamburger menu and the metronome Options button open has the class .navMenu:
+ * the <ul>s inside .noteContextMenu, and the groove list <div>. The note-grid context menus keep their
+ * light look (.noteContextMenu > ul.list in editor.css). These rules load later with equal specificity,
+ * so they win. */
+.noteContextMenu > ul.list,
+.navMenu {
+  z-index: 1150; /* submenus open beside the panel, so they must sit above it */
+}
+.noteContextMenu > ul.navMenu,
+div.navMenu {
+  box-sizing: border-box;
+  background: var(--gray-17);
+  color: var(--gray-87);
+  border: 1px solid var(--black);
+  box-shadow: -2px 4px 12px var(--shadow-50);
+}
+.noteContextMenu > ul.navMenu {
+  top: 0;
+  right: 0; /* only until the script places the menu beside what opened it */
+  width: 240px !important; /* beats the inline width the menus used to carry */
+}
+div.navMenu {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 300px;
+  height: auto;
+  max-height: calc(100vh - 60px);
+  overflow: auto;
+}
+.noteContextMenu > ul.navMenu li,
+div.navMenu li {
+  box-sizing: border-box;
+  min-height: 48px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--black);
+  font-size: 16px;
+  line-height: 48px;
+  cursor: pointer;
+}
+.noteContextMenu > ul.navMenu li:hover,
+.navMenu .grooveListLI:hover {
+  background: var(--gray-27);
+  color: var(--white);
+}
+.noteContextMenu > ul.navMenu li:last-child {
+  border-bottom: 1px solid var(--black);
+}
+/* the groove list is one <ul> per category inside the wrapper */
+.navMenu .grooveListUL {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  background: transparent;
+  color: var(--gray-87);
+}
+.navMenu .grooveListHeaderLI {
+  background: var(--highlight-color);
+  color: var(--white);
+  font-weight: bold;
+  cursor: default;
+}
+/* menu labels are bold in the markup for the note menus; keep them regular weight here */
+.noteContextMenu > ul.navMenu b {
+  font-weight: normal;
+}
+/* informational, non-clickable entry (e.g. why Permutations is unavailable) */
+.noteContextMenu > ul.navMenu li.menuInfo,
+.noteContextMenu > ul.navMenu li.menuInfo:hover {
+  min-height: 0;
+  padding: 12px 16px;
+  color: var(--gray-60);
+  font-size: 14px;
+  line-height: 1.3;
+  background: transparent;
+  cursor: default;
+}
+
+/* the "g" icon, far left of the top bar (it used to head the left rail) */
+#logoIconUpperLeft {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  align-self: stretch;
+  justify-content: center;
+  width: 48px; /* as wide as the bar is tall (49px less its 1px border): a square tile */
+  margin: 0 4px 0 -6px; /* flush with the left edge: cancels #TopNav's 6px side padding */
+  background: var(--black);
+}
+#logoIconUpperLeft img {
+  display: block;
+  height: 40px;
+}
+
+/* stacked label-over-input rows (Titles dialog) */
+.navModalRowStacked {
+  display: block;
+}
+.navModalRowStacked .navModalLabel {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 13px;
+  line-height: 1.2;
+}
+.navModal input[type='text'] {
+  box-sizing: border-box;
+  width: 100%;
+  height: 36px;
+  padding: 0 8px;
+  font-size: 16px;
+  color: var(--gray-13);
+  background: var(--gray-93);
+  border: 1px solid var(--gray-60);
+  border-radius: 4px;
+}
+.navModal input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+}
+
+/* text input with a clear (x) button inside its right edge */
+.navModalInputWrap {
+  position: relative;
+  display: block;
+}
+.navModalInputWrap input[type='text'] {
+  padding-right: 32px;
+}
+.navModalClear {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--gray-47);
+  font-size: 18px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.navModalClear:hover {
+  color: var(--gray-13);
+}
+/* nothing to clear */
+.navModalInputWrap.empty .navModalClear {
+  display: none;
+}
+
+/* very narrow phones (360px and below): squeeze the metronome row so it clears View/Edit */
+@media screen and (max-width: 380px) {
+  #upperLeft {
+    font-size: 11px;
+  }
+  #metronomeContainer .metronomeButton {
+    padding: 2px 2px;
+  }
+}
+
+/* ---- Auto Speed Up dialog extras ---- */
+.navModalSummary {
+  margin-bottom: 14px;
+  font-size: 16px;
+  text-align: center;
+}
+.navModalSummary span {
+  color: var(--green);
+  font-weight: bold;
+}
+.navModal input[type='range'] {
+  border-radius: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  accent-color: var(--highlight-color);
+  height: 28px; /* room for the thumb; every dialog slider is exactly this tall */
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* the selected metronome interval (Off / 4th / 8th / 16th) is green; the Options button keeps its
+ * own white "active" look */
+#metronomeContainer .metronomeButton.buttonSelected {
+  color: var(--green);
+}
+
+/* Cancel / Done side by side */
+.navModalButtons {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+.navModalButtons button {
+  flex: 1 1 0;
+  margin-top: 0;
+}
+.navModalCancel {
+  height: 44px;
+  font-size: 16px;
+  color: var(--gray-93);
+  background: var(--gray-33);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.navModalCancel:hover {
+  background: var(--gray-40);
+}
+
+/* ---- Edit / Display / Share & Export submenus ---- */
+/* the keyboard shortcut hint on the Undo / Redo rows */
+.menuHint {
+  float: right;
+  color: var(--gray-53);
+  font-size: 13px;
+}
+/* a row that toggles something: groove_writer.js sets .ClickToHide on it while the thing is
+ * showing, which swaps "Show x" for "Hide x" */
+.stateHideLabel,
+.ClickToHide .stateShowLabel {
+  display: none;
+}
+.ClickToHide .stateHideLabel {
+  display: inline;
+}
+/* the Advanced Edit slot is replaced on touch devices; elsewhere it must not leave an empty row */
+li#advancedEditSlot {
+  display: none;
+}
+
+/* separator between the text fields and the time signature in the Groove Setup dialog */
+.navModalDivider {
+  height: 1px;
+  margin: 2px 0 8px;
+  background: var(--black);
+  border-bottom: 1px solid var(--gray-29);
+}
+
+/* keyboard shortcut hints mean nothing on a phone */
+@media screen and (max-width: 520px) {
+  .menuHint {
+    display: none;
+  }
+}
+
+/* ---- compact dialogs, so Groove Setup fits on a phone ---- */
+
+.navModal select,
+.navModal input[type='text'] {
+  height: 32px;
+  font-size: 16px; /* 16px stops iOS zooming the page when a field is focused */
+}
+
+.navModalCancel,
+.navModalDone {
+  height: 40px;
+}
+
+/* ---- dialog sliders: bright, high-contrast on the dark card ---- */
+
+.navModal input[type='range']::-webkit-slider-runnable-track {
+  height: 8px;
+  background: var(--gray-71);
+  border: 1px solid var(--black);
+  border-radius: 5px;
+}
+.navModal input[type='range']::-webkit-slider-thumb {
+  width: 24px;
+  height: 24px;
+  margin-top: -9px; /* centres the thumb on the 8px track */
+  background: var(--green);
+  border: 3px solid var(--white);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px var(--shadow-60);
+}
+.navModal input[type='range']::-moz-range-track {
+  height: 8px;
+  background: var(--gray-71);
+  border: 1px solid var(--black);
+  border-radius: 5px;
+}
+.navModal input[type='range']::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: var(--green);
+  border: 3px solid var(--white);
+  border-radius: 50%;
+  box-shadow: 0 1px 4px var(--shadow-60);
+}
+.navModal input[type='range']:focus::-webkit-slider-runnable-track {
+  background: var(--gray-82);
+}
+.navModal input[type='range']:active::-webkit-slider-thumb {
+  background: var(--green-light);
+}
+.navModal input[type='range']:active::-moz-range-thumb {
+  background: var(--green-light);
+}
+
+/* rows that only make sense in the native apps; js/screenOrientation.js adds .capacitor-native */
+.nativeOnly {
+  display: none;
+}
+.capacitor-native .nativeOnly {
+  display: block;
+}

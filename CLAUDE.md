@@ -17,10 +17,10 @@ build step). A groove is encoded in the URL, rendered to sheet music as SVG
 
 | Command                | Expectation                                                                                                                                                                             |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm test`             | Vitest unit suite — **722 pass**                                                                                                                                                        |
-| `npm run test:e2e`     | Playwright golden-master + UI flows — **124 pass**. Byte-identical SVG+MIDI snapshots; this is the real proof that a refactor changed nothing functional. Finishes in <5 min by design. |
-| `npm run lint`         | ESLint — **0 errors** (~82 SonarJS _warnings_ are an accepted refactor backlog, not failures)                                                                                           |
-| `npm run typecheck`    | `tsc --noEmit` checkJs via JSDoc — ~296 known errors baseline; changes should be typecheck-**neutral**                                                                                  |
+| `npm test`             | Vitest unit suite — **765 pass**                                                                                                                                                        |
+| `npm run test:e2e`     | Playwright golden-master + UI flows — **131 pass**. Byte-identical SVG+MIDI snapshots; this is the real proof that a refactor changed nothing functional. Finishes in <5 min by design. |
+| `npm run lint`         | ESLint — **0 errors** (~30 SonarJS _warnings_ are an accepted refactor backlog, not failures)                                                                                           |
+| `npm run typecheck`    | `tsc --noEmit` checkJs via JSDoc — ~233 known errors baseline; changes should be typecheck-**neutral**                                                                                  |
 | `npm run knip`         | no unused exports/files                                                                                                                                                                 |
 | `npm run format:check` | Prettier clean (`npm run format` to fix)                                                                                                                                                |
 | `npm run check`        | lint + typecheck + format:check + test in one shot                                                                                                                                      |
@@ -66,10 +66,10 @@ Pure / low-coupling core (extracted from the two big files, imported back):
 - `abcNotation.js` — grooveData → ABC (takes `gu`).
 - `browserInfo.js` — user-agent / touch / phone probes (`is_mobile_phone` decides the Advanced Edit default).
 - `permutations.js` — pure permutation-mode note-array generators (+ kick-array merge/filter).
-- `viewHtml.js` — pure HTML string builders (staff container, permutation-options menu).
+- `viewHtml.js` — pure HTML string builders (staff container, permutation-options menu, the note/row-label context menus that `main.js` fills into `#noteMenusSlot`).
 - `hamburgerMenu.js` — the top-bar hamburger menu and its dialogs (Groove Setup, Auto Speed Up): open/close,
   staged Done/Cancel, and mirroring GrooveWriter state into the dropdowns. Markup lives in `index.html`,
-  styling in `css/groove_writer_nav.css`.
+  styling in `css/nav.css`.
 - `gridState.js` — the DOM grid **read** layer: per-cell state (`is_*_on`/`get_*_state`)
   and whole-measure array readers (`get32NoteArrayFromClickableUI`, `muteArrayFromClickableUI`).
   Reads the ambient global `document`; caller state injected via ctx/callbacks.
@@ -79,6 +79,7 @@ Entry/support: `main.js` (index.html bootstrap, wires `window.myGrooveWriter` et
 
 ### Tests
 
+- `tests/characterization/` — golden-fixture tests (`tests/fixtures/golden/`, written with `GOLDEN_UPDATE=1`) that pin permutations, staff/permutation HTML and every note/label menu action; run them before and after refactors.
 - `tests/` — Vitest (jsdom). Subdirs per subject (`groove_utils/`, `groove_writer/`,
   `groove_display/`). Legacy source is loaded via `tests/helpers/` shims. See `tests/README.md`.
 - `tests-e2e/` — Playwright (Chromium). `golden-master.spec.js` snapshots SVG+MIDI for a
@@ -105,6 +106,16 @@ Entry/support: `main.js` (index.html bootstrap, wires `window.myGrooveWriter` et
   fired note removes its own entry from the event queue (not `shift()`). Without them a late timer on a busy
   phone shifted every repeat and left a note that Stop could not silence. `tests-e2e/playback.spec.js` guards
   both; re-apply the patch if MIDI.js is ever updated.
+- **Stylesheets (`css/`):** `theme.css` (colours), `player.css` (the MIDI player + sheet-music display; used by the
+  editor _and_ the embed pages), `editor.css` (the editor page: frame, note grid, popups, share box, print),
+  `nav.css` (top bar, hamburger menu, dialogs, popup menus), `info.css` (About / Help), plus the tiny
+  `grooveDB_authoring.css` / `groove_debug.css`. Load order in `index.html`: theme, editor, player, nav.
+  Embeds load theme + player (via `groove_display.js`). `tests/theme.test.js` fails on an unused stylesheet.
+  Popup menus opened from the hamburger menu / metronome Options carry the class `navMenu`.
+- **Colours live in `css/theme.css` only.** Our stylesheets contain no colour values: they use the
+  variables defined there (a palette, plus role names such as `--page-bg`). Restyle by editing that file.
+  Any page that loads our CSS must also link `css/theme.css` (embed pages get it from `groove_display.js`).
+  `tests/theme.test.js` enforces both. Colours painted by JavaScript (the note grid, logo SVG) are not CSS.
 - Vendored globals (don't redefine): `Midi`, `MIDI`, `Abc`, `Share`, `ShareButton`, `Pablo`.
 
 ## Refactor status (strangler-fig, ES-module migration)

@@ -1,0 +1,23 @@
+{
+  "merge:false|false": [false],
+  "merge:false|F": ["F"],
+  "merge:false|[F^d,]": ["[F^d,]"],
+  "merge:false|^d,": ["^d,"],
+  "filter:false": [false],
+  "merge:F|false": ["F"],
+  "merge:F|F": ["F"],
+  "merge:F|[F^d,]": ["[F^d,]"],
+  "merge:F|^d,": ["[F^d,]"],
+  "filter:F": [false],
+  "merge:[F^d,]|false": ["[F^d,]"],
+  "merge:[F^d,]|F": ["[F^d,]"],
+  "merge:[F^d,]|[F^d,]": ["[F^d,]"],
+  "merge:[F^d,]|^d,": ["[F^d,]"],
+  "filter:[F^d,]": ["^d,"],
+  "merge:^d,|false": ["^d,"],
+  "merge:^d,|F": ["[F^d,]"],
+  "merge:^d,|[F^d,]": ["[F^d,]"],
+  "merge:^d,|^d,": ["^d,"],
+  "filter:^d,": ["^d,"],
+  "merge_unknown": ["zzz"]
+}

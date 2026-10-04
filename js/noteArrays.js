@@ -188,8 +188,7 @@ function abcNotationToTablaturePerNote(drumType, abcChar) {
       tabChar = 'B';
       break;
     case constant_ABC_STICK_OFF:
-      tabChar = '-';
-      break;
+      break; // already '-'
     case constant_ABC_STICK_COUNT:
       tabChar = 'c';
       break;
@@ -255,8 +254,7 @@ function abcNotationToTablaturePerNote(drumType, abcChar) {
       tabChar = 'x';
       break;
     case constant_ABC_OFF:
-      tabChar = '-';
-      break;
+      break; // already '-'
     default:
       console.log('bad case in abcNotationToTablaturePerNote: ' + abcChar);
       break;
@@ -276,7 +274,7 @@ export function noteArraysFromURLData(drumType, noteString, notesPerMeasure, num
   // ignore "|" by removing them
   //var notes = noteString.replace(/\|/g, '');
   // ignore "|" & ")" & "(" & "[" & "]" & "!" & ":" by removing them
-  var notes = noteString.replace(/:|!|\)|\(|\[|\]|\|/g, '');
+  var notes = noteString.replace(/[:!)(\][|]/g, '');
 
   var noteStringScaler = 1;
   var displayScaler = 1;
@@ -320,10 +318,10 @@ export function tabLineFromAbcNoteArray(
   for (var i = 0; i < maxLength; i++) {
     var newTabChar = abcNotationToTablaturePerNote(drumType, noteArray[i]);
 
-    if (drumType == 'H' && newTabChar == 'X') {
-      if (getAccents) returnTabLine += newTabChar;
-      else returnTabLine += '-';
-    } else if ((drumType == 'K' || drumType == 'S') && (newTabChar == 'o' || newTabChar == 'O')) {
+    if (
+      (drumType == 'H' && newTabChar == 'X') ||
+      ((drumType == 'K' || drumType == 'S') && (newTabChar == 'o' || newTabChar == 'O'))
+    ) {
       if (getAccents) returnTabLine += newTabChar;
       else returnTabLine += '-';
     } else if (drumType == 'K' && newTabChar == 'X') {

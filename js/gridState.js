@@ -51,9 +51,7 @@ import {
 export function is_snare_on(id) {
   var state = get_snare_state(id, 'ABC');
 
-  if (state !== false) return true;
-
-  return false;
+  return state !== false;
 }
 
 export function get_snare_state(id, returnType) {
@@ -110,9 +108,7 @@ export function get_snare_state(id, returnType) {
 export function is_tom_on(id, tom_num) {
   var state = get_tom_state(id, tom_num, 'ABC');
 
-  if (state !== false) return true;
-
-  return false;
+  return state !== false;
 }
 
 export function get_tom_state(id, tom_num, returnType) {
@@ -147,9 +143,7 @@ export function get_tom_state(id, tom_num, returnType) {
 export function is_kick_on(id) {
   var state = get_kick_state(id, 'ABC');
 
-  if (state !== false) return true;
-
-  return false;
+  return state !== false;
 }
 
 export function get_kick_state(id, returnType) {
@@ -185,9 +179,7 @@ export function get_kick_state(id, returnType) {
 export function is_hh_on(id) {
   var state = get_hh_state(id, 'ABC');
 
-  if (state !== false) return true;
-
-  return false;
+  return state !== false;
 }
 
 export function get_hh_state(id, returnType) {
