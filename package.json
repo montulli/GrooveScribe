@@ -24,7 +24,7 @@
   },
   "license": "GPL-2.0-or-later",
   "devDependencies": {
-    "@capacitor/android": "6.2.1",
+    "@capacitor/android": "6.2.2",
     "@capacitor/cli": "6.2.1",
     "@capacitor/ios": "6.2.1",
     "@eslint/js": "^9.39.5",
