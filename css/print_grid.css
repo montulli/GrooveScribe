@@ -1,0 +1,95 @@
+#gridPrintOutput {
+  display: none;
+}
+
+@media print {
+  body.printing-grid {
+    background: white;
+    color: black;
+    margin: 0;
+    padding: 0;
+  }
+
+  body.printing-grid > :not(#gridPrintOutput) {
+    display: none !important;
+  }
+
+  body.printing-grid #gridPrintOutput {
+    display: block;
+    font:
+      12pt Arial,
+      sans-serif;
+    padding: 8mm;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  #gridPrintOutput h1 {
+    font-size: 22pt;
+    margin: 0 0 3mm;
+    overflow-wrap: anywhere;
+  }
+
+  #gridPrintOutput p {
+    margin: 0 0 7mm;
+    overflow-wrap: anywhere;
+  }
+
+  #gridPrintOutput section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 7mm;
+  }
+
+  #gridPrintOutput h2 {
+    font-size: 11pt;
+    margin: 0 0 2mm;
+  }
+
+  #gridPrintOutput table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  #gridPrintOutput th,
+  #gridPrintOutput td {
+    border: 1px solid #aaa;
+    padding: 0;
+    text-align: center;
+  }
+
+  #gridPrintOutput th {
+    font:
+      9pt Arial,
+      sans-serif;
+    height: 22px;
+  }
+
+  #gridPrintOutput th:first-child {
+    width: 64px;
+  }
+
+  #gridPrintOutput .grid-print-beat {
+    border-left: 2px solid #555;
+  }
+
+  #gridPrintOutput .grid-print-note {
+    position: relative;
+    white-space: nowrap;
+    width: 29px;
+    height: 58px;
+    margin: 4px auto;
+  }
+
+  #gridPrintOutput .grid-print-filled {
+    box-sizing: content-box;
+    width: 0;
+    height: 0;
+    border: 13px solid black !important;
+  }
+
+  #gridPrintOutput .tom_circle.grid-print-filled {
+    border-width: 12px !important;
+  }
+}

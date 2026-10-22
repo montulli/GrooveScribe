@@ -45,6 +45,19 @@ server with `Ctrl+C`.
 Any static file server works — `npx serve`, VS Code's "Live Server", etc. — the
 only requirement is HTTP rather than `file://`.
 
+### Printing the editing grid
+
+Choose **PRINT GRID** in the bottom toolbar to print the current groove's visual
+editing grid, including its title, author, tempo, time signature, and enabled
+instrument/sticking rows. Choose a printer or **Save as PDF** in the browser's
+print dialog. The existing **PRINT** action still prints sheet music.
+
+Grid printing works in both View and Edit mode. Wide measures continue in labelled
+blocks of at most 16 steps, preferably split at the editor's beat-group boundaries.
+Instrument labels repeat on each block, and long grooves flow onto additional
+pages. Letter and A4 work in portrait or landscape; unusually large printer
+margins or smaller paper may require adjusting the browser's print scale.
+
 ### Development
 
 The app itself needs no build step, but the repo ships tooling for tests and
