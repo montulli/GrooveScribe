@@ -84,6 +84,7 @@ import {
 import * as _perm from './permutations.js';
 import * as _view from './viewHtml.js';
 import * as _grid from './gridState.js';
+import { printGrid } from './printGrid.js';
 
 // GrooveWriter class.   The only one in this file.
 
@@ -2712,6 +2713,21 @@ function GrooveWriter() {
       }
     }
     updateSheetMusic();
+  };
+
+  root.printGrid = function () {
+    return printGrid({
+      title: /** @type {HTMLInputElement} */ (document.getElementById('tuneTitle')).value,
+      author: /** @type {HTMLInputElement} */ (document.getElementById('tuneAuthor')).value,
+      tempo: root.myGrooveUtils.getTempo(),
+      top: class_num_beats_per_measure,
+      bottom: class_note_value_per_measure,
+      grouping: root.myGrooveUtils.noteGroupingSize(
+        class_notes_per_measure,
+        class_num_beats_per_measure,
+        class_note_value_per_measure
+      ),
+    });
   };
 
   root.printMusic = function () {

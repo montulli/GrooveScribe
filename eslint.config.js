@@ -103,6 +103,7 @@ export default [
       'js/permutations.js',
       'js/viewHtml.js',
       'js/gridState.js',
+      'js/printGrid.js',
       'js/urlSerialization.js',
       'js/midiFile.js',
       'js/abcNotation.js',
