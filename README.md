@@ -52,6 +52,13 @@ editing grid, including its title, author, tempo, time signature, and enabled
 instrument/sticking rows. Choose a printer or **Save as PDF** in the browser's
 print dialog. The existing **PRINT** action still prints sheet music.
 
+Column headings use practice counts: `1 + 2 +` for eighth notes,
+`1 e + a 2 e + a` for sixteenths, and `1 tri plet 2 tri plet` for
+eighth-note triplets in 4/4. Counts follow the time signature's written beat
+(eighth-note beats in 6/8 and 7/8), continue across split blocks, and restart
+each measure. Finer divisions use `ta` or additional triplet syllables;
+unusual divisions without a spoken pattern show `beat:subdivision` positions.
+
 Grid printing works in both View and Edit mode. Wide measures continue in labelled
 blocks of at most 16 steps, preferably split at the editor's beat-group boundaries.
 Instrument labels repeat on each block, and long grooves flow onto additional

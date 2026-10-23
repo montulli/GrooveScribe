@@ -9,6 +9,29 @@ const lanes = [
   ['Kick', '.kick-container', '.kick', '58px'],
 ];
 
+// Spoken subdivisions of the time signature's written beat. The empty entry
+// is replaced by the beat number; finer straight divisions use "ta" between
+// the familiar sixteenth-note counts.
+const countSyllables = {
+  1: [''],
+  2: ['', '+'],
+  3: ['', 'tri', 'plet'],
+  4: ['', 'e', '+', 'a'],
+  6: ['', 'tri', 'plet', '+', 'tri', 'plet'],
+  8: ['', 'ta', 'e', 'ta', '+', 'ta', 'a', 'ta'],
+  12: ['', 'tri', 'plet', 'e', 'tri', 'plet', '+', 'tri', 'plet', 'a', 'tri', 'plet'],
+};
+
+function practiceCount(step, stepsPerBeat) {
+  const beat = Math.floor(step / stepsPerBeat) + 1;
+  const position = step % stepsPerBeat;
+  if (position === 0) return String(beat);
+  const syllables = countSyllables[stepsPerBeat];
+  // Very fine divisions of half-note beats have no single spoken convention.
+  // Keep their location explicit instead of inventing ambiguous syllables.
+  return syllables ? syllables[position] : `${beat}:${position + 1}`;
+}
+
 /** @param {HTMLElement} source */
 function copyNote(source) {
   const copy = /** @type {HTMLElement} */ (source.cloneNode(true));
@@ -50,13 +73,13 @@ function copyNote(source) {
 }
 
 /** @param {Element} measure */
-function buildTable(measure, start, end, group) {
+function buildTable(measure, start, end, group, stepsPerBeat) {
   const table = document.createElement('table');
   const header = table.createTHead().insertRow();
   header.append(document.createElement('th'));
   for (let step = start; step < end; step++) {
     const cell = document.createElement('th');
-    cell.textContent = String(step + 1);
+    cell.textContent = practiceCount(step, stepsPerBeat);
     cell.scope = 'col';
     if (step % group === 0) cell.className = 'grid-print-beat';
     header.append(cell);
@@ -119,7 +142,7 @@ export async function printGrid(metadata) {
           `Measure ${measureIndex + 1}` +
           (count > blockSize ? ` · Steps ${start + 1}–${end} of ${count}` : '');
         section.append(label);
-        const table = buildTable(measure, start, end, group);
+        const table = buildTable(measure, start, end, group, count / metadata.top);
         section.append(table);
         output.append(section);
       }

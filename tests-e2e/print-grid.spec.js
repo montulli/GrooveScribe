@@ -141,3 +141,29 @@ test('preserves every articulation and sticking in the rendered cells', async ({
   await expect(page.locator('#gridPrintOutput')).toBeHidden();
   await expect(page.locator('#GrooveWriter')).toBeVisible();
 });
+
+for (const [signature, division, expected] of [
+  ['4/4', 8, '1 + 2 + 3 + 4 +'],
+  ['4/4', 16, '1 e + a 2 e + a 3 e + a 4 e + a'],
+  ['4/4', 12, '1 tri plet 2 tri plet 3 tri plet 4 tri plet'],
+  [
+    '4/4',
+    24,
+    '1 tri plet + tri plet 2 tri plet + tri plet 3 tri plet + tri plet 4 tri plet + tri plet',
+  ],
+  ['4/4', 32, '1 ta e ta + ta a ta 2 ta e ta + ta a ta 3 ta e ta + ta a ta 4 ta e ta + ta a ta'],
+  ['3/4', 16, '1 e + a 2 e + a 3 e + a'],
+  ['6/8', 16, '1 + 2 + 3 + 4 + 5 + 6 +'],
+  ['7/8', 8, '1 2 3 4 5 6 7'],
+]) {
+  test(`practice counts ${signature}, division ${division}`, async ({ page }) => {
+    await loadGroove(page, `/index.html?TimeSig=${signature}&Div=${division}&Measures=2`);
+    await preparePrint(page);
+    const counts = await page.locator('#gridPrintOutput thead th[scope="col"]').allTextContents();
+    expect(counts).toEqual([...expected.split(' '), ...expected.split(' ')]);
+    const overflow = await page
+      .locator('#gridPrintOutput thead th')
+      .evaluateAll((cells) => cells.some((cell) => cell.scrollWidth > cell.clientWidth + 1));
+    expect(overflow).toBe(false);
+  });
+}
